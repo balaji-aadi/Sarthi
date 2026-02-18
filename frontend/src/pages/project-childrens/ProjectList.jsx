@@ -226,7 +226,23 @@ const ProjectList = () => {
                                                 </span>
                                             </div>
                                             <h3 className="text-lg font-bold text-textMain mb-1 group-hover:text-primary transition-colors line-clamp-1 pr-14">{project.name}</h3>
-                                            <p className="text-sm text-textSub line-clamp-2 min-h-[2.5em]">{project.description || "No description provided."}</p>
+                                            <p className="text-sm text-textSub line-clamp-2 min-h-[2.5em] mb-3">{project.description || "No description provided."}</p>
+                                            
+                                            {/* Progress Section */}
+                                            <div className="mb-2">
+                                                <div className="flex justify-between items-center text-xs text-textSub mb-1">
+                                                    <span>Progress</span>
+                                                    <span className="font-medium text-textMain">
+                                                        {project.taskStats?.percentage || 0}% ({project.taskStats?.completed || 0}/{project.taskStats?.total || 0} tasks)
+                                                    </span>
+                                                </div>
+                                                <div className="w-full h-2 bg-borderLight rounded-full overflow-hidden">
+                                                    <div 
+                                                        className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-500 ease-out"
+                                                        style={{ width: `${project.taskStats?.percentage || 0}%` }}
+                                                    ></div>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-surface/80 backdrop-blur-sm rounded-lg p-1 shadow-sm border border-borderLight/50">
