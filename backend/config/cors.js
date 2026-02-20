@@ -8,4 +8,5 @@ export const whiteListCors = [
   "http://192.168.29.15:3000",
   "http://192.168.29.102:3000",
   "http://192.168.29.98:3000",
+  "http://localhost:5173",
 ];

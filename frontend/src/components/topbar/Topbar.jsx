@@ -423,9 +423,9 @@ const Topbar = () => {
                   </p>
                   <p className="capitalize text-sm">
                     {currentUser &&
-                      currentUser?.userRole?.name === "projectmanager"
-                      ? "Project Manager"
-                      : currentUser?.userRole?.name}
+                      (currentUser?.userRoles?.[0]?.name === "projectmanager"
+                        ? "Project Manager"
+                        : currentUser?.userRoles?.[0]?.name || currentUser?.userRole?.name)}
                   </p>
                 </div>
               </div>

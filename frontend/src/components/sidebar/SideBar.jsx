@@ -154,8 +154,8 @@ const SideBar = ({ children }) => {
     }
   };
 
-  const hiddenRoles = ["developer", "tester"];
-  const developerRole = ["developer"];
+  const hiddenRoles = ["developer", "tester", "employee"];
+  const developerRole = ["developer", "employee"];
   const testerRole = ["tester"];
 
   return (
@@ -189,10 +189,10 @@ const SideBar = ({ children }) => {
                   <Link to={"/"} className="text-center flex flex-col items-center">
                     <img src="/momentum_logo.svg" alt="Momentum Logo" className="w-14 h-14 mb-2 drop-shadow-md" />
                     <h1 className="text-white font-bold text-2xl tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-                      Momentum
+                      {currentUser?.firstName ? currentUser.firstName : "Momentum"}
                     </h1>
-                    <p className="text-gray-400 text-[10px] uppercase tracking-widest mt-1">
-                      Simplify Tasks
+                     <p className="text-gray-400 text-[10px] uppercase tracking-widest mt-1">
+                      {currentUser?.userRoles?.[0]?.name || currentUser?.userRole?.name || "Simplify Tasks"}
                     </p>
                   </Link>
                 </div>

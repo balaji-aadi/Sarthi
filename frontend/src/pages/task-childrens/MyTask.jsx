@@ -15,6 +15,7 @@ import TBoard from "../testing-childrens/Board";
 import TestCaseManagement from "../testing-childrens/TestCaseManagement";
 import BugReporting from "../testing-childrens/BugReportingPage";
 import { MdFilterAltOff } from "react-icons/md";
+import TaskTable from "../../components/tasks/TaskTable";
 
 const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, externalSearch }) => {
   const navigate = useNavigate();
@@ -40,6 +41,10 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
   const urlProjectId = searchParams.get("projectId");
   const urlType = searchParams.get("type");
   const [milestoneId, setMilestoneId] = useState("");
+  const [internalViewMode, setInternalViewMode] = useState('board');
+  
+  const currentViewMode = viewMode || internalViewMode;
+  const currentSetViewMode = setViewMode || setInternalViewMode;
 
   // Formik for internal state if needed (kept from original)
   const initialValues = {
@@ -383,12 +388,36 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
                   >
                     <MdFilterAltOff className="text-xl" />
                   </div>
+
+                  {/* View Tabs */}
+                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg ml-auto">
+                      {['board', 'spreadsheet', 'timeline'].map(view => (
+                          <button
+                              key={view}
+                              onClick={() => currentSetViewMode(view)}
+                              className={`px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${currentViewMode === view ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                          >
+                              {view}
+                          </button>
+                      ))}
+                  </div>
               </div>
           )}
 
           {/* Board Content */}
-          <div className="flex-1 overflow-x-auto p-6">
-             {projectTasks ? (
+          <div className="flex-1 overflow-x-auto p-6" data-rbd-scroll-container>
+             {currentViewMode === 'spreadsheet' ? (
+                <TaskTable 
+                    tasks={(projectTasks || []).filter(t => !externalSearch || t.taskName?.toLowerCase().includes(externalSearch.toLowerCase()))}
+                    isLoading={false}
+                    projects={projects}
+                    members={teamMember}
+                    selectedProject={selectedProject}
+                    selectedMember={selectedMember}
+                    onProjectChange={(id) => setSelectedProject(id)}
+                    onMemberChange={(id) => setSelectedMember(id)}
+                />
+             ) : projectTasks ? (
                isTesting ? (
                  <TBoard
                    tasks={projectTasks.filter(t => !externalSearch || t.taskName?.toLowerCase().includes(externalSearch.toLowerCase()))}

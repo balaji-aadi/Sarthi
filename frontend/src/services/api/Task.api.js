@@ -6,7 +6,8 @@ export const TaskApi = {
   taskLogs: (id, payload) => Api.patch(`/task/update-task-log/${id}`, payload),
   getAllTasks: (filter) => Api.post("task/get-all-tasks", filter),
   getDependencies: () => Api.post("task/get-alltask-free"),
-  task: (id) => Api.get(`/task/get-tasks/${id}`),
-  taskImport: (payload) => Api.post(`task/task-import`, payload),
+   getTaskById: (id) => Api.get(`task/get-tasks/${id}`),
+   task: (id) => Api.get(`task/get-tasks/${id}`),
+   taskImport: (payload) => Api.post(`task/task-import`, payload),
 
 };

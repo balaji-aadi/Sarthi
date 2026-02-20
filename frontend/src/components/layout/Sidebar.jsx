@@ -10,11 +10,13 @@ import {
   IoChevronDown
 } from 'react-icons/io5';
 import { ProjectApi } from '../../services/api/Project.api';
+import { useSelector } from 'react-redux';
 
 const Sidebar = () => {
     const navigate = useNavigate();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { currentUser } = useSelector((state) => state.store);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -31,11 +33,18 @@ const Sidebar = () => {
         fetchProjects();
     }, []);
 
-    const menuItems = [
+    const hiddenRoles = ["developer", "tester", "employee"];
+    
+    // Determine which items to show
+    let menuItems = [
         { icon: <IoGridOutline />, label: 'Dashboard', path: '/' },
         { icon: <IoBriefcaseOutline />, label: 'Projects', path: '/project' },
         { icon: <IoPeopleOutline />, label: 'Teams', path: '/user' }, 
     ];
+
+    if (hiddenRoles.includes(currentUser?.userRole?.name?.toLowerCase())) {
+        menuItems = menuItems.filter(item => item.label !== 'Projects' && item.label !== 'Teams');
+    }
 
     return (
         <aside className="w-64 bg-surface border-r border-borderLight h-screen flex flex-col fixed left-0 top-0 overflow-y-auto">
@@ -66,13 +75,15 @@ const Sidebar = () => {
                 <div className="mt-8">
                      <div className="flex items-center justify-between px-4 mb-2">
                         <p className="text-xs font-semibold text-textSub uppercase tracking-wider">Projects</p>
-                        <button 
-                            className="text-textSub hover:text-primary transition-colors"
-                            onClick={() => navigate('/project/create-project')}
-                            title="Create Project"
-                        >
-                            <IoAdd size={16} />
-                        </button>
+                        {!hiddenRoles.includes(currentUser?.userRole?.name?.toLowerCase()) && (
+                            <button 
+                                className="text-textSub hover:text-primary transition-colors"
+                                onClick={() => navigate('/project/create-project')}
+                                title="Create Project"
+                            >
+                                <IoAdd size={16} />
+                            </button>
+                        )}
                      </div>
                      <div className="space-y-1">
                         {loading ? (
@@ -114,7 +125,7 @@ const Sidebar = () => {
                         localStorage.clear();
                         window.location.href = "/login";
                     }}
-                    className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-rose-500 hover:bg-rose-50 w-full transition-all mt-1"
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-textRose hover:bg-rose-50 w-full transition-all mt-1 text-rose-500"
                 >
                     <IoLogOutOutline size={20} />
                     Log Out
@@ -123,10 +134,22 @@ const Sidebar = () => {
             
             {/* User Profile Mini */}
             <div className="p-4 mb-2 mx-2 bg-slate-50 rounded-xl flex items-center gap-3 border border-borderLight/50">
-                 <img src="https://ui-avatars.com/api/?name=Balaji+Aadesh&background=random" alt="Profile" className="w-8 h-8 rounded-full" />
+                 {currentUser?.profileImage ? (
+                    <img src={currentUser.profileImage} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+                 ) : (
+                    <img 
+                      src={`https://ui-avatars.com/api/?name=${currentUser ? (currentUser.firstName + "+" + (currentUser.lastName || "")) : "User"}&background=random`} 
+                      alt="Profile" 
+                      className="w-8 h-8 rounded-full" 
+                    />
+                 )}
                  <div className="flex-1 min-w-0">
-                     <p className="text-sm font-semibold text-textMain truncate">Balaji Aadesh</p>
-                     <p className="text-xs text-textSub truncate">balajiaadi2000@gmail.com</p>
+                     <p className="text-sm font-semibold text-textMain truncate">
+                        {currentUser ? `${currentUser.firstName} ${currentUser.lastName || ''}` : 'User'}
+                     </p>
+                     <p className="text-xs text-textSub truncate">
+                        {currentUser ? (currentUser.userRoles?.[0]?.name || currentUser.userRole?.name || "Role") : 'Role'}
+                     </p>
                  </div>
                  <IoChevronDown className="text-textSub" />
             </div>

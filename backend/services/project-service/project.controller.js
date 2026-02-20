@@ -2,6 +2,7 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { Project } from "../../models/project.model.js";
+import mongoose from "mongoose";
 import { Milestone } from "../../models/milestone.model.js"
 import { Task } from "../../models/task.model.js"
 
@@ -159,8 +160,10 @@ pc.getAllProject = asyncHandler(async (req, res) => {
     const { search = "" } = req.query;
     const { filter = {}, sortOrder = -1 } = req.body;
 
-    let searchCondition = {};
+    // Filter logic
+    let filterQuery = {};
 
+    // 1. Search Query
     if (search && search !== "undefined") {
       const regex = new RegExp(search, "i");
       let objectIdSearch = null;
@@ -169,7 +172,7 @@ pc.getAllProject = asyncHandler(async (req, res) => {
         objectIdSearch = new mongoose.Types.ObjectId(search);
       }
 
-      searchCondition.$or = [
+      filterQuery.$or = [
         { name: { $regex: regex } },
         { startDate: { $regex: regex } },
         { endDate: { $regex: regex } },
@@ -180,7 +183,7 @@ pc.getAllProject = asyncHandler(async (req, res) => {
       ];
 
       if (objectIdSearch) {
-        searchCondition.$or.push(
+        filterQuery.$or.push(
           { teamMembers: objectIdSearch },
           { "rolesAndResponsibilities.teamMember": objectIdSearch }
         );
@@ -188,10 +191,58 @@ pc.getAllProject = asyncHandler(async (req, res) => {
     }
 
     if (filter?.type === "active") {
-      searchCondition.status = "active";
+      filterQuery.status = "active";
     }
 
-    let projects = await Project.find(searchCondition)
+    // 2. Permission Query
+    const permissions = new Set();
+    
+    // Check singular userRole
+    if (req.user?.userRole?.active && req.user?.userRole?.permissions) {
+        req.user.userRole.permissions.forEach(p => {
+             if (p && p.name) permissions.add(p.name);
+        });
+    }
+
+    // Check plural userRoles
+    req.user?.userRoles?.forEach(role => {
+        if (role.active && role.permissions) {
+            role.permissions.forEach(p => {
+                if (p && p.name) permissions.add(p.name);
+            });
+        }
+    });
+
+    const canViewAll = permissions.has('VIEW_ALL_PROJECTS');
+    const canViewAssigned = permissions.has('VIEW_PROJECT'); 
+
+    if (!canViewAll && canViewAssigned) {
+        // Restrict to projects where user is PM or Team Member
+        const ownershipQuery = {
+            $or: [
+                { projectManager: req.user._id },
+                { teamMembers: req.user._id },
+                { "rolesAndResponsibilities.teamMember": req.user._id }
+            ]
+        };
+        console.log("DEBUG: Ownership Query constructed:", JSON.stringify(ownershipQuery));
+        
+        // Merge into filterQuery using $and if other filters exist
+        if (Object.keys(filterQuery).length > 0) {
+             filterQuery = { $and: [ filterQuery, ownershipQuery ] };
+        } else {
+             filterQuery = ownershipQuery;
+        }
+    } else if (!canViewAll && !canViewAssigned) {
+         console.log("DEBUG: Permission Denied - No View Access");
+         return res.status(200).json(new ApiResponse(200, [], "No projects found (Insufficient permissions)"));
+    }
+    
+    console.log("DEBUG: Final Filter Query:", JSON.stringify(filterQuery, null, 2));
+
+    let query = Project.find(filterQuery);
+
+    let projects = await query
       .populate("projectManager teamMembers rolesAndResponsibilities.teamMember")
       .sort({ _id: sortOrder });
 

@@ -49,6 +49,7 @@ const Column = ({ column, handleClick }) => {
     switch (column.name.toLowerCase()) {
       case "todo": return "bg-slate-500";
       case "in progress": return "bg-amber-500";
+      case "hold": return "bg-orange-500";
       case "review": return "bg-purple-500";
       case "done": return "bg-emerald-500";
       default: return "bg-gray-500";
@@ -56,16 +57,16 @@ const Column = ({ column, handleClick }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-50/50 rounded-2xl p-2 md:p-3 shadow-sm border border-transparent min-w-[300px]">
+    <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-900/40 rounded-2xl p-2 md:p-3 shadow-inner border border-slate-200/50 dark:border-slate-800/50 min-w-[280px] sm:min-w-[320px]">
         {/* Column Header */}
-      <div className="px-2 py-3 mb-2 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-             <span className={`w-2 h-2 rounded-full ${getColumnPillColor()}`}></span>
-             <h2 className="font-bold text-textMain text-sm uppercase tracking-wide">
+      <div className="px-3 py-4 mb-2 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+             <span className={`w-2.5 h-2.5 rounded-full shadow-sm ${getColumnPillColor()}`}></span>
+             <h2 className="font-extrabold text-slate-700 dark:text-slate-200 text-xs sm:text-sm uppercase tracking-widest">
               {column.name}
             </h2>
           </div>
-          <span className="bg-white border border-borderLight text-textSub px-2 py-0.5 rounded text-xs font-bold shadow-sm">
+          <span className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 px-2.5 py-0.5 rounded-lg text-[10px] font-bold shadow-sm">
             {column.tasks.length}
           </span>
       </div>
@@ -75,12 +76,12 @@ const Column = ({ column, handleClick }) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`flex-1 pb-2 pr-2 transition-colors duration-150 ${snapshot.isDraggingOver
-              ? "bg-gray-100/50 dark:bg-gray-700/30 rounded-lg"
+            className={`max-h-[calc(100vh-280px)] overflow-auto flex-1 pb-4 pr-1 transition-all duration-300 rounded-xl ${snapshot.isDraggingOver
+              ? "bg-indigo-50/50 dark:bg-indigo-900/10 ring-2 ring-indigo-200/50 dark:ring-indigo-800/20"
               : ""
               }`}
           >
-            <div className="space-y-3 max-h-[100vh] -mr-2 pr-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+            <div className="space-y-4 overflow-x-hidden custom-scrollbar px-1 py-1 pb-10">
               {column.tasks.map((task, index) => (
                 <Task
                   key={task._id}

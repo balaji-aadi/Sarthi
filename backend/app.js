@@ -11,6 +11,7 @@ import router from "./api-gateway/router.js";
 import { whiteListCors } from "./config/cors.js";
 import fileUpload from "express-fileupload";
 import { socketService } from "./socket-instance.js";
+import "./models/permission.model.js";
 
 const app = express();
 // export const socketService = new SocketService(); // Moved to socket-instance.js
@@ -21,13 +22,13 @@ app.use(cors({ origin: whiteListCors, credentials: true }));
 app.use(morgan("dev"));
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true, limit: "5mb" }));
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(xss());
 app.use(compression());
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(bodyParser.json());
-// app.use(fileUpload());
+app.use(fileUpload());
 
 // Routes declaration
 app.use("/test", (req, res) => {

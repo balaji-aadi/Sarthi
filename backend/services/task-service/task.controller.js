@@ -3,6 +3,7 @@ import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { Task } from "../../models/task.model.js";
 import { Project } from "../../models/project.model.js";
+import { Sprint } from "../../models/sprint.model.js";
 import mongoose from "mongoose";
 import { calculateStatusDuration } from "../../utils/calculateStatusDuration.js";
 import { Notification } from "../../models/notification.model.js";
@@ -35,6 +36,7 @@ tc.createTask = asyncHandler(async (req, res) => {
       additionalNotes,
       status,
       progress,
+      parentTask,
     } = req.body;
 
     const requiredFields = {
@@ -64,8 +66,8 @@ tc.createTask = asyncHandler(async (req, res) => {
     }
 
     // Data Integrity: Check Parent Task Project
-    if (req.body.parentTask) {
-        const parent = await Task.findById(req.body.parentTask);
+    if (parentTask) {
+        const parent = await Task.findById(parentTask);
         if (!parent) {
              return res.status(400).json(new ApiError(400, "Parent Task not found"));
         }
@@ -95,6 +97,24 @@ tc.createTask = asyncHandler(async (req, res) => {
       }
     }
 
+    // Date Validation for Subtasks
+    if (parentTask) {
+        const parent = await Task.findById(parentTask);
+        if (parent) {
+            const start = new Date(taskStartDate);
+            const due = new Date(taskDueDate);
+            const pStart = parent.taskStartDate ? new Date(parent.taskStartDate) : null;
+            const pDue = parent.taskDueDate ? new Date(parent.taskDueDate) : null;
+
+            if (pStart && start < pStart) {
+                return res.status(400).json(new ApiError(400, `Subtask start date (${start.toLocaleDateString()}) cannot be before parent task start date (${pStart.toLocaleDateString()})`));
+            }
+            if (pDue && due > pDue) {
+                return res.status(400).json(new ApiError(400, `Subtask due date (${due.toLocaleDateString()}) cannot be after parent task due date (${pDue.toLocaleDateString()})`));
+            }
+        }
+    }
+
     const createdTask = await Task.create({
       projectName: projectName || undefined,
       taskName,
@@ -112,10 +132,11 @@ tc.createTask = asyncHandler(async (req, res) => {
       dependentTasks,
       additionalNotes,
       attachments,
-      milestone,
+      milestone: milestone || null,
       status,
       progress: progress || 0,
       createdBy: req.user?._id,
+      parentTask: parentTask || null,
       activityLogs: [
         {
           oldStatus: null,
@@ -182,11 +203,42 @@ tc.updateTask = asyncHandler(async (req, res) => {
       sprint,
       additionalNotes,
       progress,
+      parentTask,
     } = req.body;
 
     const existingTask = await Task.findById(req.params.taskId);
     if (!existingTask) {
       return res.status(400).json(new ApiError(400, "Task not found"));
+    }
+
+    // Status Restriction: Parent cannot be 'done' if subtasks are not 'done'
+    if (status === 'done' && !existingTask.parentTask) {
+        const pendingSubtasks = await Task.countDocuments({
+            parentTask: existingTask._id,
+            status: { $ne: 'done' }
+        });
+        if (pendingSubtasks > 0) {
+            return res.status(400).json(new ApiError(400, "Cannot complete parent task while subtasks are still pending."));
+        }
+    }
+
+    // Date Validation for Subtasks
+    if (existingTask.parentTask) {
+        const parent = await Task.findById(existingTask.parentTask);
+        if (parent) {
+            const start = taskStartDate ? new Date(taskStartDate) : existingTask.taskStartDate ? new Date(existingTask.taskStartDate) : null;
+            const due = taskDueDate ? new Date(taskDueDate) : existingTask.taskDueDate ? new Date(existingTask.taskDueDate) : null;
+            
+            const pStart = parent.taskStartDate ? new Date(parent.taskStartDate) : null;
+            const pDue = parent.taskDueDate ? new Date(parent.taskDueDate) : null;
+
+            if (pStart && start && start < pStart) {
+                return res.status(400).json(new ApiError(400, `Subtask start date cannot be before parent task start date (${pStart.toLocaleDateString()})`));
+            }
+            if (pDue && due && due > pDue) {
+                return res.status(400).json(new ApiError(400, `Subtask due date cannot be after parent task due date (${pDue.toLocaleDateString()})`));
+            }
+        }
     }
 
     let activityLogEntry = null;
@@ -217,7 +269,8 @@ tc.updateTask = asyncHandler(async (req, res) => {
         epic,
         sprint,
         dependentTasks,
-        milestone,
+        milestone: milestone || null,
+        parentTask: parentTask ? new mongoose.Types.ObjectId(parentTask) : null,
         additionalNotes,
         status,
         progress,
@@ -309,7 +362,22 @@ tc.getallTasks = asyncHandler(async (req, res) => {
   try {
     const { search = "" } = req.query;
     let { filter = {}, sortOrder = -1 } = req.body;
-    const userRole = req.user?.userRole;
+    // Extract permissions from req.user (already populated in auth middleware)
+    const permissions = new Set();
+    
+    if (req.user?.userRole?.active && req.user?.userRole?.permissions) {
+        req.user.userRole.permissions.forEach(p => {
+             if (p && p.name) permissions.add(p.name);
+        });
+    }
+
+    req.user?.userRoles?.forEach(role => {
+        if (role.active && role.permissions) {
+            role.permissions.forEach(p => {
+                if (p && p.name) permissions.add(p.name);
+            });
+        }
+    });
 
     let searchCondition = {};
     if (search && search !== "undefined") {
@@ -340,12 +408,27 @@ tc.getallTasks = asyncHandler(async (req, res) => {
       filter.epic = new mongoose.Types.ObjectId(filter.epic);
     }
 
-    if (userRole?.name === "developer") {
-      filter.assignee = req.user?._id;
+    if (filter.parentTask) {
+      filter.parentTask = new mongoose.Types.ObjectId(filter.parentTask);
     }
 
-    if (filter?.assignee && userRole?.name === "projectmanager") {
-      filter.assignee = new mongoose.Types.ObjectId(filter.assignee);
+    // Role-based filtering logic using Permissions
+    // If user acts as 'Employee' (VIEW_ASSIGNED_TASK only) and NOT 'Manager' (VIEW_ALL_PROJECTS/VIEW_TASK generic)
+    // We need to be careful. 
+    // ADMIN / PM has 'VIEW_ALL_PROJECTS' or 'VIEW_TASK' (global).
+    // EMPLOYEE has 'VIEW_ASSIGNED_TASK'.
+    
+    const canViewAll = permissions.has('VIEW_ALL_PROJECTS') || permissions.has('VIEW_TASK');
+    const mustViewAssigned = permissions.has('VIEW_ASSIGNED_TASK');
+
+    if (!canViewAll && mustViewAssigned) {
+         filter.assignee = req.user._id;
+    }
+    // If they have NEITHER, they see nothing (or handle as 403, but here just empty list is fine)
+    if (!canViewAll && !mustViewAssigned) {
+        // Fallback: if no specific view permission, maybe return nothing or keep existing behavior?
+        // Let's assume strict RBAC:
+        return res.status(200).json(new ApiResponse(200, [], "No tasks found (Insufficient permissions)"));
     }
 
     if (filter?.type === "open") {
@@ -363,11 +446,11 @@ tc.getallTasks = asyncHandler(async (req, res) => {
       populate: [
       {
         path: "createdBy",
-        select: "email userRole firstName lastName"
+        select: "email userRoles firstName lastName" // Updated to userRoles
       },
       {
         path: "assignee",
-        select: "email userRole firstName lastName"
+        select: "email userRoles firstName lastName" // Updated to userRoles
       }
     ]
     })
@@ -432,9 +515,37 @@ tc.updatetaskLog = asyncHandler(async (req, res) => {
       return res.status(400).json(new ApiError(400, "Status not provided"));
     }
 
-    const task = await Task.findById(taskId);
+    const task = await Task.findById(taskId).populate('sprint');
     if (!task) {
       return res.status(404).json(new ApiError(404, "Task not found"));
+    }
+
+    // Restriction for Employees: Cannot change status if sprint hasn't started
+    if (task.sprint && new Date() < new Date(task.sprint.startDate)) {
+        // Check if user is an employee (doesn't have UPDATE_TASK or CREATE_SPRINT)
+        const permissions = new Set();
+        if (req.user?.userRole?.active && req.user?.userRole?.permissions) {
+            req.user.userRole.permissions.forEach(p => p && p.name && permissions.add(p.name));
+        }
+        req.user?.userRoles?.forEach(role => {
+            if (role.active && role.permissions) role.permissions.forEach(p => p && p.name && permissions.add(p.name));
+        });
+
+        const canBypass = permissions.has('UPDATE_TASK') || permissions.has('CREATE_SPRINT');
+        if (!canBypass) {
+            return res.status(400).json(new ApiError(400, "Cannot update status. The linked sprint has not started yet."));
+        }
+    }
+
+    // Status Restriction: Parent cannot be 'done' if subtasks are not 'done'
+    if (status === 'done' && !task.parentTask) {
+        const pendingSubtasks = await Task.countDocuments({
+            parentTask: task._id,
+            status: { $ne: 'done' }
+        });
+        if (pendingSubtasks > 0) {
+            return res.status(400).json(new ApiError(400, "Cannot complete parent task while subtasks are still pending."));
+        }
     }
 
     task.activityLogs.push({

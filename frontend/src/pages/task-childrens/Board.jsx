@@ -3,6 +3,8 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
 import { TaskApi } from "../../services/api/Task.api";
 import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import TaskDetailDrawer from "./TaskDetailDrawer";
 
 const Board = ({
   tasks,
@@ -10,7 +12,8 @@ const Board = ({
   selectedProject,
   handleClick,
   selectedMember,
-  milestoneId
+  milestoneId,
+  sprintStarted = true // Default to true for non-sprint boards
 }) => {
   const [showToast, setShowToast] = useState(false);
   const [taskToMove, setTaskToMove] = useState(null);
@@ -18,11 +21,14 @@ const Board = ({
   const [dontShowAgain, setDontShowAgain] = useState(
     localStorage.getItem("dontShowInProgressToast") === "true"
   );
+  
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedTaskForDrawer, setSelectedTaskForDrawer] = useState(null);
 
   const { currentUser } = useSelector((state) => state.store);
   const isManager = currentUser?.userRole?.name === "projectmanager";
-
-
+  const isAdmin = currentUser?.userRole?.name === "admin";
+  const canEdit = isManager || isAdmin;
 
   const [boardTasks, setBoardTasks] = useState([]);
 
@@ -38,6 +44,7 @@ const Board = ({
     { id: "backlog", name: "Backlog" },
     { id: "todo", name: "To Do" },
     { id: "inprogress", name: "In Progress" },
+    { id: "hold", name: "Hold" },
     { id: "review", name: "Review" },
     { id: "done", name: "Done" },
   ];
@@ -74,19 +81,39 @@ const Board = ({
 
   const updateTaskStatus = async (taskId, newStatus) => {
     try {
-      await TaskApi.taskLogs(taskId, { status: newStatus });
-      return true;
+        await TaskApi.taskLogs(taskId, { status: newStatus });
+        return true;
     } catch (error) {
-      console.error("Failed to update task status:", error);
-      return false;
+        console.error("Failed to update task status:", error);
+        toast.error(error.response?.data?.message || "Failed to update task status");
+        return false;
     }
   };
 
   const handleDragEnd = async (result) => {
     const { source, destination } = result;
     if (!destination || source.droppableId === destination.droppableId) return;
-    if (!isManager && source.droppableId === "done") {
-      return;
+
+    if (!sprintStarted && !isManager && !isAdmin) {
+        toast.error("You cannot change task status before the sprint has started.");
+        return;
+    }
+    
+    // Allow Managers and Admins to move anywhere.
+    // Employees (assigned users) can move tasks if they are assigned?
+    // The previous logic had `!isManager && source.droppableId === "done"`.
+    // We should probably allow employees to move things too, as long as it's their task?
+    // But `Board.jsx` doesn't know if the task is assigned to currentUser easily unless we check.
+    // However, the `taskToMove` object has `assignee`.
+    
+    // For now, restore original logic + Employee capability?
+    // User said: "only employee see the sprints" (and tasks).
+    // User wants "assigned tasks" visible.
+    // User implied they can drag and drop.
+    
+    if (!isManager && !isAdmin && source.droppableId === "done") {
+       // Maybe employees can't move FROM done?
+       return; 
     }
 
     const sourceColumn = groupedTasks.find(col => col.id === source.droppableId);
@@ -96,9 +123,14 @@ const Board = ({
     if (!taskToMove) return;
 
     // Check for in-progress task limitation for non-managers
-    if (!isManager && destinationColumn.id === "inprogress") {
+    if (!isManager && !isAdmin && destinationColumn.id === "inprogress") {
       const inProgressTasks = groupedTasks.find(col => col.id === "inprogress")?.tasks || [];
 
+      // Filter inProgress tasks for this user?
+      // The requirement "one task in progress" usually applies per user.
+      // But here it checks ALL tasks in progress?
+      // Assuming this is per board view.
+      
       if (inProgressTasks.length >= 1 && taskToMove.status !== "inprogress") {
         if (dontShowAgain) {
           // Auto-handle the case when "Don't show again" is checked
@@ -112,16 +144,53 @@ const Board = ({
       }
     }
 
-    const success = await updateTaskStatus(taskToMove._id, destinationColumn.id);
-    if (success) {
+    // Optimistic Update
+    const oldStatus = taskToMove.status;
+    const newStatus = destinationColumn.id;
+
+    // 1. Update UI immediately
+    setTasks(prevTasks => {
+      const updatedTasks = prevTasks.map(task =>
+        task._id === taskToMove._id
+          ? { ...task, status: newStatus }
+          : task
+      );
+
+      // If moved to 'done' or from 'done', and has a parent, update parent progress locally
+      if (taskToMove.parentTask && (newStatus === 'done' || oldStatus === 'done')) {
+        const parentId = typeof taskToMove.parentTask === 'object' ? taskToMove.parentTask._id : taskToMove.parentTask;
+        
+        // Find all subtasks of this parent in the CURRENT updated list
+        const subtasks = updatedTasks.filter(t => {
+            const pid = typeof t.parentTask === 'object' ? t.parentTask?._id : t.parentTask;
+            return pid === parentId;
+        });
+
+        const total = subtasks.length;
+        const completed = subtasks.filter(t => t.status === 'done').length;
+        
+        return updatedTasks.map(t => 
+            t._id === parentId 
+                ? { ...t, subtaskStats: { total, completed }, progress: Math.round((completed / total) * 100) } 
+                : t
+        );
+      }
+
+      return updatedTasks;
+    });
+
+    // 2. Call API
+    const success = await updateTaskStatus(taskToMove._id, newStatus);
+    
+    if (!success) {
+      // Revert on failure
       setTasks(prevTasks =>
         prevTasks.map(task =>
           task._id === taskToMove._id
-            ? { ...task, status: destinationColumn.id }
+            ? { ...task, status: oldStatus }
             : task
         )
       );
-      fetchTasks();
     }
   };
 
@@ -140,7 +209,7 @@ const Board = ({
             : task
       )
     );
-    fetchTasks();
+     // fetchTasks(); 
   };
 
   const handleToastAction = async (shouldMove) => {
@@ -150,30 +219,38 @@ const Board = ({
     handleToastClose();
   };
 
+  const handleCardClick = (task) => {
+    setSelectedTaskForDrawer(task);
+    setIsDrawerOpen(true);
+  };
+
+  const handleEditFromDrawer = (task) => {
+    setIsDrawerOpen(false);
+    handleClick(task); // Trigger original handleClick (UpdateTask form)
+  };
+
   return (
-    <div>
+    <div className="board-container h-full overflow-hidden flex flex-col">
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex flex-row overflow-x-auto overflow-y-hidden h-full items-start gap-6 pb-4 px-2">
+        <div className="flex-1 overflow-x-auto overflow-y-hidden flex flex-row items-start gap-6 sm:gap-8 pb-12 px-4 sm:px-6 custom-scrollbar min-h-0" data-rbd-scroll-container>
           {groupedTasks.map((column) => (
-            <Droppable
+            <div
               key={column.id}
-              droppableId={column.id}
-              direction="vertical"
+              className="column min-w-[280px] sm:min-w-[320px] w-[350px] shrink-0 h-full max-h-[calc(100vh-180px)]"
             >
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="column min-w-[300px] w-[350px] shrink-0"
-                >
-                  <Column column={column} handleClick={handleClick} />
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
+              <Column column={column} handleClick={handleCardClick} />
+            </div>
           ))}
         </div>
       </DragDropContext>
+
+      <TaskDetailDrawer 
+        isOpen={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+        task={selectedTaskForDrawer} 
+        canEdit={canEdit}
+        onTaskUpdate={handleEditFromDrawer}
+      />
 
       {showToast && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-yellow-100 text-black p-4 rounded-md shadow-lg flex items-center space-x-4 z-50">

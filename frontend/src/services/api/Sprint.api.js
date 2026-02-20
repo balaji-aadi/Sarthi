@@ -13,4 +13,7 @@ export const SprintApi = {
   deleteSprint: async (sprintId) => {
     return await Api.delete(`/sprint/${sprintId}`);
   },
+  getSprintReport: async (sprintId) => {
+    return await Api.get(`/sprint/report/${sprintId}`);
+  },
 };

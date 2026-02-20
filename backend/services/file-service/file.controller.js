@@ -89,18 +89,19 @@ fc.getFile = asyncHandler (async (req, res) => {
             return res.status(404).json(new ApiError(404, `File ${filename} not found!`));
         }
 
-        const data = await fs.promises.readFile(directoryPath);
-
-        const ext = path.extname(filename).toLowerCase();
-        const contentType = mimeType[ext] || "application/octet-stream";
-
-        res.setHeader("Content-Type", contentType);
-        return res.status(200).send(data);
+        // Use res.sendFile for better handling of headers, ranges, and caching
+        res.sendFile(directoryPath, (err) => {
+            if (err) {
+                 console.error("File sending error:", err);
+                 if (!res.headersSent) {
+                    res.status(500).json(new ApiError(500, "Error sending file"));
+                 }
+            }
+        });
     } catch (error) {
         console.error("File retrieval error:", error);
         return res.status(500).json(new ApiError(500, error, `Error retrieving file: ${error.message}`));
     }
-
 })
 
 

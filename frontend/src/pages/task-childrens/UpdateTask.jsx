@@ -8,7 +8,10 @@ import CreateTask from "./CreateTask";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { useSearchParams } from "react-router-dom";
 
+import { useSelector } from "react-redux";
+
 const UpdateTask = () => {
+  const { currentUser } = useSelector((state) => state.store);
   const [id, setId] = useState();
   const { handleLoading } = useLoading();
   const [task, setTask] = useState([]);
@@ -139,6 +142,17 @@ const UpdateTask = () => {
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => {
+        // Redux state cannot be accessed easily inside AG Grid cell renderer if context not passed.
+        // But we can use context property of AgGrid or just use a simple check if we pass props.
+        // However, this component UpdateTask is functional.
+        // We can define the cellRenderer outside or use `frameworkComponents`? No, simpler:
+        // Move columns definition inside the component body (it is already there).
+        // Access state.
+        
+        if (currentUser?.userRole?.name === 'employee') {
+            return null;
+        }
+
         return (
           <button
             className="px-4 rounded cursor-pointer"

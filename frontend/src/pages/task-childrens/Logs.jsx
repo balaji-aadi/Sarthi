@@ -112,7 +112,7 @@ const Logs = ({ task, type }) => {
 
   return (
     <>
-      <div className="w-full md:w-[40%] my-10 mr-3 bg-white shadow-lg rounded-xl h-full pb-10 p-4">
+      <div className="w-full md:w-[40%] my-10 mr-3 bg-white shadow-lg rounded-xl h-[70vh] overflow-y-auto pb-10 p-4">
         <div className="flex items-center justify-between pb-3 border-b">
           <h2 className="text-lg font-semibold">Recent Logs</h2>
           <span className="text-gray-500 text-xl">⏳</span>

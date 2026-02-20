@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { verifyJWT } from "../../middlewares/auth.middleware.js";
+import { checkPermission } from "../../middlewares/rbac.middleware.js";
 import userController from './user.controller.js';
 
 
@@ -19,9 +20,9 @@ router.route("/change-password").post(verifyJWT, userController.changeCurrentPas
 router.route("/current-user").get(verifyJWT, userController.getCurrentUser)
 router.route("/update-account").patch(verifyJWT, userController.updateAccountDetails)
 
-router.route("/get-all-user").post(verifyJWT, userController.getAllUsers)
-router.route("/get-user-by-id/:userId").get(verifyJWT, userController.getUserById)
-router.route("/update-user/:userId").put(verifyJWT, userController.updateUser)
+router.route("/get-all-user").post(verifyJWT, checkPermission("UPDATE_USER"), userController.getAllUsers)
+router.route("/get-user-by-id/:userId").get(verifyJWT, checkPermission("UPDATE_USER"), userController.getUserById)
+router.route("/update-user/:userId").put(verifyJWT, checkPermission("UPDATE_USER"), userController.updateUser)
 
 
 

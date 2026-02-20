@@ -1,4 +1,4 @@
-const localUrl = "http://192.168.1.14:5003";
+const localUrl = "http://localhost:5003";
 // const localUrl = "http://192.168.1.13:5003";
 const liveUrl = "https://achiever.nablean.com";
 

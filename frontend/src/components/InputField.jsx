@@ -63,6 +63,7 @@ const InputField = ({
           : "transparent",
       color: isDarkMode ? "#fff" : "#000",
       textTransform: "capitalize",
+      opacity: state.data.isMember === false ? 0.5 : 1,
       "&:hover": {
         backgroundColor: isDarkMode ? "#4b5563" : "#d1d5db",
       },
@@ -132,6 +133,7 @@ const InputField = ({
           options={options}
           placeholder={placeholder || `${label}`}
           isMulti={isMulti}
+          openMenuOnFocus={true}
           className={` dark:black w-full ${style && style} `}
           styles={customStyles}
           {...props}

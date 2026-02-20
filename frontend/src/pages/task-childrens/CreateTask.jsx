@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import InputField from "../../components/InputField";
 import { taskValidationSchema } from "../../validationSchema";
+import moment from "moment";
+window.moment = moment; // Polyfill for any loose scripts/components
 import { MdLooksOne } from "react-icons/md";
 import { PiNumberThreeFill, PiNumberTwoFill } from "react-icons/pi";
 import { ProjectApi } from "../../services/api/Project.api";
@@ -15,6 +17,7 @@ import Logs from "./Logs";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { CommonApi } from "../../services/api/Common.api";
 import { useNavigate, useLocation } from "react-router-dom";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 const dependencyTypes = [
   { value: "Finish-to-Start", label: "Finish-to-Start" },
@@ -34,6 +37,8 @@ const CreateTask = ({
   setTaskProject
 }) => {
   const [selectedProject, setSelectedProject] = useState("");
+  const [validProjectMembers, setValidProjectMembers] = useState([]); // Array of User IDs
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { handleLoading } = useLoading();
   const { currentUser } = useSelector((state) => state.store);
   const [manager, setManager] = useState(
@@ -83,6 +88,21 @@ const CreateTask = ({
     handleLoading(false);
   };
 
+  const [parentTaskData, setParentTaskData] = useState(null);
+
+  const fetchParentTaskDetails = async (parentId) => {
+    if (!parentId) {
+      setParentTaskData(null);
+      return;
+    }
+    try {
+        const res = await TaskApi.getTaskById(parentId);
+        setParentTaskData(res.data?.data || null);
+    } catch (error) {
+        console.error("Failed to fetch parent task details", error);
+    }
+  };
+
   const handleTeamMemberOption = async () => {
     handleLoading(true);
     try {
@@ -110,9 +130,22 @@ const CreateTask = ({
   });
 
   const teamMemberOptions = teamMembers.map((item) => {
+    // Check if user is in validProjectMembers OR is the project manager (if applicable, but PM is usually in teamMembers or handled separately)
+    // Actually, let's strictly check validProjectMembers if project is selected.
+    // If no project selected, all are valid (or invalid? usually project is required first).
+    // Assuming if no project selected, we don't enforce yet, or we enforce when project selected.
+    
+    // Check if user is valid (exists in project team or is PM)
+    // We'll need to check against the *currently selected project* details.
+    // Since we store validProjectMembers IDs:
+    const isMember = !selectedProject || validProjectMembers.includes(item._id);
+
     return {
       value: item?._id,
-      label: `${item?.firstName} ${" "} ${item?.lastName} `,
+      label: `${item?.firstName} ${" "} ${item?.lastName} ${!isMember ? "(Not in Project)" : ""}`,
+      isMember: isMember,
+      // For visual styling, we might need to pass this data to InputField -> ReactSelect
+      // React-Select uses `data` prop in styles.
     };
   });
 
@@ -128,6 +161,30 @@ const CreateTask = ({
     handleTeamMemberOption();
     handleTaskList();
   }, []);
+
+  // Effect to update validProjectMembers whenever project or projects list changes
+  useEffect(() => {
+    if (selectedProject && projects.length > 0) {
+        const proj = projects.find(p => p._id === selectedProject);
+        if (proj) {
+            const members = new Set();
+            if (proj.projectManager?._id) members.add(proj.projectManager._id);
+            if (proj.projectManager && typeof proj.projectManager === 'string') members.add(proj.projectManager);
+            
+            proj.teamMembers?.forEach(m => {
+                if (m._id) members.add(m._id);
+                else members.add(m);
+            });
+            proj.rolesAndResponsibilities?.forEach(r => {
+                 if (r.teamMember?._id) members.add(r.teamMember._id);
+                 else if (r.teamMember) members.add(r.teamMember);
+            });
+            setValidProjectMembers(Array.from(members));
+        }
+    } else {
+        setValidProjectMembers([]);
+    }
+  }, [selectedProject, projects]);
 
   const fetchTasks = async () => {
     if (selectedProject) {
@@ -191,6 +248,23 @@ const CreateTask = ({
       progress: 0,
     },
     validationSchema: taskValidationSchema,
+    validate: (values) => {
+        const errors = {};
+        if (parentTaskData) {
+            const start = values.taskStartDate ? new Date(values.taskStartDate) : null;
+            const due = values.taskDueDate ? new Date(values.taskDueDate) : null;
+            const pStart = parentTaskData.taskStartDate ? new Date(parentTaskData.taskStartDate) : null;
+            const pDue = parentTaskData.taskDueDate ? new Date(parentTaskData.taskDueDate) : null;
+
+            if (pStart && start && start < pStart) {
+                errors.taskStartDate = `Cannot be before parent start date (${moment(pStart).format("ll")})`;
+            }
+            if (pDue && due && due > pDue) {
+                errors.taskDueDate = `Cannot be after parent due date (${moment(pDue).format("ll")})`;
+            }
+        }
+        return errors;
+    },
     onSubmit: async (values) => {
       handleLoading(true);
       console.log("Form Values:", values);
@@ -305,45 +379,12 @@ const CreateTask = ({
         setTaskProject(pId)
       }
       
-      if (pId) {
-          handleMilestone(pId);
-          fetchSprints(pId);
-          // Fetch tasks for parent options
-          const fetchProjectTasksForOptions = async () => {
-             try {
-                const res = await TaskApi.getAllTasks({ filter: { projectName: pId } });
-                const potentialParents = res.data?.data.filter(t => t._id !== task._id).map(t => ({
-                    value: t._id,
-                    label: t.taskName
-                }));
-                
-                // Robustly ensure parent task is in options if executing an edit
-                if (task.parentTask) {
-                   const parentId = task.parentTask._id || task.parentTask;
-                   // If parent is not in options (e.g. unlisted/archived?), add it manually if we have details
-                   const exists = potentialParents.some(p => p.value === parentId);
-                   if (!exists && task.parentTask.taskName) {
-                       potentialParents.push({ value: parentId, label: task.parentTask.taskName });
-                   }
-
-                   // Update state with potentially augmented options
-                   setParentTaskOptions(potentialParents);
-
-                   // Explicitly set parent task value again to be safe
-                   setTimeout(() => formik.setFieldValue("parentTask", parentId), 100);
-                } else {
-                   setParentTaskOptions(potentialParents);
-                }
-
-             } catch(err) { console.log(err); }
-          };
-          fetchProjectTasksForOptions();
-      }
-
       formik.setValues({
         projectName: pId,
         milestone: task.milestone?._id || task.milestone || "",
         sprint: task.sprint?._id || task.sprint || "", 
+        // Set parentTask initially, but it might be reset if options aren't ready. 
+        // The fetch logic below will handle robust setting.
         parentTask: task.parentTask?._id || task.parentTask || "", 
         taskName: task.taskName || "",
         taskDescription: task.taskDescription || "",
@@ -359,12 +400,65 @@ const CreateTask = ({
         dependentTasks: task.dependentTasks || [],
         dependencyType: task.dependencyType || "",
       });
+      
+      if (pId) {
+          handleMilestone(pId);
+          fetchSprints(pId);
+          // Fetch tasks for parent options
+          const fetchProjectTasksForOptions = async () => {
+             try {
+                const res = await TaskApi.getAllTasks({ filter: { projectName: pId } });
+                const potentialParents = res.data?.data.filter(t => t._id !== task._id).map(t => ({
+                    value: t._id,
+                    label: t.taskName
+                }));
+                
+                console.log("DEBUG: task.parentTask", task.parentTask);
+                console.log("DEBUG: potentialParents", potentialParents);
 
-    } else if (locationState?.parentTask || locationState?.project) {
+                // Robustly ensure parent task is in options if executing an edit
+                if (task.parentTask) {
+                   const parentId = task.parentTask._id || task.parentTask;
+                   console.log("DEBUG: parentId extracted", parentId);
+                   
+                   // If parent is not in options (e.g. unlisted/archived?), add it manually if we have details
+                   const exists = potentialParents.some(p => p.value === parentId);
+                   console.log("DEBUG: exists in options?", exists);
+
+                   if (!exists && task.parentTask.taskName) {
+                       potentialParents.push({ value: parentId, label: task.parentTask.taskName });
+                   }
+
+                   // Update state options
+                   setParentTaskOptions(potentialParents);
+
+                   // Explicitly set value AFTER options are updated.
+                   // Using setTimeout to allow React to process state update (rendering options)
+                   setTimeout(() => {
+                        console.log("DEBUG: Setting parentTask to", parentId);
+                        formik.setFieldValue("parentTask", parentId);
+                   }, 0);
+                } else {
+                   setParentTaskOptions(potentialParents);
+                }
+
+             } catch(err) { console.log(err); }
+          };
+          fetchProjectTasksForOptions();
+      }
+
+    } else if (locationState?.parentTask || locationState?.project || location.search) {
         console.log("CreateTask: Inheriting Context", locationState); 
-        // Handle Pre-fill from Navigation (e.g. "Add Subtask" or "Add Task from Project")
-        const prefillProject = locationState.project?._id || locationState.parentTask?.projectName || "";
+        
+        // Handle URL Params (e.g. from Sprint Board "Create Task" button)
+        const params = new URLSearchParams(location.search);
+        const urlProject = params.get("projectId");
+        const urlSprint = params.get("sprintId");
+
+        // Handle Pre-fill from Navigation state (e.g. "Add Subtask")
+        const prefillProject = urlProject || locationState.project?._id || locationState.parentTask?.projectName || "";
         const prefillParent = locationState.parentTask?._id || "";
+        const prefillSprint = urlSprint || "";
 
         if (prefillProject) {
             setSelectedProject(prefillProject);
@@ -385,13 +479,18 @@ const CreateTask = ({
              fetchProjectTasksForOptions();
         }
 
+        if (prefillParent) {
+            fetchParentTaskDetails(prefillParent);
+        }
+
         formik.setValues({
             ...formik.initialValues, // Keep defaults
             projectName: prefillProject,
             parentTask: prefillParent,
+            sprint: prefillSprint,
         });
     }
-  }, [task, location.state]);
+  }, [task, location.state, location.search]);
   
   const handleProjectChange = async (e) => {
     const projectId = e.target.value;
@@ -426,6 +525,24 @@ const CreateTask = ({
     catch (err) {
       console.log(err)
     }
+  };
+
+  const handleAssigneeChange = (e) => {
+      const selectedUserId = e.target.value;
+      const selectedOption = teamMemberOptions.find(opt => opt.value === selectedUserId);
+
+      if (selectedOption && !selectedOption.isMember && selectedProject) {
+          setIsConfirmModalOpen(true);
+          return;
+      }
+
+      // Proceed with normal change
+      formik.handleChange(e);
+  };
+
+  const handleConfirmAddMember = () => {
+      setIsConfirmModalOpen(false);
+      navigate(`/project/${selectedProject}/settings`);
   };
 
   const milestoneOptions = milestones.map((item) => {
@@ -625,17 +742,31 @@ const CreateTask = ({
                   />
 
                   {/* Parent Task Selector */}
-                  <InputField
-                    label="Parent Task (Optional)"
-                    name="parentTask"
-                    type="select"
-                    value={formik.values.parentTask}
-                    onChange={formik.handleChange}
-                    options={parentTaskOptions}
-                    onBlur={formik.handleBlur}
-                    placeholder="Select Parent Task..."
-                    error={formik.touched.parentTask && formik.errors.parentTask}
-                  />
+                  <div className="md:col-span-1">
+                    <InputField
+                        label="Parent Task (Optional)"
+                        name="parentTask"
+                        type="select"
+                        value={formik.values.parentTask}
+                        onChange={(e) => {
+                            formik.handleChange(e);
+                            fetchParentTaskDetails(e.target.value);
+                        }}
+                        options={parentTaskOptions}
+                        onBlur={formik.handleBlur}
+                        placeholder="Select Parent Task..."
+                        error={formik.touched.parentTask && formik.errors.parentTask}
+                    />
+                    {parentTaskData && (
+                        <div className="mt-1 flex flex-col gap-1 px-3 py-2 bg-blue-50 border border-blue-100 rounded-lg shadow-inner">
+                            <p className="text-[10px] font-bold text-blue-700 uppercase tracking-wider">Parent Constraints</p>
+                            <div className="flex justify-between text-[11px] font-semibold text-textMain">
+                                <span>Start: {moment(parentTaskData.taskStartDate).format("MMM DD, YYYY")}</span>
+                                <span>Due: {moment(parentTaskData.taskDueDate).format("MMM DD, YYYY")}</span>
+                            </div>
+                        </div>
+                    )}
+                  </div>
 
                 </div>
 
@@ -672,7 +803,7 @@ const CreateTask = ({
                     name="assignee"
                     type="select"
                     value={formik.values.assignee}
-                    onChange={formik.handleChange}
+                    onChange={handleAssigneeChange}
                     onBlur={formik.handleBlur}
                     options={teamMemberOptions}
                     error={formik.touched.assignee && formik.errors.assignee}
@@ -738,9 +869,10 @@ const CreateTask = ({
               >
                 Cancel
               </button>
-              <button
+               <button
                 type="submit"
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none"
+                disabled={formik.isSubmitting}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none disabled:opacity-50"
               >
                 {id ? "Update" : "Create"} Task
               </button>
@@ -749,6 +881,15 @@ const CreateTask = ({
       </div>
 
       {id && <Logs task={task} type={"Task"} />}
+
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmAddMember}
+        title="Member Not in Project"
+        message="This user is not a member of the selected project. Do you want to go to Project Settings to add them?"
+        confirmText="Go to Settings"
+      />
     </main>
   );
 };

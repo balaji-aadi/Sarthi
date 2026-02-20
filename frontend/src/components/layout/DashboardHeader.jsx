@@ -1,4 +1,5 @@
 import { IoAdd, IoFilterOutline, IoGridOutline, IoListOutline, IoCalendarOutline, IoTimeOutline, IoRepeatOutline } from 'react-icons/io5';
+import { MdFilterAltOff } from 'react-icons/md';
 import InputField from '../InputField';
 
 const DashboardHeader = ({ 
@@ -12,8 +13,11 @@ const DashboardHeader = ({
     onMemberChange,
     search,
     onSearchChange,
+    onResetFilters,
     onCreateTask,
-    isManager
+    isManager,
+    isAdmin,
+    canCreate
 }) => {
 
     const tabs = [
@@ -58,6 +62,15 @@ const DashboardHeader = ({
                      />
                 </div>
 
+                {/* Reset Filters */}
+                <button 
+                   onClick={onResetFilters}
+                   className="p-2 aspect-square rounded-lg bg-bgLight border border-borderLight text-textSub hover:text-red-500 hover:border-red-200 transition-all shadow-sm"
+                   title="Clear all filters"
+                >
+                   <MdFilterAltOff size={20} />
+                </button>
+
                 {/* Filters Group */}
                 <div className="flex flex-wrap gap-2 flex-grow xl:flex-grow-0">
                     {/* Project Filter */}
@@ -74,30 +87,33 @@ const DashboardHeader = ({
                         </select>
                     </div>
 
-                    {/* Member Filter */}
-                    <div className="min-w-[140px] flex-grow xl:flex-grow-0">
-                         <select 
-                            value={selectedMember} 
-                            onChange={(e) => onMemberChange(e.target.value)}
-                            className="w-full px-3 py-2 border border-borderLight rounded-lg text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 bg-transparent cursor-pointer"
-                        >
-                            <option value="">All Members</option>
-                            {members.map(m => (
-                                <option key={m.value} value={m.value} label={m.label}>{m.label}</option>
-                            ))}
-                        </select>
-                    </div>
+                    {/* Member Filter - Only for Managers/Admins */}
+                    {(isManager || isAdmin) && (
+                        <div className="min-w-[140px] flex-grow xl:flex-grow-0">
+                            <select 
+                                value={selectedMember} 
+                                onChange={(e) => onMemberChange(e.target.value)}
+                                className="w-full px-3 py-2 border border-borderLight rounded-lg text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 bg-transparent cursor-pointer"
+                            >
+                                <option value="">All Members</option>
+                                {members.map(m => (
+                                    <option key={m.value} value={m.value} label={m.label}>{m.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
                 </div>
 
                 {/* Create Task Button */}
-                <button
-                    className="bg-primary hover:bg-primaryHover text-white px-5 py-2 rounded-xl font-semibold shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-transform active:scale-95 flex-grow xl:flex-grow-0 whitespace-nowrap min-w-[140px]"
-                    onClick={onCreateTask}
-                    disabled={!isManager}
-                >
-                    <IoAdd size={20} />
-                    <span>Create Task</span>
-                </button>
+                {canCreate && (
+                    <button
+                        className="bg-primary hover:bg-primaryHover text-white px-5 py-2 rounded-xl font-semibold shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-transform active:scale-95 flex-grow xl:flex-grow-0 whitespace-nowrap min-w-[140px]"
+                        onClick={onCreateTask}
+                    >
+                        <IoAdd size={20} />
+                        <span>Create Task</span>
+                    </button>
+                )}
             </div>
         </div>
     );

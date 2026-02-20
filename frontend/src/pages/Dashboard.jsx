@@ -15,6 +15,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.store);
   const isManager = currentUser?.userRole?.name === "projectmanager";
+  const isAdmin = currentUser?.userRole?.name === "admin";
+  const canCreate = isManager || isAdmin;
 
   const [viewMode, setViewMode] = useState('board'); // 'board', 'spreadsheet', 'timeline', 'calendar'
   
@@ -32,16 +34,20 @@ const Dashboard = () => {
   // Fetch Options (Projects, Members)
   useEffect(() => {
     const fetchOptions = async () => {
+        // Fetch Projects
         try {
-            const [pRes, uRes] = await Promise.all([
-                ProjectApi.getAllProjects(),
-                UserApi.users()
-            ]);
-            
+            const pRes = await ProjectApi.getAllProjects();
             setProjects(pRes.data?.data?.map(p => ({ value: p._id, label: p.name })) || []);
+        } catch (error) {
+            console.error("Failed to fetch dashboard projects", error);
+        }
+
+        // Fetch Members (Only for Managers/Admins based on sidebar/roles, but safe to try and catch)
+        try {
+            const uRes = await UserApi.users();
             setMembers(uRes.data?.data?.map(u => ({ value: u._id, label: `${u.firstName} ${u.lastName}` })) || []);
         } catch (error) {
-            console.error("Failed to fetch dashboard options", error);
+            console.error("Failed to fetch dashboard members (likely restricted)", error);
         }
     };
     fetchOptions();
@@ -74,7 +80,7 @@ const Dashboard = () => {
 
   const filteredTasks = tasks.filter(t => 
     t.taskName?.toLowerCase().includes(search.toLowerCase()) ||
-    t.description?.toLowerCase().includes(search.toLowerCase())
+    t.taskDescription?.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleCreateTask = () => {
@@ -83,7 +89,7 @@ const Dashboard = () => {
 
   return (
     <div className="h-full flex flex-col bg-bgLight">
-       <DashboardHeader 
+        <DashboardHeader 
             viewMode={viewMode}
             setViewMode={setViewMode}
             projects={projects}
@@ -94,9 +100,16 @@ const Dashboard = () => {
             onMemberChange={setMemberId}
             search={search}
             onSearchChange={setSearch}
+            onResetFilters={() => {
+                setProjectId('');
+                setMemberId('');
+                setSearch('');
+            }}
             onCreateTask={handleCreateTask}
             isManager={isManager}
-       />
+            isAdmin={isAdmin}
+            canCreate={canCreate}
+        />
 
        <div className="flex-1 overflow-hidden p-6">
            {viewMode === 'board' && (
