@@ -1,0 +1,40 @@
+/* Make react-quill look flat and minimal inside our tables */
+.quill-minimal .ql-toolbar {
+    border: none !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    background-color: #f8fafc;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.quill-minimal .ql-container {
+    border: none !important;
+    font-size: 14px !important;
+    font-family: inherit !important;
+    min-height: 80px;
+    background-color: white;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.quill-minimal .ql-editor {
+    min-height: 80px;
+    padding: 12px 16px;
+    line-height: 1.6;
+}
+
+.quill-minimal .ql-editor p {
+    margin-bottom: 0.5em;
+}
+
+/* Scrollbar tweaks for within quill */
+.quill-minimal .ql-editor::-webkit-scrollbar {
+    width: 6px;
+}
+.quill-minimal .ql-editor::-webkit-scrollbar-track {
+    background: transparent;
+}
+.quill-minimal .ql-editor::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+}

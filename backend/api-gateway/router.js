@@ -15,6 +15,7 @@ import epicRouter from "../services/epic-service/epic.router.js";
 import sprintRouter from "../routes/sprint.routes.js";
 import analyticsRouter from "../services/analytics-service/analytics.router.js";
 import webhookRouter from "../routes/webhook.routes.js";
+import dailyAccountabilityRouter from "../services/dailyAccountability-service/dailyAccountability.router.js";
 
 
 const router = Router();
@@ -35,5 +36,6 @@ router.use("/epic", epicRouter);
 router.use("/sprint", sprintRouter);
 router.use("/analytics", analyticsRouter);
 router.use("/webhook", webhookRouter);
+router.use("/daily-accountability", dailyAccountabilityRouter);
 
 export default router;

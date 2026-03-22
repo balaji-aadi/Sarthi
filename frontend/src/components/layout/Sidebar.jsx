@@ -8,7 +8,8 @@ import {
   IoLogOutOutline,
   IoAdd,
   IoChevronDown,
-  IoAnalyticsOutline
+  IoAnalyticsOutline,
+  IoCalendarOutline
 } from 'react-icons/io5';
 import { ProjectApi } from '../../services/api/Project.api';
 import { useSelector } from 'react-redux';
@@ -49,9 +50,10 @@ const Sidebar = () => {
     // Determine which items to show
     let menuItems = [
         { icon: <IoGridOutline />, label: 'Dashboard', path: '/' },
+        { icon: <IoCalendarOutline />, label: 'Daily Accountability', path: '/daily-accountability' },
+        { icon: <IoAnalyticsOutline />, label: 'Performance', path: '/performance' },
         { icon: <IoBriefcaseOutline />, label: 'Projects', path: '/project' },
         { icon: <IoPeopleOutline />, label: 'Teams', path: '/user' }, 
-        { icon: <IoAnalyticsOutline />, label: 'Performance', path: '/performance' },
     ];
 
     if (hiddenRoles.includes(currentUser?.userRole?.name?.toLowerCase())) {

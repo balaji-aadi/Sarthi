@@ -38,6 +38,7 @@ import TaskBugs from "./pages/task-childrens/TaskBugs";
 import MilestoneLists from "./pages/project-childrens/MilestoneLists";
 import UserTypeMaster from "./pages/UserTypeMaster";
 import PerformanceDashboard from "./pages/Analytics/PerformanceDashboard";
+import DailyAccountability from "./pages/daily-accountability/DailyAccountability";
 
 import ProjectList from "./pages/project-childrens/ProjectList";
 import TeamList from "./pages/user-childrens/TeamList";
@@ -179,6 +180,10 @@ function App() {
           <Route
             path="performance"
             element={<ProtectedRoute element={<PerformanceDashboard />} />}
+          />
+          <Route
+            path="daily-accountability"
+            element={<ProtectedRoute element={<DailyAccountability />} />}
           />
         </Route>
 

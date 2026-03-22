@@ -26,6 +26,11 @@ const routes = [
     name: "Home",
     icon: <FaHome />,
   },
+  {
+    path: "daily-accountability",
+    name: "Daily Accountability",
+    icon: <FaTasks />,
+  },
 
   {
     name: "Project Management",

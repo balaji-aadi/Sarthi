@@ -75,14 +75,26 @@ const ConsistencyCalendar = ({ stats, period = 'monthly', isEmbedded = false }) 
                     <div key={`${d}-${i}`} className="text-center text-[8px] font-black text-slate-600 pb-1">{d}</div>
                 ))}
                 {calendarDays.map((item, idx) => {
-                    const hasWork = item.metrics?.hoursLogged > 0 || item.metrics?.tasksCompleted > 0;
+                    const tasks = item.metrics?.tasksCompleted || 0;
+                    const hours = item.metrics?.hoursLogged || 0;
+                    const hasWork = tasks > 0 || hours > 0;
+                    
+                    // Intensity scale for Github-style heatmap:
+                    let bgClass = 'bg-white/5 text-slate-500'; // Idle
+                    if (hasWork) {
+                        if (tasks >= 10 || hours >= 8) bgClass = 'bg-emerald-400 text-white shadow-lg shadow-emerald-400/30'; // High
+                        else if (tasks >= 5 || hours >= 4) bgClass = 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'; // Mid
+                        else if (tasks >= 2 || hours >= 2) bgClass = 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'; // Low-Mid
+                        else bgClass = 'bg-emerald-800 text-slate-200'; // Dip (1 log)
+                    }
+
                     return (
                         <div 
                             key={idx} 
                             className={`aspect-square flex items-center justify-center rounded-lg relative text-[10px] font-bold group/day cursor-pointer transition-all
                                 ${item.padding ? 'opacity-0 pointer-events-none' : 'hover:scale-105'}
                                 ${item.isToday ? 'ring-2 ring-indigo-500 ring-offset-1 ring-offset-[#1a1a1a]' : ''}
-                                ${hasWork ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-white/5 text-slate-500'}
+                                ${bgClass}
                                 ${!item.padding && !hasWork ? 'hover:bg-white/10' : ''}
                             `}
                         >
