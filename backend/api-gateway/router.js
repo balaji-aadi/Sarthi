@@ -16,6 +16,7 @@ import sprintRouter from "../routes/sprint.routes.js";
 import analyticsRouter from "../services/analytics-service/analytics.router.js";
 import webhookRouter from "../routes/webhook.routes.js";
 import dailyAccountabilityRouter from "../services/dailyAccountability-service/dailyAccountability.router.js";
+import focusRouter from "../services/focus-service/focus.router.js";
 
 
 const router = Router();
@@ -37,5 +38,6 @@ router.use("/sprint", sprintRouter);
 router.use("/analytics", analyticsRouter);
 router.use("/webhook", webhookRouter);
 router.use("/daily-accountability", dailyAccountabilityRouter);
+router.use("/focus", focusRouter);
 
 export default router;

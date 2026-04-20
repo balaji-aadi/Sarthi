@@ -9,10 +9,12 @@ import {
   IoAdd,
   IoChevronDown,
   IoAnalyticsOutline,
-  IoCalendarOutline
+  IoCalendarOutline,
+  IoTimeOutline
 } from 'react-icons/io5';
 import { ProjectApi } from '../../services/api/Project.api';
 import { useSelector } from 'react-redux';
+import GlobalTimerWidget from './GlobalTimerWidget';
 
 const Sidebar = () => {
     const navigate = useNavigate();
@@ -53,7 +55,8 @@ const Sidebar = () => {
     // Determine which items to show
     let menuItems = [
         { icon: <IoGridOutline />, label: 'Dashboard', path: '/' },
-        { icon: <IoCalendarOutline />, label: 'Daily Accountability', path: '/daily-accountability' },
+        // { icon: <IoCalendarOutline />, label: 'Daily Accountability', path: '/daily-accountability' },
+        { icon: <IoTimeOutline />, label: 'Focus Timer', path: '/focus-timer' },
         { icon: <IoAnalyticsOutline />, label: 'Performance', path: '/performance' },
         { icon: <IoBriefcaseOutline />, label: 'Projects', path: '/project' },
         { icon: <IoPeopleOutline />, label: 'Teams', path: '/user' }, 
@@ -73,6 +76,9 @@ const Sidebar = () => {
                  <h1 className="text-xl font-bold text-textMain tracking-tight">Momentum</h1>
             </div>
 
+            {/* Global Timer Active Widget */}
+            <GlobalTimerWidget />
+
             {/* Main Navigation */}
             <nav className="flex-1 px-4 space-y-1">
                 <p className="px-4 text-xs font-semibold text-textSub uppercase tracking-wider mb-2 mt-4">Menu</p>
@@ -85,10 +91,15 @@ const Sidebar = () => {
                                 navigate('/');
                             }
                         }}
-                        className={({ isActive }) => `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group ${isActive ? 'bg-primary/10 text-primary' : 'text-textSub hover:bg-slate-50 hover:text-textMain'}`}
+                        className={({ isActive }) => `flex items-center gap-3 px-4 py-2 transition-all duration-200 group relative ${isActive ? 'active text-primary' : 'text-textSub hover:text-textMain'}`}
                     >
-                        <span className="text-lg">{item.icon}</span>
-                        {item.label}
+                        <span className={`w-1 h-1 rounded-full transition-all group-[.active]:bg-primary bg-transparent`}></span>
+                        <div className="flex items-center gap-2.5">
+                            <span className="text-base opacity-70 group-[.active]:opacity-100">{item.icon}</span>
+                            <span className={`text-[13px] font-semibold group-[.active]:underline underline-offset-4 decoration-primary/40 group-hover:underline transition-all`}>
+                                {item.label}
+                            </span>
+                        </div>
                     </NavLink>
                 ))}
 
@@ -111,15 +122,17 @@ const Sidebar = () => {
                         {loading ? (
                             <p className="px-4 text-xs text-textSub">Loading...</p>
                         ) : projects.length > 0 ? (
-                            projects.slice(0, 5).map((project, idx) => (
-                                <button 
+                            projects.slice(0, 10).map((project, idx) => (
+                                <div 
                                     key={project._id || idx} 
                                     onClick={() => navigate(`/?projectId=${project._id}`)}
-                                    className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left group ${currentProjectId === project._id ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm' : 'text-textSub border border-transparent hover:bg-slate-50 hover:text-textMain'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-1.5 cursor-pointer transition-all group ${currentProjectId === project._id ? 'text-primary' : 'text-textSub/80 hover:text-textMain'}`}
                                 >
-                                    <span className={`w-2 h-2 rounded-full transition-all ${currentProjectId === project._id ? 'bg-primary scale-125' : 'bg-slate-300 group-hover:bg-primary/50'}`}></span>
-                                    <span className="truncate">{project.name}</span>
-                                </button>
+                                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all ${currentProjectId === project._id ? 'bg-primary shadow-[0_0_8px_rgba(79,70,229,0.5)]' : 'bg-slate-300'}`}></span>
+                                    <span className={`text-xs font-bold truncate ${currentProjectId === project._id ? 'underline underline-offset-4 decoration-primary/30' : 'group-hover:underline underline-offset-4 decoration-slate-200'}`}>
+                                        {project.name}
+                                    </span>
+                                </div>
                             ))
                         ) : (
                             <p className="px-4 text-xs text-textSub italic">No projects found</p>

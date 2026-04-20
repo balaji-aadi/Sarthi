@@ -18,7 +18,7 @@ import { MdFilterAltOff } from "react-icons/md";
 import TaskTable from "../../components/tasks/TaskTable";
 import moment from "moment";
 
-const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, externalSearch, externalDateFilter }) => {
+const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, externalSearch, externalDateFilter, onEditStateChange }) => {
   const navigate = useNavigate();
   // State from original file
   const [selectedProject, setSelectedProject] = useState(externalProjectId || "");
@@ -30,6 +30,7 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
   const [projects, setProjects] = useState([]);
   const [id, setId] = useState();
   const [tasks, setTasks] = useState([]);
+  const [selectedTaskData, setSelectedTaskData] = useState(null);
   const { currentUser } = useSelector((state) => state.store);
   const isManager = currentUser?.userRole?.name === "projectmanager";
   
@@ -60,42 +61,59 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
     },
   });
 
-  // Sync external props
+  // Consolidated reactive fetcher to prevent race conditions and redundant calls
   useEffect(() => {
-      setSelectedProject(externalProjectId || "");
-      formik.setFieldValue("projectName", externalProjectId || "");
-      
-      // If project changes externally, fetch its tasks
-      if (externalProjectId) {
-         fetchProjectTasks(externalProjectId, selectedMember, milestoneId)
-            .then(res => setProjectTasks(res.data?.data))
-            .catch(err => console.error(err));
-         
-         // Also fetch milestones
-          ProjectApi.getAllmileStones(externalProjectId).then(res => {
-             setMilestones(res?.data?.data?.milestones || []);
-          }).catch(err => console.error(err));
-      } else if (!externalProjectId && !isTesting) {
-          // If cleared, fetch all? Or let dashboard handle?
-          // Dashboard handles "All Projects" by passing empty string.
-          // We can fetch all tasks.
-          fetchAllTasks();
-      }
+    let isMounted = true;
+    const currentProjectId = externalProjectId || selectedProject;
+    const currentMemberId = externalMemberId || selectedMember;
 
-  }, [externalProjectId]);
+    const loadData = async () => {
+        handleLoading(true);
+        try {
+            if (currentProjectId) {
+                // Fetch filtered project tasks
+                const res = await fetchProjectTasks(currentProjectId, currentMemberId, milestoneId);
+                if (isMounted) {
+                    setProjectTasks(res.data?.data || []);
+                    setTasks(res.data?.data || []);
+                }
+                
+                // Fetch milestones
+                const mRes = await ProjectApi.getAllmileStones(currentProjectId);
+                if (isMounted) setMilestones(mRes?.data?.data?.milestones || []);
+            } else {
+                // Fetch all tasks if no project selected
+                const res = await TaskApi.getAllTasks();
+                if (isMounted) {
+                    setTasks(res.data?.data || []);
+                    setProjectTasks(res.data?.data || []);
+                }
+            }
+        } catch (err) {
+            console.error("Failed to fetch tasks in MyTask:", err);
+            if (isMounted) setProjectTasks([]);
+        } finally {
+            if (isMounted) handleLoading(false);
+        }
+    };
 
+    loadData();
+
+    return () => { isMounted = false; };
+  }, [externalProjectId, externalMemberId, milestoneId, selectedTaskType, isTesting, updated, selectedProject, selectedMember]);
+
+  // Sync internal selected states with external props for secondary UI components
   useEffect(() => {
-      setSelectedMember(externalMemberId || "");
-      formik.setFieldValue("memberId", externalMemberId || "");
-      // Trigger fetch logic based on new member
-      if (externalProjectId && externalMemberId) {
-          fetchProjectTasks(externalProjectId, externalMemberId, milestoneId)
-            .then(res => setProjectTasks(res.data?.data));
-      } else if (externalMemberId) {
-          fetchTasksByMember(externalMemberId, selectedProject)
-            .then(res => setProjectTasks(res.data?.data));
-      }
-  }, [externalMemberId]);
+    if (externalProjectId) setSelectedProject(externalProjectId);
+    if (externalMemberId) setSelectedMember(externalMemberId);
+  }, [externalProjectId, externalMemberId]);
+
+  // Notify parent if we are editing
+  useEffect(() => {
+    if (typeof onEditStateChange === 'function') {
+      onEditStateChange(!!id);
+    }
+  }, [id, onEditStateChange]);
 
 
   const config = {
@@ -109,20 +127,7 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
     },
   };
 
-  const fetchAllTasks = async () => {
-    try {
-      const res = await TaskApi.getAllTasks();
-      setTasks(res.data?.data);
-      if (!externalProjectId) setProjectTasks(res.data?.data);
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
-
-  useEffect(() => {
-      if(!externalProjectId) fetchAllTasks();
-  }, []);
+  // Redundant initial fetch removed in favor of consolidated useEffect above
 
   const { breadcrumbs, toastMessage } = config[page] || config["task"];
 
@@ -131,44 +136,23 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
     // if (isManager) toast.success(toastMessage); // Commenting out toast to reduce noise
   }, [page, isManager]);
 
-  const handleReset = async () => {
+  const handleReset = () => {
     setSelectedMember("");
     setMilestoneId("");
     setSelectedProject("");
-    setSelectedTaskType("");
+    // Clearing selectedProject will trigger the consolidated useEffect to fetch all tasks
     setMilestones([]);
-    fetchAllTasks();
   }
 
-  const fetchTasks = async () => {
-    if (selectedProject && !milestoneId) {
-      const filter = {
-        projectId: selectedProject,
-        ...(selectedMember && { assignee: selectedMember }),
-      };
-      try {
-        const res = await TestApi.getAllTesting(filter);
-        setTasks(res.data?.data);
-        setProjectTasks(res.data?.data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
 
-  useEffect(() => {
-    if (updated) {
-      fetchTasks();
-      setUpdated(false);
-    }
-  }, [updated]);
 
   const handleClick = async (task) => {
     handleLoading(true);
     setId(task?._id);
+    setSelectedTaskData(null);
     try {
       const res = await TaskApi.task(task?._id);
-      setTasks(res.data?.data);
+      setSelectedTaskData(res.data?.data);
     } catch (err) {
       console.log(err);
     }
@@ -178,12 +162,13 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
   const handleClickTesting = async (task) => {
     handleLoading(true);
     setId(task?._id);
+    setSelectedTaskData(null);
     try {
       const res =
         selectedTaskType === "Test Case"
           ? await TestApi.testing(task?._id)
           : await TestApi.bugs(task?._id);
-      setTasks(res.data?.data);
+      setSelectedTaskData(res.data?.data);
     } catch (err) {
       console.log(err);
     }
@@ -208,43 +193,7 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
   });
 
   // Initial Data Load (URL Params)
-  useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        const res = await fetchProjectTasks(urlProjectId, selectedMember, milestoneId);
-        setProjectTasks(res.data?.data);
-      } catch (err) {
-        console.error("Error fetching project tasks:", err);
-      } finally {
-        handleLoading(false);
-      }
-    };
-
-    if (urlType && urlProjectId) {
-      setSelectedTaskType(urlType);
-      setSelectedProject(urlProjectId);
-
-      const fetchTesting = async () => {
-        const filter = { projectId: urlProjectId };
-        if (selectedMember && selectedMember !== "all") {
-          filter.assignee = selectedMember;
-        }
-        let res;
-        if (urlType === "Test Case") {
-          res = await TestApi.getAllTesting({ filter: { ...filter } });
-        } else {
-          res = await TestApi.getAllBugs({ filter });
-        }
-        setProjectTasks(res.data?.data);
-      };
-
-      fetchTesting();
-    } else if (urlProjectId) {
-      setSelectedProject(urlProjectId);
-      formik.setFieldValue("projectName", urlProjectId);
-      fetchProject();
-    }
-  }, []);
+  // Redundant project fetch removed in favor of consolidated useEffect above
 
 
   const handleProjectChange = async (e) => {
@@ -322,27 +271,27 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
       {id ? (
         selectedTaskType === "Test Case" ? (
           <TestCaseManagement
-            task={tasks}
+            task={selectedTaskData}
             id={id}
             setId={setId}
-            setTask={setTasks}
+            setTask={setSelectedTaskData}
             setUpdated={setUpdated}
           />
         ) : selectedTaskType === "Bug Reporting" ? (
           <BugReporting
-            task={tasks}
+            task={selectedTaskData}
             id={id}
             setId={setId}
-            setTask={setTasks}
+            setTask={setSelectedTaskData}
             setProjectTasks={setProjectTasks}
             selectedMember={selectedMember}
           />
         ) : (
           <CreateTask
-            task={tasks}
+            task={selectedTaskData}
             id={id}
             setId={setId}
-            setTask={setTasks}
+            setTask={setSelectedTaskData}
             setProjectTasks={setProjectTasks}
             selectedMember={selectedMember}
             milestoneId={milestoneId}

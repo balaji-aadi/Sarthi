@@ -71,7 +71,7 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
     };
 
     return (
-        <div className={`fixed inset-0 z-[60] flex justify-end transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`fixed inset-0 z-[1000] flex justify-end transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             {/* Overlay */}
             <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
             
@@ -334,7 +334,7 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                     </div>
                                     <div>
                                         <label className="text-[9px] font-black text-textSub uppercase block tracking-widest">Estimation</label>
-                                        <span className="text-xs font-bold text-textMain">{task?.estimatedHours || 0} Hours</span>
+                                                                                 <span className="text-xs font-bold text-textMain">{task?.estimatedHours ? `${Math.floor(task.estimatedHours)}h ${Math.round((task.estimatedHours % 1) * 60)}m` : "0h 0m"}</span>
                                     </div>
                                 </div>
                             </div>

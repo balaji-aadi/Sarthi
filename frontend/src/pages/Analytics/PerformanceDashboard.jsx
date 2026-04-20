@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AnalyticsApi } from '../../services/api/Analytics.api';
+import { FocusApi } from '../../services/api/Focus.api';
 import { 
     IoTimeOutline, 
     IoCheckmarkDoneCircleOutline, 
@@ -36,6 +37,7 @@ const PerformanceDashboard = () => {
     const [memberLoading, setMemberLoading] = useState(false);
     const [dailyStats, setDailyStats] = useState([]);
     const [dailyLoading, setDailyLoading] = useState(false);
+    const [focusSessions, setFocusSessions] = useState([]);
 
     const userRole = (currentUser?.userRole?.name || currentUser?.userRoles?.[0]?.name || "").toLowerCase();
     const isAdminOrManager = ["admin", "project manager", "manager", "projectmanager"].includes(userRole);
@@ -59,6 +61,16 @@ const PerformanceDashboard = () => {
 
     useEffect(() => {
         fetchStats();
+        // Load focus sessions from database
+        const fetchFocusLogs = async () => {
+            try {
+                const res = await FocusApi.getSessions();
+                setFocusSessions(res.data?.data || []);
+            } catch (error) {
+                console.error("Failed to fetch focus logs", error);
+            }
+        };
+        fetchFocusLogs();
     }, [period, activeTab]);
 
     useEffect(() => {
@@ -181,7 +193,7 @@ const PerformanceDashboard = () => {
                         <StatCard 
                             icon={<IoTimeOutline />} 
                             label="Hours Logged" 
-                            value={`${aggregate.hours.toFixed(1)}h`} 
+                            value={aggregate.hours ? `${Math.floor(aggregate.hours)}h ${Math.round((aggregate.hours % 1) * 60)}m` : "0h 0m"} 
                             subtext="Total focus time"
                             color="indigo"
                         />
@@ -343,6 +355,55 @@ const PerformanceDashboard = () => {
                              </div>
                          </div>
                     </div>
+
+                     {/* Focus Sessions Tracking Section */}
+                     <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-100/50 mt-8">
+                         <div className="flex items-center justify-between mb-8">
+                             <div>
+                                 <h3 className="text-xl font-black text-slate-800 tracking-tight">Focus Mastery Logs</h3>
+                                 <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Self-directed study & deep work sessions</p>
+                             </div>
+                             <div className="bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100">
+                                 <span className="text-indigo-600 font-black text-sm">
+                                     Total: {focusSessions.reduce((acc, s) => acc + (s.duration || 0), 0)} mins focus
+                                 </span>
+                             </div>
+                         </div>
+                         
+                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                             {focusSessions.length > 0 ? focusSessions.slice(0, 6).map((session, idx) => (
+                                 <div key={idx} className="p-5 bg-slate-50 rounded-[1.5rem] border border-slate-100 hover:bg-white hover:shadow-lg transition-all group">
+                                     <div className="flex items-center justify-between mb-3">
+                                         <span className="text-[10px] font-black uppercase tracking-widest text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">
+                                             {moment(session.date).format('MMM DD')}
+                                         </span>
+                                         <span className="text-xs font-black text-slate-800">{session.duration} MINS</span>
+                                     </div>
+                                     <div className="flex items-center gap-3 text-slate-400 mb-1">
+                                         <IoTimeOutline size={14} />
+                                         <div className="flex items-center gap-2 text-[11px] font-bold">
+                                             <span>{moment(session.startTime).format("HH:mm")}</span>
+                                             <span>→</span>
+                                             <span>{moment(session.endTime).format("HH:mm")}</span>
+                                         </div>
+                                     </div>
+                                     <div className="mt-3 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                                         <div className="bg-gradient-to-r from-indigo-500 to-primary h-full" style={{ width: `${Math.min((session.duration / 60) * 100, 100)}%` }}></div>
+                                     </div>
+                                 </div>
+                             )) : (
+                                 <div className="lg:col-span-3 h-32 flex flex-col items-center justify-center text-slate-300 italic border-2 border-dashed border-slate-100 rounded-3xl">
+                                     <p className="text-sm font-bold">No focus sessions recorded today</p>
+                                     <p className="text-[10px] font-black uppercase tracking-widest mt-1">Start your first session in Focus Mode</p>
+                                 </div>
+                             )}
+                         </div>
+                         {focusSessions.length > 6 && (
+                             <button className="w-full mt-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-indigo-600 hover:text-indigo-800 transition-colors border-t border-slate-50 italic">
+                                 View full focus history →
+                             </button>
+                         )}
+                     </div>
                 </>
             ) : (
                 /* Team / Manager View */
@@ -427,7 +488,7 @@ const PerformanceDashboard = () => {
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-5 text-center font-black text-slate-700 text-sm">
-                                                    {stat.metrics.hoursLogged?.toFixed(1) || 0}h
+                                                    {stat.metrics.hoursLogged ? `${Math.floor(stat.metrics.hoursLogged)}h ${Math.round((stat.metrics.hoursLogged % 1) * 60)}m` : "0h 0m"}
                                                 </td>
                                                 <td className="px-4 py-5 text-center font-black text-indigo-600 text-sm">
                                                     {stat.metrics.storyPointsDone || 0}

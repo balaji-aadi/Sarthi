@@ -393,7 +393,7 @@ const Task = ({ key, task, index, handleClick }) => {
                 <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1" title="Estimation">
                         <IoMdTime size={14} className="text-slate-400" />
-                        {task.estimatedHours}h
+                                                {task?.estimatedHours ? `${Math.floor(task.estimatedHours)}h ${Math.round((task.estimatedHours % 1) * 60)}m` : "0h 0m"}
                     </span>
                     <span className="flex items-center gap-1" title="Due Date">
                         <FaCalendar size={12} className="text-slate-400" />
@@ -461,9 +461,10 @@ const Task = ({ key, task, index, handleClick }) => {
                                 </div>
                             )}
                             {task.additionalNotes && (
-                                <div className="italic bg-amber-50/50 dark:bg-amber-900/10 p-2 rounded-lg border-l-2 border-amber-200 dark:border-amber-800/30">
-                                    {task.additionalNotes}
-                                </div>
+                                <div 
+                                    className="italic bg-amber-50/50 dark:bg-amber-900/10 p-2 rounded-lg border-l-2 border-amber-200 dark:border-amber-800/30 prose prose-xs dark:prose-invert max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: task.additionalNotes }}
+                                />
                             )}
                         </div>
                     )}

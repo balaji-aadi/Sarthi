@@ -13,6 +13,8 @@ import fileUpload from "express-fileupload";
 import { socketService } from "./socket-instance.js";
 import "./models/permission.model.js";
 import { initSprintActivationJob } from "./services/sprint-service/sprintActivation.job.js";
+import { initTaskTransitionJob } from "./services/task-service/taskTransition.job.js";
+import { repairAllProgress } from "./services/progress-service/repairProgress.js";
 
 const app = express();
 // export const socketService = new SocketService(); // Moved to socket-instance.js
@@ -47,6 +49,10 @@ function init() {
 
   // Initialize background jobs
   initSprintActivationJob();
+  initTaskTransitionJob();
+
+  // Run data repairs
+  repairAllProgress();
 }
 
 init();

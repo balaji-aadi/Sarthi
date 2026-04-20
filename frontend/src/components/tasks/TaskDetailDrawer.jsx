@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { TaskApi } from '../../services/api/Task.api';
 import { SprintApi } from '../../services/api/Sprint.api';
 import { ProjectApi } from '../../services/api/Project.api';
@@ -27,6 +28,13 @@ const TaskDetailDrawer = () => {
     
     // Get taskId from query params
     const taskId = searchParams.get('taskId');
+    const { currentUser } = useSelector(state => state.store);
+    
+    // Role Permissions
+    const isAdmin = currentUser?.userRole?.name === 'admin';
+    const isManager = currentUser?.userRole?.name === 'projectmanager';
+    const isHR = currentUser?.userRole?.name === 'hr';
+    const canEditDates = isAdmin || isManager || isHR;
     
     const [task, setTask] = useState(null);
     const [subtasks, setSubtasks] = useState([]);
@@ -140,7 +148,7 @@ const TaskDetailDrawer = () => {
     if (!taskId) return null;
 
     return (
-        <div className="fixed inset-y-0 right-0 w-[450px] bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out border-l border-borderLight flex flex-col">
+        <div className="fixed inset-y-0 right-0 w-[450px] bg-white shadow-2xl z-[1000] transform transition-transform duration-300 ease-in-out border-l border-borderLight flex flex-col">
             {/* Header */}
             <div className="flex items-center justify-between pt-[3rem] pb-4 px-2 border-b border-slate-100 bg-white sticky top-0 z-[70] shadow-sm">
                 <div className="flex items-center gap-3 min-w-0">
@@ -216,13 +224,42 @@ const TaskDetailDrawer = () => {
 
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
+                                <IoCalendarOutline /> Start Date
+                            </label>
+                            {canEditDates ? (
+                                <input 
+                                    type="date"
+                                    defaultValue={task.taskStartDate ? moment(task.taskStartDate).format('YYYY-MM-DD') : ''}
+                                    onChange={(e) => handleUpdateTask({ taskStartDate: e.target.value })}
+                                    className="w-full p-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-textMain focus:ring-1 focus:ring-primary outline-none cursor-pointer"
+                                />
+                            ) : (
+                                <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
+                                    <span className="text-sm font-bold text-textMain">
+                                        {task.taskStartDate ? moment(task.taskStartDate).format('MMM DD, YYYY') : 'Not Started'}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
                                 <IoCalendarOutline /> Due Date
                             </label>
-                            <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
-                                <span className="text-sm font-bold text-textMain">
-                                    {task.dueDate ? moment(task.dueDate).format('MMM DD, YYYY') : 'No Date Set'}
-                                </span>
-                            </div>
+                            {canEditDates ? (
+                                <input 
+                                    type="date"
+                                    defaultValue={task.taskDueDate ? moment(task.taskDueDate).format('YYYY-MM-DD') : ''}
+                                    onChange={(e) => handleUpdateTask({ taskDueDate: e.target.value })}
+                                    className="w-full p-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-textMain focus:ring-1 focus:ring-primary outline-none cursor-pointer"
+                                />
+                            ) : (
+                                <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
+                                    <span className="text-sm font-bold text-textMain">
+                                        {task.taskDueDate ? moment(task.taskDueDate).format('MMM DD, YYYY') : 'No Date Set'}
+                                    </span>
+                                </div>
+                            )}
                         </div>
 
                         <div className="space-y-1.5">

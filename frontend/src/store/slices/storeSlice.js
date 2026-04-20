@@ -61,10 +61,14 @@ const storeSlice = createSlice({
     success: false,
     isAuthenticated: false,
     showConsistencyModal: false,
+    globalSearch: "",
   },
   reducers: {
     setShowConsistencyModal: (state, action) => {
       state.showConsistencyModal = action.payload;
+    },
+    setGlobalSearch: (state, action) => {
+      state.globalSearch = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -139,5 +143,5 @@ const storeSlice = createSlice({
   },
 });
 
-export const { setShowConsistencyModal } = storeSlice.actions;
+export const { setShowConsistencyModal, setGlobalSearch } = storeSlice.actions;
 export default storeSlice.reducer;

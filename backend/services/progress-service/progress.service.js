@@ -45,14 +45,17 @@ export const ProgressService = {
   async updateMilestoneProgress(milestoneId) {
     if (!milestoneId) return;
 
-    // Filter for tasks in this milestone that DO NOT have a parent (to avoid double counting)
-    // OR we can decide to count all work items. Standard is usually top-level or leaf nodes.
-    // Let's go with Top-Level for consistency with Project progress.
-    const tasks = await Task.find({ 
+    // Try top-level tasks first
+    let tasks = await Task.find({ 
         milestone: milestoneId, 
         parentTask: null 
     });
     
+    // If no top-level tasks, fallback to all tasks in milestone
+    if (tasks.length === 0) {
+        tasks = await Task.find({ milestone: milestoneId });
+    }
+
     if (tasks.length === 0) return;
 
     const totalProgress = tasks.reduce((sum, task) => sum + (task.progress || 0), 0);
@@ -68,11 +71,12 @@ export const ProgressService = {
   async updateProjectProgress(projectId) {
       if (!projectId) return;
 
-      const result = await Task.aggregate([
+      // Try top-level tasks first
+      let result = await Task.aggregate([
           { 
               $match: { 
                   projectName: new mongoose.Types.ObjectId(projectId),
-                  parentTask: null // Only consider top-level tasks
+                  parentTask: null 
               } 
           },
           {
@@ -82,6 +86,14 @@ export const ProgressService = {
               }
           }
       ]);
+
+      if (result.length === 0) {
+          // Fallback: If no top-level tasks, count ALL tasks for this project
+          result = await Task.aggregate([
+              { $match: { projectName: new mongoose.Types.ObjectId(projectId) } },
+              { $group: { _id: null, avgProgress: { $avg: "$progress" } } }
+          ]);
+      }
 
       const projectProgress = result.length > 0 ? Math.round(result[0].avgProgress) : 0;
       

@@ -3,6 +3,7 @@ import moment from "moment";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import Column from "./Column";
 import { TaskApi } from "../../services/api/Task.api";
+import { FocusApi } from "../../services/api/Focus.api";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import TaskDetailDrawer from "./TaskDetailDrawer";
@@ -61,6 +62,9 @@ const Board = ({
   // backlogged tasks calculation
   const backlogTasks = useMemo(() => {
     return boardTasks.filter(task => {
+      // Explicit backlog status
+      if (task.status === 'backlog') return true;
+      
       if (task.status === 'done') return false;
       const due = task.taskDueDate ? moment(task.taskDueDate) : null;
       let compareDate = null;
@@ -83,14 +87,18 @@ const Board = ({
 
   const nonBacklogTasks = boardTasks.filter((t) => !backlogTasks.includes(t));
 
-  const parentTasksOnly = nonBacklogTasks.filter((t) => !t.parentTask);
+  const parentTasksOnly = nonBacklogTasks.filter((t) => !t.parentTask && (selectedParentId ? t._id === selectedParentId : true));
   const allSubtasks = nonBacklogTasks.filter((t) => t.parentTask);
 
   // Derive unique Parent Tasks dynamically from the subtasks available
   const uniqueParents = Array.from(new Set(allSubtasks.map(t => typeof t.parentTask === 'object' ? t.parentTask._id : t.parentTask)))
       .map(id => {
           const sample = allSubtasks.find(t => (typeof t.parentTask === 'object' ? t.parentTask._id : t.parentTask) === id);
-          return sample?.parentTask;
+          if (sample && typeof sample.parentTask === 'object') {
+              return sample.parentTask;
+          }
+          // If it's a string ID, try finding it in all board tasks
+          return boardTasks.find(t => t._id === id);
       }).filter(Boolean);
 
   // Group parent tasks by their standard Status columns
@@ -234,18 +242,12 @@ const Board = ({
        return; // Parent tasks cannot be dropped in Subtask column
     }
 
-    // Check for in-progress task limitation for non-managers
-    if (!isManager && !isAdmin && destinationColumn.id === "inprogress") {
-      const inProgressTasks = groupedTasks.find(col => col.id === "inprogress")?.tasks || [];
+    const inProgressTasks = groupedTasks.find(col => col.id === "inprogress")?.tasks || [];
 
-      // Filter inProgress tasks for this user?
-      // The requirement "one task in progress" usually applies per user.
-      // But here it checks ALL tasks in progress?
-      // Assuming this is per board view.
-      
-      if (inProgressTasks.length >= 1 && taskToMove.status !== "inprogress") {
-        if (dontShowAgain) {
-          // Auto-handle the case when "Don't show again" is checked
+    // ENFORCE ONLY 1 IN PROGRESS TASK GLOBALLY FOR THIS USER/BOARD
+    if (destinationColumn.id === "inprogress" && taskToMove.status !== "inprogress") {
+      if (inProgressTasks.length >= 1) {
+        if (dontShowAgain && inProgressTasks[0]) {
           await handleAutoMoveToInProgress(inProgressTasks[0], taskToMove);
         } else {
           setTaskInProgress(inProgressTasks[0]);
@@ -253,12 +255,74 @@ const Board = ({
           setShowToast(true);
           return;
         }
+     } else {
+         // Automatically start the timer context
+         const durationMins = (taskToMove.backlogEstimatedHours ? taskToMove.backlogEstimatedHours * 60 : (taskToMove.estimatedHours ? taskToMove.estimatedHours * 60 : 25));
+         const focusTimerBinding = {
+             taskId: taskToMove._id,
+             taskName: taskToMove.taskName,
+             taskIdString: taskToMove.taskId,
+             estimatedHours: taskToMove.backlogEstimatedHours || taskToMove.estimatedHours || 0 
+         };
+         localStorage.setItem("focus_timer_task_binding", JSON.stringify(focusTimerBinding));
+         
+         const state = {
+            timeLeft: durationMins * 60,
+            isActive: true,
+            startTime: new Date().toISOString(),
+            accumulatedTime: 0,
+            selectedDuration: durationMins,
+            currentTheme: { name: 'Indigo', color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.05)', shadow: 'rgba(79, 70, 229, 0.4)' }
+         };
+         localStorage.setItem("focus_timer_state", JSON.stringify(state));
+         toast.success(`Focus timer automatically started for ${durationMins} minutes!`);
       }
     }
 
     // Optimistic Update
     const oldStatus = taskToMove.status;
     const newStatus = destinationColumn.id.startsWith("todo") ? "todo" : destinationColumn.id;
+    
+    // Stop the timer automatically if moved out of inprogress
+    if (oldStatus === "inprogress" && newStatus !== "inprogress") {
+      const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
+      if (bindingObjStr) {
+         const bindingObj = JSON.parse(bindingObjStr);
+         if (bindingObj.taskId === taskToMove._id) {
+             const timerStateStr = localStorage.getItem("focus_timer_state");
+             if (timerStateStr) {
+                 const timerState = JSON.parse(timerStateStr);
+                 if (timerState.isActive) {
+                     const startTime = new Date(timerState.startTime);
+                     const endTime = new Date();
+                     const durationMs = endTime - startTime;
+                     const actualDuration = Math.max(Math.round(durationMs / 60000), 1); 
+                     
+                     const sessionData = {
+                         date: new Date().toISOString().split('T')[0],
+                         startTime: timerState.startTime,
+                         endTime: endTime.toISOString(),
+                         duration: actualDuration,
+                         type: "Focus",
+                         task: bindingObj.taskId,
+                         taskName: bindingObj.taskName,
+                         taskIdString: bindingObj.taskIdString,
+                         statusAtCompletion: newStatus,
+                         completionState: newStatus === "done" ? "completed" : "incompleted",
+                         estimatedTimeAtStart: timerState.selectedDuration
+                     };
+                     
+                     FocusApi.createSession(sessionData).catch(e => console.error(e));
+                     localStorage.removeItem("focus_timer_task_binding");
+                     localStorage.removeItem("focus_timer_state");
+                     localStorage.removeItem("focus_timer_retrievable"); // prevent undo context conflicts out of boundary
+                     
+                     toast.success(`Session automatically logged as ${newStatus === "done" ? "completed" : "incompleted"}!`);
+                 }
+             }
+         }
+      }
+    }
 
     // 1. Update UI immediately
     setTasks(prevTasks => {
@@ -310,6 +374,64 @@ const Board = ({
   };
 
   const handleAutoMoveToInProgress = async (currentInProgressTask, newTask) => {
+    
+    // Evaluate if there is an active timer to stop for currentInProgressTask
+    const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
+    if (bindingObjStr) {
+       const bindingObj = JSON.parse(bindingObjStr);
+       if (bindingObj.taskId === currentInProgressTask._id) {
+           const timerStateStr = localStorage.getItem("focus_timer_state");
+           if (timerStateStr) {
+               const timerState = JSON.parse(timerStateStr);
+               if (timerState.isActive) {
+                   const startTime = new Date(timerState.startTime);
+                   const endTime = new Date();
+                   const durationMs = endTime - startTime;
+                   const actualDuration = Math.max(Math.round(durationMs / 60000), 1); 
+                   
+                   const sessionData = {
+                       date: new Date().toISOString().split('T')[0],
+                       startTime: timerState.startTime,
+                       endTime: endTime.toISOString(),
+                       duration: actualDuration,
+                       type: "Focus",
+                       task: bindingObj.taskId,
+                       taskName: bindingObj.taskName,
+                       taskIdString: bindingObj.taskIdString,
+                       statusAtCompletion: "hold",
+                       completionState: "incompleted",
+                       estimatedTimeAtStart: timerState.selectedDuration
+                   };
+                   
+                   FocusApi.createSession(sessionData).catch(e => console.error(e));
+                   localStorage.removeItem("focus_timer_task_binding");
+                   localStorage.removeItem("focus_timer_state");
+               }
+           }
+       }
+    }
+
+    // Start timer for newTask automatically
+    const durationMins = (newTask.backlogEstimatedHours ? newTask.backlogEstimatedHours * 60 : (newTask.estimatedHours ? newTask.estimatedHours * 60 : 25));
+    const focusTimerBinding = {
+       taskId: newTask._id,
+       taskName: newTask.taskName,
+       taskIdString: newTask.taskId,
+       estimatedHours: newTask.backlogEstimatedHours || newTask.estimatedHours || 0 
+    };
+    localStorage.setItem("focus_timer_task_binding", JSON.stringify(focusTimerBinding));
+    
+    const state = {
+       timeLeft: durationMins * 60,
+       isActive: true,
+       startTime: new Date().toISOString(),
+       accumulatedTime: 0,
+       selectedDuration: durationMins,
+       currentTheme: { name: 'Indigo', color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.05)', shadow: 'rgba(79, 70, 229, 0.4)' }
+    };
+    localStorage.setItem("focus_timer_state", JSON.stringify(state));
+    toast.success(`Timer logged for held task. Automatically started new session for ${durationMins} minutes!`);
+
     await Promise.all([
       updateTaskStatus(currentInProgressTask._id, "hold"),
       updateTaskStatus(newTask._id, "inprogress")

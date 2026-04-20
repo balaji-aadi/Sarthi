@@ -75,8 +75,10 @@ export const taskValidationSchema = Yup.object({
   taskDescription: Yup.string().max(500, "Must be 500 characters or less"),
   taskPriority: Yup.string().required("Priority is required"),
   estimatedHours: Yup.number()
-    .positive("Hours must be a positive number")
-    .required("Estimated hours are required"),
+    .positive("Estimated time must be positive")
+    .required("Estimated time is required"),
+  estHours: Yup.number().min(0, "Cannot be negative").typeError("Must be a number"),
+  estMinutes: Yup.number().min(0, "Cannot be negative").max(59, "Minutes must be 0-59").typeError("Must be a number"),
   taskType: Yup.string().required("Task type is required"),
   assignee: Yup.string().required("Assignee is required"),
   taskStartDate: Yup.date().required("Start date is required"),

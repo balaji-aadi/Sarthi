@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.style.css";
+import moment from "moment";
+import { FocusApi } from "./services/api/Focus.api";
+import { TaskApi } from "./services/api/Task.api";
+import { IoTimeOutline } from "react-icons/io5";
 
 import {
   Route,
@@ -40,6 +44,7 @@ import MilestoneLists from "./pages/project-childrens/MilestoneLists";
 import UserTypeMaster from "./pages/UserTypeMaster";
 import PerformanceDashboard from "./pages/Analytics/PerformanceDashboard";
 import DailyAccountability from "./pages/daily-accountability/DailyAccountability";
+import FocusTimer from "./pages/focus-timer/FocusTimer";
 
 import ProjectList from "./pages/project-childrens/ProjectList";
 import TeamList from "./pages/user-childrens/TeamList";
@@ -52,6 +57,82 @@ import Sprints from "./pages/project-childrens/Sprints";
 import Settings from "./pages/project-childrens/Settings";
 
 function App() {
+  const [showGlobalBacklogModal, setShowGlobalBacklogModal] = useState(false);
+  const [expiredTaskData, setExpiredTaskData] = useState(null);
+  const [backlogHoursInput, setBacklogHoursInput] = useState("");
+
+  // Global Background Focus Timer Watcher
+  useEffect(() => {
+    const handleBackgroundFocusCheck = async () => {
+       // If we are already on the Focus Timer page, let it handle its own logic
+       if (window.location.pathname === '/focus-timer') return;
+
+       const timerStateStr = localStorage.getItem("focus_timer_state");
+       const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
+       if (!timerStateStr || !bindingObjStr) return;
+       
+       try {
+           const timerState = JSON.parse(timerStateStr);
+           const bindingObj = JSON.parse(bindingObjStr);
+           
+           if (timerState.isActive && timerState.startTime) {
+               const durationSetting = timerState.selectedDuration * 60;
+               const startTimeMs = new Date(timerState.startTime).getTime();
+               const nowMs = Date.now();
+               const sessionSeconds = Math.floor((nowMs - startTimeMs) / 1000);
+               const totalSpent = (timerState.accumulatedTime || 0) + sessionSeconds;
+               
+               if (totalSpent >= durationSetting) {
+                   // Expiration Reached completely in the background
+                   const actualDuration = Math.max(Math.round(durationSetting / 60), 1);
+                   const start = moment(timerState.startTime);
+                   const end = moment(nowMs);
+                   
+                   const sessionData = {
+                       date: start.format("YYYY-MM-DD"),
+                       startTime: start.toISOString(),
+                       endTime: end.toISOString(),
+                       duration: actualDuration,
+                       type: "Focus",
+                       task: bindingObj.taskId,
+                       taskName: bindingObj.taskName,
+                       taskIdString: bindingObj.taskIdString,
+                       statusAtCompletion: "backlog",
+                       completionState: "incompleted",
+                       estimatedTimeAtStart: timerState.selectedDuration
+                   };
+                   
+                   await FocusApi.createSession(sessionData);
+                   await TaskApi.taskLogs(bindingObj.taskId, { status: "backlog" });
+                   
+                   localStorage.removeItem("focus_timer_task_binding");
+                   localStorage.removeItem("focus_timer_state");
+                   localStorage.removeItem("focus_timer_retrievable");
+                   
+                   // Launch Global Modal
+                   setExpiredTaskData(bindingObj);
+                   setShowGlobalBacklogModal(true);
+               }
+           }
+       } catch (e) { console.error("Global timer monitor err", e); }
+    };
+    
+    const interval = setInterval(handleBackgroundFocusCheck, 15000); // Check every 15s to be accurate
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleGlobalSubmitBacklog = async () => {
+    if (!backlogHoursInput || isNaN(backlogHoursInput)) return;
+    try {
+      await TaskApi.updateTask(expiredTaskData.taskId, { backlogEstimatedHours: parseFloat(backlogHoursInput) });
+      setShowGlobalBacklogModal(false);
+      setExpiredTaskData(null);
+      setBacklogHoursInput("");
+    } catch(e) {
+      console.error("Failed to save backlog estimate", e);
+    }
+  };
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
@@ -186,6 +267,10 @@ function App() {
             path="daily-accountability"
             element={<ProtectedRoute element={<DailyAccountability />} />}
           />
+          <Route
+            path="focus-timer"
+            element={<ProtectedRoute element={<FocusTimer />} />}
+          />
         </Route>
 
         {/* Project Specific Routes (Separate Layout) */}
@@ -211,6 +296,43 @@ function App() {
           }}
         />
         <RouterProvider router={router} />
+
+        {/* Global Backlog Estimator Modal for Background Expiration */}
+        {showGlobalBacklogModal && (
+          <div className="fixed inset-0 z-[9999999] flex items-center justify-center p-4">
+             <div className="absolute inset-0 bg-red-900/60 backdrop-blur-sm"></div>
+             <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md flex flex-col gap-4 animate-in zoom-in-95 duration-200 border border-slate-100">
+                <div className="flex items-center gap-3 text-rose-500">
+                   <IoTimeOutline size={28} />
+                   <h3 className="text-xl font-bold text-slate-800">Background Timer Completed!</h3>
+                </div>
+                <p className="text-slate-600 text-sm font-medium">Your global focus timer has fully elapsed for <strong className="text-slate-800">{expiredTaskData?.taskName}</strong>! The task has automatically been transitioned to the <strong>Backlog</strong>.</p>
+                <p className="text-slate-600 text-sm font-medium mt-2">Please provide a new time estimate (in hours) to resume work on this item later.</p>
+                
+                <div className="mt-4">
+                   <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 block">New Backlog Estimate (Hours)</label>
+                   <input 
+                      type="number" 
+                      step="0.5" 
+                      placeholder="e.g. 1.5"
+                      value={backlogHoursInput}
+                      onChange={(e) => setBacklogHoursInput(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-colors"
+                   />
+                </div>
+
+                <div className="flex items-center gap-3 mt-4 justify-end">
+                  <button 
+                    onClick={handleGlobalSubmitBacklog}
+                    disabled={!backlogHoursInput}
+                    className="w-full px-4 py-3 rounded-xl font-bold text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 bg-rose-500 hover:bg-rose-600"
+                  >
+                    Submit Backlog Estimate
+                  </button>
+                </div>
+             </div>
+          </div>
+        )}
       </div>
     </div>
   );

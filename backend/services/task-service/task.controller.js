@@ -220,6 +220,7 @@ tc.updateTask = asyncHandler(async (req, res) => {
       taskDescription,
       dependentTasks,
       estimatedHours,
+      backlogEstimatedHours,
       storyPoints,
       epic,
       sprint,
@@ -274,29 +275,37 @@ tc.updateTask = asyncHandler(async (req, res) => {
       };
     }
 
+    // Construct update object with only defined fields (Partial Update)
+    const updateFields = {};
+    if (projectName !== undefined) updateFields.projectName = projectName;
+    if (taskName !== undefined) updateFields.taskName = taskName;
+    if (taskPriority !== undefined) updateFields.taskPriority = taskPriority;
+    if (taskType !== undefined) updateFields.taskType = taskType;
+    if (taskStartDate !== undefined) updateFields.taskStartDate = taskStartDate;
+    if (taskDueDate !== undefined) updateFields.taskDueDate = taskDueDate;
+    if (assignee !== undefined) updateFields.assignee = assignee;
+    if (taskDescription !== undefined) updateFields.taskDescription = taskDescription;
+    if (attachments !== undefined) updateFields.attachments = attachments;
+    if (estimatedHours !== undefined) updateFields.estimatedHours = estimatedHours;
+    if (backlogEstimatedHours !== undefined) updateFields.backlogEstimatedHours = backlogEstimatedHours;
+    if (storyPoints !== undefined) updateFields.storyPoints = storyPoints;
+    if (epic !== undefined) updateFields.epic = epic;
+    if (sprint !== undefined) updateFields.sprint = sprint;
+    if (dependentTasks !== undefined) updateFields.dependentTasks = dependentTasks;
+    if (milestone !== undefined) updateFields.milestone = milestone || null;
+    if (parentTask !== undefined) updateFields.parentTask = parentTask ? new mongoose.Types.ObjectId(parentTask) : null;
+    if (additionalNotes !== undefined) updateFields.additionalNotes = additionalNotes;
+    if (status !== undefined) updateFields.status = status;
+    if (progress !== undefined) updateFields.progress = progress;
+    if (status === 'done') updateFields.progress = 100;
+    else if (status === 'todo' && progress === undefined) updateFields.progress = 0;
+    
+    updateFields.updatedBy = req.user?._id;
+
     const updatedTask = await Task.findByIdAndUpdate(
       req.params.taskId,
       {
-        projectName,
-        taskName,
-        taskPriority,
-        taskType,
-        taskStartDate,
-        taskDueDate,
-        assignee,
-        taskDescription,
-        attachments,
-        estimatedHours,
-        storyPoints,
-        epic,
-        sprint,
-        dependentTasks,
-        milestone: milestone || null,
-        parentTask: parentTask ? new mongoose.Types.ObjectId(parentTask) : null,
-        additionalNotes,
-        status,
-        progress,
-        updatedBy: req.user?._id,
+        ...updateFields,
         ...(activityLogEntry && {
           $push: {
             activityLogs: {
@@ -313,17 +322,27 @@ tc.updateTask = asyncHandler(async (req, res) => {
       return res.status(400).json(new ApiError(400, "Task not found"));
     }
 
-    await Notification.create({
-      senderId: req.user?._id,
-      receiverId: new mongoose.Types.ObjectId(assignee),
-      title: "Task updated for you",
-      message: taskName,
-      projectId: new mongoose.Types.ObjectId(projectName),
-    });
+    // Only send notification if assignee and projectName are known (either updated or existing)
+    const recipientId = assignee || updatedTask.assignee;
+    const projId = projectName || updatedTask.projectName;
 
-    const message = { title: "Task updated for you", body: taskName };
-    socketService._io.emit("notification", message, assignee);
-    await notificationService(new mongoose.Types.ObjectId(assignee), message);
+    if (recipientId && projId) {
+        try {
+            await Notification.create({
+                senderId: req.user?._id,
+                receiverId: new mongoose.Types.ObjectId(recipientId),
+                title: "Task updated for you",
+                message: taskName || updatedTask.taskName,
+                projectId: new mongoose.Types.ObjectId(projId),
+            });
+
+            const message = { title: "Task updated for you", body: taskName || updatedTask.taskName };
+            socketService._io.emit("notification", message, recipientId);
+            await notificationService(new mongoose.Types.ObjectId(recipientId), message);
+        } catch (notifErr) {
+            console.error("Non-blocking notification error:", notifErr);
+        }
+    }
 
     // Cascading Progress Updates
     if (updatedTask.parentTask) await ProgressService.updateParentTaskProgress(updatedTask.parentTask);
@@ -385,9 +404,14 @@ tc.getTaskById = asyncHandler(async (req, res) => {
 });
 
 
+import { checkAndTransitionTasks } from "./taskTransition.job.js";
+
 // get all tasks
 tc.getallTasks = asyncHandler(async (req, res) => {
   console.log("req.body--->", req.body);
+  
+  // Transition tasks that have expired before fetching them
+  await checkAndTransitionTasks();
 
   try {
     const { search = "" } = req.query;
@@ -599,6 +623,9 @@ tc.updatetaskLog = asyncHandler(async (req, res) => {
     });
 
     task.status = status;
+    if (status === 'done') task.progress = 100;
+    else if (status === 'todo') task.progress = 0;
+
     task.updatedBy = req.user?._id;
     await task.save();
 
@@ -660,6 +687,9 @@ tc.deletemilestone = asyncHandler(async (req, res) => {
 //getalltaskregardless
 tc.getallTasksfree = asyncHandler(async (req, res) => {
   console.log("req.body--->", req.body);
+  
+  // Transition tasks that have expired before fetching them
+  await checkAndTransitionTasks();
 
   try {
     const { search = "" } = req.query;

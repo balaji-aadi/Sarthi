@@ -44,9 +44,13 @@ const CreateTask = ({
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { handleLoading } = useLoading();
   const { currentUser } = useSelector((state) => state.store);
-  const [manager, setManager] = useState(
-    currentUser?.userRole?.name === "projectmanager" ? true : false
-  );
+  const userRole = currentUser?.userRole?.name;
+  const canEditRestrictedFields = userRole === "projectmanager" || userRole === "admin" || userRole === "hr";
+  const [manager, setManager] = useState(canEditRestrictedFields);
+
+  useEffect(() => {
+    setManager(canEditRestrictedFields);
+  }, [userRole]);
 
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -237,6 +241,8 @@ const CreateTask = ({
       taskDescription: "",
       taskPriority: "",
       estimatedHours: "",
+      estHours: "",
+      estMinutes: "",
       taskType: "",
       milestone: "",
       sprint: "", // New Field
@@ -250,6 +256,7 @@ const CreateTask = ({
       dependencyType: "",
       progress: 0,
     },
+    enableReinitialize: true,
     validationSchema: taskValidationSchema,
     validate: (values) => {
         const errors = {};
@@ -283,10 +290,13 @@ const CreateTask = ({
     onSubmit: async (values) => {
       handleLoading(true);
       console.log("Form Values:", values);
-      const { milestone, sprint, parentTask, ...restValues } = values;
+      const { milestone, sprint, parentTask, estHours, estMinutes, ...restValues } = values;
+      
+      // Calculate total decimal hours for storage
+      const totalHours = parseFloat(estHours || 0) + (parseFloat(estMinutes || 0) / 60);
       
       // Construct payload dynamically
-      const payload = { ...restValues };
+      const payload = { ...restValues, estimatedHours: totalHours };
       if (milestone) payload.milestone = milestone;
       if (sprint) payload.sprint = sprint;
       if (parentTask) payload.parentTask = parentTask;
@@ -375,12 +385,16 @@ const CreateTask = ({
     }
   }
 
-  useEffect(() => {
-    if (task) {
+   useEffect(() => {
+    // Only populate form from task if it's a single object (not the list array)
+    // AND if we are editing (id present), ensure the task actually matches that id.
+    const isEditing = !!id;
+    const isCorrectTask = task && !Array.isArray(task) && (!isEditing || task._id === id);
+
+    if (isCorrectTask) {
       const formatDate = (dateString) => {
         if (!dateString) return "";
-        const date = new Date(dateString);
-        return date.toISOString().split("T")[0];
+        return moment(dateString).format("YYYY-MM-DD");
       }
 
       const pId = task.projectName?._id || "";
@@ -400,7 +414,9 @@ const CreateTask = ({
         taskName: task.taskName || "",
         taskDescription: task.taskDescription || "",
         taskPriority: task.taskPriority || "",
-        estimatedHours: task.estimatedHours || "",
+        estimatedHours: task.estimatedHours || 0,
+        estHours: task.estimatedHours ? Math.floor(task.estimatedHours) : "",
+        estMinutes: task.estimatedHours ? Math.round((task.estimatedHours % 1) * 60) : "",
         progress: task.progress || 0,
         additionalNotes: task?.additionalNotes || "",
         taskType: task.taskType || "",
@@ -467,7 +483,7 @@ const CreateTask = ({
         const urlSprint = params.get("sprintId");
 
         // Handle Pre-fill from Navigation state (e.g. "Add Subtask")
-        const prefillProject = urlProject || locationState.project?._id || locationState.parentTask?.projectName || "";
+        const prefillProject = urlProject || locationState.project?._id || locationState.parentTask?.projectName?._id || locationState.parentTask?.projectName || "";
         const prefillParent = locationState.parentTask?._id || "";
         const prefillSprint = urlSprint || "";
 
@@ -522,7 +538,9 @@ const CreateTask = ({
                         milestone: lastTask.milestone?._id || lastTask.milestone || "",
                         sprint: lastTask.sprint?._id || lastTask.sprint || "",
                         parentTask: lastTask.parentTask?._id || lastTask.parentTask || "",
-                        estimatedHours: lastTask.estimatedHours || "",
+                        estimatedHours: lastTask.estimatedHours || 0,
+                        estHours: lastTask.estimatedHours ? Math.floor(lastTask.estimatedHours) : "",
+                        estMinutes: lastTask.estimatedHours ? Math.round((lastTask.estimatedHours % 1) * 60) : "",
                         assignee: lastTask.assignee?._id || lastTask.assignee || "",
                         taskStartDate: formatDate(lastTask.taskStartDate),
                         taskDueDate: formatDate(lastTask.taskDueDate),
@@ -669,21 +687,43 @@ const CreateTask = ({
                     error={formik.touched.taskName && formik.errors.taskName}
                     isRequired
                   />
-                  <InputField
-                    label="Estimated Hours"
-                    name="estimatedHours"
-                    type="number"
-                    value={formik.values.estimatedHours}
-                    onChange={formik.handleChange}
-                    readOnly={!manager && id ? true : false}
-                    onBlur={formik.handleBlur}
-                    placeholder="Enter estimated hours..."
-                    error={
-                      formik.touched.estimatedHours &&
-                      formik.errors.estimatedHours
-                    }
-                    isRequired
-                  />
+                  <div className="grid grid-cols-2 gap-2">
+                    <InputField
+                      label="Hours"
+                      name="estHours"
+                      type="number"
+                      value={formik.values.estHours}
+                      onChange={formik.handleChange}
+                      readOnly={!canEditRestrictedFields && id ? true : false}
+                      onBlur={() => {
+                        formik.handleBlur("estHours");
+                        const total = parseFloat(formik.values.estHours || 0) + (parseFloat(formik.values.estMinutes || 0) / 60);
+                        formik.setFieldValue("estimatedHours", total);
+                      }}
+                      placeholder="Hours"
+                      error={formik.touched.estHours && formik.errors.estHours}
+                      isRequired
+                    />
+                    <InputField
+                      label="Minutes"
+                      name="estMinutes"
+                      type="number"
+                      value={formik.values.estMinutes}
+                      onChange={formik.handleChange}
+                      readOnly={!canEditRestrictedFields && id ? true : false}
+                      onBlur={() => {
+                        formik.handleBlur("estMinutes");
+                        const total = parseFloat(formik.values.estHours || 0) + (parseFloat(formik.values.estMinutes || 0) / 60);
+                        formik.setFieldValue("estimatedHours", total);
+                      }}
+                      placeholder="Mins"
+                      error={formik.touched.estMinutes && formik.errors.estMinutes}
+                      isRequired
+                    />
+                  </div>
+                  {formik.touched.estimatedHours && formik.errors.estimatedHours && (
+                    <div className="text-red-500 text-xs mt-[-10px] ml-1">{formik.errors.estimatedHours}</div>
+                  )}
                   <InputField
                     label="Progress (%)"
                     name="progress"
@@ -891,7 +931,7 @@ const CreateTask = ({
                     type="date"
                     value={formik.values.taskStartDate}
                     onChange={formik.handleChange}
-                    readOnly={!manager && id ? true : false}
+                    readOnly={!canEditRestrictedFields && id ? true : false}
                     onBlur={formik.handleBlur}
                     error={
                       formik.touched.taskStartDate &&
@@ -905,7 +945,7 @@ const CreateTask = ({
                     type="date"
                     value={formik.values.taskDueDate}
                     onChange={formik.handleChange}
-                    readOnly={!manager && id ? true : false}
+                    readOnly={!canEditRestrictedFields && id ? true : false}
                     onBlur={formik.handleBlur}
                     error={
                       formik.touched.taskDueDate && formik.errors.taskDueDate

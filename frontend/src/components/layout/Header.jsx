@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { IoNotificationsOutline, IoSearchOutline, IoCalendarOutline } from 'react-icons/io5';
+import { IoNotificationsOutline, IoSearchOutline, IoCalendarOutline, IoTimeOutline, IoCloseCircleOutline, IoLinkOutline } from 'react-icons/io5';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { ProjectApi } from '../../services/api/Project.api';
 import { useSocket } from '../../SocketProvider';
 import { NotificationApi } from '../../services/api/notification.api';
 import { UserApi } from '../../services/api/user.api';
+import { TaskApi } from '../../services/api/Task.api';
 import { messaging } from '../../firebaseConfig';
 import { getToken } from 'firebase/messaging';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLoading } from '../loader/LoaderContext';
-import { setShowConsistencyModal } from '../../store/slices/storeSlice';
+import { setShowConsistencyModal, setGlobalSearch } from '../../store/slices/storeSlice';
 import moment from 'moment';
+import toast from 'react-hot-toast';
 
 const Header = () => {
   const [searchParams] = useSearchParams();
@@ -18,9 +20,16 @@ const Header = () => {
   const [projectName, setProjectName] = useState("");
   const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const notificationRef = useRef();
+  const searchRef = useRef();
+  
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const { globalSearch } = useSelector((state) => state.store);
   
   const {
     isNotification,
@@ -191,7 +200,71 @@ const Header = () => {
     if (currentUser?._id) {
         requestPermission(currentUser._id);
     }
+    // Load recent searches
+    const saved = localStorage.getItem('recentSearches');
+    if (saved) setRecentSearches(JSON.parse(saved));
   }, [currentUser]);
+  
+  // debounced suggestion fetching
+  useEffect(() => {
+    if (!globalSearch || globalSearch.length < 4) {
+      setSuggestions([]);
+      return;
+    }
+    
+    const handler = setTimeout(async () => {
+      try {
+        // Fetch Tasks
+        const taskRes = await TaskApi.getAllTasks({}, globalSearch);
+        const taskNames = [...new Set(taskRes.data?.data?.map(t => t.taskName))]
+          .filter(name => name.toLowerCase().includes(globalSearch.toLowerCase()))
+          .slice(0, 5)
+          .map(name => ({ type: 'task', label: name }));
+
+        // Fetch Projects for suggestions
+        const projectRes = await ProjectApi.getAllProjects();
+        const projectNames = projectRes.data?.data
+          ?.filter(p => p.name.toLowerCase().includes(globalSearch.toLowerCase()))
+          .slice(0, 5)
+          .map(p => ({ type: 'project', label: p.name, id: p._id }));
+
+        setSuggestions([...projectNames, ...taskNames]);
+      } catch (err) {
+        console.error("Suggestion fetch failed", err);
+      }
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [globalSearch]);
+
+  const handleSearchChange = (val) => {
+    dispatch(setGlobalSearch(val));
+    setIsTyping(true);
+  };
+
+  const saveToHistory = (query) => {
+    if (!query || query.trim() === "") return;
+    const cleanQuery = query.trim();
+    const updated = [cleanQuery, ...recentSearches.filter(s => s !== cleanQuery)].slice(0, 5);
+    setRecentSearches(updated);
+    localStorage.setItem('recentSearches', JSON.stringify(updated));
+  };
+
+  const handleSearchSubmit = (e) => {
+    if (e) e.preventDefault();
+    saveToHistory(globalSearch);
+    setShowSearchDropdown(false);
+  };
+
+  const handleShare = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        toast.success("Link copied to clipboard!");
+    }).catch(err => {
+        console.error("Copy failed", err);
+        toast.error("Failed to copy link");
+    });
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -200,6 +273,9 @@ const Header = () => {
         !notificationRef.current.contains(event.target)
       ) {
         setShowDropdown(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSearchDropdown(false);
       }
     };
 
@@ -212,37 +288,118 @@ const Header = () => {
   const notificationIconClass = isNotification ? "shake" : "";
 
   return (
-    <header className="h-16 bg-surface border-b border-borderLight px-8 flex items-center justify-between sticky top-0 z-40">
+    <header className="h-16 bg-surface border-b border-borderLight px-8 flex items-center justify-between sticky top-0 z-[100]">
         {/* Breadcrumbs / Page Title */}
-        <div className="flex items-center gap-4">
-             <div className="flex items-center text-sm text-textSub">
-                 <span className="hover:text-textMain cursor-pointer">{getPageTitle()}</span>
+        <div className="flex items-center gap-2 sm:gap-4 overflow-hidden">
+             <div className="flex items-center text-xs sm:text-sm text-textSub whitespace-nowrap overflow-hidden">
+                 <span className="hover:text-textMain cursor-pointer shrink-0">{getPageTitle()}</span>
                  {projectName && (
-                     <>
-                        <span className="mx-2">/</span>
-                        <span className="font-semibold text-textMain flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-primary"></span>
-                            {projectName}
+                     <div className="flex items-center min-w-0 ml-1 sm:ml-2">
+                        <span className="mx-1 sm:mx-2 shrink-0">/</span>
+                        <span className="font-semibold text-textMain flex items-center gap-1 sm:gap-2 truncate">
+                            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary shrink-0"></span>
+                            <span className="truncate">{projectName}</span>
                         </span>
-                     </>
+                     </div>
                  )}
              </div>
         </div>
 
         {/* Right Actions */}
         <div className="flex items-center gap-4">
-            <div className="relative hidden md:block">
-                <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-textSub" />
-                 <input 
-                    type="text" 
-                    placeholder="Search..." 
-                    className="pl-9 pr-4 py-2 rounded-lg border border-borderLight bg-bgLight text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 w-64"
-                 />
+            <div className="relative hidden md:block" ref={searchRef}>
+                <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-textSub z-10" />
+                 <form onSubmit={handleSearchSubmit}>
+                    <input 
+                        type="text" 
+                        placeholder="Search tasks..." 
+                        value={globalSearch}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                        onFocus={() => setShowSearchDropdown(true)}
+                        className="pl-9 pr-4 py-2 rounded-lg border border-borderLight bg-bgLight text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 w-[35rem] transition-all"
+                    />
+                 </form>
+
+                 {/* Search Dropdown */}
+                 {showSearchDropdown && (globalSearch || recentSearches.length > 0) && (
+                     <div className="absolute top-[calc(100%+8px)] left-0 w-[35rem] bg-surface border border-borderLight rounded-xl shadow-2xl z-50 overflow-hidden py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                        {globalSearch && globalSearch.length > 0 && globalSearch.length < 4 && (
+                            <div className="px-4 py-3 text-center text-[10px] font-medium text-textSub bg-bgLight/50 border-b border-borderLight animate-pulse">
+                                Type 4+ characters for results...
+                            </div>
+                        )}
+
+                        {recentSearches.length > 0 && !globalSearch && (
+                            <div className="py-1">
+                                <div className="px-4 py-1 text-[10px] font-black text-textSub uppercase tracking-widest opacity-50">Recent Searches</div>
+                                {recentSearches.map((s, i) => (
+                                    <div 
+                                        key={i}
+                                        onClick={() => {
+                                            dispatch(setGlobalSearch(s));
+                                            setShowSearchDropdown(false);
+                                        }}
+                                        className="group px-4 py-1.5 flex items-center gap-3 cursor-pointer text-xs transition-all relative"
+                                    >
+                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-200 shrink-0 group-hover:bg-slate-300"></span>
+                                        <span className="text-textSub group-hover:text-textMain group-hover:underline underline-offset-4 decoration-slate-300 transition-all">
+                                            {s}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {globalSearch && suggestions.length > 0 && (
+                            <div className="py-1">
+                                <div className="px-4 py-1 text-[10px] font-black text-textSub uppercase tracking-widest opacity-50">Results</div>
+                                {suggestions.map((s, i) => (
+                                    <div 
+                                        key={i}
+                                        onClick={() => {
+                                            if (s.type === 'project') {
+                                                navigate(`/task/dashboard?projectId=${s.id}`);
+                                            } else {
+                                                dispatch(setGlobalSearch(s.label));
+                                                saveToHistory(s.label);
+                                            }
+                                            setShowSearchDropdown(false);
+                                        }}
+                                        className="group px-4 py-1.5 flex items-center gap-3 cursor-pointer text-xs transition-all relative"
+                                    >
+                                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${s.type === 'project' ? 'bg-primary' : 'bg-slate-300'}`}></span>
+                                        <span className={`text-textSub group-hover:text-textMain group-hover:underline decoration-primary/40 underline-offset-4 transition-all ${globalSearch.toLowerCase() === s.label.toLowerCase() ? 'text-textMain' : ''}`}>
+                                            {s.label}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {globalSearch && globalSearch.length >= 4 && suggestions.length === 0 && (
+                            <div className="px-4 py-8 text-center text-[11px] font-medium text-textSub bg-bgLight/30">
+                                <div className="animate-pulse">Type more for search...</div>
+                                <div className="mt-1 opacity-50">No matches found for this term</div>
+                            </div>
+                        )}
+
+                        {globalSearch && (
+                             <div 
+                                onClick={() => dispatch(setGlobalSearch(''))}
+                                className="px-4 py-2 mt-1 border-t border-borderLight flex items-center gap-2 hover:bg-rose-50 cursor-pointer text-xs text-rose-500 font-medium transition-colors"
+                             >
+                                <IoCloseCircleOutline size={14} />
+                                <span>Clear Search</span>
+                             </div>
+                        )}
+                     </div>
+                 )}
             </div>
             
             <button 
                 onClick={() => dispatch(setShowConsistencyModal(true))}
                 className="w-10 h-10 rounded-full border border-borderLight flex items-center justify-center text-textSub hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all"
+                title="Performance View"
             >
                 <IoCalendarOutline size={20} />
             </button>
@@ -347,7 +504,11 @@ const Header = () => {
                 )}
             </div>
             
-            <button className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primaryHover transition-all shadow-lg shadow-primary/20">
+            <button 
+                onClick={handleShare}
+                className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primaryHover transition-all shadow-lg shadow-primary/20 flex items-center gap-2 active:scale-95"
+            >
+                <IoLinkOutline size={18} />
                 Share
             </button>
         </div>

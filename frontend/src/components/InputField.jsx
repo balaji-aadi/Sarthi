@@ -164,7 +164,7 @@ const InputField = ({
           placeholder={placeholder || `${label}`}
           isMulti={isMulti}
           openMenuOnFocus={true}
-          className={` dark:black w-full ${style && style} `}
+          className={`w-full ${style && style} `}
           styles={customStyles}
           {...props}
         />
@@ -176,7 +176,7 @@ const InputField = ({
           onChange={onChange}
           onBlur={onBlur}
           placeholder={placeholder}
-          className="w-full px-4 py-2 border rounded-lg outline-none dark:bg-themeBG dark:text-themeText min-h-[100px]"
+          className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg outline-none bg-white dark:bg-themeBG dark:text-themeText min-h-[100px] focus:ring-2 focus:ring-primary/20 transition-all"
           {...props}
         />
       ) : type === "quill" ? (
@@ -218,7 +218,7 @@ const InputField = ({
           readOnly={readOnly}
           onBlur={onBlur}
           placeholder={placeholder}
-          className="w-full px-4 py-2 border rounded-lg outline-none dark:bg-themeBG  dark:text-themeText"
+          className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg outline-none bg-white dark:bg-themeBG dark:text-themeText focus:ring-2 focus:ring-primary/20 transition-all"
           {...props}
         />
       )}

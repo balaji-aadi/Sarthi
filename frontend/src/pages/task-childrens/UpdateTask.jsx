@@ -106,7 +106,9 @@ const UpdateTask = () => {
         }
         
         if (totalInProgressTime === 0 && params.data.estimatedHours) {
-            return `${params.data.estimatedHours}h 0m`;
+            const h = Math.floor(params.data.estimatedHours);
+            const m = Math.round((params.data.estimatedHours % 1) * 60);
+            return `${h}h ${m}m`;
         } else if (totalInProgressTime === 0) {
             return "-";
         }

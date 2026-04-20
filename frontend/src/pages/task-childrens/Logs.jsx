@@ -256,21 +256,21 @@ const Logs = ({ task, type }) => {
 
         </div>
   <div className="mt-4 overflow-auto relative">
-          {type === "Testcase" ? null : (
+          {type === "Testcase" || !task ? null : (
             <div className="sticky top-0 bg-white shadow-md p-3 z-10 flex flex-col gap-2 border-b">
               <h3 className="text-gray-700 font-bold text-lg">📌 Task Duration</h3>
 
-              <div className="flex justify-between">
-                <div className="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-3 py-2 rounded-md shadow-sm">
-                  <i className="fas fa-clock text-yellow-600"></i>
-                  <span className="font-medium text-md">
+              <div className="flex flex-wrap gap-2">
+                <div className="flex-1 min-w-[120px] flex items-center gap-2 bg-yellow-100/80 text-yellow-800 px-3 py-2 rounded-xl shadow-sm border border-yellow-200">
+                  <i className="fas fa-clock text-yellow-600 text-xs"></i>
+                  <span className="font-bold text-xs">
                     Hold: {formatDuration(task.duration?.hold)}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-2 rounded-md shadow-sm">
-                  <i className="fas fa-spinner text-blue-600 animate-spin"></i>
-                  <span className="font-medium text-md">
+                <div className="flex-1 min-w-[120px] flex items-center gap-2 bg-blue-100/80 text-blue-800 px-3 py-1 rounded-xl shadow-sm border border-blue-200">
+                  <i className="fas fa-spinner text-blue-600 animate-spin text-xs"></i>
+                  <span className="font-bold text-xs">
                     In Progress: {formatDuration(task.duration?.inprogress)}
                   </span>
                 </div>
@@ -279,7 +279,7 @@ const Logs = ({ task, type }) => {
           )}
 
 
-          {task.activityLogs &&
+          {task?.activityLogs &&
             task.activityLogs.length > 0 &&
             task.activityLogs.map((log, index) => {
               const isStatusChange = log.message.includes(">>>") || log.message.includes("Status had been changed from");
@@ -302,7 +302,7 @@ const Logs = ({ task, type }) => {
               return (
                 <div
                   key={log._id}
-                  className="flex items-start gap-4 py-2 border-b pr-3"
+                  className="flex items-start gap-3 py-3 border-b border-slate-50 pr-2 group last:border-0 hover:bg-slate-50/50 transition-colors"
                 >
                   {log.user?.profileImage ? (
                     <img
@@ -311,23 +311,23 @@ const Logs = ({ task, type }) => {
                       className="w-10 h-10 rounded-full border"
                     />
                   ) : (
-                    <div
-                      className={`w-10 h-10 flex items-center justify-center rounded-full ${backgroundColors[index % backgroundColors.length]
-                        } text-white font-bold`}
-                    >
-                      {log?.user?.firstName ? log.user.firstName.charAt(0) : "S"}
-                    </div>
+                      <div
+                        className={`w-9 h-9 shrink-0 flex items-center justify-center rounded-xl ${backgroundColors[index % backgroundColors.length]
+                          } text-white font-black text-sm shadow-sm`}
+                      >
+                        {log?.user?.firstName ? log.user.firstName.charAt(0) : "S"}
+                      </div>
                   )}
 
-                  <div className="flex-1">
-                    <p className="font-medium">
-                      {log.user ? `${log.user.firstName} ${log.user.lastName}` : "System / GitHub"}
-                    </p>
-                    <p className="text-gray-500 text-sm">
-                      {new Date(log.date).toLocaleString()}
-                    </p>
-                    <p className="text-sm font-semibold">{displayMessage}</p>
-                  </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-slate-800 text-sm truncate">
+                        {log.user ? `${log.user.firstName} ${log.user.lastName}` : "System / GitHub"}
+                      </p>
+                      <p className="text-slate-400 text-[10px] font-bold uppercase tracking-tight">
+                        {new Date(log.date).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' })}
+                      </p>
+                      <p className="text-xs font-semibold text-slate-600 mt-1 break-words">{displayMessage}</p>
+                    </div>
 
                   <div className="w-3 h-3 bg-green-500 rounded-full mt-2"></div>
                 </div>

@@ -298,7 +298,7 @@ pc.getAllProject = asyncHandler(async (req, res) => {
           taskStats: {
             total: stats.totalTasks,
             completed: stats.completedTasks,
-            percentage: project.progress !== undefined ? project.progress : (stats.totalTasks > 0 ? Math.round((stats.completedTasks / stats.totalTasks) * 100) : 0)
+            percentage: project.progress || 0
           }
         };
     });

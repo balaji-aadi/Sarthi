@@ -36,6 +36,10 @@ const taskSchema = new mongoose.Schema(
     estimatedHours: { 
       type: Number 
     },
+    backlogEstimatedHours: {
+      type: Number,
+      default: 0
+    },
     storyPoints: {
       type: Number,
       default: 0
