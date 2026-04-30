@@ -45,6 +45,8 @@ import UserTypeMaster from "./pages/UserTypeMaster";
 import PerformanceDashboard from "./pages/Analytics/PerformanceDashboard";
 import DailyAccountability from "./pages/daily-accountability/DailyAccountability";
 import FocusTimer from "./pages/focus-timer/FocusTimer";
+import Revision from "./pages/task-childrens/Revision";
+import SettingsGlobal from "./pages/SettingsGlobal";
 
 import ProjectList from "./pages/project-childrens/ProjectList";
 import TeamList from "./pages/user-childrens/TeamList";
@@ -270,6 +272,14 @@ function App() {
           <Route
             path="focus-timer"
             element={<ProtectedRoute element={<FocusTimer />} />}
+          />
+          <Route
+            path="revision"
+            element={<ProtectedRoute element={<Revision />} />}
+          />
+          <Route
+            path="settings"
+            element={<ProtectedRoute element={<SettingsGlobal />} />}
           />
         </Route>
 

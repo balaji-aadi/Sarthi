@@ -316,13 +316,13 @@ const Header = () => {
                         value={globalSearch}
                         onChange={(e) => handleSearchChange(e.target.value)}
                         onFocus={() => setShowSearchDropdown(true)}
-                        className="pl-9 pr-4 py-2 rounded-lg border border-borderLight bg-bgLight text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 w-[35rem] transition-all"
+                        className="pl-9 pr-4 py-2 rounded-lg border border-borderLight bg-bgLight text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 w-[30rem] transition-all"
                     />
                  </form>
 
                  {/* Search Dropdown */}
                  {showSearchDropdown && (globalSearch || recentSearches.length > 0) && (
-                     <div className="absolute top-[calc(100%+8px)] left-0 w-[35rem] bg-surface border border-borderLight rounded-xl shadow-2xl z-50 overflow-hidden py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                     <div className="absolute top-[calc(100%+8px)] left-0 w-[30rem] bg-surface border border-borderLight rounded-xl shadow-2xl z-50 overflow-hidden py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                         {globalSearch && globalSearch.length > 0 && globalSearch.length < 4 && (
                             <div className="px-4 py-3 text-center text-[10px] font-medium text-textSub bg-bgLight/50 border-b border-borderLight animate-pulse">
                                 Type 4+ characters for results...

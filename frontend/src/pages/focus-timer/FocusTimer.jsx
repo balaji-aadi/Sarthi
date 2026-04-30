@@ -12,6 +12,7 @@ import {
 import moment from "moment";
 import { FocusApi } from "../../services/api/Focus.api";
 import { TaskApi } from "../../services/api/Task.api";
+import { toast } from "react-hot-toast";
 import "./FocusTimer.style.css";
 
 const themes = [
@@ -50,6 +51,12 @@ const FocusTimer = () => {
   const [retrievableObj, setRetrievableObj] = useState(null);
   const [currentTimeMs, setCurrentTimeMs] = useState(Date.now());
   
+  // Custom Task/Heading Selection
+  const [availableTasks, setAvailableTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState("");
+  const [customHeading, setCustomHeading] = useState("");
+  const [isBindingActive, setIsBindingActive] = useState(false);
+  
   // Custom Modals and Table Filters
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
@@ -81,9 +88,23 @@ const FocusTimer = () => {
     }
   };
 
+  const fetchAvailableTasks = async () => {
+    try {
+      const res = await TaskApi.getAllTasks({});
+      const all = res.data?.data || [];
+      const backlogTasks = all.filter(t => {
+          const isExplicitBacklog = t.status === 'backlog';
+          const isOverdue = t.taskDueDate && moment(t.taskDueDate).isBefore(moment(), 'day') && t.status !== 'done';
+          return isExplicitBacklog || isOverdue;
+      });
+      setAvailableTasks(backlogTasks);
+    } catch (e) { console.error("Failed to fetch available tasks", e); }
+  };
+
   // Load state and sessions
   useEffect(() => {
     fetchSessions();
+    fetchAvailableTasks();
     const savedState = localStorage.getItem("focus_timer_state");
     if (savedState) {
       const { timeLeft: sTime, isActive: sActive, startTime: sStart, selectedDuration: sDur, currentTheme: sTheme, accumulatedTime: sAccum } = JSON.parse(savedState);
@@ -95,10 +116,10 @@ const FocusTimer = () => {
         const now = Date.now();
         const sessionSeconds = Math.floor((now - start) / 1000);
         const totalSpent = (sAccum || 0) + sessionSeconds;
-        const remaining = Math.max((sDur * 60) - totalSpent, 0);
+        const remaining = (sDur * 60) - totalSpent;
         
         setTimeLeft(remaining);
-        setIsActive(remaining > 0);
+        setIsActive(true);
         
         // If it expired while away, the App.jsx background watcher might have already handled it.
         // But we handle it here too for immediate UI feedback.
@@ -114,6 +135,8 @@ const FocusTimer = () => {
       setSelectedDuration(sDur || 25);
       if (sTheme) setCurrentTheme(sTheme);
     }
+    
+    setIsBindingActive(!!localStorage.getItem("focus_timer_task_binding"));
     
     if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
         Notification.requestPermission();
@@ -142,31 +165,67 @@ const FocusTimer = () => {
   }, [timeLeft, isActive, startTime, accumulatedTime, selectedDuration, currentTheme]);
 
   useEffect(() => {
-    if (isActive && timeLeft > 0) {
+    if (isActive) {
       timerRef.current = setInterval(() => {
         if (startTime) {
           const start = new Date(startTime).getTime();
           const now = Date.now();
           const sessionSeconds = Math.floor((now - start) / 1000);
           const totalSpent = accumulatedTime + sessionSeconds;
-          const remaining = Math.max((selectedDuration * 60) - totalSpent, 0);
+          const remaining = (selectedDuration * 60) - totalSpent;
           
-          setTimeLeft(remaining);
-          if (remaining === 0) {
-            handleComplete(true);
+          if (remaining <= 0) {
+              const hasTask = !!localStorage.getItem("focus_timer_task_binding");
+              
+              // Overtime limit: 1 hour (3600 seconds)
+              const isOvertimeLimitReached = remaining <= -3600;
+
+              if (!hasTask || isOvertimeLimitReached) {
+                  // Standalone session or overtime limit reached: auto-log
+                  setTimeLeft(remaining); 
+                  handleComplete(true);
+                  return;
+              }
+              // Overtime mode: Count up from 0 (negative timeLeft)
+              setTimeLeft(remaining);
+          } else {
+              setTimeLeft(remaining);
           }
         } else {
-          // Fallback
-          setTimeLeft((prev) => Math.max(prev - 1, 0));
+          // Fallback (rarely hits if startTime is used)
+          setTimeLeft((prev) => prev - 1);
         }
       }, 1000);
     } else {
       clearInterval(timerRef.current);
     }
     return () => clearInterval(timerRef.current);
-  }, [isActive, timeLeft === 0, startTime, accumulatedTime, selectedDuration]);
+  }, [isActive, startTime, accumulatedTime, selectedDuration]);
 
   const handleStart = () => {
+    if (selectedTask && !isBindingActive) {
+      const taskObj = availableTasks.find(t => t._id === selectedTask);
+      if (taskObj) {
+         const durationMins = (taskObj.backlogEstimatedHours ? taskObj.backlogEstimatedHours * 60 : (taskObj.estimatedHours ? taskObj.estimatedHours * 60 : 25));
+         const isTaskBacklog = taskObj.status === 'backlog' || (taskObj.taskDueDate && moment(taskObj.taskDueDate).isBefore(moment(), 'day'));
+         
+         const focusTimerBinding = {
+             taskId: taskObj._id,
+             taskName: taskObj.taskName,
+             taskIdString: taskObj.taskId,
+             estimatedHours: taskObj.backlogEstimatedHours || taskObj.estimatedHours || 0,
+             dueDate: taskObj.taskDueDate,
+             isBacklog: isTaskBacklog
+         };
+         localStorage.setItem("focus_timer_task_binding", JSON.stringify(focusTimerBinding));
+         setIsBindingActive(true);
+         if (durationMins > 0) {
+             setSelectedDuration(durationMins);
+             setTimeLeft(durationMins * 60);
+         }
+      }
+    }
+
     setIsActive(true);
     setStartTime(new Date());
   };
@@ -211,13 +270,16 @@ const FocusTimer = () => {
     playSound();
     showNotification();
     const endTime = new Date();
+    // actualElapsedSeconds accounts for overtime (timeLeft can be negative)
     const actualElapsedSeconds = (selectedDuration * 60) - timeLeft;
     const actualDuration = Math.max(Math.round(actualElapsedSeconds / 60), 1); 
     
     let taskMeta = {};
+    let bindingObj = null;
     const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
+    
     if (bindingObjStr) {
-       const bindingObj = JSON.parse(bindingObjStr);
+       bindingObj = JSON.parse(bindingObjStr);
        taskMeta = {
            task: bindingObj.taskId,
            taskName: bindingObj.taskName,
@@ -228,22 +290,41 @@ const FocusTimer = () => {
        };
 
        if (isExpiration) {
-          // Trigger the auto-backlog flow
-          try {
-            await TaskApi.taskLogs(bindingObj.taskId, { status: "backlog" });
-            setBacklogTaskData(bindingObj);
-            setShowBacklogModal(true);
-          } catch(e) { console.error("Failed to relegate task to backlog", e); }
+          // Check if due date has actually passed before relegating to backlog
+          const hasExpired = bindingObj.dueDate ? moment(bindingObj.dueDate).isBefore(moment(), 'day') : true;
+
+          if (hasExpired) {
+              try {
+                await TaskApi.taskLogs(bindingObj.taskId, { status: "backlog" });
+                setBacklogTaskData(bindingObj);
+                setShowBacklogModal(true);
+                taskMeta.statusAtCompletion = "backlog";
+                taskMeta.completionState = "incompleted";
+              } catch(e) { console.error("Failed to relegate task to backlog", e); }
+          } else {
+              // Due date still in future: just log as hold/inprogress as usual
+              taskMeta.statusAtCompletion = isExpiration ? "inprogress" : "done";
+              taskMeta.completionState = "incompleted";
+              toast.success("Focus block ended. Task remains active as due date hasn't passed.");
+          }
        }
     }
 
     try {
+      const isBacklogTask = bindingObj?.isBacklog || false;
+      const originalDueDate = bindingObj?.dueDate || null;
+      
       const newSession = {
         date: moment().format("YYYY-MM-DD"),
-        startTime: startTime || endTime,
+        startTime: startTime || new Date(), // segment start
         endTime: endTime,
         duration: actualDuration,
         type: "Focus",
+        task: bindingObj?.taskId || null,
+        taskName: bindingObj ? (isBacklogTask ? `${bindingObj.taskName} (Backlog)` : bindingObj.taskName) : (customHeading || "Standalone Session"),
+        taskIdString: bindingObj?.taskIdString || "N/A",
+        isBacklog: isBacklogTask,
+        originalDueDate: originalDueDate,
         ...taskMeta
       };
 
@@ -264,6 +345,9 @@ const FocusTimer = () => {
       fetchSessions();
       localStorage.removeItem("focus_timer_state");
       localStorage.removeItem("focus_timer_task_binding");
+      setIsBindingActive(false);
+      setSelectedTask("");
+      setCustomHeading("");
     } catch (error) {
       console.error("Failed to save focus session", error);
     }
@@ -330,7 +414,11 @@ const FocusTimer = () => {
   const minutes = Math.floor((timeLeft % 3600) / 60);
   const seconds = timeLeft % 60;
 
-  const pad = (n) => (n < 10 ? `0${n}` : n);
+  const pad = (n) => {
+    const absN = Math.abs(n);
+    return absN < 10 ? `0${absN}` : absN;
+  };
+  const isOvertime = timeLeft < 0;
   const hStr = pad(hours).toString();
   const mStr = pad(minutes).toString();
   const sStr = pad(seconds).toString();
@@ -360,12 +448,17 @@ const FocusTimer = () => {
       
       {/* Main Focus Card */}
       <div className="focus-main-card">
-         <div className="focus-header">
-            <div className="focus-title-group">
-                <h2>{isActive ? "Deep Session" : "Focus Studio"}</h2>
-                <p>{isActive ? "Work hard, stay silent." : "Set your goal and start."}</p>
-            </div>
-            <div className="header-actions relative">
+          <div className="focus-header">
+             <div className="focus-title-group">
+                 <h2>{isActive ? "Deep Session" : "Focus Studio"}</h2>
+                 <p>{isActive ? "Work hard, stay silent." : "Set your goal and start."}</p>
+                 {localStorage.getItem("focus_timer_task_binding") && JSON.parse(localStorage.getItem("focus_timer_task_binding")).isBacklog && (
+                     <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-1 bg-red-100 text-red-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-red-200">
+                         <IoFlame /> Backlog Completion: Due {moment(JSON.parse(localStorage.getItem("focus_timer_task_binding")).dueDate).format("MMM DD")}
+                     </div>
+                 )}
+             </div>
+             <div className="header-actions relative">
                <button 
                   onClick={() => setShowThemes(!showThemes)} 
                   className="icon-btn focus:ring-2 ring-primary/20 flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
@@ -392,6 +485,59 @@ const FocusTimer = () => {
             </div>
          </div>
 
+          <div className="flex flex-col items-center justify-center mt-6 mb-2 max-w-md mx-auto w-full px-4">
+             {!isActive && !isBindingActive ? (
+                <div className="w-full flex flex-col gap-3 relative z-10 animate-in slide-in-from-bottom-2 duration-500">
+                    <select 
+                        value={selectedTask}
+                        onChange={(e) => {
+                            setSelectedTask(e.target.value);
+                            setCustomHeading("");
+                        }}
+                        className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                    >
+                        <option value="">-- Select a Backlog Task --</option>
+                        {Object.entries(
+                            availableTasks.reduce((acc, t) => {
+                                const pName = t.projectName?.name || 'Independent / No Project';
+                                if (!acc[pName]) acc[pName] = [];
+                                acc[pName].push(t);
+                                return acc;
+                            }, {})
+                        ).map(([project, tasks]) => (
+                            <optgroup key={project} label={project}>
+                                {tasks.map(t => (
+                                    <option key={t._id} value={t._id}>
+                                        {t.taskId || '#' + t._id.slice(-4)} - {t.taskName}
+                                    </option>
+                                ))}
+                            </optgroup>
+                        ))}
+                    </select>
+                    {!selectedTask && (
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">OR</span>
+                            </div>
+                            <input 
+                                type="text"
+                                placeholder="Enter custom heading..."
+                                value={customHeading}
+                                onChange={(e) => setCustomHeading(e.target.value)}
+                                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-12 pr-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                            />
+                        </div>
+                    )}
+                </div>
+             ) : (
+                <div className="w-full px-4 py-3 bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl text-center shadow-sm">
+                    <span className="text-sm font-bold text-slate-700">
+                        {isBindingActive ? JSON.parse(localStorage.getItem("focus_timer_task_binding")).taskName : (customHeading || "Standalone Session")}
+                    </span>
+                </div>
+             )}
+          </div>
+
          <div className="clock-container">
             <div className="clock-group">
                <FlipUnit digit={hStr[0]} label="HRS" />
@@ -407,6 +553,11 @@ const FocusTimer = () => {
                <FlipUnit digit={sStr[0]} label="SECS" />
                <FlipUnit digit={sStr[1]} label="SECS" />
             </div>
+            {isOvertime && (
+              <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg shadow-rose-200 animate-bounce">
+                Overtime Active
+              </div>
+            )}
          </div>
 
          <div className="timer-controls-group">
@@ -475,7 +626,7 @@ const FocusTimer = () => {
 
       {/* Custom Confirmation Modal */}
       {showConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setShowConfirm(false)}></div>
            <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-4 animate-in zoom-in-95 duration-200">
               <h3 className="text-xl font-bold text-slate-800">Please Confirm</h3>

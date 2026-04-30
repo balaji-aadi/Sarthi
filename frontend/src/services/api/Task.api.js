@@ -10,5 +10,5 @@ export const TaskApi = {
    task: (id) => Api.get(`task/get-tasks/${id}`),
    taskImport: (payload) => Api.post(`task/task-import`, payload),
    getLastCreatedTask: () => Api.get("task/get-last-created"),
-
+   addRevision: (id, payload) => Api.post(`task/add-revision/${id}`, payload),
 };

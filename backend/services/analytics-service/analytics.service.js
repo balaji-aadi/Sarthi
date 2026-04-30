@@ -1,5 +1,8 @@
 import { PerformanceStat } from "../../models/performanceStat.model.js";
 import { Task } from "../../models/task.model.js";
+import { FocusSession } from "../../models/focusSession.model.js";
+import { DailyAccountability } from "../../models/dailyAccountability.model.js";
+import mongoose from "mongoose";
 import moment from "moment";
 
 class AnalyticsService {
@@ -84,7 +87,75 @@ class AnalyticsService {
           }
       }
     }
-    return { tasksProcessed: tasks.length };
+
+    // 3. Sync all Focus Sessions
+    const focusSessions = await FocusSession.find({});
+    console.log(`Syncing analytics for ${focusSessions.length} focus sessions...`);
+    for (const session of focusSessions) {
+        if (!session.user || !session.duration) continue;
+        
+        // Add Focus Session duration to user's stats
+        await this.recordFocusTime(session.user, session.duration, session.date || session.startTime);
+        
+        // If the focus session is linked to a task, optionally add to project stats
+        if (session.task) {
+            const task = await Task.findById(session.task);
+            if (task && task.projectName) {
+                const hours = Number((session.duration / 60).toFixed(2));
+                const periods = ["daily", "weekly", "monthly", "yearly"];
+                for (const period of periods) {
+                    const normalizedDate = this._normalizeDate(session.date || session.startTime, period);
+                    await PerformanceStat.findOneAndUpdate(
+                        { entityType: "project", entityId: task.projectName, period, date: normalizedDate },
+                        { $inc: { "metrics.hoursLogged": hours } },
+                        { upsert: true }
+                    );
+                }
+            }
+        }
+    }
+
+    // 4. Sync Daily Accountability Logs
+    const accountabilityBoards = await DailyAccountability.find({});
+    console.log(`Syncing analytics for ${accountabilityBoards.length} daily accountability boards...`);
+    for (const board of accountabilityBoards) {
+        if (!board.userId) continue;
+        
+        const dateCounts = {};
+        
+        // Count logs per logic day date string
+        (board.sections || []).forEach(sec => {
+            (sec.rows || []).forEach(row => {
+                if (row.date) {
+                    dateCounts[row.date] = (dateCounts[row.date] || 0) + 1;
+                }
+            });
+        });
+        
+        // Apply to PerformanceStat
+        for (const [dateStr, count] of Object.entries(dateCounts)) {
+            // dateStr is 'YYYY-MM-DD'. We assume 00:00 local time
+            // The existing _normalizeDate handles the start of period calculation
+            const dateObj = new Date(dateStr);
+            if (isNaN(dateObj)) continue;
+            
+            const periods = ["daily", "weekly", "monthly", "yearly"];
+            for (const period of periods) {
+                const normalizedDate = this._normalizeDate(dateObj, period);
+                await PerformanceStat.findOneAndUpdate(
+                    { entityType: "user", entityId: board.userId, period, date: normalizedDate },
+                    { $set: { "metrics.accountabilityLogs": count } },
+                    { upsert: true }
+                );
+            }
+        }
+    }
+
+    return { 
+        tasksProcessed: tasks.length, 
+        focusSessionsProcessed: focusSessions.length,
+        accountabilityBoardsProcessed: accountabilityBoards.length 
+    };
   }
 
   async _incrementHoursOnly(userId, projectId, hours, date) {
@@ -124,11 +195,12 @@ class AnalyticsService {
       update.$inc["metrics.tasksCompleted"] = 1;
       update.$inc["metrics.storyPointsDone"] = task.storyPoints || 0;
 
-      // Check for on-time completion
+      // Check for on-time completion vs backlog completion
       if (task.taskDueDate) {
-        const isLate = moment(new Date()).isAfter(moment(task.taskDueDate));
+        const isLate = moment(date).isAfter(moment(task.taskDueDate), 'day');
         if (isLate) {
           update.$inc["metrics.delayedTasks"] = 1;
+          update.$inc["metrics.backlogTasksCompleted"] = 1;
         } else {
           update.$inc["metrics.onTimeTasks"] = 1;
         }
@@ -143,7 +215,7 @@ class AnalyticsService {
       
       // Reverse on-time/delayed
       if (task.taskDueDate) {
-        const wasLate = moment(new Date()).isAfter(moment(task.taskDueDate));
+        const wasLate = moment(date).isAfter(moment(task.taskDueDate));
         if (wasLate) {
            update.$inc["metrics.delayedTasks"] = -1;
         } else {
@@ -168,6 +240,12 @@ class AnalyticsService {
             console.log(`[Analytics] Calculated Delta: ${hours.toFixed(4)}h`);
             if (hours > 0) {
                 update.$inc["metrics.hoursLogged"] = Number(hours.toFixed(2));
+                
+                // If the task itself is overdue, count towards backlog hours
+                const isLate = task.taskDueDate ? moment(date).isAfter(moment(task.taskDueDate), 'day') : false;
+                if (isLate || task.status === 'backlog') {
+                   update.$inc["metrics.backlogHoursLogged"] = Number(hours.toFixed(2));
+                }
             }
         } else {
             console.log(`[Analytics] Last status was not inprogress, skipping time update`);
@@ -225,6 +303,38 @@ class AnalyticsService {
       await PerformanceStat.findOneAndUpdate(
         { entityType: "project", entityId: task.projectName, period, date: normalizedDate },
         update,
+        { upsert: true }
+      );
+    }
+  }
+
+  /**
+   * Record standalone focus session time
+   */
+  async recordFocusTime(userId, durationMinutes, date) {
+    const hours = Number((durationMinutes / 60).toFixed(2));
+    const periods = ["daily", "weekly", "monthly", "yearly"];
+    for (const period of periods) {
+      const normalizedDate = this._normalizeDate(date, period);
+      await PerformanceStat.findOneAndUpdate(
+        { entityType: "user", entityId: userId, period, date: normalizedDate },
+        { $inc: { "metrics.hoursLogged": hours } },
+        { upsert: true }
+      );
+    }
+  }
+
+  /**
+   * Remove standalone focus session time (for deletions)
+   */
+  async removeFocusTime(userId, durationMinutes, date) {
+    const hours = Number((durationMinutes / 60).toFixed(2));
+    const periods = ["daily", "weekly", "monthly", "yearly"];
+    for (const period of periods) {
+      const normalizedDate = this._normalizeDate(date, period);
+      await PerformanceStat.findOneAndUpdate(
+        { entityType: "user", entityId: userId, period, date: normalizedDate },
+        { $inc: { "metrics.hoursLogged": -hours } },
         { upsert: true }
       );
     }

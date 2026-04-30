@@ -218,73 +218,75 @@ const ProjectList = () => {
                                 currentProjects.map((project) => (
                                     <div 
                                         key={project._id} 
-                                        className="bg-surface rounded-2xl p-5 shadow-sm border border-borderLight hover:shadow-md hover:border-primary/30 transition-all cursor-pointer group flex flex-col justify-between relative"
+                                        className="bg-surface rounded-[2rem] p-6 shadow-sm border border-borderLight hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all cursor-pointer group flex flex-col justify-between relative"
                                     >
                                         <div onClick={() => navigate(`/project/${project._id}/overview`)}>
-                                            <div className="flex items-center gap-3 mb-3">
-                                                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-lg flex-shrink-0">
-                                                    {project.name.charAt(0).toUpperCase()}
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary font-black text-sm border border-primary/10 tracking-tighter">
+                                                    {project.key || project.name.substring(0, 3).toUpperCase()}
                                                 </div>
-                                                <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${project.status === 'completed' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}`}>
+                                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${project.status === 'completed' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'}`}>
                                                     {project.status || 'Active'}
                                                 </span>
                                             </div>
-                                            <h3 className="text-lg font-bold text-textMain mb-1 group-hover:text-primary transition-colors line-clamp-1 pr-14">{project.name}</h3>
-                                            <p className="text-sm text-textSub line-clamp-2 min-h-[2.5em] mb-3">{project.description || "No description provided."}</p>
+                                            <h3 className="text-base font-black text-slate-800 mb-1.5 group-hover:text-primary transition-colors line-clamp-1 pr-10">{project.name}</h3>
+                                            <p className="text-xs font-medium text-slate-400 line-clamp-2 min-h-[3em] mb-4">{project.description || "No description provided for this protocol."}</p>
                                             
                                             {/* Progress Section */}
-                                            <div className="mb-2">
-                                                <div className="flex justify-between items-center text-xs text-textSub mb-1">
-                                                    <span>Progress</span>
-                                                    <span className="font-medium text-textMain">
-                                                        {project.taskStats?.percentage || 0}% ({project.taskStats?.completed || 0}/{project.taskStats?.total || 0} tasks)
+                                            <div className="mb-4">
+                                                <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-tight">
+                                                    <span>Phase Progress</span>
+                                                    <span className="text-slate-700">
+                                                        {project.taskStats?.percentage || 0}%
                                                     </span>
                                                 </div>
-                                                <div className="w-full h-2 bg-borderLight rounded-full overflow-hidden">
+                                                <div className="w-full h-1.5 bg-slate-50 rounded-full overflow-hidden border border-slate-100/50">
                                                     <div 
-                                                        className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-500 ease-out"
+                                                        className="h-full bg-primary transition-all duration-700 ease-out"
                                                         style={{ width: `${project.taskStats?.percentage || 0}%` }}
                                                     ></div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-surface/80 backdrop-blur-sm rounded-lg p-1 shadow-sm border border-borderLight/50">
+                                        <div className="absolute top-6 right-6 flex gap-1 opacity-0 group-hover:opacity-100 transition-all z-10 translate-x-2 group-hover:translate-x-0">
                                              <button 
                                                 onClick={(e) => { e.stopPropagation(); openMilestoneModal(project._id); }}
-                                                className="p-1.5 text-amber-500 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
+                                                className="w-8 h-8 flex items-center justify-center text-amber-500 bg-white shadow-sm border border-amber-100 rounded-xl hover:bg-amber-50 transition-colors"
                                                 title="Add Milestone"
                                              >
-                                                <IoFlagOutline size={16} />
+                                                <IoFlagOutline size={14} />
                                              </button>
                                              <button 
                                                 onClick={(e) => { e.stopPropagation(); handleEditProject(project); }}
-                                                className="p-1.5 text-blue-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                                                className="w-8 h-8 flex items-center justify-center text-blue-500 bg-white shadow-sm border border-blue-100 rounded-xl hover:bg-blue-50 transition-colors"
                                                 title="Edit Project"
                                              >
-                                                <FaEdit size={16} />
+                                                <FaEdit size={14} />
                                              </button>
                                         </div>
 
-                                        <div className="mt-4 pt-4 border-t border-borderLight flex items-center justify-between text-xs text-textSub">
-                                            <div className="flex -space-x-2">
-                                                 {/* Teammates avatars if available */}
+                                        <div className="mt-2 pt-4 border-t border-slate-50 flex items-center justify-between">
+                                            <div className="flex -space-x-2.5">
                                                  {(project.teamMembers || []).slice(0, 3).map((member, idx) => (
                                                      <img 
                                                         key={idx}
-                                                        src={member.profileImage || `https://ui-avatars.com/api/?name=${member.firstName}+${member.lastName}&background=random`}
+                                                        src={member.profileImage || `https://ui-avatars.com/api/?name=${member.firstName}+${member.lastName}&background=4f46e5&color=fff`}
                                                         alt={member.firstName}
-                                                        className="w-6 h-6 rounded-full border-2 border-white object-cover"
+                                                        className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-sm"
                                                         title={`${member.firstName} ${member.lastName}`}
                                                      />
                                                  ))}
                                                  {(project.teamMembers?.length || 0) > 3 && (
-                                                     <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-textSub">
+                                                     <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[9px] font-black text-slate-500 shadow-sm">
                                                          +{project.teamMembers.length - 3}
                                                      </div>
                                                  )}
                                             </div>
-                                            <span>{moment(project.startDate).format("MMM D, YYYY")} - {moment(project.endDate).format("MMM D, YYYY")}</span>
+                                            <div className="flex flex-col items-end">
+                                                <span className="text-[9px] font-bold text-slate-300 uppercase tracking-tighter">Timeline</span>
+                                                <span className="text-[10px] font-black text-slate-500">{moment(project.startDate).format("DD MMM")} - {moment(project.endDate).format("DD MMM, YY")}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 ))

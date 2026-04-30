@@ -152,30 +152,41 @@ const TeamList = () => {
                                 currentUsers.map((user) => (
                                     <div 
                                         key={user._id} 
-                                        className="bg-surface rounded-2xl p-5 shadow-sm border border-borderLight hover:shadow-md hover:border-primary/30 transition-all group"
+                                        className="bg-surface rounded-[2rem] p-6 shadow-sm border border-borderLight hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all group flex flex-col items-center text-center relative"
                                     >
-                                        <div className="flex flex-col items-center mb-4">
-                                            <img 
-                                                src={user.profileImage || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`} 
-                                                alt={user.firstName} 
-                                                className="w-20 h-20 rounded-full object-cover border-4 border-bgLight shadow-sm mb-3"
-                                            />
-                                            <h3 className="text-lg font-bold text-textMain">{user.firstName} {user.lastName}</h3>
-                                            <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-xs font-medium mt-1">
-                                                {user.userRole?.name || (typeof user.userRole === 'string' ? 'Role ID: ' + user.userRole.substring(0,5) : 'Member')}
-                                            </span>
-                                        </div>
+                                         <div className="relative mb-4">
+                                             <img 
+                                                 src={user.profileImage || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=4f46e5&color=fff`} 
+                                                 alt={user.firstName} 
+                                                 className="w-24 h-24 rounded-[2rem] object-cover border-4 border-white shadow-md transition-transform group-hover:scale-105"
+                                             />
+                                             <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-primary">
+                                                 <IoAdd size={14} className="rotate-45" />
+                                             </div>
+                                         </div>
 
-                                        <div className="space-y-2 pt-4 border-t border-borderLight">
-                                            <div className="flex items-center gap-3 text-sm text-textSub">
-                                                <IoMailOutline className="text-primary" />
-                                                <span className="truncate" title={user.email}>{user.email}</span>
-                                            </div>
-                                            <div className="flex items-center gap-3 text-sm text-textSub">
-                                                <IoCallOutline className="text-primary" />
-                                                <span>{user.mobile || user.phoneNumber || 'N/A'}</span>
-                                            </div>
-                                        </div>
+                                         <h3 className="text-base font-black text-slate-800 mb-1 group-hover:text-primary transition-colors">{user.firstName} {user.lastName}</h3>
+                                         <span className="bg-primary/5 text-primary border border-primary/10 px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest mb-4">
+                                             {user.userRole?.name || (typeof user.userRole === 'string' ? 'Role ID: ' + user.userRole.substring(0,5) : 'Member')}
+                                         </span>
+
+                                         <div className="w-full space-y-2.5 pt-5 border-t border-slate-50 mt-auto">
+                                             <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-slate-400 group-hover:text-slate-600 transition-colors">
+                                                 <IoMailOutline className="text-primary/40 group-hover:text-primary transition-colors" size={14} />
+                                                 <span className="truncate max-w-[150px]">{user.email}</span>
+                                             </div>
+                                             <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-slate-400 group-hover:text-slate-600 transition-colors">
+                                                 <IoCallOutline className="text-primary/40 group-hover:text-primary transition-colors" size={14} />
+                                                 <span>{user.mobile || user.phoneNumber || 'NO CONTACT'}</span>
+                                             </div>
+                                         </div>
+
+                                         <button 
+                                            onClick={() => navigate('/user/create', { state: { user } })}
+                                            className="absolute top-4 right-4 p-2 text-slate-300 hover:text-primary hover:bg-primary/5 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                                         >
+                                            <FaEdit size={14} />
+                                         </button>
                                     </div>
                                 ))
                             ) : (

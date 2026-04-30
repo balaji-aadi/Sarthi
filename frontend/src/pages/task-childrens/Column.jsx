@@ -43,9 +43,10 @@
 import React, { useState, useMemo } from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import { MdChevronRight, MdExpandMore } from "react-icons/md";
 import Task from "./Task";
 
-const Column = ({ column, handleClick }) => {
+const Column = ({ column, handleClick, isDoneColumn, expandedParents, setExpandedParents }) => {
   const [sortOrder, setSortOrder] = useState('none'); // 'none', 'desc', 'asc'
 
   const toggleSort = () => {
@@ -55,13 +56,14 @@ const Column = ({ column, handleClick }) => {
   };
 
   const sortedTasks = useMemo(() => {
+    if (isDoneColumn) return column.tasks; // Reorganized sort is handled in Board.jsx
     if (sortOrder === 'none') return column.tasks;
     return [...column.tasks].sort((a, b) => {
       const dateA = new Date(a.createdAt || a.taskDueDate || 0).getTime();
       const dateB = new Date(b.createdAt || b.taskDueDate || 0).getTime();
       return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
     });
-  }, [column.tasks, sortOrder]);
+  }, [column.tasks, sortOrder, isDoneColumn]);
   const getColumnPillColor = () => {
     switch (column.name.toLowerCase()) {
       case "todo": return "bg-slate-500";
@@ -112,14 +114,72 @@ const Column = ({ column, handleClick }) => {
             {/* vertical scroll lives in this child so the droppable itself isn’t scrollable */}
             <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-20 pr-1 lg:pr-2 custom-scrollbar">
               <div className="space-y-4 px-1 py-1">
-                {sortedTasks.map((task, index) => (
-                  <Task
-                    key={task._id}
-                    task={task}
-                    index={index}
-                    handleClick={handleClick}
-                  />
-                ))}
+                {sortedTasks.map((task, index) => {
+                  if (task.isDoneGroup) {
+                    const isExpanded = expandedParents?.includes(task._id);
+                    return (
+                      <div key={task._id} className="space-y-1 mb-6">
+                        {/* Done Group Header */}
+                        <div className="flex items-center justify-between px-1">
+                          <div className="flex items-center gap-2">
+                            <button 
+                                onClick={() => {
+                                    setExpandedParents(prev => 
+                                        prev.includes(task._id) ? prev.filter(id => id !== task._id) : [...prev, task._id]
+                                    );
+                                }}
+                                className="w-6 h-6 flex items-center justify-center rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-all shadow-sm hover:scale-110"
+                                title={isExpanded ? "Collapse Children" : "Expand Children"}
+                            >
+                                {isExpanded ? <MdExpandMore size={18} /> : <MdChevronRight size={18} />}
+                            </button>
+                            <span className="text-[10px] font-black uppercase tracking-tighter bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-md border border-emerald-200/50 shadow-sm">
+                               Finished: {new Date(task.actualFinishDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                            </span>
+                          </div>
+                          {task.nestedChildren?.length > 0 && (
+                            <span className="text-[10px] font-bold text-emerald-500/60 italic">
+                                {task.nestedChildren.length} subtasks
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Main Parent Card */}
+                        <div className="w-full">
+                            <Task
+                                task={task}
+                                index={index}
+                                handleClick={handleClick}
+                            />
+                        </div>
+
+                        {/* Nested Children */}
+                        {isExpanded && task.nestedChildren?.length > 0 && (
+                          <div className="ml-4 pl-4 border-l-2 border-emerald-200/30 space-y-4 pt-2">
+                             {task.nestedChildren.map((child, cIdx) => (
+                                <Task 
+                                    key={child._id}
+                                    task={child}
+                                    index={1000 + cIdx} // offset index for nested
+                                    handleClick={handleClick}
+                                    isNested={true}
+                                />
+                             ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+                  
+                  return (
+                    <Task
+                      key={task._id}
+                      task={task}
+                      index={index}
+                      handleClick={handleClick}
+                    />
+                  );
+                })}
                 {provided.placeholder}
               </div>
             </div>

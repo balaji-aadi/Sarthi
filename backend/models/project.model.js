@@ -83,7 +83,8 @@ const projectSchema = new mongoose.Schema({
     },
     settings: {
       sprintDuration: { type: Number, default: 2 }, // weeks
-      enableSprints: { type: Boolean, default: false }
+      enableSprints: { type: Boolean, default: false },
+      enableYoutubeSearch: { type: Boolean, default: false }
     },
     createdBy : {
       type : Schema.Types.ObjectId, 

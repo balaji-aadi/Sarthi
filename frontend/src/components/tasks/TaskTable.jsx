@@ -3,6 +3,8 @@ import { IoChevronDown, IoChevronForward, IoAdd } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import StatusPill from './StatusPill';
 import ProgressBar from './ProgressBar';
+import { TaskApi } from '../../services/api/Task.api';
+import toast from 'react-hot-toast';
 
 const TaskTable = ({ tasks = [], isLoading, onProjectChange, onMemberChange, projects = [], members = [], selectedProject, selectedMember }) => {
     const navigate = useNavigate();

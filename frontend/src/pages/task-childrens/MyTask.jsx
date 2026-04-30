@@ -18,14 +18,19 @@ import { MdFilterAltOff } from "react-icons/md";
 import TaskTable from "../../components/tasks/TaskTable";
 import moment from "moment";
 
-const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, externalSearch, externalDateFilter, onEditStateChange }) => {
+const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, externalSearch, externalSort, externalParentId, onEditStateChange, externalTasks, externalLoading }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const urlProjectId = searchParams.get("projectId");
+  const urlType = searchParams.get("type");
+
   // State from original file
-  const [selectedProject, setSelectedProject] = useState(externalProjectId || "");
+  const [selectedProject, setSelectedProject] = useState(externalProjectId || urlProjectId || "");
   const [selectedMember, setSelectedMember] = useState(externalMemberId || "");
   const [selectedTaskType, setSelectedTaskType] = useState("");
   const [teamMember, setTeamMember] = useState([]);
   const [projectTasks, setProjectTasks] = useState(null);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const { handleLoading } = useLoading();
   const [projects, setProjects] = useState([]);
   const [id, setId] = useState();
@@ -39,9 +44,6 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
   const [updated, setUpdated] = useState(false);
   const [milestones, setMilestones] = useState([]);
   const page = location.pathname.split("/")[1];
-  const [searchParams] = useSearchParams();
-  const urlProjectId = searchParams.get("projectId");
-  const urlType = searchParams.get("type");
   const [milestoneId, setMilestoneId] = useState("");
   const [internalViewMode, setInternalViewMode] = useState('board');
   
@@ -68,7 +70,18 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
     const currentMemberId = externalMemberId || selectedMember;
 
     const loadData = async () => {
+        // Use tasks passed from Dashboard ONLY if they have been fetched (not null)
+        if (externalTasks !== null && !milestoneId) {
+            setProjectTasks(externalTasks);
+            setTasks(externalTasks);
+            setIsInitialLoading(externalLoading);
+            handleLoading(externalLoading); // Ensure global loader syncs with parent state
+            return;
+        }
+
+        // Show global loader during fetch
         handleLoading(true);
+        
         try {
             if (currentProjectId) {
                 // Fetch filtered project tasks
@@ -82,7 +95,7 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
                 const mRes = await ProjectApi.getAllmileStones(currentProjectId);
                 if (isMounted) setMilestones(mRes?.data?.data?.milestones || []);
             } else {
-                // Fetch all tasks if no project selected
+                // Fetch all tasks if no project selected (Dashboard view)
                 const res = await TaskApi.getAllTasks();
                 if (isMounted) {
                     setTasks(res.data?.data || []);
@@ -91,22 +104,28 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
             }
         } catch (err) {
             console.error("Failed to fetch tasks in MyTask:", err);
-            if (isMounted) setProjectTasks([]);
+            if (isMounted) {
+                setProjectTasks([]);
+                setTasks([]);
+            }
         } finally {
-            if (isMounted) handleLoading(false);
+            if (isMounted) {
+                handleLoading(false);
+                setIsInitialLoading(false);
+            }
         }
     };
 
     loadData();
 
     return () => { isMounted = false; };
-  }, [externalProjectId, externalMemberId, milestoneId, selectedTaskType, isTesting, updated, selectedProject, selectedMember]);
+  }, [externalProjectId, externalMemberId, milestoneId, selectedTaskType, isTesting, updated, selectedProject, selectedMember, externalTasks, externalLoading]);
 
   // Sync internal selected states with external props for secondary UI components
   useEffect(() => {
-    if (externalProjectId) setSelectedProject(externalProjectId);
-    if (externalMemberId) setSelectedMember(externalMemberId);
-  }, [externalProjectId, externalMemberId]);
+    setSelectedProject(externalProjectId || urlProjectId || "");
+    setSelectedMember(externalMemberId || "");
+  }, [externalProjectId, externalMemberId, urlProjectId]);
 
   // Notify parent if we are editing
   useEffect(() => {
@@ -361,27 +380,25 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
                     tasks={(() => {
                         let filtered = projectTasks || [];
                         if (externalSearch) filtered = filtered.filter(t => t.taskName?.toLowerCase().includes(externalSearch.toLowerCase()));
-                        if (externalDateFilter) {
-                            const now = moment().startOf('day');
-                            filtered = filtered.filter(t => {
-                                // Task might have startDate, endDate, or createdAt. We'll check if the current date filter overlaps with the task's active period.
-                                // Or simply check if the task's startDate falls within the filter. Let's use startDate as primary.
-                                const taskDateStr = t.startDate || t.taskStartDate || t.createdAt;
-                                if (!taskDateStr) return true;
-                                
-                                const taskDate = moment(taskDateStr);
-                                if (!taskDate.isValid()) return true;
+                        if (externalParentId) {
+                            filtered = filtered.filter(t => t.parentTask?._id === externalParentId || t.parentTask === externalParentId);
+                        }
 
-                                if (externalDateFilter === 'today') {
-                                    return taskDate.isSame(now, 'day');
+                        if (externalSort) {
+                            filtered = [...filtered].sort((a, b) => {
+                                if (externalSort === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+                                if (externalSort === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+                                if (externalSort === 'deadlineSoon') {
+                                    const dateA = new Date(a.taskDueDate || a.dueDate || '9999-12-31');
+                                    const dateB = new Date(b.taskDueDate || b.dueDate || '9999-12-31');
+                                    return dateA - dateB;
                                 }
-                                if (externalDateFilter === 'week') {
-                                    return taskDate.isSame(now, 'week');
+                                if (externalSort === 'deadlineLate') {
+                                    const dateA = new Date(a.taskDueDate || a.dueDate || '1970-01-01');
+                                    const dateB = new Date(b.taskDueDate || b.dueDate || '1970-01-01');
+                                    return dateB - dateA;
                                 }
-                                if (externalDateFilter === 'month') {
-                                    return taskDate.isSame(now, 'month');
-                                }
-                                return true;
+                                return 0;
                             });
                         }
                         return filtered;
@@ -400,25 +417,25 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
                    tasks={(() => {
                         let filtered = projectTasks || [];
                         if (externalSearch) filtered = filtered.filter(t => t.taskName?.toLowerCase().includes(externalSearch.toLowerCase()));
-                        if (externalDateFilter) {
-                            const now = moment().startOf('day');
-                            filtered = filtered.filter(t => {
-                                const taskDateStr = t.startDate || t.taskStartDate || t.createdAt;
-                                if (!taskDateStr) return true;
-                                
-                                const taskDate = moment(taskDateStr);
-                                if (!taskDate.isValid()) return true;
+                        if (externalParentId) {
+                            filtered = filtered.filter(t => t.parentTask?._id === externalParentId || t.parentTask === externalParentId);
+                        }
 
-                                if (externalDateFilter === 'today') {
-                                    return taskDate.isSame(now, 'day');
+                        if (externalSort) {
+                            filtered = [...filtered].sort((a, b) => {
+                                if (externalSort === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+                                if (externalSort === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+                                if (externalSort === 'deadlineSoon') {
+                                    const dateA = new Date(a.taskDueDate || a.dueDate || '9999-12-31');
+                                    const dateB = new Date(b.taskDueDate || b.dueDate || '9999-12-31');
+                                    return dateA - dateB;
                                 }
-                                if (externalDateFilter === 'week') {
-                                    return taskDate.isSame(now, 'week');
+                                if (externalSort === 'deadlineLate') {
+                                    const dateA = new Date(a.taskDueDate || a.dueDate || '1970-01-01');
+                                    const dateB = new Date(b.taskDueDate || b.dueDate || '1970-01-01');
+                                    return dateB - dateA;
                                 }
-                                if (externalDateFilter === 'month') {
-                                    return taskDate.isSame(now, 'month');
-                                }
-                                return true;
+                                return 0;
                             });
                         }
                         return filtered;
@@ -435,25 +452,25 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
                    tasks={(() => {
                         let filtered = projectTasks || [];
                         if (externalSearch) filtered = filtered.filter(t => t.taskName?.toLowerCase().includes(externalSearch.toLowerCase()));
-                        if (externalDateFilter) {
-                            const now = moment().startOf('day');
-                            filtered = filtered.filter(t => {
-                                const taskDateStr = t.startDate || t.taskStartDate || t.createdAt;
-                                if (!taskDateStr) return true;
-                                
-                                const taskDate = moment(taskDateStr);
-                                if (!taskDate.isValid()) return true;
+                        if (externalParentId) {
+                            filtered = filtered.filter(t => t.parentTask?._id === externalParentId || t.parentTask === externalParentId);
+                        }
 
-                                if (externalDateFilter === 'today') {
-                                    return taskDate.isSame(now, 'day');
+                        if (externalSort) {
+                            filtered = [...filtered].sort((a, b) => {
+                                if (externalSort === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+                                if (externalSort === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+                                if (externalSort === 'deadlineSoon') {
+                                    const dateA = new Date(a.taskDueDate || a.dueDate || '9999-12-31');
+                                    const dateB = new Date(b.taskDueDate || b.dueDate || '9999-12-31');
+                                    return dateA - dateB;
                                 }
-                                if (externalDateFilter === 'week') {
-                                    return taskDate.isSame(now, 'week');
+                                if (externalSort === 'deadlineLate') {
+                                    const dateA = new Date(a.taskDueDate || a.dueDate || '1970-01-01');
+                                    const dateB = new Date(b.taskDueDate || b.dueDate || '1970-01-01');
+                                    return dateB - dateA;
                                 }
-                                if (externalDateFilter === 'month') {
-                                    return taskDate.isSame(now, 'month');
-                                }
-                                return true;
+                                return 0;
                             });
                         }
                         return filtered;
@@ -465,11 +482,15 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
                    milestoneId={milestoneId}
                  />
                )
-             ) : (
-               <div className="flex flex-col items-center justify-center h-64 text-textSub">
-                 <p className="text-lg font-medium">No tasks available for this project.</p>
-                 <button onClick={handleReset} className="text-primary hover:underline mt-2">Clear filters</button>
-               </div>
+              ) : isInitialLoading ? (
+                 <div className="flex flex-col items-center justify-center h-64 text-textSub opacity-0">
+                   {/* Hidden to avoid double loading with global loader */}
+                 </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-64 text-textSub">
+                  <p className="text-lg font-medium">No tasks available for this project.</p>
+                  <button onClick={handleReset} className="text-primary hover:underline mt-2">Clear filters</button>
+                </div>
              )}
           </div>
         </div>

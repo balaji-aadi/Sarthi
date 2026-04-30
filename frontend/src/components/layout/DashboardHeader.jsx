@@ -18,8 +18,11 @@ const DashboardHeader = ({
     isManager,
     isAdmin,
     canCreate,
-    dateFilter,
-    onDateChange
+    sortBy,
+    onSortChange,
+    parentId,
+    onParentChange,
+    parentTasks
 }) => {
 
     const tabs = [
@@ -113,17 +116,32 @@ const DashboardHeader = ({
 
                 {/* Filters Group */}
                 <div className="flex flex-wrap gap-2 flex-grow lg:flex-grow-0">
-                    {/* Date Filter */}
+                    {/* Date Sort Filter */}
                     <div className="flex-grow lg:flex-grow-0">
                         <select 
-                            value={dateFilter || ""}
-                            onChange={(e) => onDateChange(e.target.value)}
-                            className="w-full px-2 py-1.5 border border-borderLight rounded-lg text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 bg-transparent cursor-pointer"
+                            value={sortBy || ""}
+                            onChange={(e) => onSortChange(e.target.value)}
+                            className="w-full px-2 py-1.5 border border-borderLight rounded-lg text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 bg-transparent cursor-pointer min-w-[130px]"
                         >
-                            <option value="">All Dates</option>
-                            <option value="today">Today</option>
-                            <option value="week">This Week</option>
-                            <option value="month">This Month</option>
+                            <option value="">Sort By</option>
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="deadlineSoon">Deadline Soon</option>
+                            <option value="deadlineLate">Deadline Late</option>
+                        </select>
+                    </div>
+
+                    {/* Parent Task Filter */}
+                    <div className="flex-grow lg:flex-grow-0">
+                        <select 
+                            value={parentId || ""} 
+                            onChange={(e) => onParentChange(e.target.value)}
+                            className="w-full px-2 py-1.5 border border-borderLight rounded-lg text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 bg-transparent cursor-pointer min-w-[150px]"
+                        >
+                            <option value="">All Parents</option>
+                            {parentTasks.map(t => (
+                                <option key={t._id} value={t._id}>{t.taskName}</option>
+                            ))}
                         </select>
                     </div>
 

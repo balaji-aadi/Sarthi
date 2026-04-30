@@ -34,7 +34,9 @@ const performanceStatSchema = new mongoose.Schema(
       delayedTasks: { type: Number, default: 0 },
       reopenedTasks: { type: Number, default: 0 },
       totalTasksAssigned: { type: Number, default: 0 },
-      accountabilityLogs: { type: Number, default: 0 }
+      accountabilityLogs: { type: Number, default: 0 },
+      backlogTasksCompleted: { type: Number, default: 0 },
+      backlogHoursLogged: { type: Number, default: 0 }
     }
   },
   { timestamps: true, versionKey: false }

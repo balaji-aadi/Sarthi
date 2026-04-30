@@ -76,7 +76,7 @@ pc.updateProject = asyncHandler(async (req, res) => {
     }
 
     const { name, access, key, description, startDate, endDate, priority, clientName, budget, projectManager,
-      teamMembers, rolesAndResponsibilities, milestones, status, githubRepository
+      teamMembers, rolesAndResponsibilities, milestones, status, githubRepository, settings
     } = req.body;
 
     const updatedProject = await Project.findByIdAndUpdate(
@@ -97,6 +97,7 @@ pc.updateProject = asyncHandler(async (req, res) => {
         rolesAndResponsibilities,
         milestones,
         status,
+        settings,
         updatedBy: req.user?._id
         },
       { new: true }

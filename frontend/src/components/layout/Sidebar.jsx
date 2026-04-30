@@ -10,7 +10,8 @@ import {
   IoChevronDown,
   IoAnalyticsOutline,
   IoCalendarOutline,
-  IoTimeOutline
+  IoTimeOutline,
+  IoSyncOutline
 } from 'react-icons/io5';
 import { ProjectApi } from '../../services/api/Project.api';
 import { useSelector } from 'react-redux';
@@ -58,6 +59,7 @@ const Sidebar = () => {
         // { icon: <IoCalendarOutline />, label: 'Daily Accountability', path: '/daily-accountability' },
         { icon: <IoTimeOutline />, label: 'Focus Timer', path: '/focus-timer' },
         { icon: <IoAnalyticsOutline />, label: 'Performance', path: '/performance' },
+        { icon: <IoSyncOutline />, label: 'Revision', path: '/revision' },
         { icon: <IoBriefcaseOutline />, label: 'Projects', path: '/project' },
         { icon: <IoPeopleOutline />, label: 'Teams', path: '/user' }, 
     ];
@@ -151,7 +153,10 @@ const Sidebar = () => {
 
             {/* Bottom Actions */}
             <div className="p-4 border-t border-borderLight">
-                <button className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-textSub hover:bg-slate-50 hover:text-textMain w-full transition-all">
+                <button 
+                    onClick={() => navigate('/settings')}
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-textSub hover:bg-slate-50 hover:text-textMain w-full transition-all"
+                >
                     <IoSettingsOutline size={20} />
                     Settings
                 </button>
@@ -186,7 +191,6 @@ const Sidebar = () => {
                         {currentUser ? (currentUser.userRoles?.[0]?.name || currentUser.userRole?.name || "Role") : 'Role'}
                      </p>
                  </div>
-                 <IoChevronDown className="text-textSub" />
             </div>
         </aside>
     );

@@ -197,7 +197,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import { IoFlagSharp } from "react-icons/io5";
+import { IoFlagSharp, IoLogoYoutube } from "react-icons/io5";
 import { IoMdTime } from "react-icons/io";
 import { FaCalendar } from "react-icons/fa";
 import { FiActivity, FiChevronDown, FiChevronUp } from "react-icons/fi";
@@ -326,10 +326,33 @@ const Task = ({ key, task, index, handleClick }) => {
                             <span className="text-slate-400 dark:text-slate-500 font-bold px-1">/</span>
                             <div className="flex items-center gap-1 text-[10px] font-extrabold text-blue-600 dark:text-blue-400 truncate uppercase tracking-tight bg-blue-50/50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded-md">
                                 <span className="hidden sm:inline opacity-70">Parent:</span>
-                                <span className="truncate max-w-[80px] sm:max-w-[140px] underline decoration-blue-200 decoration-1 underline-offset-2">{task.parentTask.taskName}</span>
+                                <span className="truncate max-w-[80px] sm:max-w-[140px] underline decoration-blue-200 decoration-1 underline-offset-2">{typeof task.parentTask === 'object' ? task.parentTask.taskName : 'Parent'}</span>
                             </div>
                         </div>
                     )}
+                    
+                    {/* Activated Tag */}
+                    {(() => {
+                        const today = moment().startOf('day');
+                        const ownStart = task.taskStartDate ? moment(task.taskStartDate).startOf('day') : null;
+                        const isOwnActive = ownStart && ownStart.isSameOrBefore(today);
+                        
+                        let isParentActive = false;
+                        if (task.parentTask && typeof task.parentTask === 'object') {
+                            const psd = task.parentTask.taskStartDate ? moment(task.parentTask.taskStartDate).startOf('day') : null;
+                            isParentActive = psd && psd.isSameOrBefore(today);
+                        }
+
+                        if (isOwnActive || isParentActive) {
+                            return (
+                                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-indigo-600 text-white rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm animate-pulse">
+                                    <span className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_5px_rgba(255,255,255,0.8)]"></span>
+                                    Activated
+                                </div>
+                            );
+                        }
+                        return null;
+                    })()}
                     </div>
                     <div className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${priorityColors[task.taskPriority] || 'bg-slate-50 text-slate-500 border-slate-100'}`}>
                     {task.taskPriority}
@@ -342,8 +365,20 @@ const Task = ({ key, task, index, handleClick }) => {
                     {renderAssigneeImage()}
                     </div>
                     <div className="min-w-0 flex-1">
-                    <h4 className={`text-sm sm:text-[15px] font-bold leading-snug mb-0.5 line-clamp-2 ${task.status === 'done' ? 'text-slate-400 line-through opacity-70' : task.parentTask ? 'text-blue-700 dark:text-blue-300' : 'text-slate-800 dark:text-slate-100'}`}>
-                        {task.taskName}
+                    <h4 className={`flex items-start gap-1.5 text-sm sm:text-[15px] font-bold leading-snug mb-0.5 line-clamp-2 ${task.status === 'done' ? 'text-slate-400 line-through opacity-70' : task.parentTask ? 'text-blue-700 dark:text-blue-300' : 'text-slate-800 dark:text-slate-100'}`}>
+                        {task.parentTask && task.projectName?.settings?.enableYoutubeSearch && (
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(task.taskName)}`, '_blank');
+                                }}
+                                className="mt-0.5 text-red-500 hover:text-red-600 hover:scale-110 transition-all shrink-0"
+                                title="Search on YouTube"
+                            >
+                                <IoLogoYoutube size={16} />
+                            </button>
+                        )}
+                        <span>{task.taskName}</span>
                     </h4>
                     <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
                         <span className="truncate">{task.projectName?.name || 'Momentum'}</span>

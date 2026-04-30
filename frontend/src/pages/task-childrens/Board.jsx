@@ -34,6 +34,9 @@ const Board = ({
   const [isDragging, setIsDragging] = useState(false);
   const scrollContainerRef = useRef(null);
   const [selectedParentId, setSelectedParentId] = useState("");
+  const [isDoneReorganized, setIsDoneReorganized] = useState(true);
+  const [expandedParents, setExpandedParents] = useState([]);
+  const reorganizeTimerRef = useRef(null);
 
   const { currentUser } = useSelector((state) => state.store);
   const isManager = currentUser?.userRole?.name === "projectmanager";
@@ -41,6 +44,39 @@ const Board = ({
   const canEdit = isManager || isAdmin;
 
   const [boardTasks, setBoardTasks] = useState([]);
+
+  const sortedBoardTasks = useMemo(() => {
+    const today = moment().startOf('day');
+
+    const getActivationScore = (task) => {
+        // Score 2: Own start date has arrived
+        const ownStart = task.taskStartDate ? moment(task.taskStartDate).startOf('day') : null;
+        if (ownStart && ownStart.isSameOrBefore(today)) return 2;
+
+        // Score 1: Parent's start date has arrived (inherited activation)
+        if (task.parentTask) {
+            const pId = typeof task.parentTask === 'object' ? task.parentTask._id : task.parentTask;
+            const parent = boardTasks.find(pt => pt._id === pId);
+            if (parent) {
+                const psd = parent.taskStartDate ? moment(parent.taskStartDate).startOf('day') : null;
+                if (psd && psd.isSameOrBefore(today)) return 1;
+            }
+        }
+        return 0;
+    };
+
+    return [...boardTasks].sort((a, b) => {
+      const scoreA = getActivationScore(a);
+      const scoreB = getActivationScore(b);
+
+      if (scoreA !== scoreB) return scoreB - scoreA;
+
+      // Fallback: Date wise (Newest Created First)
+      const dateA = new Date(a.createdAt || 0);
+      const dateB = new Date(b.createdAt || 0);
+      return dateB - dateA;
+    });
+  }, [boardTasks]);
 
   useEffect(() => {
     if (tasks) {
@@ -61,31 +97,24 @@ const Board = ({
 
   // backlogged tasks calculation
   const backlogTasks = useMemo(() => {
-    return boardTasks.filter(task => {
+    return sortedBoardTasks.filter(task => {
       // Explicit backlog status
       if (task.status === 'backlog') return true;
-      
       if (task.status === 'done') return false;
+
+      // Only treat as backlog if the task's own due date has passed
       const due = task.taskDueDate ? moment(task.taskDueDate) : null;
-      let compareDate = null;
-      if (task.parentTask) {
-        const parentObj =
-          typeof task.parentTask === 'object'
-            ? task.parentTask
-            : boardTasks.find((t) => t._id === task.parentTask);
-        if (parentObj && parentObj.taskDueDate) compareDate = moment(parentObj.taskDueDate);
+      const today = moment().startOf('day');
+      
+      if (due && due.isBefore(today)) {
+          return true;
       }
-      if (!compareDate && task.sprint && task.sprint.endDate) {
-        compareDate = moment(task.sprint.endDate);
-      }
-      if (due && compareDate) {
-        return due.isAfter(compareDate);
-      }
+      
       return false;
     });
-  }, [boardTasks]);
+  }, [sortedBoardTasks]);
 
-  const nonBacklogTasks = boardTasks.filter((t) => !backlogTasks.includes(t));
+  const nonBacklogTasks = sortedBoardTasks.filter((t) => !backlogTasks.includes(t));
 
   const parentTasksOnly = nonBacklogTasks.filter((t) => !t.parentTask && (selectedParentId ? t._id === selectedParentId : true));
   const allSubtasks = nonBacklogTasks.filter((t) => t.parentTask);
@@ -98,7 +127,7 @@ const Board = ({
               return sample.parentTask;
           }
           // If it's a string ID, try finding it in all board tasks
-          return boardTasks.find(t => t._id === id);
+          return sortedBoardTasks.find(t => t._id === id);
       }).filter(Boolean);
 
   // Group parent tasks by their standard Status columns
@@ -119,6 +148,42 @@ const Board = ({
           )
         : allSubtasks;
       combinedTasks = filteredSubtasks.filter((task) => task.status === "todo");
+    } else if (column.id === "done") {
+        const doneTasks = sortedBoardTasks.filter(t => t.status === "done");
+        
+        if (!isDoneReorganized) {
+            combinedTasks = doneTasks;
+        } else {
+            // Group subtasks under their parents if both are done
+            const doneParents = doneTasks.filter(t => !t.parentTask);
+            const doneChildren = doneTasks.filter(t => t.parentTask);
+            
+            const processedParents = doneParents.map(parent => {
+                const nestedChildren = doneChildren.filter(child => {
+                    const pId = typeof child.parentTask === 'object' ? child.parentTask._id : child.parentTask;
+                    return pId === parent._id;
+                });
+                
+                const finishDate = parent.activityLogs?.find(log => log.currentStatus === 'done')?.date || parent.updatedAt;
+                
+                return {
+                    ...parent,
+                    isDoneGroup: true,
+                    nestedChildren,
+                    actualFinishDate: finishDate
+                };
+            });
+            
+            const orphanDoneChildren = doneChildren.filter(child => {
+                const pId = typeof child.parentTask === 'object' ? child.parentTask._id : child.parentTask;
+                return !doneParents.find(p => p._id === pId);
+            });
+            
+            // Sort parents by actual finish date (Oldest top, Newest bottom)
+            processedParents.sort((a, b) => new Date(a.actualFinishDate) - new Date(b.actualFinishDate));
+            
+            combinedTasks = [...processedParents, ...orphanDoneChildren];
+        }
     } else {
       const filteredSubtasks = selectedParentId
         ? allSubtasks.filter(
@@ -206,7 +271,7 @@ const Board = ({
     if (type === "column") return;
     if (!destination || source.droppableId === destination.droppableId) return;
 
-    if (!sprintStarted && !isManager && !isAdmin) {
+    if (!sprintStarted && !isManager && !isAdmin && source.droppableId !== "backlog") {
         toast.error("You cannot change task status before the sprint has started.");
         return;
     }
@@ -230,7 +295,8 @@ const Board = ({
 
     const sourceColumn = groupedTasks.find(col => col.id === source.droppableId);
     const destinationColumn = groupedTasks.find(col => col.id === destination.droppableId);
-    const taskToMove = tasks.find(task => task._id === result.draggableId);
+    const allAvailableTasks = tasks || sortedBoardTasks;
+    const taskToMove = allAvailableTasks.find(task => task._id.toString() === result.draggableId);
 
     if (!taskToMove) return;
 
@@ -258,24 +324,36 @@ const Board = ({
      } else {
          // Automatically start the timer context
          const durationMins = (taskToMove.backlogEstimatedHours ? taskToMove.backlogEstimatedHours * 60 : (taskToMove.estimatedHours ? taskToMove.estimatedHours * 60 : 25));
+         const spentMins = taskToMove.duration?.inprogress || 0;
+         const accumulatedSecs = spentMins * 60;
+         
+         const isTaskBacklog = taskToMove.status === 'backlog' || (taskToMove.taskDueDate && moment(taskToMove.taskDueDate).isBefore(moment(), 'day'));
+         
          const focusTimerBinding = {
              taskId: taskToMove._id,
              taskName: taskToMove.taskName,
              taskIdString: taskToMove.taskId,
-             estimatedHours: taskToMove.backlogEstimatedHours || taskToMove.estimatedHours || 0 
+             estimatedHours: taskToMove.backlogEstimatedHours || taskToMove.estimatedHours || 0,
+             dueDate: taskToMove.taskDueDate,
+             isBacklog: isTaskBacklog
          };
          localStorage.setItem("focus_timer_task_binding", JSON.stringify(focusTimerBinding));
          
          const state = {
-            timeLeft: durationMins * 60,
+            timeLeft: Math.max((durationMins * 60) - accumulatedSecs, 0),
             isActive: true,
             startTime: new Date().toISOString(),
-            accumulatedTime: 0,
+            accumulatedTime: accumulatedSecs,
             selectedDuration: durationMins,
             currentTheme: { name: 'Indigo', color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.05)', shadow: 'rgba(79, 70, 229, 0.4)' }
          };
          localStorage.setItem("focus_timer_state", JSON.stringify(state));
-         toast.success(`Focus timer automatically started for ${durationMins} minutes!`);
+         
+         if (Math.round(spentMins) > 0) {
+            toast.success(`Focus timer resumed at ${Math.round(spentMins)}m spent!`);
+         } else {
+            toast.success(`Focus timer started for ${taskToMove.taskName}!`);
+         }
       }
     }
 
@@ -295,24 +373,26 @@ const Board = ({
                  if (timerState.isActive) {
                      const startTime = new Date(timerState.startTime);
                      const endTime = new Date();
-                     const durationMs = endTime - startTime;
-                     const actualDuration = Math.max(Math.round(durationMs / 60000), 1); 
+                     const durationSecs = (timerState.accumulatedTime || 0) + Math.floor((endTime - startTime) / 1000);
+                     const actualDuration = Math.max(Math.round(durationSecs / 60), 1); 
                      
-                     const sessionData = {
-                         date: new Date().toISOString().split('T')[0],
-                         startTime: timerState.startTime,
-                         endTime: endTime.toISOString(),
-                         duration: actualDuration,
-                         type: "Focus",
-                         task: bindingObj.taskId,
-                         taskName: bindingObj.taskName,
-                         taskIdString: bindingObj.taskIdString,
-                         statusAtCompletion: newStatus,
-                         completionState: newStatus === "done" ? "completed" : "incompleted",
-                         estimatedTimeAtStart: timerState.selectedDuration
-                     };
-                     
-                     FocusApi.createSession(sessionData).catch(e => console.error(e));
+                      const sData = {
+                          date: new Date().toISOString().split('T')[0],
+                          startTime: timerState.startTime,
+                          endTime: endTime.toISOString(),
+                          duration: actualDuration,
+                          type: "Focus",
+                          task: bindingObj.taskId,
+                          taskName: bindingObj.isBacklog ? `${bindingObj.taskName} (Backlog)` : bindingObj.taskName,
+                          taskIdString: bindingObj.taskIdString,
+                          statusAtCompletion: newStatus,
+                          completionState: newStatus === "done" ? "completed" : "incompleted",
+                          estimatedTimeAtStart: timerState.selectedDuration,
+                          isBacklog: !!bindingObj.isBacklog,
+                          originalDueDate: bindingObj.dueDate
+                      };
+                      
+                      FocusApi.createSession(sData).catch(e => console.error(e));
                      localStorage.removeItem("focus_timer_task_binding");
                      localStorage.removeItem("focus_timer_state");
                      localStorage.removeItem("focus_timer_retrievable"); // prevent undo context conflicts out of boundary
@@ -324,8 +404,16 @@ const Board = ({
       }
     }
 
+    if (newStatus === "done") {
+        setIsDoneReorganized(false);
+        if (reorganizeTimerRef.current) clearTimeout(reorganizeTimerRef.current);
+        reorganizeTimerRef.current = setTimeout(() => {
+            setIsDoneReorganized(true);
+        }, 5000);
+    }
+
     // 1. Update UI immediately
-    setTasks(prevTasks => {
+    const updateTasksState = (prevTasks) => {
       const updatedTasks = prevTasks.map(task =>
         task._id === taskToMove._id
           ? { ...task, status: newStatus }
@@ -353,7 +441,10 @@ const Board = ({
       }
 
       return updatedTasks;
-    });
+    };
+
+    if (setTasks) setTasks(updateTasksState);
+    setBoardTasks(updateTasksState);
 
     // scroll into view for the destination column (auto scroll)
     scrollToColumn(destinationColumn.id);
@@ -386,8 +477,8 @@ const Board = ({
                if (timerState.isActive) {
                    const startTime = new Date(timerState.startTime);
                    const endTime = new Date();
-                   const durationMs = endTime - startTime;
-                   const actualDuration = Math.max(Math.round(durationMs / 60000), 1); 
+                   const durationSecs = (timerState.accumulatedTime || 0) + Math.floor((endTime - startTime) / 1000);
+                   const actualDuration = Math.max(Math.round(durationSecs / 60), 1); 
                    
                    const sessionData = {
                        date: new Date().toISOString().split('T')[0],
@@ -413,24 +504,36 @@ const Board = ({
 
     // Start timer for newTask automatically
     const durationMins = (newTask.backlogEstimatedHours ? newTask.backlogEstimatedHours * 60 : (newTask.estimatedHours ? newTask.estimatedHours * 60 : 25));
+    const spentMins = newTask.duration?.inprogress || 0;
+    const accumulatedSecs = spentMins * 60;
+    
+    const isTaskBacklog = newTask.status === 'backlog' || (newTask.taskDueDate && moment(newTask.taskDueDate).isBefore(moment(), 'day'));
+
     const focusTimerBinding = {
        taskId: newTask._id,
        taskName: newTask.taskName,
        taskIdString: newTask.taskId,
-       estimatedHours: newTask.backlogEstimatedHours || newTask.estimatedHours || 0 
+       estimatedHours: newTask.backlogEstimatedHours || newTask.estimatedHours || 0,
+       dueDate: newTask.taskDueDate,
+       isBacklog: isTaskBacklog
     };
     localStorage.setItem("focus_timer_task_binding", JSON.stringify(focusTimerBinding));
     
     const state = {
-       timeLeft: durationMins * 60,
+       timeLeft: Math.max((durationMins * 60) - accumulatedSecs, 0),
        isActive: true,
        startTime: new Date().toISOString(),
-       accumulatedTime: 0,
+       accumulatedTime: accumulatedSecs,
        selectedDuration: durationMins,
        currentTheme: { name: 'Indigo', color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.05)', shadow: 'rgba(79, 70, 229, 0.4)' }
     };
     localStorage.setItem("focus_timer_state", JSON.stringify(state));
-    toast.success(`Timer logged for held task. Automatically started new session for ${durationMins} minutes!`);
+    
+    if (Math.round(spentMins) > 0) {
+        toast.success(`Timer logged for held task. Automatically resumed for ${newTask.taskName} at ${Math.round(spentMins)}m spent!`);
+    } else {
+        toast.success(`Timer logged for held task. Started for ${newTask.taskName}!`);
+    }
 
     await Promise.all([
       updateTaskStatus(currentInProgressTask._id, "hold"),
@@ -526,7 +629,13 @@ const Board = ({
                 data-column-id={column.id}
                 className="column shrink-0 px-3 w-[360px] sm:w-[380px] md:w-[420px] lg:w-[460px] h-full flex flex-col min-h-0"
                 >
-                <Column column={column} handleClick={handleCardClick} />
+                <Column 
+                  column={column} 
+                  handleClick={handleCardClick} 
+                  isDoneColumn={column.id === "done"}
+                  expandedParents={expandedParents}
+                  setExpandedParents={setExpandedParents}
+                />
                 </div>            ))}
             </div>
         </div>

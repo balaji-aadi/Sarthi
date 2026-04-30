@@ -1,9 +1,10 @@
 import { FocusSession } from "../../models/focusSession.model.js";
+import AnalyticsService from "../analytics-service/analytics.service.js";
 
 export const FocusController = {
   createSession: async (req, res) => {
     try {
-      const { startTime, endTime, duration, type, date, task, taskName, taskIdString, statusAtCompletion, completionState, estimatedTimeAtStart, backlogTimeAdded } = req.body;
+      const { startTime, endTime, duration, type, date, task, taskName, taskIdString, statusAtCompletion, completionState, estimatedTimeAtStart, backlogTimeAdded, isBacklog, originalDueDate } = req.body;
       const session = new FocusSession({
         user: req.user.id,
         startTime,
@@ -17,9 +18,15 @@ export const FocusController = {
         statusAtCompletion,
         completionState,
         estimatedTimeAtStart,
-        backlogTimeAdded
+        backlogTimeAdded,
+        isBacklog,
+        originalDueDate
       });
       await session.save();
+
+      // Update Analytics
+      await AnalyticsService.recordFocusTime(req.user.id, duration, session.date);
+
       res.status(201).json({ success: true, data: session });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
@@ -33,6 +40,10 @@ export const FocusController = {
       if (!session) {
         return res.status(404).json({ success: false, message: "Session not found" });
       }
+
+      // Update Analytics
+      await AnalyticsService.removeFocusTime(req.user.id, session.duration, session.date);
+
       res.status(200).json({ success: true, message: "Session deleted successfully" });
     } catch (error) {
        res.status(500).json({ success: false, message: error.message });

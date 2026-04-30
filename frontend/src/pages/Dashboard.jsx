@@ -31,12 +31,14 @@ const Dashboard = () => {
   // Global Filters
   const [projectId, setProjectId] = useState('');
   const [memberId, setMemberId] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
+  const [sortBy, setSortBy] = useState('');
+  const [parentId, setParentId] = useState('');
+  const [parentTasks, setParentTasks] = useState([]);
   
   // Data State
   const [projects, setProjects] = useState([]);
   const [members, setMembers] = useState([]);
-  const [tasks, setTasks] = useState([]); // For views that need raw tasks (Timeline, Calendar, Table)
+  const [tasks, setTasks] = useState(null); // For views that need raw tasks (Timeline, Calendar, Table)
   const [loading, setLoading] = useState(false);
   
   // Controls Visibility Logic
@@ -97,8 +99,6 @@ const Dashboard = () => {
 
   // Fetch Tasks for Non-Board Views (Board fetches its own for now to preserve strict logic)
   useEffect(() => {
-    if (viewMode === 'board') return; // MyTask handles its own fetching
-    
     const fetchTasks = async () => {
         setLoading(true);
         try {
@@ -118,11 +118,32 @@ const Dashboard = () => {
         }
     };
     fetchTasks();
-  }, [projectId, memberId, viewMode]);
+  }, [projectId, memberId, viewMode, sortBy, parentId]);
 
-  const filteredTasks = tasks.filter(t => 
+  // Fetch Parent Tasks for Filtering
+  useEffect(() => {
+    const fetchParents = async () => {
+        if (!projectId) {
+            setParentTasks([]);
+            return;
+        }
+        try {
+            const res = await TaskApi.getAllTasks({ filter: { projectName: projectId } });
+            // Filter tasks that can be parents (usually those that aren't subtasks themselves, 
+            // or just all tasks if the user wants to filter by ANY parent).
+            // Let's provide all tasks as parent options for now.
+            setParentTasks(res.data?.data || []);
+        } catch (error) {
+            console.error("Failed to fetch parent tasks", error);
+            setParentTasks([]);
+        }
+    };
+    fetchParents();
+  }, [projectId]);
+
+  const filteredTasks = (tasks || []).filter(t => 
     t.taskName?.toLowerCase().includes(globalSearch.toLowerCase()) ||
-    t.taskDescription?.toLowerCase().includes(globalSearch.toLowerCase())
+    t.taskId?.toLowerCase().includes(globalSearch.toLowerCase())
   );
 
   const handleCreateTask = () => {
@@ -161,7 +182,7 @@ const Dashboard = () => {
           {/* Quick Access Floating Trigger - Dynamic Height for responsiveness */}
           {!isControlsVisible && viewMode === 'board' && !isEditingTask && (
               <div 
-                  className="fixed top-[7rem] right-8 z-[100] pointer-events-none"
+                  className="fixed right-8 z-[100] pointer-events-none"
                   onMouseEnter={() => setIsControlsVisible(true)}
               >
                   <motion.button 
@@ -206,23 +227,25 @@ const Dashboard = () => {
                             }}
                             selectedMember={memberId}
                             onMemberChange={setMemberId}
-                            selectedMember={memberId}
-                            onMemberChange={setMemberId}
                             search={globalSearch}
                             onSearchChange={(val) => dispatch(setGlobalSearch(val))}
                             onResetFilters={() => {
                                 setProjectId('');
                                 setMemberId('');
                                 dispatch(setGlobalSearch(''));
-                                setDateFilter('');
+                                setSortBy('');
+                                setParentId('');
                                 setSearchParams({});
                             }}
                             onCreateTask={handleCreateTask}
                             isManager={isManager}
                             isAdmin={isAdmin}
                             canCreate={canCreate}
-                            dateFilter={dateFilter}
-                            onDateChange={setDateFilter}
+                            sortBy={sortBy}
+                            onSortChange={setSortBy}
+                            parentId={parentId}
+                            onParentChange={setParentId}
+                            parentTasks={parentTasks}
                         />
                     </div>
 
@@ -244,7 +267,10 @@ const Dashboard = () => {
                       externalProjectId={projectId}
                       externalMemberId={memberId}
                       externalSearch={globalSearch}
-                      externalDateFilter={dateFilter}
+                      externalSort={sortBy}
+                      externalParentId={parentId}
+                      externalTasks={tasks}
+                      externalLoading={loading}
                       onEditStateChange={(editing) => setIsEditingTask(editing)}
                  />
              )}

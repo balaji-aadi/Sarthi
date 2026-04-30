@@ -410,9 +410,6 @@ import { checkAndTransitionTasks } from "./taskTransition.job.js";
 tc.getallTasks = asyncHandler(async (req, res) => {
   console.log("req.body--->", req.body);
   
-  // Transition tasks that have expired before fetching them
-  await checkAndTransitionTasks();
-
   try {
     const { search = "" } = req.query;
     let { filter = {}, sortOrder = -1 } = req.body;
@@ -494,25 +491,23 @@ tc.getallTasks = asyncHandler(async (req, res) => {
     delete filter.type;
 
     const tasks = await Task.find({ ...searchCondition, ...filter })
-    .populate("projectName assignee milestone epic sprint activityLogs.user parentTask")
-    .populate({
-      path: "dependentTasks",
-      populate: [
-      {
-        path: "createdBy",
-        select: "email userRoles firstName lastName" // Updated to userRoles
-      },
-      {
-        path: "assignee",
-        select: "email userRoles firstName lastName" // Updated to userRoles
-      }
-    ]
-    })
+    .populate("projectName", "name key")
+    .populate("assignee", "firstName lastName email")
+    .populate("milestone", "milestoneName")
+    .populate("epic", "epicName")
+    .populate("sprint", "sprintName startDate endDate")
+    .populate("parentTask", "taskName taskId")
     .populate({
       path: "createdBy",
-      select: "email userRole firstName lastName"
+      select: "firstName lastName email"
     })
-    .sort({ _id: sortOrder });
+    .sort({ _id: sortOrder })
+    .lean();
+  
+    // Map tasks to include pre-calculated duration
+    tasks.forEach(task => {
+        task.duration = calculateStatusDuration(task.activityLogs || []);
+    });
   
 
     if (tasks.length === 0) {
@@ -688,9 +683,6 @@ tc.deletemilestone = asyncHandler(async (req, res) => {
 tc.getallTasksfree = asyncHandler(async (req, res) => {
   console.log("req.body--->", req.body);
   
-  // Transition tasks that have expired before fetching them
-  await checkAndTransitionTasks();
-
   try {
     const { search = "" } = req.query;
     let { sortOrder = -1 } = req.body;
@@ -742,6 +734,34 @@ tc.getallTasksfree = asyncHandler(async (req, res) => {
       .status(400)
       .json(new ApiError(400, error.message || "Error fetching tasks"));
   }
+});
+
+// Add Revision
+tc.addRevision = asyncHandler(async (req, res) => {
+    const { taskId } = req.params;
+    const { notes, revisionDate } = req.body;
+
+    if (!taskId) {
+        return res.status(400).json(new ApiError(400, "Task ID is required"));
+    }
+
+    const task = await Task.findById(taskId);
+    if (!task) {
+        return res.status(404).json(new ApiError(404, "Task not found"));
+    }
+
+    const revisionLog = {
+        revisionDate: revisionDate || new Date(),
+        notes: notes || "",
+        revisedBy: req.user?._id
+    };
+
+    if (!task.revisionLogs) task.revisionLogs = [];
+    task.revisionLogs.push(revisionLog);
+    
+    await task.save();
+
+    return res.status(200).json(new ApiResponse(200, task, "Revision logged successfully"));
 });
 
 export default tc;

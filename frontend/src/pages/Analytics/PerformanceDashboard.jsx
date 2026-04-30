@@ -10,7 +10,8 @@ import {
     IoAlertCircleOutline,
     IoPeopleOutline,
     IoBarChartOutline,
-    IoChevronForward
+    IoChevronForward,
+    IoFlame
 } from 'react-icons/io5';
 import moment from 'moment';
 import ConsistencyCalendar from '../../components/analytics/ConsistencyCalendar';
@@ -233,8 +234,9 @@ const PerformanceDashboard = () => {
             acc.points += curr.metrics.storyPointsDone || 0;
             acc.onTime += curr.metrics.onTimeTasks || 0;
             acc.total += curr.metrics.totalTasksAssigned || 0;
+            acc.backlogCompleted += curr.metrics.backlogTasksCompleted || 0;
             return acc;
-        }, { hours: 0, completed: 0, points: 0, onTime: 0, total: 0 });
+        }, { hours: 0, completed: 0, points: 0, onTime: 0, total: 0, backlogCompleted: 0 });
     }, [stats, period, selectedDate]);
 
     const hasNoWork = useMemo(() => {
@@ -419,7 +421,7 @@ const PerformanceDashboard = () => {
             {activeTab === 'personal' ? (
                 <>
                     {/* Quick Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                         <StatCard 
                             icon={<IoTimeOutline />} 
                             label="Hours Logged" 
@@ -433,6 +435,13 @@ const PerformanceDashboard = () => {
                             value={aggregate.completed} 
                             subtext={`${aggregate.total} assigned`}
                             color="emerald"
+                        />
+                        <StatCard 
+                            icon={<IoFlame />} 
+                            label="Backlog Clearance" 
+                            value={aggregate.backlogCompleted} 
+                            subtext="Overdue tasks finished"
+                            color="rose"
                         />
                         <StatCard 
                             icon={<IoTrendingUpOutline />} 

@@ -122,6 +122,17 @@ const taskSchema = new mongoose.Schema(
         date: { type: Date, default: Date.now },
         message: { type: String, default: "" }
       }
+    ],
+    revisionLogs: [
+      {
+        revisionDate: { type: Date, default: Date.now },
+        notes: { type: String, default: "" },
+        revisedBy: { 
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          default: null 
+        }
+      }
     ]
   }, 
   { 

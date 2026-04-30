@@ -49,6 +49,13 @@ const focusSessionSchema = new mongoose.Schema(
     },
     backlogTimeAdded: {
       type: Number, // In minutes
+    },
+    isBacklog: {
+      type: Boolean,
+      default: false,
+    },
+    originalDueDate: {
+      type: Date,
     }
   },
   { timestamps: true }

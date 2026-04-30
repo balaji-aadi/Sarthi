@@ -23,10 +23,15 @@ const GlobalTopBar = () => {
   const [shuffledQuotes, setShuffledQuotes] = useState([...QUOTES]);
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [isQuoteVisible, setIsQuoteVisible] = useState(true);
+  const [isBarEnabled, setIsBarEnabled] = useState(localStorage.getItem('momentum_show_topbar') !== 'false');
 
   useEffect(() => {
     // Shuffle quotes for randomness
     setShuffledQuotes([...QUOTES].sort(() => 0.5 - Math.random()));
+    
+    const handleToggle = () => setIsBarEnabled(localStorage.getItem('momentum_show_topbar') !== 'false');
+    window.addEventListener('topbarToggled', handleToggle);
+    return () => window.removeEventListener('topbarToggled', handleToggle);
   }, []);
 
   useEffect(() => {
@@ -94,7 +99,7 @@ const GlobalTopBar = () => {
     return streak;
   }, [stats]);
 
-  if (!currentUser) return null;
+  if (!currentUser || !isBarEnabled) return null;
 
   return (
     <div className="w-full bg-[#111111] border-b border-white/5 h-10 flex items-center justify-between text-xs overflow-hidden relative z-[60] shrink-0 font-sans text-slate-300">
