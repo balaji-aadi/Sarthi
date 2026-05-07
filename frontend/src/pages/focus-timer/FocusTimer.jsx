@@ -7,7 +7,8 @@ import {
   IoStatsChartOutline,
   IoStop,
   IoFlame,
-  IoColorPaletteOutline
+  IoColorPaletteOutline,
+  IoRefreshOutline
 } from "react-icons/io5";
 import moment from "moment";
 import { FocusApi } from "../../services/api/Focus.api";
@@ -56,6 +57,7 @@ const FocusTimer = () => {
   const [selectedTask, setSelectedTask] = useState("");
   const [customHeading, setCustomHeading] = useState("");
   const [isBindingActive, setIsBindingActive] = useState(false);
+  const [isCustomSessionActive, setIsCustomSessionActive] = useState(false);
   
   // Custom Modals and Table Filters
   const [showConfirm, setShowConfirm] = useState(false);
@@ -136,6 +138,10 @@ const FocusTimer = () => {
       if (sTheme) setCurrentTheme(sTheme);
     }
     
+    const { customHeading: sCustomHeading, isCustomSessionActive: sCustomActive } = savedState ? JSON.parse(savedState) : {};
+    if (sCustomHeading) setCustomHeading(sCustomHeading);
+    if (sCustomActive) setIsCustomSessionActive(sCustomActive);
+    
     setIsBindingActive(!!localStorage.getItem("focus_timer_task_binding"));
     
     if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
@@ -159,10 +165,12 @@ const FocusTimer = () => {
       startTime: startTime ? (startTime instanceof Date ? startTime.toISOString() : startTime) : null,
       accumulatedTime,
       selectedDuration,
-      currentTheme
+      currentTheme,
+      customHeading,
+      isCustomSessionActive
     };
     localStorage.setItem("focus_timer_state", JSON.stringify(state));
-  }, [timeLeft, isActive, startTime, accumulatedTime, selectedDuration, currentTheme]);
+  }, [timeLeft, isActive, startTime, accumulatedTime, selectedDuration, currentTheme, customHeading, isCustomSessionActive]);
 
   useEffect(() => {
     if (isActive) {
@@ -224,6 +232,8 @@ const FocusTimer = () => {
              setTimeLeft(durationMins * 60);
          }
       }
+    } else if (!selectedTask && !isBindingActive) {
+      setIsCustomSessionActive(true);
     }
 
     setIsActive(true);
@@ -241,6 +251,22 @@ const FocusTimer = () => {
 
   const handleReset = () => {
      triggerConfirm("End session early? Your progress will be saved in the logs.", () => handleComplete(false));
+  };
+
+  const resetToDefault = () => {
+    setIsActive(false);
+    setStartTime(null);
+    setAccumulatedTime(0);
+    setTimeLeft(25 * 60);
+    setSelectedDuration(25);
+    setIsBindingActive(false);
+    setIsCustomSessionActive(false);
+    setSelectedTask("");
+    setCustomHeading("");
+    setCustomMinutes("");
+    localStorage.removeItem("focus_timer_task_binding");
+    localStorage.removeItem("focus_timer_state");
+    toast.success("Timer reset to default");
   };
 
   const setDuration = (mins) => {
@@ -346,6 +372,7 @@ const FocusTimer = () => {
       localStorage.removeItem("focus_timer_state");
       localStorage.removeItem("focus_timer_task_binding");
       setIsBindingActive(false);
+      setIsCustomSessionActive(false);
       setSelectedTask("");
       setCustomHeading("");
     } catch (error) {
@@ -486,7 +513,7 @@ const FocusTimer = () => {
          </div>
 
           <div className="flex flex-col items-center justify-center mt-6 mb-2 max-w-md mx-auto w-full px-4">
-             {!isActive && !isBindingActive ? (
+             {!isActive && !isBindingActive && !isCustomSessionActive ? (
                 <div className="w-full flex flex-col gap-3 relative z-10 animate-in slide-in-from-bottom-2 duration-500">
                     <select 
                         value={selectedTask}
@@ -530,10 +557,21 @@ const FocusTimer = () => {
                     )}
                 </div>
              ) : (
-                <div className="w-full px-4 py-3 bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl text-center shadow-sm">
-                    <span className="text-sm font-bold text-slate-700">
-                        {isBindingActive ? JSON.parse(localStorage.getItem("focus_timer_task_binding")).taskName : (customHeading || "Standalone Session")}
-                    </span>
+                <div className="w-full flex items-center gap-2">
+                    <div className="flex-1 px-4 py-3 bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl text-center shadow-sm">
+                        <span className="text-sm font-bold text-slate-700">
+                            {isBindingActive ? JSON.parse(localStorage.getItem("focus_timer_task_binding")).taskName : (customHeading || "Standalone Session")}
+                        </span>
+                    </div>
+                    {!isActive && (
+                        <button 
+                            onClick={resetToDefault}
+                            className="p-3 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm group"
+                            title="Reset Timer & Task"
+                        >
+                            <IoRefreshOutline size={20} className="group-hover:rotate-180 transition-transform duration-500" />
+                        </button>
+                    )}
                 </div>
              )}
           </div>

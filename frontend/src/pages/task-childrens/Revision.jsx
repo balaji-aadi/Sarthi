@@ -19,6 +19,40 @@ import {
 } from 'react-icons/io5';
 import toast from 'react-hot-toast';
 import InputField from '../../components/InputField';
+import { IoEllipsisHorizontalOutline } from 'react-icons/io5';
+
+const NoteCell = ({ text }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    if (!text) return <span className="text-[9px] font-black text-slate-200 uppercase tracking-[0.15em] italic">No Notes</span>;
+    
+    // Strip HTML for character count to decide if "Read More" is needed
+    const plainText = text.replace(/<[^>]*>?/gm, '');
+    const isLong = plainText.length > 80;
+
+    return (
+        <div className="min-w-[200px] max-w-[320px] py-1">
+            <div 
+                className={`text-[11px] font-semibold text-slate-500 leading-[1.6] transition-all duration-300 rich-text-preview ${isExpanded ? '' : 'line-clamp-2'}`}
+                dangerouslySetInnerHTML={{ __html: text }}
+            />
+            {isLong && (
+                <button 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setIsExpanded(!isExpanded);
+                    }}
+                    className="flex items-center gap-1 text-[9px] font-black text-primary uppercase tracking-widest mt-1.5 hover:text-primary-dark transition-colors group/read"
+                >
+                    {isExpanded ? (
+                        <>READ LESS <IoChevronUpOutline className="group-hover/read:-translate-y-0.5 transition-transform" /></>
+                    ) : (
+                        <>READ MORE <IoChevronDown className="group-hover/read:translate-y-0.5 transition-transform" /></>
+                    )}
+                </button>
+            )}
+        </div>
+    );
+};
 
 const Revision = () => {
     const { handleLoading } = useLoading();
@@ -258,6 +292,7 @@ const Revision = () => {
                                     <th className="pl-8 pr-4 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-12"></th>
                                     <th className="px-4 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Mastery Detail</th>
                                     <th className="px-4 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Context (Parent)</th>
+                                    <th className="px-4 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[300px]">Reference Notes</th>
                                     <th className="px-4 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Key</th>
                                     <th className="px-4 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Timeline</th>
                                     <th className="px-4 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Rev</th>
@@ -289,6 +324,9 @@ const Revision = () => {
                                                         {task.parentTask?.taskName || 'Individual Task'}
                                                     </span>
                                                 </div>
+                                            </td>
+                                            <td className="px-4 py-4">
+                                                <NoteCell text={task.additionalNotes} />
                                             </td>
                                             <td className="px-4 py-4">
                                                 <span className="text-[9px] font-black text-primary bg-primary/5 px-2.5 py-0.5 rounded-full border border-primary/10 uppercase tracking-wider">
@@ -326,6 +364,23 @@ const Revision = () => {
                                                                 <IoListOutline size={16} className="text-primary" />
                                                                 Logs
                                                             </h4>
+                                                        </div>
+
+                                                        {task.additionalNotes && (
+                                                            <div className="mb-6 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
+                                                               <h5 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Original Reference Notes</h5>
+                                                               <div 
+                                                                    className="text-[12px] font-medium text-slate-600 leading-relaxed rich-text-content"
+                                                                    dangerouslySetInnerHTML={{ __html: task.additionalNotes }}
+                                                                />
+                                                            </div>
+                                                        )}
+                                                        
+                                                        <div className="flex items-center justify-between mb-4">
+                                                            <h5 className="text-[9px] font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                                                                <IoSyncOutline size={14} className="text-primary" />
+                                                                Revision History
+                                                            </h5>
                                                         </div>
                                                         
                                                         {task.revisionLogs && task.revisionLogs.length > 0 ? (
