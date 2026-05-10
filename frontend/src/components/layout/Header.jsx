@@ -161,6 +161,11 @@ const Header = () => {
       );
       console.log("Service Worker registered successfully:", registration);
 
+      if (!messaging) {
+        console.log("Messaging instance not yet initialized.");
+        return;
+      }
+
       const token = await getToken(messaging, {
         vapidKey:
           "BPuhQ5iZ4rOcxGmyJ5mEcItRY2RlzEKhzwHC9RwTIbvD694R4p_xdGen-C--tULAPhVUmb_kfMOQcjy5NIOzKzw",

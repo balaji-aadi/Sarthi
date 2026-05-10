@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { TaskApi } from '../../services/api/Task.api';
 import { ProjectApi } from '../../services/api/Project.api';
 import { useLoading } from '../../components/loader/LoaderContext';
@@ -23,16 +23,31 @@ import { IoEllipsisHorizontalOutline } from 'react-icons/io5';
 
 const NoteCell = ({ text }) => {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isLong, setIsLong] = useState(false);
+    const textRef = useRef(null);
+
+    useEffect(() => {
+        const checkOverflow = () => {
+            if (textRef.current) {
+                // Check if scrollHeight is strictly greater than clientHeight
+                // We add a small tolerance (e.g. 2px) to prevent false positives due to fractional pixels
+                setIsLong(textRef.current.scrollHeight > textRef.current.clientHeight + 2);
+            }
+        };
+
+        checkOverflow();
+        // Recalculate on window resize in case the column width changes
+        window.addEventListener('resize', checkOverflow);
+        return () => window.removeEventListener('resize', checkOverflow);
+    }, [text]);
+
     if (!text) return <span className="text-[9px] font-black text-slate-200 uppercase tracking-[0.15em] italic">No Notes</span>;
-    
-    // Strip HTML for character count to decide if "Read More" is needed
-    const plainText = text.replace(/<[^>]*>?/gm, '');
-    const isLong = plainText.length > 80;
 
     return (
         <div className="min-w-[200px] max-w-[320px] py-1">
             <div 
-                className={`text-[11px] font-semibold text-slate-500 leading-[1.6] transition-all duration-300 rich-text-preview ${isExpanded ? '' : 'line-clamp-2'}`}
+                ref={textRef}
+                className={`text-[11px] font-semibold text-slate-500 leading-[1.6] transition-all duration-300 rich-text-preview break-words whitespace-pre-wrap ${isExpanded ? '' : 'line-clamp-2'}`}
                 dangerouslySetInnerHTML={{ __html: text }}
             />
             {isLong && (
@@ -253,7 +268,7 @@ const Revision = () => {
                                 options={parentOptions}
                                 value={selectedParent}
                                 onChange={(e) => setSelectedParent(e.target.value)}
-                                className="!py-1 !rounded-xl !text-[10px] !font-bold shadow-none min-w-[140px]"
+                                className="!py-1 !rounded-xl !text-[10px] !font-bold shadow-none min-w-[15rem]"
                                 menuPortalTarget={document.body}
                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                             />
@@ -393,7 +408,7 @@ const Revision = () => {
                                                                         <div className="flex-1">
                                                                             <div className="flex items-center justify-between mb-1">
                                                                                 <span className="text-[10px] font-black text-slate-700">Review</span>
-                                                                                <span className="text-[8px] font-bold text-slate-400">
+                                                                                <span className="text-[15px] font-bold text-slate-400">
                                                                                     {moment(log.revisionDate).format('DD MMM, YYYY · HH:mm')}
                                                                                 </span>
                                                                             </div>
