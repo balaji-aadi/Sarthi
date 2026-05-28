@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { UserApi } from '../../services/api/user.api';
 import { useNavigate } from 'react-router-dom';
-import { IoAdd, IoSearchOutline, IoMailOutline, IoCallOutline, IoGridOutline, IoListOutline } from 'react-icons/io5';
+import { IoAdd, IoSearchOutline, IoMailOutline, IoCallOutline, IoGridOutline, IoListOutline, IoLockClosed, IoLockOpen } from 'react-icons/io5';
 import { Table } from '../../components/Table/Table';
-import { FaEdit } from 'react-icons/fa';
+import { FaEdit, FaBan, FaCheckCircle } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 const TeamList = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [viewMode, setViewMode] = useState('grid');
+    const [actionLoading, setActionLoading] = useState(null);
+    const { activeBranch } = useSelector((state) => state.store);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchUsers();
-    }, []);
+        if (activeBranch) {
+            fetchUsers();
+        }
+    }, [activeBranch]);
 
     const fetchUsers = async () => {
         try {
@@ -57,19 +63,57 @@ const TeamList = () => {
             field: "userRole.name",
             valueGetter: (params) => {
                  const role = params.data.userRole;
-                 if (role && role.name) return role.name;
-                 if (params.data.userRoles && params.data.userRoles.length > 0) return params.data.userRoles.map(r => r.name).join(", ");
-                 return typeof role === 'string' ? 'Role ID: ' + role.substring(0,5) : 'Member';
+                 let roleName = role && role.name ? role.name : null;
+                 if (!roleName && params.data.userRoles && params.data.userRoles.length > 0) {
+                     roleName = params.data.userRoles.map(r => r.name).join(", ");
+                 }
+                 if (!roleName) roleName = typeof role === 'string' ? 'Role ID: ' + role.substring(0,5) : 'Member';
+                 return roleName.toLowerCase() === 'employee' ? 'USER' : roleName;
             }
+        },
+        {
+            headerName: "Status",
+            field: "isActive",
+            valueGetter: (params) => params.data.isActive ? "Active" : "Disabled"
         },
         { 
             headerName: "Actions", 
             field: "actions",
-            cellRenderer: (params) => (
-                <button onClick={() => navigate('/user/create', { state: { user: params.data } })} className="text-blue-500 hover:text-blue-700">
-                    <FaEdit />
-                </button>
-            )
+            cellRenderer: (params) => {
+                const isAdmin = params.data.userRole?.name === 'admin' || (params.data.userRoles && params.data.userRoles.some(r => r.name === 'admin'));
+                
+                return (
+                    <div className="flex items-center gap-2">
+                        <button onClick={() => navigate('/user/create', { state: { user: params.data } })} className="text-blue-500 hover:text-blue-700 transition-all" title="Edit User">
+                            <FaEdit size={16} />
+                        </button>
+                        {!isAdmin && (
+                            <button 
+                                onClick={async () => {
+                                    try {
+                                        await UserApi.bulkUpdateStatus({ userIds: [params.data._id], isActive: !params.data.isActive });
+                                        
+                                        // Update grid instantly
+                                        params.data.isActive = !params.data.isActive;
+                                        if (params.api) {
+                                            params.api.refreshCells({ rowNodes: [params.node], force: true });
+                                        }
+
+                                        toast.success(params.data.isActive ? "User enabled successfully" : "User disabled successfully");
+                                        fetchUsers();
+                                    } catch (e) {
+                                        toast.error("Failed to update status");
+                                    }
+                                }}
+                                className={`p-1.5 rounded-full transition-all ${params.data.isActive ? 'bg-red-100 text-red-600 hover:bg-red-200 hover:scale-110' : 'bg-green-100 text-green-600 hover:bg-green-200 hover:scale-110'}`}
+                                title={params.data.isActive ? 'Disable User' : 'Enable User'}
+                            >
+                                {params.data.isActive ? <IoLockClosed size={16} /> : <IoLockOpen size={16} />}
+                            </button>
+                        )}
+                    </div>
+                );
+            }
         },
     ];
 
@@ -82,12 +126,12 @@ const TeamList = () => {
     // Just View for now.
 
     return (
-        <div className="p-6 bg-bgLight min-h-full flex flex-col">
+        <div className="bg-bgLight min-h-full flex flex-col">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-textMain">Team Members</h1>
-                    <p className="text-textSub text-sm mt-1">Manage your team and their roles</p>
+                    <h1 className="text-2xl font-bold text-textMain">Users</h1>
+                    <p className="text-textSub text-sm mt-1">Manage users and access permissions</p>
                 </div>
                 <div className="flex items-center gap-3">
                      <div className="flex bg-white p-1 rounded-lg border border-borderLight mr-2">
@@ -125,7 +169,7 @@ const TeamList = () => {
                         className="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-xl font-semibold shadow-lg shadow-primary/30 flex items-center gap-2 transition-transform active:scale-95"
                      >
                         <IoAdd size={18} />
-                        <span>Add Member</span>
+                        <span>Add User</span>
                      </button>
                 </div>
             </div>
@@ -137,7 +181,7 @@ const TeamList = () => {
                          <Table
                             column={columnDefs}
                             getTableFunction={UserApi.users}
-                            searchLabel={"Member"}
+                            searchLabel={"Users"}
                             totalCount={true}
                         />
                     </div>
@@ -167,8 +211,17 @@ const TeamList = () => {
 
                                          <h3 className="text-base font-black text-slate-800 mb-1 group-hover:text-primary transition-colors">{user.firstName} {user.lastName}</h3>
                                          <span className="bg-primary/5 text-primary border border-primary/10 px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest mb-4">
-                                             {user.userRole?.name || (typeof user.userRole === 'string' ? 'Role ID: ' + user.userRole.substring(0,5) : 'Member')}
+                                             {(() => {
+                                                 let rName = user.userRole?.name || (typeof user.userRole === 'string' ? 'Role ID: ' + user.userRole.substring(0,5) : 'Member');
+                                                 return rName.toLowerCase() === 'employee' ? 'USER' : rName;
+                                             })()}
                                          </span>
+
+                                         {!user.isActive && (
+                                             <div className="absolute top-4 left-4 bg-red-100 text-red-600 border border-red-200 px-2 py-0.5 rounded text-[10px] font-bold uppercase">
+                                                 Disabled
+                                             </div>
+                                         )}
 
                                          <div className="w-full space-y-2.5 pt-5 border-t border-slate-50 mt-auto">
                                              <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-slate-400 group-hover:text-slate-600 transition-colors">
@@ -181,17 +234,47 @@ const TeamList = () => {
                                              </div>
                                          </div>
 
-                                         <button 
-                                            onClick={() => navigate('/user/create', { state: { user } })}
-                                            className="absolute top-4 right-4 p-2 text-slate-300 hover:text-primary hover:bg-primary/5 rounded-xl transition-all opacity-0 group-hover:opacity-100"
-                                         >
-                                            <FaEdit size={14} />
-                                         </button>
+                                         <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                                             <button 
+                                                onClick={() => navigate('/user/create', { state: { user } })}
+                                                className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all shadow-sm bg-white"
+                                                title="Edit User"
+                                             >
+                                                <FaEdit size={14} />
+                                             </button>
+                                             
+                                             {!(user.userRole?.name === 'admin' || (user.userRoles && user.userRoles.some(r => r.name === 'admin'))) && (
+                                                 <button 
+                                                    onClick={async () => {
+                                                        if (actionLoading) return;
+                                                        setActionLoading(user._id);
+                                                        try {
+                                                            await UserApi.bulkUpdateStatus({ userIds: [user._id], isActive: !user.isActive });
+                                                            toast.success(user.isActive ? "User disabled successfully" : "User enabled successfully");
+                                                            await fetchUsers();
+                                                        } catch (e) {
+                                                            toast.error("Failed to update status");
+                                                        } finally {
+                                                            setActionLoading(null);
+                                                        }
+                                                    }}
+                                                    disabled={actionLoading === user._id}
+                                                    className={`p-2 rounded-xl transition-all shadow-sm bg-white font-bold flex items-center justify-center ${user.isActive ? 'text-red-500 hover:bg-red-50' : 'text-green-500 hover:bg-green-50'} ${actionLoading === user._id ? 'opacity-50 cursor-wait' : ''}`}
+                                                    title={user.isActive ? 'Disable User' : 'Enable User'}
+                                                 >
+                                                    {actionLoading === user._id ? (
+                                                        <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                                                    ) : (
+                                                        user.isActive ? <IoLockClosed size={14} /> : <IoLockOpen size={14} />
+                                                    )}
+                                                 </button>
+                                             )}
+                                         </div>
                                     </div>
                                 ))
                             ) : (
                                 <div className="col-span-full text-center py-20 text-textSub">
-                                    <p>No team members found.</p>
+                                    <p>No users found.</p>
                                 </div>
                             )}
                         </div>

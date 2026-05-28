@@ -19,21 +19,22 @@ class AnalyticsService {
     const task = await Task.findById(taskId);
     if (!task) return;
 
+    const branchId = task.branchId;
     const date = new Date();
-    await this._recordStatUpdate(userId, projectId, task, oldStatus, newStatus, date);
+    await this._recordStatUpdate(userId, projectId, task, oldStatus, newStatus, date, branchId);
   }
 
   /**
    * Internal helper to record stats for both user and project across all periods
    */
-  async _recordStatUpdate(userId, projectId, task, oldStatus, newStatus, date) {
+  async _recordStatUpdate(userId, projectId, task, oldStatus, newStatus, date, branchId) {
     const periods = ["daily", "weekly", "monthly", "yearly"];
     for (const period of periods) {
       const normalizedDate = this._normalizeDate(date, period);
       // Update User Stats
-      await this._updateStats("user", userId, period, normalizedDate, task, oldStatus, newStatus);
+      await this._updateStats("user", userId, period, normalizedDate, task, oldStatus, newStatus, branchId);
       // Update Project Stats
-      await this._updateStats("project", projectId, period, normalizedDate, task, oldStatus, newStatus);
+      await this._updateStats("project", projectId, period, normalizedDate, task, oldStatus, newStatus, branchId);
     }
   }
 
@@ -51,24 +52,34 @@ class AnalyticsService {
       if (!task.assignee || !task.projectName) continue;
 
       // 1. Basic metrics (Completed, Points, On-Time)
-      // We'll treat this as a "Initial Assignment" + "Current Status" update
-      // using the task's createdAt and updatedAt dates.
-      
       const createdDate = task.createdAt || new Date();
       const updatedDate = task.updatedAt || new Date();
 
+      // Find the exact completion or inprogress date from activity logs to be highly precise
+      let statusChangeDate = updatedDate;
+      if (task.status === "done" && task.activityLogs && task.activityLogs.length > 0) {
+          const doneLog = [...task.activityLogs].reverse().find(log => log.currentStatus === "done");
+          if (doneLog) {
+              statusChangeDate = doneLog.date;
+          }
+      } else if (task.status === "inprogress" && task.activityLogs && task.activityLogs.length > 0) {
+          const inprogressLog = [...task.activityLogs].reverse().find(log => log.currentStatus === "inprogress");
+          if (inprogressLog) {
+              statusChangeDate = inprogressLog.date;
+          }
+      }
+
       // Initial assignment stat
-      await this._recordStatUpdate(task.assignee, task.projectName, task, null, "todo", createdDate);
+      await this._recordStatUpdate(task.assignee, task.projectName, task, null, "todo", createdDate, task.branchId);
       
       // If currently not todo, update to current status
       if (task.status !== "todo") {
-          await this._recordStatUpdate(task.assignee, task.projectName, task, "todo", task.status, updatedDate);
+          await this._recordStatUpdate(task.assignee, task.projectName, task, "todo", task.status, statusChangeDate, task.branchId);
       }
 
       // 2. Historical Hours Logged from Activity Logs
       // We need to find all durations where status was 'inprogress'
       if (task.activityLogs && task.activityLogs.length > 1) {
-          // Sort logs by date ascending to process chronologically
           const sortedLogs = [...task.activityLogs].sort((a, b) => new Date(a.date) - new Date(b.date));
           
           let lastInprogressDate = null;
@@ -80,7 +91,7 @@ class AnalyticsService {
                   const hours = Number((ms / (1000 * 60 * 60)).toFixed(2));
                   if (hours > 0) {
                       // Apply these hours to the date they were logged
-                      await this._incrementHoursOnly(task.assignee, task.projectName, hours, log.date);
+                      await this._incrementHoursOnly(task.assignee, task.projectName, hours, log.date, task.branchId);
                   }
                   lastInprogressDate = null;
               }
@@ -95,7 +106,7 @@ class AnalyticsService {
         if (!session.user || !session.duration) continue;
         
         // Add Focus Session duration to user's stats
-        await this.recordFocusTime(session.user, session.duration, session.date || session.startTime);
+        await this.recordFocusTime(session.user, session.duration, session.date || session.startTime, session.branchId);
         
         // If the focus session is linked to a task, optionally add to project stats
         if (session.task) {
@@ -105,8 +116,14 @@ class AnalyticsService {
                 const periods = ["daily", "weekly", "monthly", "yearly"];
                 for (const period of periods) {
                     const normalizedDate = this._normalizeDate(session.date || session.startTime, period);
+                    const query = { entityType: "project", entityId: task.projectName, period, date: normalizedDate };
+                    if (session.branchId) {
+                        query.branchId = session.branchId;
+                    } else if (task.branchId) {
+                        query.branchId = task.branchId;
+                    }
                     await PerformanceStat.findOneAndUpdate(
-                        { entityType: "project", entityId: task.projectName, period, date: normalizedDate },
+                        query,
                         { $inc: { "metrics.hoursLogged": hours } },
                         { upsert: true }
                     );
@@ -121,6 +138,9 @@ class AnalyticsService {
     for (const board of accountabilityBoards) {
         if (!board.userId) continue;
         
+        const userDoc = await mongoose.model("User").findById(board.userId);
+        const defaultBranchId = userDoc?.branchAccess?.[0]?.branchId;
+
         const dateCounts = {};
         
         // Count logs per logic day date string
@@ -134,16 +154,18 @@ class AnalyticsService {
         
         // Apply to PerformanceStat
         for (const [dateStr, count] of Object.entries(dateCounts)) {
-            // dateStr is 'YYYY-MM-DD'. We assume 00:00 local time
-            // The existing _normalizeDate handles the start of period calculation
             const dateObj = new Date(dateStr);
             if (isNaN(dateObj)) continue;
             
             const periods = ["daily", "weekly", "monthly", "yearly"];
             for (const period of periods) {
                 const normalizedDate = this._normalizeDate(dateObj, period);
+                const query = { entityType: "user", entityId: board.userId, period, date: normalizedDate };
+                if (defaultBranchId) {
+                    query.branchId = defaultBranchId;
+                }
                 await PerformanceStat.findOneAndUpdate(
-                    { entityType: "user", entityId: board.userId, period, date: normalizedDate },
+                    query,
                     { $set: { "metrics.accountabilityLogs": count } },
                     { upsert: true }
                 );
@@ -158,19 +180,26 @@ class AnalyticsService {
     };
   }
 
-  async _incrementHoursOnly(userId, projectId, hours, date) {
+  async _incrementHoursOnly(userId, projectId, hours, date, branchId) {
       const periods = ["daily", "weekly", "monthly", "yearly"];
       for (const period of periods) {
           const normalizedDate = this._normalizeDate(date, period);
           const update = { $inc: { "metrics.hoursLogged": hours } };
           
+          const queryUser = { entityType: "user", entityId: userId, period, date: normalizedDate };
+          const queryProject = { entityType: "project", entityId: projectId, period, date: normalizedDate };
+          if (branchId) {
+              queryUser.branchId = branchId;
+              queryProject.branchId = branchId;
+          }
+          
           await PerformanceStat.findOneAndUpdate(
-              { entityType: "user", entityId: userId, period, date: normalizedDate },
+              queryUser,
               update,
               { upsert: true }
           );
           await PerformanceStat.findOneAndUpdate(
-              { entityType: "project", entityId: projectId, period, date: normalizedDate },
+              queryProject,
               update,
               { upsert: true }
           );
@@ -180,9 +209,8 @@ class AnalyticsService {
   /**
    * Update or create a PerformanceStat record
    */
-  async _updateStats(entityType, entityId, period, date, task, oldStatus, newStatus) {
+  async _updateStats(entityType, entityId, period, date, task, oldStatus, newStatus, branchId) {
     const update = { $inc: {} };
-    // console.log(`[Analytics] _updateStats: Type:${entityType}, Entity:${entityId}, Period:${period}, Date:${date}, Status:${oldStatus}->${newStatus}`);
 
     // Initial Assignment Tracking
     if (oldStatus === null) {
@@ -191,7 +219,6 @@ class AnalyticsService {
 
     // Task Completion Metrics
     if (newStatus === "done") {
-      console.log(`[Analytics] Incrementing tasksCompleted for ${entityId} on ${date} (period: ${period})`);
       update.$inc["metrics.tasksCompleted"] = 1;
       update.$inc["metrics.storyPointsDone"] = task.storyPoints || 0;
 
@@ -225,36 +252,33 @@ class AnalyticsService {
     }
 
     // --- TIME LOGGING LOGIC ---
-    // If we are moving OUT of inprogress, calculate the time spent
-    // We sort logs by date descending to ensure we get the latest transition out (0) and in (1)
     if (oldStatus === "inprogress" && task.activityLogs && task.activityLogs.length >= 2) {
         const sortedLogs = [...task.activityLogs].sort((a, b) => new Date(b.date) - new Date(a.date));
         const outLog = sortedLogs[0];
         const inLog = sortedLogs[1];
-        
-        console.log(`[Analytics] Time Calculation: OutLog:${outLog.currentStatus}(${outLog.date}), InLog:${inLog.currentStatus}(${inLog.date})`);
 
         if (inLog.currentStatus === "inprogress") {
             const ms = new Date(outLog.date) - new Date(inLog.date);
             const hours = ms / (1000 * 60 * 60);
-            console.log(`[Analytics] Calculated Delta: ${hours.toFixed(4)}h`);
             if (hours > 0) {
                 update.$inc["metrics.hoursLogged"] = Number(hours.toFixed(2));
                 
-                // If the task itself is overdue, count towards backlog hours
                 const isLate = task.taskDueDate ? moment(date).isAfter(moment(task.taskDueDate), 'day') : false;
                 if (isLate || task.status === 'backlog') {
                    update.$inc["metrics.backlogHoursLogged"] = Number(hours.toFixed(2));
                 }
             }
-        } else {
-            console.log(`[Analytics] Last status was not inprogress, skipping time update`);
         }
+    }
+
+    const query = { entityType, entityId, period, date };
+    if (branchId) {
+        query.branchId = branchId;
     }
 
     // Use findOneAndUpdate with upsert to handle increments gracefully
     await PerformanceStat.findOneAndUpdate(
-      { entityType, entityId, period, date },
+      query,
       update,
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
@@ -268,6 +292,7 @@ class AnalyticsService {
 
     const date = task.updatedAt || task.createdAt || new Date();
     const periods = ["daily", "weekly", "monthly", "yearly"];
+    const branchId = task.branchId;
 
     for (const period of periods) {
       const normalizedDate = this._normalizeDate(date, period);
@@ -289,19 +314,21 @@ class AnalyticsService {
           }
         }
       }
-
-      // Reverse hours logged if any
-      // Note: This is a bit complex as hours might be spread across multiple days/logs.
-      // For simplicity in a single-call deletion, we reverse the total hours if they were aggregated into this period.
-      // A more robust way would be to iterate through activity logs, but this covers the primary inconsistency.
       
+      const queryUser = { entityType: "user", entityId: task.assignee, period, date: normalizedDate };
+      const queryProject = { entityType: "project", entityId: task.projectName, period, date: normalizedDate };
+      if (branchId) {
+          queryUser.branchId = branchId;
+          queryProject.branchId = branchId;
+      }
+
       await PerformanceStat.findOneAndUpdate(
-        { entityType: "user", entityId: task.assignee, period, date: normalizedDate },
+        queryUser,
         update,
         { upsert: true }
       );
       await PerformanceStat.findOneAndUpdate(
-        { entityType: "project", entityId: task.projectName, period, date: normalizedDate },
+        queryProject,
         update,
         { upsert: true }
       );
@@ -311,13 +338,17 @@ class AnalyticsService {
   /**
    * Record standalone focus session time
    */
-  async recordFocusTime(userId, durationMinutes, date) {
+  async recordFocusTime(userId, durationMinutes, date, branchId) {
     const hours = Number((durationMinutes / 60).toFixed(2));
     const periods = ["daily", "weekly", "monthly", "yearly"];
     for (const period of periods) {
       const normalizedDate = this._normalizeDate(date, period);
+      const query = { entityType: "user", entityId: userId, period, date: normalizedDate };
+      if (branchId) {
+          query.branchId = branchId;
+      }
       await PerformanceStat.findOneAndUpdate(
-        { entityType: "user", entityId: userId, period, date: normalizedDate },
+        query,
         { $inc: { "metrics.hoursLogged": hours } },
         { upsert: true }
       );
@@ -327,13 +358,17 @@ class AnalyticsService {
   /**
    * Remove standalone focus session time (for deletions)
    */
-  async removeFocusTime(userId, durationMinutes, date) {
+  async removeFocusTime(userId, durationMinutes, date, branchId) {
     const hours = Number((durationMinutes / 60).toFixed(2));
     const periods = ["daily", "weekly", "monthly", "yearly"];
     for (const period of periods) {
       const normalizedDate = this._normalizeDate(date, period);
+      const query = { entityType: "user", entityId: userId, period, date: normalizedDate };
+      if (branchId) {
+          query.branchId = branchId;
+      }
       await PerformanceStat.findOneAndUpdate(
-        { entityType: "user", entityId: userId, period, date: normalizedDate },
+        query,
         { $inc: { "metrics.hoursLogged": -hours } },
         { upsert: true }
       );

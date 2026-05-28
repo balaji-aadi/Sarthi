@@ -31,6 +31,11 @@ const milestoneSchema = new Schema({
     min: 0,
     max: 100
   },
+  branchId: {
+    type: Schema.Types.ObjectId,
+    ref: "Branch",
+    index: true
+  }
 }, {
   timestamps: true,
   versionKey: false

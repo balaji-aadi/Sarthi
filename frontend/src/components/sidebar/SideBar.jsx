@@ -33,21 +33,16 @@ const routes = [
   },
 
   {
-    name: "Project Management",
+    name: "Arenas",
     icon: <GrProjects />,
     subRoutes: [
-      // {
-      //   name: "Project",
-      //   icon: <GoDot />,
-      //   path: "project/create-project",
-      // },
       {
-        name: "My Project",
+        name: "My Arenas",
         icon: <GoDot />,
         path: "project/status",
       },
       {
-        name: "Team",
+        name: "Users",
         icon: <GoDot />,
         path: "project/team",
       },
@@ -208,11 +203,32 @@ const SideBar = ({ children }) => {
 
         <section className="routes">
           {routes.map((route, index) => {
-            if (
-              (route.name === "Project Management" || route.name === "User") &&
-              hiddenRoles.includes(currentUser?.userRole?.name?.toLowerCase())
-            ) {
+            // Only admin can see the 'Users' under Arenas, or the top-level 'User'
+            const isAdmin = currentUser?.email === "balajiaadi2000@gmail.com";
+            
+            if (route.name === "User" && !isAdmin) {
               return null;
+            }
+
+            if (route.name === "Arenas" && !isAdmin) {
+              // If not admin, they might still see "My Arenas", but let's hide "Users" inside it
+              const filteredRoute = {
+                ...route,
+                subRoutes: route.subRoutes.filter(sub => sub.name !== "Users")
+              };
+              if (filteredRoute.subRoutes) {
+                return (
+                  <div key={index}>
+                    <SidebarMenu
+                      route={filteredRoute}
+                      showAnimation={showAnimation}
+                      isOpen={isOpen}
+                      openMenu={openMenu}
+                      handleDropdownToggle={handleDropdownToggle}
+                    />
+                  </div>
+                );
+              }
             }
 
             /* if (

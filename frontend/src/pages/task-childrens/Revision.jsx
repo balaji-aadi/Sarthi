@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { TaskApi } from '../../services/api/Task.api';
 import { ProjectApi } from '../../services/api/Project.api';
 import { useLoading } from '../../components/loader/LoaderContext';
@@ -29,14 +30,11 @@ const NoteCell = ({ text }) => {
     useEffect(() => {
         const checkOverflow = () => {
             if (textRef.current) {
-                // Check if scrollHeight is strictly greater than clientHeight
-                // We add a small tolerance (e.g. 2px) to prevent false positives due to fractional pixels
                 setIsLong(textRef.current.scrollHeight > textRef.current.clientHeight + 2);
             }
         };
 
         checkOverflow();
-        // Recalculate on window resize in case the column width changes
         window.addEventListener('resize', checkOverflow);
         return () => window.removeEventListener('resize', checkOverflow);
     }, [text]);
@@ -70,6 +68,7 @@ const NoteCell = ({ text }) => {
 };
 
 const Revision = () => {
+    const { activeBranch } = useSelector((state) => state.store);
     const { handleLoading } = useLoading();
     const [tasks, setTasks] = useState([]);
     const [projects, setProjects] = useState([]);
@@ -89,8 +88,10 @@ const Revision = () => {
     const [revisionNote, setRevisionNote] = useState('');
 
     useEffect(() => {
-        loadInitialData();
-    }, []);
+        if (activeBranch) {
+            loadInitialData();
+        }
+    }, [activeBranch]);
 
     const loadInitialData = async () => {
         handleLoading(true);
@@ -187,7 +188,7 @@ const Revision = () => {
     };
 
     const projectOptions = [
-        { value: 'all', label: 'All Projects' },
+        { value: 'all', label: 'All Arenas' },
         ...projects.map(p => ({ value: p._id, label: p.key || p.name }))
     ];
 

@@ -40,8 +40,8 @@ connectDB()
       initSprintActivationJob();
       initTaskTransitionJob();
 
-      // Optional: delay repair task
-      await repairAllProgress();
+      // Optional: run repair task in background
+      repairAllProgress().catch(err => console.error("Repair background error:", err));
     });
   })
   .catch((err) => {

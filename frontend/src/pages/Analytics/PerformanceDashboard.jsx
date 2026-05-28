@@ -30,7 +30,7 @@ import TrollingEmptyState from '../../components/analytics/TrollingEmptyState';
 import { IoCalendarOutline, IoChevronDownOutline, IoFlaskOutline } from 'react-icons/io5';
 
 const PerformanceDashboard = () => {
-    const { currentUser } = useSelector((state) => state.store);
+    const { currentUser, activeBranch } = useSelector((state) => state.store);
     const navigate = useNavigate();
     const [period, setPeriod] = useState('weekly');
     const [activeTab, setActiveTab] = useState('personal');
@@ -100,23 +100,28 @@ const PerformanceDashboard = () => {
     };
 
     useEffect(() => {
-        fetchStats();
-        // Load focus sessions from database
-        const fetchFocusLogs = async () => {
-            try {
-                const res = await FocusApi.getSessions();
-                setFocusSessions(res.data?.data || []);
-            } catch (error) {
-                console.error("Failed to fetch focus logs", error);
-            }
-        };
-        fetchFocusLogs();
-    }, [period, activeTab, selectedDate, selectedMonth, selectedWeekIndex, selectedYear, customStart, customEnd]);
+        if (activeBranch) {
+            fetchStats();
+            // Load latest focus sessions for activity logs
+            const fetchFocusLogs = async () => {
+                try {
+                    // Limit to latest 10 for performance
+                    const res = await FocusApi.getSessions({ limit: 10 });
+                    setFocusSessions(res.data?.data || []);
+                } catch (error) {
+                    console.error("Failed to fetch focus logs", error);
+                }
+            };
+            fetchFocusLogs();
+        }
+    }, [period, activeTab, selectedDate, selectedMonth, selectedWeekIndex, selectedYear, customStart, customEnd, activeBranch]);
 
     useEffect(() => {
-        // Always fetch daily stats for the consistency calendar (matches topbar modal)
-        fetchDailyStats();
-    }, []);
+        if (activeBranch) {
+            // Always fetch daily stats for the consistency calendar (matches topbar modal)
+            fetchDailyStats();
+        }
+    }, [activeBranch]);
 
     const fetchMemberStats = async (userId) => {
         setMemberLoading(true);

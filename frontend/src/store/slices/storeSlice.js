@@ -62,13 +62,31 @@ const storeSlice = createSlice({
     isAuthenticated: false,
     showConsistencyModal: false,
     globalSearch: "",
+    activeBranch: JSON.parse(localStorage.getItem("activeBranch")) || null,
+    branches: [],
+    globalSettings: {
+        subscriptionType: "free"
+    }
   },
   reducers: {
+    setGlobalSettings: (state, action) => {
+      state.globalSettings = action.payload;
+    },
     setShowConsistencyModal: (state, action) => {
       state.showConsistencyModal = action.payload;
     },
     setGlobalSearch: (state, action) => {
       state.globalSearch = action.payload;
+    },
+    setActiveBranch: (state, action) => {
+      state.activeBranch = action.payload;
+      localStorage.setItem("activeBranch", JSON.stringify(action.payload));
+    },
+    setBranches: (state, action) => {
+      state.branches = action.payload;
+    },
+    updateCurrentUser: (state, action) => {
+      state.currentUser = { ...state.currentUser, ...action.payload };
     },
   },
   extraReducers: (builder) => {
@@ -143,5 +161,5 @@ const storeSlice = createSlice({
   },
 });
 
-export const { setShowConsistencyModal, setGlobalSearch } = storeSlice.actions;
+export const { setGlobalSettings, setShowConsistencyModal, setGlobalSearch, setActiveBranch, setBranches, updateCurrentUser } = storeSlice.actions;
 export default storeSlice.reducer;

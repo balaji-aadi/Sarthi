@@ -7,13 +7,13 @@ importScripts(
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyDcXF5Ri_DPJPVPLUSU7O94acY03XAOql0",
-  authDomain: "e-delivery-a0a51.firebaseapp.com",
-  projectId: "e-delivery-a0a51",
-  storageBucket: "e-delivery-a0a51.appspot.com",
-  messagingSenderId: "215449653167",
-  appId: "1:215449653167:web:bf22b1fc5e1603481c695a",
-  measurementId: "G-KB5GVPFKQY",
+  apiKey: "AIzaSyDM1g0paGxT4anb8xyvj0FlyxX7ooDqADc",
+  authDomain: "momentum-1d43b.firebaseapp.com",
+  projectId: "momentum-1d43b",
+  storageBucket: "momentum-1d43b.firebasestorage.app",
+  messagingSenderId: "680167337515",
+  appId: "1:680167337515:web:f0a8daec892bc0a709846e",
+  measurementId: "G-YMGZV2L6DJ",
 };
 
 // Initialize Firebase using compat SDK

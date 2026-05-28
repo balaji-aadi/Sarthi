@@ -385,7 +385,7 @@ const Task = ({ key, task, index, handleClick }) => {
                                 className="text-orange-500 hover:text-orange-600 hover:scale-110 transition-all shrink-0 inline-flex items-center p-1 rounded-md hover:bg-orange-50 dark:hover:bg-orange-900/20"
                                 title="Open on LeetCode"
                             >
-                                <SiLeetcode size={18} />
+                                <img src="/leetcode.png" alt="LeetCode" className="w-5 h-5 object-contain" />
                             </button>
                         )}
                         <div className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${priorityColors[task.taskPriority] || 'bg-slate-50 text-slate-500 border-slate-100'}`}>

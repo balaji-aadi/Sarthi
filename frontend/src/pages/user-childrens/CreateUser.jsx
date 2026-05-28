@@ -37,6 +37,14 @@ const CreateUser = () => {
           label: role.name,
         }));
         setUserTypeOptions(options);
+        
+        if (!location.state?.user) { // not updating
+            const employeeRole = options.find(o => o.label === "employee" || o.label === "user");
+            if (employeeRole) {
+                formik.setFieldValue("userRoles", [employeeRole]);
+                formik.setFieldValue("userRole", employeeRole.value);
+            }
+        }
       }
     } catch (err) {
       console.error("Error fetching roles:", err);
@@ -188,15 +196,15 @@ const CreateUser = () => {
       <div className="max-w-5xl mx-auto mb-8 flex items-center justify-between">
         <div>
            <div className="flex items-center gap-3 text-textSub text-sm mb-2">
-              <span className="cursor-pointer hover:text-primary" onClick={() => navigate('/user')}>Team</span>
+              <span className="cursor-pointer hover:text-primary" onClick={() => navigate('/user')}>Users</span>
               <span>/</span>
-              <span className="text-textMain font-medium">{isUpdating ? "Update Member" : "New Member"}</span>
+              <span className="text-textMain font-medium">{isUpdating ? "Update User" : "New User"}</span>
            </div>
            <h1 className="text-3xl font-bold text-textMain flex items-center gap-3">
               <LuUser className="text-primary" />
-              {isUpdating ? "Update Team Member" : "Add New Member"}
+              {isUpdating ? "Update User" : "Add New User"}
            </h1>
-           <p className="text-textSub mt-1">Manage personal details, roles, and access permissions.</p>
+           <p className="text-textSub mt-1">Manage personal details, and access permissions.</p>
         </div>
         <div className="flex gap-3">
             <button
@@ -332,31 +340,33 @@ const CreateUser = () => {
                     <LuShield className="text-primary" /> Roles & Security
                 </h3>
                 
-                <div className="mb-6">
-                    <label className="block text-textMain font-medium mb-2 text-sm">Assign Roles</label>
-                    <Select
-                        isMulti
-                        name="userRoles"
-                        options={userTypeOptions}
-                        className="basic-multi-select text-sm"
-                        classNamePrefix="select"
-                        value={formik.values.userRoles}
-                        onChange={(selectedOptions) => {
-                            formik.setFieldValue("userRoles", selectedOptions);
-                            // Backward compatibility
-                            if (selectedOptions && selectedOptions.length > 0) {
-                                formik.setFieldValue("userRole", selectedOptions[0].value);
-                            } else {
-                                formik.setFieldValue("userRole", "");
-                            }
-                        }}
-                        onBlur={formik.handleBlur}
-                        placeholder="Select roles..."
-                    />
-                    {formik.touched.userRole && formik.errors.userRole && (
-                        <div className="text-red-500 text-xs mt-1">{typeof formik.errors.userRole === 'string' ? formik.errors.userRole : "Role is required"}</div>
-                    )}
-                </div>
+                {false && (
+                  <div className="mb-6">
+                      <label className="block text-textMain font-medium mb-2 text-sm">Assign Roles</label>
+                      <Select
+                          isMulti
+                          name="userRoles"
+                          options={userTypeOptions}
+                          className="basic-multi-select text-sm"
+                          classNamePrefix="select"
+                          value={formik.values.userRoles}
+                          onChange={(selectedOptions) => {
+                              formik.setFieldValue("userRoles", selectedOptions);
+                              // Backward compatibility
+                              if (selectedOptions && selectedOptions.length > 0) {
+                                  formik.setFieldValue("userRole", selectedOptions[0].value);
+                              } else {
+                                  formik.setFieldValue("userRole", "");
+                              }
+                          }}
+                          onBlur={formik.handleBlur}
+                          placeholder="Select roles..."
+                      />
+                      {formik.touched.userRole && formik.errors.userRole && (
+                          <div className="text-red-500 text-xs mt-1">{typeof formik.errors.userRole === 'string' ? formik.errors.userRole : "Role is required"}</div>
+                      )}
+                  </div>
+                )}
 
                 {!isUpdating && (
                     <div className="space-y-4 pt-4 border-t border-borderLight">

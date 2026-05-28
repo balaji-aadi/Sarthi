@@ -18,6 +18,7 @@ analyticsController.getPersonalStats = asyncHandler(async (req, res) => {
     const query = {
         entityType: "user",
         entityId: new mongoose.Types.ObjectId(userId),
+        branchId: req.branchId,
         period: period || "daily"
     };
 
@@ -53,10 +54,8 @@ analyticsController.getTeamStats = asyncHandler(async (req, res) => {
 
     const stats = await PerformanceStat.find({
         entityType: "user",
+        branchId: req.branchId,
         period: period || "daily",
-        // We might need to filter by users in this project.
-        // For now, let's fetch all user stats for the day if we have a team ID, 
-        // but typically this is queried per user or aggregated.
     }).populate('entityId', 'firstName lastName profileImage');
 
     return res.status(200).json(
@@ -73,6 +72,7 @@ analyticsController.getProjectHealth = asyncHandler(async (req, res) => {
     const stats = await PerformanceStat.find({
         entityType: "project",
         entityId: new mongoose.Types.ObjectId(projectId),
+        branchId: req.branchId,
         period: period || "daily"
     }).sort({ date: 1 });
 
@@ -91,6 +91,7 @@ analyticsController.getMemberStats = asyncHandler(async (req, res) => {
     const query = {
         entityType: "user",
         entityId: new mongoose.Types.ObjectId(userId),
+        branchId: req.branchId,
         period: period || "daily"
     };
 

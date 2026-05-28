@@ -29,7 +29,7 @@ const Header = () => {
   const [recentSearches, setRecentSearches] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-  const { globalSearch } = useSelector((state) => state.store);
+  const { globalSearch, activeBranch } = useSelector((state) => state.store);
   
   const {
     isNotification,
@@ -43,7 +43,7 @@ const Header = () => {
 
   useEffect(() => {
     const fetchProjectName = async () => {
-        if (projectId) {
+        if (projectId && activeBranch) {
             try {
                 const res = await ProjectApi.project(projectId);
                 setProjectName(res.data?.data?.name || "Project");
@@ -60,9 +60,9 @@ const Header = () => {
 
   const getPageTitle = () => {
       const path = location.pathname;
-      if (path.includes('/project')) return 'Projects';
+      if (path.includes('/arenas')) return 'Arenas';
       if (path.includes('/task')) return 'Tasks';
-      if (path.includes('/user')) return 'Teams';
+      if (path.includes('/user')) return 'Users';
       if (path.includes('/testing')) return 'Testing';
       return 'Dashboard';
   };
@@ -198,17 +198,19 @@ const Header = () => {
   };
 
   useEffect(() => {
-    getAllNotification();
-  }, []);
+    if (activeBranch) {
+        getAllNotification();
+    }
+  }, [activeBranch]);
 
   useEffect(() => {
-    if (currentUser?._id) {
+    if (currentUser?._id && activeBranch) {
         requestPermission(currentUser._id);
     }
     // Load recent searches
     const saved = localStorage.getItem('recentSearches');
     if (saved) setRecentSearches(JSON.parse(saved));
-  }, [currentUser]);
+  }, [currentUser, activeBranch]);
   
   // debounced suggestion fetching
   useEffect(() => {
@@ -218,6 +220,7 @@ const Header = () => {
     }
     
     const handler = setTimeout(async () => {
+      if (!activeBranch) return;
       try {
         // Fetch Tasks
         const taskRes = await TaskApi.getAllTasks({}, globalSearch);

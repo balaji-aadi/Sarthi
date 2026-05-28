@@ -40,7 +40,8 @@ pc.createProject = asyncHandler(async (req, res) => {
       teamMembers,
       rolesAndResponsibilities,
       status,
-      createdBy: req.user?._id
+      createdBy: req.user?._id,
+      branchId: req.branchId ? new mongoose.Types.ObjectId(req.branchId) : undefined
     });
 
     if (Array.isArray(milestones) && milestones.length > 0) {
@@ -163,6 +164,9 @@ pc.getAllProject = asyncHandler(async (req, res) => {
 
     // Filter logic
     let filterQuery = {};
+    if (req.branchId) {
+        filterQuery.branchId = new mongoose.Types.ObjectId(req.branchId);
+    }
 
     // 1. Search Query
     if (search && search !== "undefined") {
@@ -195,53 +199,28 @@ pc.getAllProject = asyncHandler(async (req, res) => {
       filterQuery.status = "active";
     }
 
-    // 2. Permission Query
-    const permissions = new Set();
+    console.log("DEBUG: Received Branch ID from Headers:", req.branchId);
+
+    // 1. Ownership isolation: Non-admins only see their own projects
+    let ownershipQuery = req.user?.email === "balajiaadi2000@gmail.com" ? {} : { createdBy: req.user._id };
     
-    // Check singular userRole
-    if (req.user?.userRole?.active && req.user?.userRole?.permissions) {
-        req.user.userRole.permissions.forEach(p => {
-             if (p && p.name) permissions.add(p.name);
-        });
+    
+    // Merge filterQuery (branchId, search, etc.) with ownershipQuery
+    let finalQuery = {};
+    const hasFilter = Object.keys(filterQuery).length > 0;
+    const hasOwnership = Object.keys(ownershipQuery).length > 0;
+
+    if (hasFilter && hasOwnership) {
+        finalQuery = { $and: [filterQuery, ownershipQuery] };
+    } else if (hasFilter) {
+        finalQuery = filterQuery;
+    } else if (hasOwnership) {
+        finalQuery = ownershipQuery;
     }
 
-    // Check plural userRoles
-    req.user?.userRoles?.forEach(role => {
-        if (role.active && role.permissions) {
-            role.permissions.forEach(p => {
-                if (p && p.name) permissions.add(p.name);
-            });
-        }
-    });
+    console.log("DEBUG: Final Filter Query:", JSON.stringify(finalQuery, null, 2));
 
-    const canViewAll = permissions.has('VIEW_ALL_PROJECTS');
-    const canViewAssigned = permissions.has('VIEW_PROJECT'); 
-
-    if (!canViewAll && canViewAssigned) {
-        // Restrict to projects where user is PM or Team Member
-        const ownershipQuery = {
-            $or: [
-                { projectManager: req.user._id },
-                { teamMembers: req.user._id },
-                { "rolesAndResponsibilities.teamMember": req.user._id }
-            ]
-        };
-        console.log("DEBUG: Ownership Query constructed:", JSON.stringify(ownershipQuery));
-        
-        // Merge into filterQuery using $and if other filters exist
-        if (Object.keys(filterQuery).length > 0) {
-             filterQuery = { $and: [ filterQuery, ownershipQuery ] };
-        } else {
-             filterQuery = ownershipQuery;
-        }
-    } else if (!canViewAll && !canViewAssigned) {
-         console.log("DEBUG: Permission Denied - No View Access");
-         return res.status(200).json(new ApiResponse(200, [], "No projects found (Insufficient permissions)"));
-    }
-    
-    console.log("DEBUG: Final Filter Query:", JSON.stringify(filterQuery, null, 2));
-
-    let query = Project.find(filterQuery);
+    let query = Project.find(finalQuery);
 
     let projects = await query
       .populate("projectManager teamMembers rolesAndResponsibilities.teamMember")

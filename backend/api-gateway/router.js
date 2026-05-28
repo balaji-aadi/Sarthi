@@ -17,6 +17,8 @@ import analyticsRouter from "../services/analytics-service/analytics.router.js";
 import webhookRouter from "../routes/webhook.routes.js";
 import dailyAccountabilityRouter from "../services/dailyAccountability-service/dailyAccountability.router.js";
 import focusRouter from "../services/focus-service/focus.router.js";
+import branchRouter from "../services/branch-service/branch.router.js";
+import subscriptionRouter from "../services/subscription-service/subscription.router.js";
 
 
 const router = Router();
@@ -39,5 +41,7 @@ router.use("/analytics", analyticsRouter);
 router.use("/webhook", webhookRouter);
 router.use("/daily-accountability", dailyAccountabilityRouter);
 router.use("/focus", focusRouter);
+router.use("/branch", branchRouter);
+router.use("/subscription", subscriptionRouter);
 
 export default router;

@@ -112,7 +112,7 @@ const ProjectStatistics = () => {
     // },
 
     {
-      headerName: "Project Name",
+      headerName: "Arena Name",
       field: "projectName",
       sortable: true,
       filter: true,

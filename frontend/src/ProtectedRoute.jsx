@@ -2,11 +2,20 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ element }) => {
-  const { isAuthenticated } = useSelector((state) => state.store);
+  const { isAuthenticated, currentUser, globalSettings } = useSelector((state) => state.store);
+  const isAdmin = currentUser?.email === "balajiaadi2000@gmail.com";
+  const isPaidUser = currentUser?.subscriptionType !== 'free';
 
-  console.log("isAuthenticated>>", isAuthenticated);
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
-  return isAuthenticated ? element : <Navigate to="/login" replace />;
+  // If global mode is paid, and user is not admin and hasn't paid, force pricing page
+  if (globalSettings?.subscriptionType === 'paid' && !isAdmin && !isPaidUser && window.location.pathname !== '/pricing') {
+    return <Navigate to="/pricing" replace />;
+  }
+
+  return element;
 };
 
 export default ProtectedRoute;

@@ -10,9 +10,8 @@ import nodemailer from "nodemailer";
 
 const uc = {}
 
-const generateAccessAndRefereshTokens = async (res, userId) => {
+const generateAccessAndRefereshTokens = async (res, user) => {
   try {
-    const user = await User.findById(userId);
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
@@ -21,7 +20,7 @@ const generateAccessAndRefereshTokens = async (res, userId) => {
 
     return { accessToken, refreshToken };
   } catch (error) {
-    return res.status(500).json(new ApiError(500, "Something went wrong while generating referesh and access token"));
+    return res.status(500).json(new ApiError(500, "Something went wrong while generating tokens"));
   }
 };
 
@@ -114,8 +113,12 @@ uc.loginUser = asyncHandler(async (req, res) => {
     }
 
     let user;
-    user = await User.findOne({ email: email });
+    user = await User.findOne({ email: email }).populate("userRole").populate("userRoles");
     if (!user) return res.status(400).json(new ApiError(400, "Invalid user credentials"));
+
+    if (user.isActive === false) {
+      return res.status(403).json(new ApiError(403, "The account is disabled. Contact the admin to enable"));
+    }
 
     const isPasswordValid = await user.isPasswordCorrect(password);
 
@@ -123,12 +126,13 @@ uc.loginUser = asyncHandler(async (req, res) => {
       return res.status(401).json(new ApiError(401, "Invalid user credentials"));
     }
 
-    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(res, user._id);
+    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(res, user);
 
-    const loggedInUser = await User.findById(user._id)
-      .select("-password -refreshToken -otp -otp_time")
-      .populate("userRole")
-      .populate("userRoles");
+    const loggedInUser = user.toObject();
+    delete loggedInUser.password;
+    delete loggedInUser.refreshToken;
+    delete loggedInUser.otp;
+    delete loggedInUser.otpTime;
 
     const options = { httpOnly: true, secure: true };
 
@@ -404,11 +408,14 @@ uc.getAllUsers = asyncHandler(async (req, res) => {
   const { filter = {}, sortOrder = -1 } = req.body;
   const userRole = await UserRole.findOne({ name: "projectmanager" });
 
-  let query = {};
+  let query = { "branchAccess.branchId": req.branchId };
 
   if(filter.type == "member") {
     // Check if userRoles does NOT contain the projectmanager role
-    query = { userRoles: { $nin: [userRole?._id] } }
+    query = { 
+        ...query,
+        userRoles: { $nin: [userRole?._id] } 
+    }
   }
 
   const user = await User.find(query)
@@ -486,6 +493,28 @@ uc.updateUser = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, updatedUser, "User updated successfully"));
 
+});
+
+uc.bulkUpdateUserStatus = asyncHandler(async (req, res) => {
+  const { userIds, isActive } = req.body;
+  
+  if (!userIds || !Array.isArray(userIds) || typeof isActive !== 'boolean') {
+    return res.status(400).json(new ApiError(400, "userIds array and isActive boolean are required"));
+  }
+
+  // Find the admin role ID
+  const adminRole = await UserRole.findOne({ name: "admin" });
+  let query = { _id: { $in: userIds } };
+
+  // If we found the admin role, exclude users who have it
+  if (adminRole) {
+      query.userRole = { $ne: adminRole._id };
+      query.userRoles = { $ne: adminRole._id };
+  }
+
+  const result = await User.updateMany(query, { $set: { isActive } });
+
+  return res.status(200).json(new ApiResponse(200, {}, `Successfully ${isActive ? 'enabled' : 'disabled'} ${result.modifiedCount} users (Admins were skipped)`));
 });
 
 

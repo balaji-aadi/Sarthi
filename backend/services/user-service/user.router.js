@@ -2,9 +2,10 @@ import { Router } from "express";
 import { verifyJWT } from "../../middlewares/auth.middleware.js";
 import { checkPermission } from "../../middlewares/rbac.middleware.js";
 import userController from './user.controller.js';
-
+import { verifyBranchAccess } from "../../middlewares/branch.middleware.js";
 
 const router = Router();
+
 
 router.route("/register").post(userController.registerUser)
 router.route("/login").post(userController.loginUser)
@@ -20,9 +21,10 @@ router.route("/change-password").post(verifyJWT, userController.changeCurrentPas
 router.route("/current-user").get(verifyJWT, userController.getCurrentUser)
 router.route("/update-account").patch(verifyJWT, userController.updateAccountDetails)
 
-router.route("/get-all-user").post(verifyJWT, checkPermission("UPDATE_USER"), userController.getAllUsers)
-router.route("/get-user-by-id/:userId").get(verifyJWT, checkPermission("UPDATE_USER"), userController.getUserById)
-router.route("/update-user/:userId").put(verifyJWT, checkPermission("UPDATE_USER"), userController.updateUser)
+router.route("/get-all-user").post(verifyJWT, verifyBranchAccess, checkPermission("UPDATE_USER"), userController.getAllUsers)
+router.route("/get-user-by-id/:userId").get(verifyJWT, verifyBranchAccess, checkPermission("UPDATE_USER"), userController.getUserById)
+router.route("/update-user/:userId").put(verifyJWT, verifyBranchAccess, checkPermission("UPDATE_USER"), userController.updateUser)
+router.route("/bulk-update-status").post(verifyJWT, verifyBranchAccess, checkPermission("UPDATE_USER"), userController.bulkUpdateUserStatus)
 
 
 

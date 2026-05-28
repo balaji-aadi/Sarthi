@@ -125,11 +125,11 @@ const Status = () => {
   const navigate = useNavigate();
 
   const handleCreateProject = () => {
-    navigate("/project/create-project");
+    navigate("/arenas/create-project");
   };
 
   const handleShowMilestones = () => {
-    navigate("/project/milestones")
+    navigate("/arenas/milestones")
   }
 
   const handleSingleProject = async (params) => {

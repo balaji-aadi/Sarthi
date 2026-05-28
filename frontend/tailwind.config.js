@@ -33,7 +33,7 @@ module.exports = {
         themeText: "white",
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'], // Ensure Inter is used if available
+        sans: ['Outfit', 'Inter', 'sans-serif'],
       }
     },
   },

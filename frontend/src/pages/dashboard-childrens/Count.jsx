@@ -40,9 +40,9 @@ const Count = () => {
       case "M":
         return navigate(`/user/create?type=member`);
       case "T":
-        return navigate("/project/team?type=all-team");
+        return navigate("/arenas/team?type=all-team");
       case "A":
-        return navigate("/project/status?type=active");
+        return navigate("/arenas/status?type=active");
       case "O":
         return navigate("/task/update-task?type=open");
       case "H":

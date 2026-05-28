@@ -56,6 +56,11 @@ const focusSessionSchema = new mongoose.Schema(
     },
     originalDueDate: {
       type: Date,
+    },
+    branchId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Branch",
+      index: true
     }
   },
   { timestamps: true }

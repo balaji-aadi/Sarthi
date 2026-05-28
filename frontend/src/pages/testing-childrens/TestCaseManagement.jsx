@@ -265,7 +265,7 @@ const TestCaseManagement = ({ task, id, setId, setTask, setUpdated }) => {
 
         <div className="mb-6">
           <InputField
-            label="Select Project"
+            label="Select Arena"
             name="project"
             value={selectedProject}
             onChange={(e) => handleProjectChange(e.target)}

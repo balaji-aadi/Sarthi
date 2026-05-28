@@ -1,11 +1,13 @@
 import { Router } from "express";
 import analyticsController from "./analytics.controller.js";
 import { verifyJWT } from "../../middlewares/auth.middleware.js";
+import { verifyBranchAccess } from "../../middlewares/branch.middleware.js";
 
 const router = Router();
 
 // All analytics routes require authentication
 router.use(verifyJWT);
+router.use(verifyBranchAccess);
 
 router.get("/personal-stats", analyticsController.getPersonalStats);
 

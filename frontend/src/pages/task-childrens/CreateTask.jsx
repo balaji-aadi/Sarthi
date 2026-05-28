@@ -249,7 +249,7 @@ const CreateTask = ({
       parentTask: "", // New Field
       attachments: null,
       additionalNotes: "",
-      assignee: "",
+      assignee: currentUser?._id || "",
       taskStartDate: "",
       taskDueDate: "",
       dependentTasks: [],
@@ -421,7 +421,7 @@ const CreateTask = ({
         additionalNotes: task?.additionalNotes || "",
         taskType: task.taskType || "",
         attachments: task.attachments || "",
-        assignee: task.assignee?._id || task.assignee || "",
+        assignee: task.assignee?._id || task.assignee || currentUser?._id || "",
         taskStartDate: formatDate(task.taskStartDate),
         taskDueDate: formatDate(task.taskDueDate),
         dependentTasks: task.dependentTasks || [],
@@ -653,7 +653,7 @@ const CreateTask = ({
             <div className="bg-white dark:bg-themeBG rounded-2xl shadow-md p-6">
               <div className="mb-6 w-full">
               <InputField
-                label="Project"
+                label="Arena"
                 name="projectName"
                 type="select"
                 value={selectedProject}
@@ -724,21 +724,23 @@ const CreateTask = ({
                   {formik.touched.estimatedHours && formik.errors.estimatedHours && (
                     <div className="text-red-500 text-xs mt-[-10px] ml-1">{formik.errors.estimatedHours}</div>
                   )}
-                  <InputField
-                    label="Progress (%)"
-                    name="progress"
-                    type="number"
-                    value={formik.values.progress}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    placeholder="0-100"
-                    min="0"
-                    max="100"
-                    error={
-                      formik.touched.progress &&
-                      formik.errors.progress
-                    }
-                  />
+                  {false && (
+                    <InputField
+                      label="Progress (%)"
+                      name="progress"
+                      type="number"
+                      value={formik.values.progress}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder="0-100"
+                      min="0"
+                      max="100"
+                      error={
+                        formik.touched.progress &&
+                        formik.errors.progress
+                      }
+                    />
+                  )}
 
                   <div className="mb-4">
                     <label className="block text-gray-700  dark:text-themeText font-medium mb-2">
@@ -829,33 +831,37 @@ const CreateTask = ({
                     isRequired
                   />
 
-                  <InputField
-                    label="Select Milestone"
-                    name="milestone"
-                    type="select"
-                    value={formik.values.milestone}
-                    onChange={formik.handleChange}
-                    options={milestoneOptions}
-                    onBlur={formik.handleBlur}
-                    placeholder="Select Milestone..."
-                    error={
-                      formik.touched.milestone && formik.errors.milestone
-                    }
+                  {false && (
+                    <>
+                      <InputField
+                        label="Select Milestone"
+                        name="milestone"
+                        type="select"
+                        value={formik.values.milestone}
+                        onChange={formik.handleChange}
+                        options={milestoneOptions}
+                        onBlur={formik.handleBlur}
+                        placeholder="Select Milestone..."
+                        error={
+                          formik.touched.milestone && formik.errors.milestone
+                        }
 
-                  />
-                  
-                  {/* Sprint Selector */}
-                  <InputField
-                    label="Select Sprint"
-                    name="sprint"
-                    type="select"
-                    value={formik.values.sprint}
-                    onChange={formik.handleChange}
-                    options={sprintOptions}
-                    onBlur={formik.handleBlur}
-                    placeholder="Select Sprint..."
-                    error={formik.touched.sprint && formik.errors.sprint}
-                  />
+                      />
+                      
+                      {/* Sprint Selector */}
+                      <InputField
+                        label="Select Sprint"
+                        name="sprint"
+                        type="select"
+                        value={formik.values.sprint}
+                        onChange={formik.handleChange}
+                        options={sprintOptions}
+                        onBlur={formik.handleBlur}
+                        placeholder="Select Sprint..."
+                        error={formik.touched.sprint && formik.errors.sprint}
+                      />
+                    </>
+                  )}
 
                   {/* Parent Task Selector */}
                   <div className="md:col-span-1">
@@ -914,17 +920,19 @@ const CreateTask = ({
                   </i>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <InputField
-                    label="Assignee"
-                    name="assignee"
-                    type="select"
-                    value={formik.values.assignee}
-                    onChange={handleAssigneeChange}
-                    onBlur={formik.handleBlur}
-                    options={teamMemberOptions}
-                    error={formik.touched.assignee && formik.errors.assignee}
-                    isRequired
-                  />
+                  {false && (
+                    <InputField
+                      label="Assignee"
+                      name="assignee"
+                      type="select"
+                      value={formik.values.assignee}
+                      onChange={handleAssigneeChange}
+                      onBlur={formik.handleBlur}
+                      options={teamMemberOptions}
+                      error={formik.touched.assignee && formik.errors.assignee}
+                      isRequired
+                    />
+                  )}
                   <InputField
                     label="Task Start Date"
                     name="taskStartDate"
@@ -1016,15 +1024,19 @@ const CreateTask = ({
                   <div className="mt-1">{parentTaskData?.taskName || (formik.values.parentTask ? parentTaskOptions.find(p => p.value === formik.values.parentTask)?.label : '—')}</div>
                 </div>
 
-                <div>
-                  <div className="text-[11px] text-slate-500 font-bold">Milestone</div>
-                  <div className="mt-1">{milestoneOptions.find(m => m.value === formik.values.milestone)?.label || '—'}</div>
-                </div>
+                {false && (
+                  <>
+                    <div>
+                      <div className="text-[11px] text-slate-500 font-bold">Milestone</div>
+                      <div className="mt-1">{milestoneOptions.find(m => m.value === formik.values.milestone)?.label || '—'}</div>
+                    </div>
 
-                <div>
-                  <div className="text-[11px] text-slate-500 font-bold">Sprint</div>
-                  <div className="mt-1">{sprintOptions.find(s => s.value === formik.values.sprint)?.label || '—'}</div>
-                </div>
+                    <div>
+                      <div className="text-[11px] text-slate-500 font-bold">Sprint</div>
+                      <div className="mt-1">{sprintOptions.find(s => s.value === formik.values.sprint)?.label || '—'}</div>
+                    </div>
+                  </>
+                )}
 
                 <div>
                   <div className="text-[11px] text-slate-500 font-bold">Attachments</div>
@@ -1037,7 +1049,7 @@ const CreateTask = ({
               </div>
             </div>
 
-            {id && (
+            {false && id && (
               <div
                 className="sticky"
                 style={{

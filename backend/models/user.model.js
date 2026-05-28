@@ -67,6 +67,36 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
       default: null,
+    },
+    branchAccess: [
+      {
+        branchId: {
+          type: Schema.Types.ObjectId,
+          ref: "Branch"
+        },
+        role: {
+          type: String, // e.g., 'admin', 'manager', 'user'
+          default: 'user'
+        }
+      }
+    ],
+    subscriptionType: {
+      type: String,
+      enum: ["free", "paid"],
+      default: "free"
+    },
+    subscriptionPlan: {
+      type: String,
+      enum: ["monthly", "half-yearly", "yearly", "invitation"],
+      default: "free"
+    },
+    subscriptionExpiresAt: {
+      type: Date,
+      default: null
+    },
+    invitationTimeRemaining: {
+      type: Number,
+      default: 300 // 5 minutes in seconds
     }
   },
   {

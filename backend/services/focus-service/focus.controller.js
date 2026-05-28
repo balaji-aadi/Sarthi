@@ -20,12 +20,13 @@ export const FocusController = {
         estimatedTimeAtStart,
         backlogTimeAdded,
         isBacklog,
-        originalDueDate
+        originalDueDate,
+        branchId: req.branchId
       });
       await session.save();
 
       // Update Analytics
-      await AnalyticsService.recordFocusTime(req.user.id, duration, session.date);
+      await AnalyticsService.recordFocusTime(req.user.id, duration, session.date, req.branchId);
 
       res.status(201).json({ success: true, data: session });
     } catch (error) {
@@ -42,7 +43,7 @@ export const FocusController = {
       }
 
       // Update Analytics
-      await AnalyticsService.removeFocusTime(req.user.id, session.duration, session.date);
+      await AnalyticsService.removeFocusTime(req.user.id, session.duration, session.date, session.branchId);
 
       res.status(200).json({ success: true, message: "Session deleted successfully" });
     } catch (error) {
@@ -52,9 +53,14 @@ export const FocusController = {
 
   getSessions: async (req, res) => {
     try {
-      const sessions = await FocusSession.find({ user: req.user.id }).sort({
-        date: -1,
-      });
+      const { limit } = req.query;
+      const sessions = await FocusSession.find({ 
+        user: req.user.id,
+        branchId: req.branchId 
+      })
+      .sort({ date: -1 })
+      .limit(limit ? parseInt(limit) : 0);
+
       res.status(200).json({ success: true, data: sessions });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
@@ -70,6 +76,7 @@ export const FocusController = {
 
       const sessions = await FocusSession.find({
         user: req.user.id,
+        branchId: req.branchId,
         date: { $gte: startOfDay, $lte: endOfDay },
       });
 

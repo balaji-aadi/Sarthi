@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
+import { useSelector } from "react-redux";
 import InputField from "../../components/InputField";
 import { LuSave, LuX, LuPlus, LuTrash2, LuUsers, LuLayoutDashboard, LuFlag } from "react-icons/lu";
 import { useLoading } from "../../components/loader/LoaderContext";
@@ -24,6 +25,7 @@ const CreateProject = ({
   const { handleLoading } = useLoading();
   const navigate = useNavigate();
   const location = useLocation();
+  const { currentUser } = useSelector((state) => state.store);
 
   // Fetch Users for Dropdowns
   useEffect(() => {
@@ -53,17 +55,17 @@ const CreateProject = ({
   const initialValues = {
     name: "",
     key: "",
-    priority: "",
+    priority: "medium",
     access: "private",
     clientName: "",
-    budget: "",
+    budget: 0,
     githubRepository: "",
     status: "active",
     startDate: "",
     endDate: "",
     description: "",
-    projectManager: "",
-    teamMembers: [],
+    projectManager: currentUser?._id || "",
+    teamMembers: currentUser?._id ? [currentUser._id] : [],
     rolesAndResponsibilities: [],
     milestones: [],
     settings: {
@@ -80,6 +82,13 @@ const CreateProject = ({
       handleLoading(true);
       try {
         const { milestones, ...projectPayload } = values;
+        
+        if (!projectPayload.projectManager && currentUser?._id) {
+            projectPayload.projectManager = currentUser._id;
+        }
+        if ((!projectPayload.teamMembers || projectPayload.teamMembers.length === 0) && currentUser?._id) {
+            projectPayload.teamMembers = [currentUser._id];
+        }
         
         const projectId = id || location.state?.project?._id;
         const isUpdateMode = isUpdating || !!projectId;
@@ -129,7 +138,7 @@ const CreateProject = ({
             setIsUpdating(false);
             if (setProjectData) setProjectData();
         } else {
-            navigate("/project");
+            navigate("/arenas");
         }
         formik.resetForm();
       } catch (err) {
@@ -171,8 +180,8 @@ const CreateProject = ({
         startDate: formatDate(projectData.startDate),
         endDate: formatDate(projectData.endDate),
         description: projectData.description || "",
-        projectManager: projectData.projectManager?._id || projectData.projectManager || "",
-        teamMembers: projectData.teamMembers?.map((m) => m._id || m) || [],
+        projectManager: projectData.projectManager?._id || projectData.projectManager || currentUser?._id || "",
+        teamMembers: projectData.teamMembers?.map((m) => m._id || m) || (currentUser?._id ? [currentUser._id] : []),
         rolesAndResponsibilities: mappedRoles,
         milestones: projectData.milestones || [], // Keep original objects for _id reference
         settings: projectData.settings || {
@@ -245,20 +254,20 @@ const CreateProject = ({
       <div className="max-w-7xl mx-auto mb-8 flex items-center justify-between">
         <div>
            <div className="flex items-center gap-3 text-textSub text-sm mb-2">
-              <span className="cursor-pointer hover:text-primary" onClick={() => navigate('/project')}>Projects</span>
+              <span className="cursor-pointer hover:text-primary" onClick={() => navigate('/arenas')}>Arenas</span>
               <span>/</span>
-              <span className="text-textMain font-medium">{data || location.state?.project ? "Update Project" : "New Project"}</span>
+              <span className="text-textMain font-medium">{data || location.state?.project ? "Update Arena" : "New Arena"}</span>
            </div>
            <h1 className="text-3xl font-bold text-textMain flex items-center gap-3">
               <LuLayoutDashboard className="text-primary" />
-              {data || location.state?.project ? "Update Project Details" : "Create New Project"}
+              {data || location.state?.project ? "Update Arena Details" : "Create New Arena"}
            </h1>
-           <p className="text-textSub mt-1">Configure project settings, assign teams, and define milestones.</p>
+           <p className="text-textSub mt-1">Configure arena settings and details.</p>
         </div>
         <div className="flex gap-3">
             <button
                 type="button"
-                onClick={() => navigate('/project')}
+                onClick={() => navigate('/arenas')}
                 className="px-4 py-2 border border-borderLight text-textSub rounded-xl hover:bg-slate-50 transition-colors flex items-center gap-2"
             >
                 <LuX /> Cancel
@@ -268,7 +277,7 @@ const CreateProject = ({
                 onClick={formik.handleSubmit}
                 className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primaryHover shadow-lg shadow-primary/30 transition-all flex items-center gap-2 font-medium"
             >
-                <LuSave /> {data || location.state?.project ? "Save Changes" : "Create Project"}
+                <LuSave /> {data || location.state?.project ? "Save Changes" : "Create Arena"}
             </button>
         </div>
       </div>
@@ -282,7 +291,7 @@ const CreateProject = ({
                 <h3 className="text-lg font-bold text-textMain mb-6 border-b border-borderLight pb-4">General Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <InputField
-                        label="Project Name"
+                        label="Arena Name"
                         name="name"
                         type="text"
                         value={formik.values.name}
@@ -293,7 +302,7 @@ const CreateProject = ({
                         isRequired
                     />
                     <InputField
-                        label="Project Key"
+                        label="Arena Key"
                         name="key"
                         type="text"
                         value={formik.values.key}
@@ -343,163 +352,45 @@ const CreateProject = ({
                         error={formik.touched.endDate && formik.errors.endDate}
                         isRequired
                     />
-                    <InputField
-                        label="Budget (Optional)"
-                        name="budget"
-                        type="number"
-                        value={formik.values.budget}
-                        onChange={formik.handleChange}
-                        placeholder="0.00"
-                        error={formik.touched.budget && formik.errors.budget}
-                    />
-                    <InputField
-                        label="Client Name"
-                        name="clientName"
-                        type="text"
-                        value={formik.values.clientName}
-                        onChange={formik.handleChange}
-                        placeholder="Client Company"
-                        error={formik.touched.clientName && formik.errors.clientName}
-                    />
+                    {false && (
+                      <>
+                        <InputField
+                            label="Budget (Optional)"
+                            name="budget"
+                            type="number"
+                            value={formik.values.budget}
+                            onChange={formik.handleChange}
+                            placeholder="0.00"
+                            error={formik.touched.budget && formik.errors.budget}
+                        />
+                        <InputField
+                            label="Client Name"
+                            name="clientName"
+                            type="text"
+                            value={formik.values.clientName}
+                            onChange={formik.handleChange}
+                            placeholder="Client Company"
+                            error={formik.touched.clientName && formik.errors.clientName}
+                        />
+                      </>
+                    )}
                 </div>
             </div>
 
             {/* Milestones Card */}
-            <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
-                <div className="flex justify-between items-center mb-6 border-b border-borderLight pb-4">
-                    <h3 className="text-lg font-bold text-textMain flex items-center gap-2">
-                        <LuFlag className="text-primary" /> Milestones
-                    </h3>
-                    <button type="button" onClick={handleAddMilestone} className="text-primary text-sm font-medium hover:underline flex items-center gap-1">
-                        <LuPlus /> Add Milestone
-                    </button>
+            {/* Milestones Card Hidden */}
+            {false && (
+                <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
+                    {/* Hiding Milestones content to retain code */}
                 </div>
-
-                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                    {milestones.map((milestone, index) => (
-                        <div key={index} className="p-4 rounded-xl border border-borderLight bg-slate-50 relative group">
-                             <button 
-                                type="button" 
-                                onClick={() => handleRemoveMilestone(index)} 
-                                className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                                <LuTrash2 size={16} />
-                            </button>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <InputField
-                                    label="Milestone Name"
-                                    name={`milestones[${index}].milestoneName`}
-                                    type="text"
-                                    value={milestone.milestoneName}
-                                    onChange={(e) => handleMilestoneChange(e.target.value, index, "milestoneName")}
-                                    placeholder="e.g. Alpha Release"
-                                    style="mb-2"
-                                />
-                                <InputField
-                                    label="Deliverables"
-                                    name={`milestones[${index}].deliverables`}
-                                    type="text"
-                                    value={milestone.deliverables}
-                                    onChange={(e) => handleMilestoneChange(e.target.value, index, "deliverables")}
-                                    placeholder="Comma separated..."
-                                    style="mb-2"
-                                />
-                                <InputField
-                                    label="Start Date"
-                                    name={`milestones[${index}].commenceDate`}
-                                    type="date"
-                                    value={milestone.commenceDate}
-                                    onChange={(e) => handleMilestoneChange(e.target.value, index, "commenceDate")}
-                                    style="mb-2"
-                                />
-                                <InputField
-                                    label="Due Date"
-                                    name={`milestones[${index}].expectedDate`}
-                                    type="date"
-                                    value={milestone.expectedDate}
-                                    onChange={(e) => handleMilestoneChange(e.target.value, index, "expectedDate")}
-                                    style="mb-2"
-                                />
-                            </div>
-                        </div>
-                    ))}
-                    {milestones.length === 0 && (
-                        <div className="text-center py-6 text-textSub italic border border-dashed border-borderLight rounded-xl">
-                            No milestones defined. Add key project milestones here.
-                        </div>
-                    )}
-                </div>
-            </div>
+            )}
             
-             {/* Roles & Responsibilities Card */}
-             <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
-                <div className="flex justify-between items-center mb-6 border-b border-borderLight pb-4">
-                    <h3 className="text-lg font-bold text-textMain">Roles & Responsibilities</h3>
-                    <button type="button" onClick={handleAddRow} className="text-primary text-sm font-medium hover:underline flex items-center gap-1">
-                        <LuPlus /> Add Role
-                    </button>
+            {/* Roles & Responsibilities Card Hidden */}
+            {false && (
+                <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
+                    {/* Hiding Roles & Responsibilities content to retain code */}
                 </div>
-                
-                <div className="overflow-x-auto max-h-[400px] overflow-y-auto custom-scrollbar">
-                    <table className="w-full text-sm text-left">
-                        <thead className="bg-slate-50 text-textSub uppercase font-semibold text-xs sticky top-0 z-10">
-                            <tr>
-                                <th className="px-4 py-3 rounded-l-lg bg-slate-50">Team Member</th>
-                                <th className="px-4 py-3 bg-slate-50">Role</th>
-                                <th className="px-4 py-3 bg-slate-50">Responsibility</th>
-                                <th className="px-4 py-3 rounded-r-lg w-10 bg-slate-50"></th>
-                            </tr>
-                        </thead>
-                        <tbody className="space-y-2">
-                            {rolesAndResponsibilities.map((row, index) => (
-                                <tr key={index} className="border-b border-borderLight/50 last:border-0">
-                                    <td className="p-2 min-w-[200px]">
-                                        <InputField
-                                            name={`rolesAndResponsibilities[${index}].teamMember`}
-                                            type="select"
-                                            options={teamOptions}
-                                            value={row.teamMember}
-                                            onChange={(e) => handleRoleChange(e, index, "teamMember")} 
-                                            placeholder="Select Member"
-                                            style="mb-0"
-                                        />
-                                    </td>
-                                    <td className="p-2 min-w-[150px]">
-                                        <input
-                                            type="text"
-                                            value={row.role}
-                                            onChange={(e) => handleRoleChange(e.target.value, index, "role")}
-                                            placeholder="e.g. Lead Dev"
-                                            className="w-full p-2 border border-borderLight rounded-lg text-sm bg-transparent focus:ring-1 focus:ring-primary outline-none"
-                                        />
-                                    </td>
-                                    <td className="p-2 min-w-[200px]">
-                                        <input
-                                            type="text"
-                                            value={row.responsibility}
-                                            onChange={(e) => handleRoleChange(e.target.value, index, "responsibility")}
-                                            placeholder="Key task..."
-                                            className="w-full p-2 border border-borderLight rounded-lg text-sm bg-transparent focus:ring-1 focus:ring-primary outline-none"
-                                        />
-                                    </td>
-                                    <td className="p-2 text-center">
-                                        <button type="button" onClick={() => handleRemoveRow(index)} className="text-red-400 hover:text-red-600 p-2">
-                                            <LuTrash2 size={16} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            {rolesAndResponsibilities.length === 0 && (
-                                <tr>
-                                    <td colSpan="4" className="text-center py-6 text-textSub italic">
-                                        No specific roles assigned yet. Click "Add Role" to define responsibilities.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            )}
         </div>
 
 
@@ -536,18 +427,20 @@ const CreateProject = ({
                         ]}
                         isRequired
                     />
-                    <InputField
-                        label="Access Level"
-                        name="access"
-                        type="select"
-                        value={formik.values.access}
-                        onChange={formik.handleChange}
-                        options={[
-                            { value: 'private', label: 'Private (Team Only)' },
-                            { value: 'public', label: 'Public (Organization)' }
-                        ]}
-                        isRequired
-                    />
+                    {false && (
+                        <InputField
+                            label="Access Level"
+                            name="access"
+                            type="select"
+                            value={formik.values.access}
+                            onChange={formik.handleChange}
+                            options={[
+                                { value: 'private', label: 'Private (Team Only)' },
+                                { value: 'public', label: 'Public (Organization)' }
+                            ]}
+                            isRequired
+                        />
+                    )}
                     <InputField
                         label="Repository URL"
                         name="githubRepository"
@@ -584,45 +477,12 @@ const CreateProject = ({
                 </div>
             </div>
 
-            {/* Team Assignment Card */}
-            <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
-                <h3 className="text-lg font-bold text-textMain mb-6 border-b border-borderLight pb-4 flex items-center gap-2">
-                    <LuUsers className="text-primary" /> Team Formation
-                </h3>
-                <div className="space-y-4">
-                    <InputField
-                        label="Project Manager"
-                        name="projectManager"
-                        type="select"
-                        value={formik.values.projectManager}
-                        onChange={formik.handleChange}
-                        options={managerOptions}
-                        placeholder="Select Manager"
-                        isRequired
-                    />
-                    <InputField
-                        label="Team Members"
-                        name="teamMembers"
-                        type="select"
-                        isMulti
-                        value={formik.values.teamMembers}
-                        onChange={(selectedOptions) => {
-                            // React-Select returns array of objects for multi, or null
-                            // InputField wrapper might be sending {target: {name, value: []}}
-                            // Let's rely on InputField's standard behavior which likely maps to value array
-                            // But wait, InputField handleSelectChange maps to [value1, value2]
-                            // So here we get {target: {name, value: [...]}}
-                            formik.handleChange(selectedOptions); 
-                        }}
-                        options={teamOptions}
-                        placeholder="Assign Members"
-                        isRequired
-                    />
+            {/* Team Assignment Card Hidden */}
+            {false && (
+                <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
+                    {/* Hiding Team Formation content to retain code */}
                 </div>
-                <div className="mt-4 bg-blue-50 text-blue-800 text-xs p-3 rounded-lg">
-                    <p><strong>Note:</strong> Selected members will strictly have access to this project if "Private" is selected.</p>
-                </div>
-            </div>
+            )}
         </div>
 
       </form>

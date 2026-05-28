@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import ReactQuill from "react-quill";
+import { LuEye, LuEyeOff } from "react-icons/lu";
 
 const InputField = ({
   label,
@@ -20,6 +21,7 @@ const InputField = ({
   ...props
 }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     setIsDarkMode(document.documentElement.classList.contains("dark"));
@@ -44,10 +46,11 @@ const InputField = ({
         borderColor: error ? "red" : "",
       },
     }),
-    singleValue: (provided) => ({
+    singleValue: (provided, state) => ({
       ...provided,
       color: isDarkMode ? "#fff" : "#000",
       textTransform: "capitalize",
+      display: state.selectProps.menuIsOpen ? "none" : "block",
     }),
     placeholder: (provided) => ({
       ...provided,
@@ -80,6 +83,17 @@ const InputField = ({
       ...provided,
       color: isDarkMode ? "#fff" : "#000",
     }),
+  };
+
+  const CustomMenuList = (props) => {
+    return (
+      <components.MenuList {...props}>
+        <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1f2633] text-xs text-gray-500 font-medium">
+           Type to search...
+        </div>
+        {props.children}
+      </components.MenuList>
+    );
   };
 
   const handleSelectChange = (selectedOption) => {
@@ -163,9 +177,11 @@ const InputField = ({
           options={options}
           placeholder={placeholder || `${label}`}
           isMulti={isMulti}
+          isSearchable={true}
           openMenuOnFocus={true}
           className={`w-full ${style && style} `}
           styles={customStyles}
+          components={{ MenuList: (props) => <CustomMenuList {...props} /> }}
           {...props}
         />
       ) : type === "textarea" ? (
@@ -207,6 +223,28 @@ const InputField = ({
           <label htmlFor={name} className="text-gray-700">
             {label}
           </label>
+        </div>
+      ) : type === "password" ? (
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            id={name}
+            name={name}
+            value={value}
+            onChange={onChange}
+            readOnly={readOnly}
+            onBlur={onBlur}
+            placeholder={placeholder}
+            className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg outline-none bg-white dark:bg-themeBG dark:text-themeText focus:ring-2 focus:ring-primary/20 transition-all pr-10"
+            {...props}
+          />
+          <button
+            type="button"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <LuEye size={18} /> : <LuEyeOff size={18} />}
+          </button>
         </div>
       ) : (
         <input

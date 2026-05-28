@@ -12,7 +12,7 @@ const mdboard = {};
 // ...
 mdboard.projectStatistics = asyncHandler(async (req, res) => {
     // ...
-    const projects = await Project.find().populate(
+    const projects = await Project.find({ branchId: req.branchId }).populate(
         "teamMembers",
         "firstName lastName email userRole userRoles phoneNumber profileImage address"
     ).populate({
@@ -40,7 +40,7 @@ mdboard.projectStatistics = asyncHandler(async (req, res) => {
 
 mdboard.teamStatistics = asyncHandler(async (req, res) => {
     // ...
-    const users = await User.find()
+    const users = await User.find({ "branchAccess.branchId": req.branchId })
         .populate("firstName lastName email userRole userRoles phoneNumber profileImage address")
         .populate("userRoles");
 
@@ -58,14 +58,17 @@ mdboard.userStatistics = asyncHandler(async (req, res) => {
     // ...
     const userRole = await UserRole.findOne({ name: "projectmanager" });
     // Count users who do NOT have the projectmanager role in their roles array
-    const teamMembers = await User.countDocuments({ userRoles: { $nin: [userRole?._id] } });
+    const teamMembers = await User.countDocuments({ 
+        "branchAccess.branchId": req.branchId,
+        userRoles: { $nin: [userRole?._id] } 
+    });
     // ...
 });
 
 
 mdboard.todayTaskDeliverables = asyncHandler(async (req, res) => {
     // ...
-    const users = await User.find().populate("userRole").populate("userRoles");
+    const users = await User.find({ "branchAccess.branchId": req.branchId }).populate("userRole").populate("userRoles");
     // ...
             return {
                 name: `${user.firstName} ${user.lastName || ""}`.trim(),

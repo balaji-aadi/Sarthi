@@ -65,13 +65,19 @@ dailyAccountabilityController.saveBoard = asyncHandler(async (req, res) => {
         });
     });
     
+    const branchId = req.headers["x-branch-id"];
+    const query = {
+        entityType: 'user',
+        entityId: new mongoose.Types.ObjectId(userId),
+        period: 'daily',
+        date: logicalDate
+    };
+    if (branchId && mongoose.Types.ObjectId.isValid(branchId)) {
+        query.branchId = new mongoose.Types.ObjectId(branchId);
+    }
+    
     await PerformanceStat.findOneAndUpdate(
-        {
-            entityType: 'user',
-            entityId: new mongoose.Types.ObjectId(userId),
-            period: 'daily',
-            date: logicalDate
-        },
+        query,
         {
             $set: { "metrics.accountabilityLogs": totalLogsForLogicalDay } 
         },

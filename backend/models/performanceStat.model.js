@@ -37,12 +37,17 @@ const performanceStatSchema = new mongoose.Schema(
       accountabilityLogs: { type: Number, default: 0 },
       backlogTasksCompleted: { type: Number, default: 0 },
       backlogHoursLogged: { type: Number, default: 0 }
+    },
+    branchId: {
+      type: Schema.Types.ObjectId,
+      ref: "Branch",
+      index: true
     }
   },
   { timestamps: true, versionKey: false }
 );
 
 // Compound index for fast lookups during aggregation/dashboard fetching
-performanceStatSchema.index({ entityType: 1, entityId: 1, period: 1, date: 1 }, { unique: true });
+performanceStatSchema.index({ branchId: 1, entityType: 1, entityId: 1, period: 1, date: 1 }, { unique: true });
 
 export const PerformanceStat = mongoose.model("PerformanceStat", performanceStatSchema);

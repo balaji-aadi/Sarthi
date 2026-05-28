@@ -133,7 +133,12 @@ const taskSchema = new mongoose.Schema(
           default: null 
         }
       }
-    ]
+    ],
+    branchId: {
+      type: Schema.Types.ObjectId,
+      ref: "Branch",
+      index: true
+    }
   }, 
   { 
     timestamps: true, 
@@ -142,7 +147,7 @@ const taskSchema = new mongoose.Schema(
 );
 
 // Compound Indexes for Common Queries
-taskSchema.index({ projectName: 1, status: 1 }); // Dashboard filtering
-taskSchema.index({ assignee: 1, status: 1 });    // "My Tasks" filtering
+taskSchema.index({ branchId: 1, projectName: 1, status: 1 }); // Dashboard filtering
+taskSchema.index({ branchId: 1, assignee: 1, status: 1 });    // "My Tasks" filtering
 
 export const Task = mongoose.model("Task", taskSchema);

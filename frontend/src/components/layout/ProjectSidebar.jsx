@@ -18,9 +18,7 @@ const ProjectSidebar = ({ project }) => {
 
     const menuItems = [
         { icon: <IoGridOutline />, label: 'Overview', path: `/project/${projectId}/overview` },
-        { icon: <IoFlagOutline />, label: 'Milestones', path: `/project/${projectId}/milestones` },
         { icon: <IoClipboardOutline />, label: 'Board', path: `/project/${projectId}/board` },
-        { icon: <IoRepeatOutline />, label: 'Sprints', path: `/project/${projectId}/sprints` },
         { icon: <IoListOutline />, label: 'Backlog', path: `/project/${projectId}/backlog` },
         { icon: <IoSettingsOutline />, label: 'Settings', path: `/project/${projectId}/settings` },
     ];
@@ -45,7 +43,7 @@ const ProjectSidebar = ({ project }) => {
                             {project?.name || 'Loading...'}
                         </h1>
                         <p className="text-xs text-textSub truncate">
-                            {project?.category || 'Software Project'}
+                            {project?.category || 'Self Learning Arena'}
                         </p>
                      </div>
                 </div>
@@ -53,7 +51,7 @@ const ProjectSidebar = ({ project }) => {
 
             {/* Main Navigation */}
             <nav className="flex-1 px-4 space-y-1">
-                <p className="px-4 text-xs font-semibold text-textSub uppercase tracking-wider mb-2 mt-4">Project Menu</p>
+                <p className="px-4 text-xs font-semibold text-textSub uppercase tracking-wider mb-2 mt-4">Arena Menu</p>
                 {projectId ? menuItems.map((item, idx) => (
                     <NavLink 
                         key={idx} 
@@ -65,24 +63,26 @@ const ProjectSidebar = ({ project }) => {
                     </NavLink>
                 )) : (
                     <div className="px-4 py-2 text-sm text-yellow-600 bg-yellow-50 rounded-md">
-                        No Project Selected
+                        No Arena Selected
                     </div>
                 )}
             </nav>
 
-            {/* Bottom Actions */}
-            <div className="p-4 border-t border-borderLight">
-                <div className="p-3 bg-slate-50 rounded-xl border border-borderLight/50">
-                    <p className="text-xs font-semibold text-textMain mb-1">Sprint Progress</p>
-                    <div className="w-full bg-slate-200 rounded-full h-1.5 mb-1">
-                        <div className="bg-primary h-1.5 rounded-full" style={{ width: '65%' }}></div>
-                    </div>
-                    <div className="flex justify-between text-[10px] text-textSub">
-                        <span>Sprint 12</span>
-                        <span>4 days left</span>
+            {/* Bottom Actions Hidden */}
+            {false && (
+                <div className="p-4 border-t border-borderLight">
+                    <div className="p-3 bg-slate-50 rounded-xl border border-borderLight/50">
+                        <p className="text-xs font-semibold text-textMain mb-1">Sprint Progress</p>
+                        <div className="w-full bg-slate-200 rounded-full h-1.5 mb-1">
+                            <div className="bg-primary h-1.5 rounded-full" style={{ width: '65%' }}></div>
+                        </div>
+                        <div className="flex justify-between text-[10px] text-textSub">
+                            <span>Sprint 12</span>
+                            <span>4 days left</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </aside>
     );
 };

@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { User } from "../models/user.model.js";
+import { Task } from "../models/task.model.js";
+import { FocusSession } from "../models/focusSession.model.js";
+import { DailyAccountability } from "../models/dailyAccountability.model.js";
+import { PerformanceStat } from "../models/performanceStat.model.js";
 import AnalyticsService from "../services/analytics-service/analytics.service.js";
 
 dotenv.config();

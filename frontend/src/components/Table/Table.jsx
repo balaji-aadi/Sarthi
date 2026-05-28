@@ -19,6 +19,7 @@ import * as XLSX from "xlsx";
 import "../../commonLayout.style.css";
 import { VscCloudDownload } from "react-icons/vsc";
 import { IoAdd } from "react-icons/io5";
+import { UserApi } from "../../services/api/user.api";
 import { TaskApi } from "../../services/api/Task.api";
 import toast from "react-hot-toast";
 
@@ -313,6 +314,25 @@ export const Table = memo(
         }
     };
 
+    const handleBulkUserStatusUpdate = async (status) => {
+        if (selectedRows.length === 0) return;
+        
+        setIsUpdatingBulk(true);
+        try {
+            const userIds = selectedRows.map(row => row._id);
+            await UserApi.bulkUpdateStatus({ userIds, isActive: status });
+            toast.success(`Successfully ${status ? 'enabled' : 'disabled'} ${selectedRows.length} users`);
+            setSelectedRows([]);
+            gridRef.current.api.deselectAll();
+            setTriggerTableUpdate(prev => !prev);
+        } catch (error) {
+            console.error("Bulk update failed:", error);
+            toast.error("Failed to update user status");
+        } finally {
+            setIsUpdatingBulk(false);
+        }
+    };
+
     return (
       <main className="common__layout__wrapper">
         <section className="common__layout__section">
@@ -419,6 +439,42 @@ export const Table = memo(
                             }`}
                         >
                             {isUpdatingBulk ? 'Updating...' : 'Apply to all'}
+                        </button>
+                    </div>
+                </div>
+                <button 
+                    onClick={() => {
+                        gridRef.current.api.deselectAll();
+                        setSelectedRows([]);
+                    }}
+                    className="text-textSub hover:text-textMain text-sm underline font-medium"
+                >
+                    Clear Selection
+                </button>
+            </div>
+          )}
+
+          {selectedRows.length > 0 && searchLabel === "Users" && (
+            <div className="bg-primary/5 border-y border-primary/20 p-3 px-6 flex items-center justify-between animate-in slide-in-from-top duration-300">
+                <div className="flex items-center gap-4">
+                    <span className="text-sm font-bold text-primary">
+                        {selectedRows.length} users selected
+                    </span>
+                    <div className="h-4 w-px bg-primary/20"></div>
+                    <div className="flex items-center gap-2">
+                        <button 
+                            onClick={() => handleBulkUserStatusUpdate(false)}
+                            disabled={isUpdatingBulk}
+                            className="px-4 py-1.5 rounded-lg text-sm font-bold transition-all bg-red-500 text-white shadow-lg shadow-red-500/30 hover:bg-red-600"
+                        >
+                            {isUpdatingBulk ? 'Updating...' : 'Disable Selected'}
+                        </button>
+                        <button 
+                            onClick={() => handleBulkUserStatusUpdate(true)}
+                            disabled={isUpdatingBulk}
+                            className="px-4 py-1.5 rounded-lg text-sm font-bold transition-all bg-green-500 text-white shadow-lg shadow-green-500/30 hover:bg-green-600"
+                        >
+                            {isUpdatingBulk ? 'Updating...' : 'Enable Selected'}
                         </button>
                     </div>
                 </div>

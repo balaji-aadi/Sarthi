@@ -1,0 +1,30 @@
+
+> momentum@0.1.0 build
+> vite build
+
+vite v7.3.1 building client environment for production...
+transforming...
+Browserslist: browsers data (caniuse-lite) is 17 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 1752 modules transformed.
+rendering chunks...
+[plugin vite:reporter] 
+(!) /Users/balajiaadesh/Desktop/Momentum/frontend/src/services/config.js is dynamically imported by /Users/balajiaadesh/Desktop/Momentum/frontend/src/pages/user-childrens/CreateUser.jsx but also statically imported by /Users/balajiaadesh/Desktop/Momentum/frontend/src/SocketProvider.jsx, /Users/balajiaadesh/Desktop/Momentum/frontend/src/pages/UserTypeMaster.jsx, /Users/balajiaadesh/Desktop/Momentum/frontend/src/pages/task-childrens/Task.jsx, /Users/balajiaadesh/Desktop/Momentum/frontend/src/pages/task-childrens/TaskDetailDrawer.jsx, /Users/balajiaadesh/Desktop/Momentum/frontend/src/services/axiosConfig.js, dynamic import will not move module into another chunk.
+
+[plugin vite:reporter] 
+(!) /Users/balajiaadesh/Desktop/Momentum/frontend/src/services/api/Common.api.js is dynamically imported by /Users/balajiaadesh/Desktop/Momentum/frontend/src/pages/user-childrens/CreateUser.jsx but also statically imported by /Users/balajiaadesh/Desktop/Momentum/frontend/src/components/tasks/TaskDetailDrawer.jsx, /Users/balajiaadesh/Desktop/Momentum/frontend/src/pages/task-childrens/CreateTask.jsx, /Users/balajiaadesh/Desktop/Momentum/frontend/src/pages/task-childrens/Task.jsx, dynamic import will not move module into another chunk.
+
+computing gzip size...
+dist/index.html                              1.42 kB │ gzip:     0.59 kB
+dist/assets/index-CtsddSvF.css             444.53 kB │ gzip:    64.49 kB
+dist/assets/purify.es-BpVZ_uCt.js           21.79 kB │ gzip:     8.58 kB
+dist/assets/index.es-gMQwaN8q.js           157.12 kB │ gzip:    52.19 kB
+dist/assets/html2canvas.esm-DXEQVQnt.js    201.04 kB │ gzip:    47.07 kB
+dist/assets/index-CksszPCZ.js            7,006.20 kB │ gzip: 1,961.23 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 26.22s

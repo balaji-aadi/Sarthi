@@ -29,13 +29,22 @@ const Login = () => {
       handleLoading(true);
       try {
         await dispatch(login(values)).unwrap();
+        handleLoading(false);
         navigate("/");
       } catch (e) {
+        handleLoading(false);
+        const { status, config } = e?.response || {};
+        const { url } = config || {};
+        if (status === 401) {
+          // Only clear token if it's an internal API request that failed
+          if (url && (url.includes('user/') || url.includes('auth/'))) {
+            localStorage.removeItem("accessToken");
+          }
+        }
         console.log("Error", e);
-        toast.error("Invalid Credentials");
+        toast.error(typeof e === 'string' ? e : "Invalid Credentials");
       }
       formik.resetForm();
-      handleLoading(false);
     },
   });
 
@@ -102,8 +111,8 @@ const Login = () => {
         {/* Brand Side */}
         <div className="hidden lg:block space-y-8">
             <motion.div variants={itemVariants} className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 transform -rotate-6">
-                    <span className="text-2xl font-black italic text-white">M</span>
+                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 shadow-lg transform -rotate-6 overflow-hidden p-1.5">
+                    <img src="/momentum_logo.svg" alt="Momentum Logo" className="w-full h-full object-contain" />
                 </div>
                 <span className="text-2xl font-black tracking-[0.2em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
                     Momentum

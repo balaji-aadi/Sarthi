@@ -50,8 +50,8 @@ const ProjectLayout = () => {
         return (
             <div className="flex h-screen items-center justify-center bg-bgLight">
                 <div className="text-center">
-                    <h2 className="text-xl font-bold text-textMain">Project not found</h2>
-                    <p className="text-textSub mt-2">The project you are looking for does not exist or you don't have permission.</p>
+                    <h2 className="text-xl font-bold text-textMain">Arena not found</h2>
+                    <p className="text-textSub mt-2">The arena you are looking for does not exist or you don't have permission.</p>
                 </div>
             </div>
         );

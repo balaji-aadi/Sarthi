@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { ProjectApi } from '../../services/api/Project.api';
 import { useNavigate } from 'react-router-dom';
 import { IoAdd, IoSearchOutline, IoGridOutline, IoListOutline, IoFlagOutline } from 'react-icons/io5';
@@ -16,11 +17,14 @@ const ProjectList = () => {
     const [viewMode, setViewMode] = useState('grid');
     const [isMilestoneModalOpen, setIsMilestoneModalOpen] = useState(false);
     const [selectedProjectId, setSelectedProjectId] = useState(null);
+    const { activeBranch } = useSelector((state) => state.store);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchProjects();
-    }, []);
+        if (activeBranch) {
+            fetchProjects();
+        }
+    }, [activeBranch]);
 
     const fetchProjects = async () => {
         try {
@@ -54,7 +58,7 @@ const ProjectList = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     const handleEditProject = (project) => {
-        navigate('/project/create-project', { state: { project } });
+        navigate('/arenas/create-project', { state: { project } });
     };
 
     const openMilestoneModal = (projectId) => {
@@ -90,7 +94,7 @@ const ProjectList = () => {
     });
 
     const columnDefs = [
-        { headerName: "Project Name", field: "name" },
+        { headerName: "Arena Name", field: "name" },
         { headerName: "Key", field: "key" },
         { headerName: "Status", field: "status" },
         { headerName: "Priority", field: "priority" },
@@ -119,17 +123,19 @@ const ProjectList = () => {
                     <button 
                         onClick={() => handleEditProject(params.data)}
                         className="text-blue-500 hover:text-blue-700"
-                        title="Edit Project"
+                        title="Edit Arena"
                     >
                         <FaEdit />
                     </button>
-                    <button 
-                        onClick={() => openMilestoneModal(params.data._id)}
-                        className="text-amber-500 hover:text-amber-700"
-                        title="Add Milestone"
-                    >
-                        <IoFlagOutline />
-                    </button>
+                    {false && (
+                        <button 
+                            onClick={() => openMilestoneModal(params.data._id)}
+                            className="text-amber-500 hover:text-amber-700"
+                            title="Add Milestone"
+                        >
+                            <IoFlagOutline />
+                        </button>
+                    )}
                 </div>
             )
         }
@@ -148,8 +154,8 @@ const ProjectList = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-textMain">Projects</h1>
-                    <p className="text-textSub text-sm mt-1">Manage and track all your ongoing projects</p>
+                    <h1 className="text-2xl font-bold text-textMain">Arenas</h1>
+                    <p className="text-textSub text-sm mt-1">Manage and track all your ongoing arenas</p>
                 </div>
                 <div className="flex items-center gap-3">
                      <div className="flex bg-white p-1 rounded-lg border border-borderLight mr-2">
@@ -174,7 +180,7 @@ const ProjectList = () => {
                             <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-textSub" />
                             <input 
                                 type="text" 
-                                placeholder="Search projects..." 
+                                placeholder="Search arenas..." 
                                 className="pl-10 pr-4 py-2 rounded-xl border border-borderLight focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white text-sm w-64"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -184,11 +190,11 @@ const ProjectList = () => {
                      
                      {viewMode === 'grid' && (
                         <button 
-                            onClick={() => navigate('/project/create-project')}
+                            onClick={() => navigate('/arenas/create-project')}
                             className="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-xl font-semibold shadow-lg shadow-primary/30 flex items-center gap-2 transition-transform active:scale-95"
                         >
                             <IoAdd size={18} />
-                            <span>New Project</span>
+                            <span>New Arena</span>
                         </button>
                      )}
                 </div>
@@ -201,10 +207,10 @@ const ProjectList = () => {
                          <Table
                             column={columnDefs}
                             getTableFunction={ProjectApi.getAllProjects}
-                            searchLabel={"Project"}
+                            searchLabel={"Arena"}
                             totalCount={true}
-                            onCreate={() => navigate('/project/create-project')}
-                            createLabel="New Project"
+                            onCreate={() => navigate('/arenas/create-project')}
+                            createLabel="New Arena"
                         />
                     </div>
                 ) : (
@@ -250,17 +256,19 @@ const ProjectList = () => {
                                         </div>
 
                                         <div className="absolute top-6 right-6 flex gap-1 opacity-0 group-hover:opacity-100 transition-all z-10 translate-x-2 group-hover:translate-x-0">
-                                             <button 
-                                                onClick={(e) => { e.stopPropagation(); openMilestoneModal(project._id); }}
-                                                className="w-8 h-8 flex items-center justify-center text-amber-500 bg-white shadow-sm border border-amber-100 rounded-xl hover:bg-amber-50 transition-colors"
-                                                title="Add Milestone"
-                                             >
-                                                <IoFlagOutline size={14} />
-                                             </button>
+                                             {false && (
+                                                <button 
+                                                    onClick={(e) => { e.stopPropagation(); openMilestoneModal(project._id); }}
+                                                    className="w-8 h-8 flex items-center justify-center text-amber-500 bg-white shadow-sm border border-amber-100 rounded-xl hover:bg-amber-50 transition-colors"
+                                                    title="Add Milestone"
+                                                >
+                                                    <IoFlagOutline size={14} />
+                                                </button>
+                                             )}
                                              <button 
                                                 onClick={(e) => { e.stopPropagation(); handleEditProject(project); }}
                                                 className="w-8 h-8 flex items-center justify-center text-blue-500 bg-white shadow-sm border border-blue-100 rounded-xl hover:bg-blue-50 transition-colors"
-                                                title="Edit Project"
+                                                title="Edit Arena"
                                              >
                                                 <FaEdit size={14} />
                                              </button>
@@ -292,7 +300,7 @@ const ProjectList = () => {
                                 ))
                             ) : (
                                 <div className="col-span-full text-center py-20 text-textSub">
-                                    <p>No projects found. Create one to get started!</p>
+                                    <p>No arenas found. Create one to get started!</p>
                                 </div>
                             )}
                         </div>

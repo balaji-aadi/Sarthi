@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Sprints from './project-childrens/Sprints';
 import TaskDetailDrawer from '../components/tasks/TaskDetailDrawer';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IoChevronDownOutline, IoFilterOutline } from 'react-icons/io5';
 import { useDispatch } from 'react-redux';
@@ -20,13 +20,20 @@ import { setGlobalSearch } from '../store/slices/storeSlice';
 const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { slug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { currentUser, globalSearch } = useSelector((state) => state.store);
+  const { currentUser, globalSearch, activeBranch } = useSelector((state) => state.store);
   const isManager = currentUser?.userRole?.name === "projectmanager";
   const isAdmin = currentUser?.userRole?.name === "admin";
   const canCreate = isManager || isAdmin;
 
   const [viewMode, setViewMode] = useState('board'); // 'board', 'spreadsheet', 'timeline', 'calendar'
+  
+  useEffect(() => {
+    if (!activeBranch) {
+        navigate('/branch', { replace: true });
+    }
+  }, [activeBranch, navigate]);
   
   // Global Filters
   const [projectId, setProjectId] = useState('');
@@ -47,10 +54,23 @@ const Dashboard = () => {
 
   // Sync filters from URL
   useEffect(() => {
-    const pId = searchParams.get('projectId');
-    // If projectId is in URL, set it. If missing, clear it.
-    setProjectId(pId || '');
-  }, [searchParams]);
+    // If slug is present, projectId is handled by the fetchOptions effect
+    if (!slug) {
+        const pId = searchParams.get('projectId');
+        // If projectId is in URL, set it. If missing, clear it.
+        setProjectId(pId || '');
+    }
+  }, [searchParams, slug]);
+
+  // Sync slug to projectId
+  useEffect(() => {
+      if (slug && projects.length > 0) {
+          const matched = projects.find(p => p.slug === slug);
+          if (matched && matched.value !== projectId) {
+              setProjectId(matched.value);
+          }
+      }
+  }, [slug, projects, projectId]);
 
   // Fetch Options (Projects, Members)
   useEffect(() => {
@@ -58,7 +78,11 @@ const Dashboard = () => {
         // Fetch Projects
         try {
             const pRes = await ProjectApi.getAllProjects();
-            const fetchedProjects = pRes.data?.data?.map(p => ({ value: p._id, label: p.name })) || [];
+            const fetchedProjects = pRes.data?.data?.map(p => ({ 
+               value: p._id, 
+               label: p.name,
+               slug: p.key?.toLowerCase() || p.name.toLowerCase().replace(/\s+/g, '-') 
+            })) || [];
             
             // Reorder based on localStorage priority
             const savedOrder = JSON.parse(localStorage.getItem('projectTabsOrder')) || [];
@@ -74,13 +98,19 @@ const Dashboard = () => {
             }
             setProjects(fetchedProjects);
 
-            // Auto-select the first project if no projectId is currently selected (meaning user just opened dashboard)
-            const currentUrlProjectId = searchParams.get('projectId');
-            if (!currentUrlProjectId && fetchedProjects.length > 0) {
-                setProjectId(fetchedProjects[0].value);
-                const params = new URLSearchParams(searchParams);
-                params.set('projectId', fetchedProjects[0].value);
-                setSearchParams(params, { replace: true });
+            if (slug) {
+                const matched = fetchedProjects.find(p => p.slug === slug);
+                if (matched) {
+                    setProjectId(matched.value);
+                } else if (fetchedProjects.length > 0) {
+                    navigate(`/arena/${fetchedProjects[0].slug}`, { replace: true });
+                }
+            } else {
+                // Auto-select the first project if no projectId is currently selected (meaning user just opened dashboard)
+                const currentUrlProjectId = searchParams.get('projectId');
+                if (!currentUrlProjectId && fetchedProjects.length > 0) {
+                    navigate(`/arena/${fetchedProjects[0].slug}`, { replace: true });
+                }
             }
         } catch (error) {
             console.error("Failed to fetch dashboard projects", error);
@@ -94,8 +124,10 @@ const Dashboard = () => {
             console.error("Failed to fetch dashboard members (likely restricted)", error);
         }
     };
-    fetchOptions();
-  }, []);
+    if (activeBranch) {
+        fetchOptions();
+    }
+  }, [activeBranch]);
 
   // Fetch Tasks for Non-Board Views (Board fetches its own for now to preserve strict logic)
   useEffect(() => {
@@ -111,7 +143,7 @@ const Dashboard = () => {
             // Otherwise we filter client-side below.
             
             // Avoid fetching all tasks if we are in a project context but ID is briefly missing
-            if (!projectId) {
+            if (slug && !projectId) {
                 setTasks([]);
                 setLoading(false);
                 return;
@@ -125,8 +157,10 @@ const Dashboard = () => {
             setLoading(false);
         }
     };
-    fetchTasks();
-  }, [projectId, memberId, viewMode, sortBy, parentId]);
+    if (activeBranch) {
+        fetchTasks();
+    }
+  }, [projectId, memberId, viewMode, sortBy, parentId, activeBranch]);
 
   // Fetch Parent Tasks for Filtering
   useEffect(() => {
@@ -227,11 +261,12 @@ const Dashboard = () => {
                             members={members}
                             selectedProject={projectId}
                             onProjectChange={(id) => {
-                                setProjectId(id);
-                                const params = new URLSearchParams(searchParams);
-                                if (id) params.set('projectId', id);
-                                else params.delete('projectId');
-                                setSearchParams(params);
+                                const selected = projects.find(p => p.value === id);
+                                if (selected) {
+                                    navigate(`/arena/${selected.slug}`);
+                                } else {
+                                    navigate('/');
+                                }
                             }}
                             selectedMember={memberId}
                             onMemberChange={setMemberId}
@@ -263,7 +298,7 @@ const Dashboard = () => {
           </AnimatePresence>
 
          <div 
-            className={`flex-1 overflow-hidden ${viewMode === 'board' ? 'p-0' : 'p-6'} transition-all duration-500`}
+            className={`flex-1 overflow-y-auto ${viewMode === 'board' ? 'p-0' : 'p-6'} transition-all duration-500`}
             onMouseEnter={() => {
                 // Optional: You could start the timer here if it's already shown
             }}

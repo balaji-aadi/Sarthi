@@ -94,6 +94,11 @@ const projectSchema = new mongoose.Schema({
     updatedBy : {
       type : Schema.Types.ObjectId, 
       ref: "User", 
+    },
+    branchId: {
+      type: Schema.Types.ObjectId,
+      ref: "Branch",
+      index: true
     }
   }, 
   { 

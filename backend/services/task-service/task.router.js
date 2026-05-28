@@ -5,19 +5,20 @@ import { canUpdateTask } from "../../middlewares/resource.middleware.js";
 import taskController from "./task.controller.js";
 import taskImports from "./taskimport.js";
 import upload from "../../middlewares/multer.middleware.js";
+import { verifyBranchAccess } from "../../middlewares/branch.middleware.js";
 
 const router = Router();
 
-router.route("/create-task").post(verifyJWT, checkPermission("CREATE_TASK"), taskController.createTask);
-router.route("/get-last-created").get(verifyJWT, taskController.getLastCreatedTask);
-router.route("/update-task/:taskId").put(verifyJWT, canUpdateTask, taskController.updateTask);
-router.route("/get-tasks/:taskId").get(verifyJWT, checkPermission(["VIEW_TASK", "VIEW_ASSIGNED_TASK"]), taskController.getTaskById);
-router.route("/get-all-tasks").post(verifyJWT, taskController.getallTasks);
-router.route("/get-alltask-free").post(verifyJWT, checkPermission("VIEW_TASK"), taskController.getallTasksfree);
-router.route("/delete-task/:taskId").delete(verifyJWT, checkPermission("DELETE_TASK"), taskController.deleteTask);
-router.route("/update-task-log/:taskId").patch(verifyJWT, canUpdateTask, taskController.updatetaskLog);
-router.route("/task-import").post(verifyJWT, checkPermission("CREATE_TASK"), upload.single("file"), taskImports);
-router.route("/deletemilestone/:milestoneId").post(verifyJWT, checkPermission("DELETE_MILESTONE"), taskController.deletemilestone)
-router.route("/add-revision/:taskId").post(verifyJWT, taskController.addRevision);
+router.route("/create-task").post(verifyJWT, verifyBranchAccess, checkPermission("CREATE_TASK"), taskController.createTask);
+router.route("/get-last-created").get(verifyJWT, verifyBranchAccess, taskController.getLastCreatedTask);
+router.route("/update-task/:taskId").put(verifyJWT, verifyBranchAccess, canUpdateTask, taskController.updateTask);
+router.route("/get-tasks/:taskId").get(verifyJWT, verifyBranchAccess, checkPermission(["VIEW_TASK", "VIEW_ASSIGNED_TASK"]), taskController.getTaskById);
+router.route("/get-all-tasks").post(verifyJWT, verifyBranchAccess, taskController.getallTasks);
+router.route("/get-alltask-free").post(verifyJWT, verifyBranchAccess, checkPermission("VIEW_TASK"), taskController.getallTasksfree);
+router.route("/delete-task/:taskId").delete(verifyJWT, verifyBranchAccess, checkPermission("DELETE_TASK"), taskController.deleteTask);
+router.route("/update-task-log/:taskId").patch(verifyJWT, verifyBranchAccess, canUpdateTask, taskController.updatetaskLog);
+router.route("/task-import").post(verifyJWT, verifyBranchAccess, checkPermission("CREATE_TASK"), upload.single("file"), taskImports);
+router.route("/deletemilestone/:milestoneId").post(verifyJWT, verifyBranchAccess, checkPermission("DELETE_MILESTONE"), taskController.deletemilestone)
+router.route("/add-revision/:taskId").post(verifyJWT, verifyBranchAccess, taskController.addRevision);
 
 export default router;

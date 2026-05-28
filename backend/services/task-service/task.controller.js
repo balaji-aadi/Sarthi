@@ -138,6 +138,7 @@ tc.createTask = asyncHandler(async (req, res) => {
       progress: progress || 0,
       createdBy: req.user?._id,
       parentTask: parentTask || null,
+      branchId: req.branchId ? new mongoose.Types.ObjectId(req.branchId) : undefined,
       activityLogs: [
         {
           oldStatus: null,
@@ -302,8 +303,8 @@ tc.updateTask = asyncHandler(async (req, res) => {
     
     updateFields.updatedBy = req.user?._id;
 
-    const updatedTask = await Task.findByIdAndUpdate(
-      req.params.taskId,
+    const updatedTask = await Task.findOneAndUpdate(
+      { _id: req.params.taskId, branchId: req.branchId },
       {
         ...updateFields,
         ...(activityLogEntry && {
@@ -377,7 +378,7 @@ tc.getTaskById = asyncHandler(async (req, res) => {
     if (req.params.taskId == "undefined" || !req.params.taskId) {
       return res.status(400).json(new ApiError(400, "id not provided"));
     }
-    const task = await Task.findById(req.params.taskId).populate(
+    const task = await Task.findOne({ _id: req.params.taskId, branchId: req.branchId }).populate(
       "projectName assignee activityLogs.user"
     );
 
@@ -413,6 +414,11 @@ tc.getallTasks = asyncHandler(async (req, res) => {
   try {
     const { search = "" } = req.query;
     let { filter = {}, sortOrder = -1 } = req.body;
+    
+    // Enforce branch isolation
+    if (req.branchId) {
+      filter.branchId = new mongoose.Types.ObjectId(req.branchId);
+    }
     // Extract permissions from req.user (already populated in auth middleware)
     const permissions = new Set();
     
@@ -463,23 +469,9 @@ tc.getallTasks = asyncHandler(async (req, res) => {
       filter.parentTask = new mongoose.Types.ObjectId(filter.parentTask);
     }
 
-    // Role-based filtering logic using Permissions
-    // If user acts as 'Employee' (VIEW_ASSIGNED_TASK only) and NOT 'Manager' (VIEW_ALL_PROJECTS/VIEW_TASK generic)
-    // We need to be careful. 
-    // ADMIN / PM has 'VIEW_ALL_PROJECTS' or 'VIEW_TASK' (global).
-    // EMPLOYEE has 'VIEW_ASSIGNED_TASK'.
-    
-    const canViewAll = permissions.has('VIEW_ALL_PROJECTS') || permissions.has('VIEW_TASK');
-    const mustViewAssigned = permissions.has('VIEW_ASSIGNED_TASK');
-
-    if (!canViewAll && mustViewAssigned) {
-         filter.assignee = req.user._id;
-    }
-    // If they have NEITHER, they see nothing (or handle as 403, but here just empty list is fine)
-    if (!canViewAll && !mustViewAssigned) {
-        // Fallback: if no specific view permission, maybe return nothing or keep existing behavior?
-        // Let's assume strict RBAC:
-        return res.status(200).json(new ApiResponse(200, [], "No tasks found (Insufficient permissions)"));
+    // ENFORCE INDIVIDUAL ISOLATION: User only sees what they created
+    if (req.user?.email !== "balajiaadi2000@gmail.com") {
+        filter.createdBy = req.user._id;
     }
 
     if (filter?.type === "open") {
@@ -533,7 +525,7 @@ tc.deleteTask = asyncHandler(async (req, res) => {
       return res.status(400).json(new ApiError(400, "id not provided"));
     }
 
-    const task = await Task.findByIdAndDelete(req.params.taskId);
+    const task = await Task.findOneAndDelete({ _id: req.params.taskId, branchId: req.branchId });
 
     if (!task) {
       return res.status(404).json(new ApiError(404, "Task not found"));
@@ -685,7 +677,12 @@ tc.getallTasksfree = asyncHandler(async (req, res) => {
   
   try {
     const { search = "" } = req.query;
-    let { sortOrder = -1 } = req.body;
+    let { filter = {}, sortOrder = -1 } = req.body;
+    
+    // Enforce branch isolation
+    if (req.branchId) {
+      filter.branchId = new mongoose.Types.ObjectId(req.branchId);
+    }
 
     let searchCondition = {};
     if (search && search !== "undefined") {
@@ -699,8 +696,12 @@ tc.getallTasksfree = asyncHandler(async (req, res) => {
         { status: { $regex: regex } },
       ];
     }
+    
+    if (req.user?.email !== "balajiaadi2000@gmail.com") {
+        filter.createdBy = req.user._id;
+    }
 
-    const tasks = await Task.find(searchCondition)
+    const tasks = await Task.find({ ...searchCondition, ...filter })
     .populate("projectName", "name key settings")
     .populate("assignee milestone activityLogs.user")
     .populate({

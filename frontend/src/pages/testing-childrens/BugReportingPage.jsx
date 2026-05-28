@@ -222,7 +222,7 @@ const BugReporting = ({
         {/* Project Selection */}
         <div className="mb-6">
           <InputField
-            label="Select Project"
+            label="Select Arena"
             name="project"
             value={selectedProject}
             onChange={(e) => handleProjectChange(e.target)}

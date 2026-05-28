@@ -38,7 +38,8 @@ mc.createMilestone = asyncHandler(async (req, res) => {
         summary,
         commenceDate,
         expectedDate,
-        deliverables
+        deliverables,
+        branchId: req.branchId
       });
   
       return res
@@ -131,7 +132,7 @@ mc.getAllMilestone = asyncHandler(async (req, res) => {
     const { filter = {}, sortOrder = -1 } = req.body;
 
     try {
-        const query = {};
+        const query = { branchId: req.branchId };
 
         if (search) {
             const searchRegex = new RegExp(search, "i");

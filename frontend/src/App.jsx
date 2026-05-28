@@ -5,6 +5,7 @@ import { FocusApi } from "./services/api/Focus.api";
 import { TaskApi } from "./services/api/Task.api";
 import { IoTimeOutline } from "react-icons/io5";
 
+
 import {
   Route,
   RouterProvider,
@@ -47,6 +48,8 @@ import DailyAccountability from "./pages/daily-accountability/DailyAccountabilit
 import FocusTimer from "./pages/focus-timer/FocusTimer";
 import Revision from "./pages/task-childrens/Revision";
 import SettingsGlobal from "./pages/SettingsGlobal";
+import BranchDashboard from "./pages/BranchDashboard";
+import PricingPage from "./pages/subscription/PricingPage";
 
 import ProjectList from "./pages/project-childrens/ProjectList";
 import TeamList from "./pages/user-childrens/TeamList";
@@ -58,10 +61,28 @@ import Backlog from "./pages/project-childrens/Backlog";
 import Sprints from "./pages/project-childrens/Sprints";
 import Settings from "./pages/project-childrens/Settings";
 
+import { useDispatch, useSelector } from "react-redux";
+import { BranchApi } from "./services/api/Branch.api";
+import { setGlobalSettings } from "./store/slices/storeSlice";
+
 function App() {
+  const dispatch = useDispatch();
+  const { currentUser, globalSettings } = useSelector((state) => state.store);
   const [showGlobalBacklogModal, setShowGlobalBacklogModal] = useState(false);
   const [expiredTaskData, setExpiredTaskData] = useState(null);
   const [backlogHoursInput, setBacklogHoursInput] = useState("");
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await BranchApi.getGlobalSettings();
+        dispatch(setGlobalSettings(res.data?.data));
+      } catch (e) {
+        console.error("Failed to fetch global settings", e);
+      }
+    };
+    fetchSettings();
+  }, [dispatch]);
 
   // Global Background Focus Timer Watcher
   useEffect(() => {
@@ -71,7 +92,8 @@ function App() {
 
        const timerStateStr = localStorage.getItem("focus_timer_state");
        const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
-       if (!timerStateStr || !bindingObjStr) return;
+       const activeBranchStr = localStorage.getItem("activeBranch");
+       if (!timerStateStr || !bindingObjStr || !activeBranchStr) return;
        
        try {
            const timerState = JSON.parse(timerStateStr);
@@ -158,10 +180,18 @@ function App() {
             path="/"
             element={<ProtectedRoute element={<Dashboard />} />}
           />
+          <Route
+            path="/branch"
+            element={<ProtectedRoute element={<BranchDashboard />} />}
+          />
+          <Route
+            path="arena/:slug"
+            element={<ProtectedRoute element={<Dashboard />} />}
+          />
 
           {/* project routes start here */}
           <Route
-            path="project"
+            path="arenas"
             element={<ProtectedRoute element={<Project />} />}
           >
             <Route index element={<ProtectedRoute element={<ProjectList />} />} />
@@ -281,10 +311,14 @@ function App() {
             path="settings"
             element={<ProtectedRoute element={<SettingsGlobal />} />}
           />
+          <Route
+            path="pricing"
+            element={currentUser?.email === "balajiaadi2000@gmail.com" ? <Dashboard /> : <ProtectedRoute element={<PricingPage />} />}
+          />
         </Route>
 
         {/* Project Specific Routes (Separate Layout) */}
-        <Route path="project/:projectId" element={<ProtectedRoute element={<ProjectLayout />} />}>
+        <Route path="arenas/:projectId" element={<ProtectedRoute element={<ProjectLayout />} />}>
             <Route path="overview" element={<ProtectedRoute element={<ProjectOverview />} />} />
             <Route path="milestones" element={<ProtectedRoute element={<Milestones />} />} />
             <Route path="board" element={<ProtectedRoute element={<ProjectBoard />} />} />

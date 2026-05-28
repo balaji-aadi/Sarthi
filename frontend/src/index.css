@@ -1,128 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  /* Global "Classy" Scrollbar */
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 14px; /* Reduced from default 16px to fix zoomed feel */
+  }
+
+  body {
+    @apply font-sans text-slate-900 bg-[#f8fafc];
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px; /* Slightly thicker for horizontal scroll comfort */
+    display: none;
   }
 
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1; /* slate-300 */
-    border-radius: 20px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #94a3b8; /* slate-400 */
-  }
-
-  /* Dark mode support */
-  .dark ::-webkit-scrollbar-thumb {
-     background-color: #475569; /* slate-600 */
-  }
-  .dark ::-webkit-scrollbar-thumb:hover {
-     background-color: #64748b; /* slate-500 */
+  /* Hide scrollbar for IE, Edge and Firefox */
+  html, body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
 }
 
-/* Firefox Support */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
+:root {
+    --primary: 79, 70, 229;
+    --accent: 139, 92, 246;
+    --success: 16, 185, 129;
+    --warning: 245, 158, 11;
+    --danger: 239, 68, 68;
+    --background: 248, 250, 252;
+    --surface: 255, 255, 255;
+    --text-main: 15, 23, 42;
+    --text-sub: 100, 116, 139;
 }
 
-.dark * {
-  scrollbar-color: #475569 transparent;
-}
-
-/* Quill Dark Mode */
-.dark-quill .ql-toolbar {
-  background-color: #1f2633 !important;
-  border-color: #374151 !important;
-}
-
-.dark-quill .ql-container {
-  background-color: #1f2633 !important;
-  border-color: #374151 !important;
-  color: #f3f4f6 !important;
-}
-
-.dark-quill .ql-stroke {
-  stroke: #9ca3af !important;
-}
-
-.dark-quill .ql-fill {
-  fill: #9ca3af !important;
-}
-
-.dark-quill .ql-picker {
-  color: #9ca3af !important;
-}
-
-.dark-quill .ql-picker-options {
-  background-color: #1f2633 !important;
-  border-color: #374151 !important;
-}
-
-/* Premium Styles */
+/* Premium Shadows */
 .premium-shadow {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
 }
 
+.premium-shadow-lg {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+}
+
+.premium-shadow-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-shadow-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.15);
+}
+
+/* Glassmorphism */
 .glass-morphism {
   background: rgba(255, 255, 255, 0.7) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
 }
 
-.dark .glass-morphism {
-  background: rgba(17, 24, 39, 0.7) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+/* Animations */
+@keyframes fadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Custom Scrollbar for Drawer/Modals */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+.animate-wow {
+  animation: fadeInSlideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
-  border-radius: 10px;
+/* Gradient Text */
+.text-gradient {
+  background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #334155;
+/* Modern Pill */
+.pill-premium {
+  @apply px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all duration-300;
 }
 
-/* Quill Content Rendering Fixes */
-.quill-content {
-  word-break: break-word;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  white-space: pre-wrap;
+.pill-success { @apply bg-emerald-50 text-emerald-600 border-emerald-100; }
+.pill-primary { @apply bg-indigo-50 text-indigo-600 border-indigo-100; }
+.pill-warning { @apply bg-amber-50 text-amber-600 border-amber-100; }
+
+/* Dashboard Card */
+.dashboard-card {
+  @apply bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden relative;
 }
 
-.quill-content a {
-  color: #3b82f6 !important;
-  text-decoration: underline !important;
-  font-weight: 600;
+.dashboard-card::before {
+  content: '';
+  @apply absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-500;
 }
 
-.quill-content a:hover {
-  color: #2563eb !important;
-  text-decoration: none !important;
+.dashboard-card:hover::before {
+  @apply opacity-100;
 }
 
-/* Ensure images don't overflow */
-.quill-content img {
-  max-width: 100%;
-  height: auto;
+/* Input Styles */
+.premium-input {
+  @apply bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-800 font-bold outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-inner;
 }
 

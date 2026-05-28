@@ -76,13 +76,8 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
     const loadData = async () => {
         // Use tasks passed from Dashboard ONLY if they have been fetched (not null)
         if (externalTasks !== null && !milestoneId) {
-            // Fail-safe: Filter external tasks to ensure they belong to the current project context
-            const filteredTasks = currentProjectId 
-                ? externalTasks.filter(t => {
-                    const pId = typeof t.projectName === 'object' ? t.projectName?._id : t.projectName;
-                    return pId === currentProjectId;
-                })
-                : externalTasks;
+            // Dashboard already fetches tasks filtered by project. Use them directly.
+            const filteredTasks = externalTasks;
                 
             setProjectTasks(filteredTasks);
             setTasks(filteredTasks);
@@ -128,8 +123,8 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
                 setTasks([]);
             }
         } finally {
+            handleLoading(false);
             if (isMounted) {
-                handleLoading(false);
                 setIsInitialLoading(false);
             }
         }
@@ -137,7 +132,10 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
 
     loadData();
 
-    return () => { isMounted = false; };
+    return () => { 
+        isMounted = false; 
+        handleLoading(false);
+    };
   }, [externalProjectId, externalMemberId, milestoneId, selectedTaskType, isTesting, updated, selectedProject, selectedMember, externalTasks, externalLoading]);
 
   // Sync internal selected states with external props for secondary UI components
@@ -355,7 +353,7 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
                     </div>
                   )}
 
-                  {selectedTaskType !== "Bug Reporting" && milestones.length > 0 && (
+                  {false && selectedTaskType !== "Bug Reporting" && milestones.length > 0 && (
                     <div className="w-48">
                         <InputField
                         label=""
@@ -507,7 +505,7 @@ const MyTask = ({ viewMode, setViewMode, externalProjectId, externalMemberId, ex
                  </div>
               ) : (
                 <div className="flex flex-col items-center justify-center h-64 text-textSub">
-                  <p className="text-lg font-medium">No tasks available for this project.</p>
+                  <p className="text-lg font-medium">No tasks available for this arena.</p>
                   <button onClick={handleReset} className="text-primary hover:underline mt-2">Clear filters</button>
                 </div>
              )}

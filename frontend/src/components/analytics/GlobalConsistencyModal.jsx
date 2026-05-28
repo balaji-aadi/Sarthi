@@ -58,7 +58,7 @@ const GlobalConsistencyModal = () => {
                             <IoChevronForward size={24} className="rotate-180" />
                         </button>
                     </div>
-                    <div className="p-8 min-h-[480px] flex flex-col justify-center items-center relative overflow-hidden">
+                    <div className="p-4 sm:p-6 min-h-[350px] flex flex-col justify-center items-center relative overflow-hidden">
                         {loading ? (
                             <div className="flex flex-col items-center gap-12 animate-in fade-in duration-700">
                                 {/* Premium Momentum Loader */}
@@ -88,7 +88,7 @@ const GlobalConsistencyModal = () => {
                                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-600/5 blur-[120px] rounded-full"></div>
                             </div>
                         ) : (
-                            <div className="animate-in fade-in zoom-in-95 duration-500 flex-1 w-full">
+                            <div className="animate-in fade-in zoom-in-95 duration-500 w-full max-w-lg mx-auto">
                                 <ConsistencyCalendar stats={stats} isEmbedded />
                             </div>
                         )}

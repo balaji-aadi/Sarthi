@@ -2,56 +2,75 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AnalyticsApi } from '../../services/api/Analytics.api';
 import moment from 'moment';
-import { IoFlash } from 'react-icons/io5';
+import { IoFlash, IoAlertCircleOutline, IoTrendingUpOutline } from 'react-icons/io5';
 
-const QUOTES = [
-  "You must first become consistent before you can become exceptional. - Alex Hormozi",
-  "You can beat most people at anything if you just stick with it for a year. - Alex Hormozi",
-  "No one has ever regretted trying for a year. - Alex Hormozi",
-  "The secret to getting what you want: doing lots of things you don't want first. - Alex Hormozi",
-  "A focused fool can accomplish more than a distracted genius. - Alex Hormozi",
-  "You don't become confident by shouting affirmations in the mirror, but by having a stack of undeniable proof that you are who you say you are. - Alex Hormozi",
-  "I cannot lose if I do not quit. - Alex Hormozi",
-  "To change your thoughts, change what you consume. - Alex Hormozi",
-  "Volume x Time = Skill. - Alex Hormozi",
-  "The market doesn't pay you for effort. It pays you for outcomes. - Alex Hormozi"
+const MOCKING_QUOTES = [
+  {
+    prefix: "You logged ",
+    highlight: "0 hours",
+    suffix: " of study yesterday. Are you waiting for a miracle? Stop slacking and get to work today!"
+  },
+  {
+    prefix: "Yesterday, ",
+    highlight: "nothing worked",
+    suffix: ". Drop your phone, close your browser tabs, and build your momentum right now!"
+  },
+  {
+    prefix: "Absolute ",
+    highlight: "zero study",
+    suffix: " time logged yesterday. Your competition isn't resting. Wake up and start shipping!"
+  },
+  {
+    prefix: "Yesterday was a ",
+    highlight: "Total blank",
+    suffix: ". Are you planning to build the future or just talk about it? Prove yourself today!"
+  },
+  {
+    prefix: "You logged a big ",
+    highlight: "0h grind",
+    suffix: " yesterday. Momentum doesn't build itself while you procrastinate. Reset, focus, and grind today!"
+  }
+];
+
+const MOTIVATIONAL_QUOTES = [
+  {
+    prefix: "Solid effort yesterday with ",
+    highlight: "{TIME}",
+    suffix: " logged. Consistency is your secret weapon. Keep the heat on today!"
+  },
+  {
+    prefix: "You logged ",
+    highlight: "{TIME}",
+    suffix: " of study yesterday! Can you beat your past self and go even further today?"
+  },
+  {
+    prefix: "Yesterday's score was ",
+    highlight: "{TIME}",
+    suffix: ". Challenge yourself to crush that milestone and exceed your limits today!"
+  },
+  {
+    prefix: "You studied for ",
+    highlight: "{TIME}",
+    suffix: " yesterday. Your momentum streak is burning hot—aim higher today!"
+  }
 ];
 
 const GlobalTopBar = () => {
-  const { currentUser } = useSelector((state) => state.store);
+  const { currentUser, activeBranch } = useSelector((state) => state.store);
   const [stats, setStats] = useState([]);
-  const [shuffledQuotes, setShuffledQuotes] = useState([...QUOTES]);
-  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
-  const [isQuoteVisible, setIsQuoteVisible] = useState(true);
   const [isBarEnabled, setIsBarEnabled] = useState(localStorage.getItem('momentum_show_topbar') !== 'false');
 
   useEffect(() => {
-    // Shuffle quotes for randomness
-    setShuffledQuotes([...QUOTES].sort(() => 0.5 - Math.random()));
-    
     const handleToggle = () => setIsBarEnabled(localStorage.getItem('momentum_show_topbar') !== 'false');
     window.addEventListener('topbarToggled', handleToggle);
     return () => window.removeEventListener('topbarToggled', handleToggle);
   }, []);
 
   useEffect(() => {
-    // Cycle through quotes every 10 seconds
-    const interval = setInterval(() => {
-      setIsQuoteVisible(false); // trigger fade out
-      setTimeout(() => {
-        setCurrentQuoteIndex((prev) => (prev + 1) % QUOTES.length);
-        setIsQuoteVisible(true); // trigger fade in
-      }, 500); // Wait 500ms for text to disappear before switching
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (currentUser) {
+    if (currentUser && activeBranch) {
       fetchStats();
     }
-  }, [currentUser]);
+  }, [currentUser, activeBranch]);
 
   const fetchStats = async () => {
     try {
@@ -62,10 +81,50 @@ const GlobalTopBar = () => {
     }
   };
 
+  // Find yesterday's stats
+  const { yesterdayStats, hoursLogged, formattedTime } = useMemo(() => {
+    if (!stats || stats.length === 0) {
+      return { yesterdayStats: null, hoursLogged: 0, formattedTime: "" };
+    }
+    
+    // Format to match exact date format
+    const yesterdayStr = moment().subtract(1, 'days').format('YYYY-MM-DD');
+    const matched = stats.find(s => moment(s.date).format('YYYY-MM-DD') === yesterdayStr);
+    const hours = matched?.metrics?.hoursLogged || 0;
+
+    // Convert decimal hours (e.g. 1.5) to hours and minutes
+    let timeStr = "";
+    if (hours > 0) {
+      const h = Math.floor(hours);
+      const m = Math.round((hours - h) * 60);
+      timeStr = h > 0 ? (m > 0 ? `${h}h ${m}m` : `${h}h`) : `${m}m`;
+    }
+
+    return {
+      yesterdayStats: matched || null,
+      hoursLogged: hours,
+      formattedTime: timeStr
+    };
+  }, [stats]);
+
+  // Stable, non-flickering daily quotes mapped to the day of year
+  const selectedQuoteSegments = useMemo(() => {
+    const dayOfYear = moment().dayOfYear();
+    if (hoursLogged <= 0) {
+      return MOCKING_QUOTES[dayOfYear % MOCKING_QUOTES.length];
+    } else {
+      const template = MOTIVATIONAL_QUOTES[dayOfYear % MOTIVATIONAL_QUOTES.length];
+      return {
+        prefix: template.prefix,
+        highlight: template.highlight.replace('{TIME}', formattedTime),
+        suffix: template.suffix
+      };
+    }
+  }, [hoursLogged, formattedTime]);
+
   const currentStreak = useMemo(() => {
     if (!stats || stats.length === 0) return 0;
     
-    // Create a map of date strings to active status
     const dateMap = {};
     stats.forEach(s => {
       const dateStr = moment(s.date).format('YYYY-MM-DD');
@@ -76,7 +135,6 @@ const GlobalTopBar = () => {
     let streak = 0;
     let checkDate = moment().startOf('day');
     
-    // Allow today to be 0 without breaking streak if yesterday was active
     const todayStr = checkDate.format('YYYY-MM-DD');
     const yesterdayStr = moment(checkDate).subtract(1, 'days').format('YYYY-MM-DD');
 
@@ -86,7 +144,7 @@ const GlobalTopBar = () => {
     }
 
     let currentCheck = startCountingFrom;
-    for (let i = 0; i < 365; i++) { // cap check at 365 days
+    for (let i = 0; i < 365; i++) {
         const str = currentCheck.format('YYYY-MM-DD');
         if (dateMap[str]) {
             streak++;
@@ -101,34 +159,82 @@ const GlobalTopBar = () => {
 
   if (!currentUser || !isBarEnabled) return null;
 
+  const hasStudied = hoursLogged > 0;
+
   return (
-    <div className="w-full bg-[#111111] border-b border-white/5 h-10 flex items-center justify-between text-xs overflow-hidden relative z-[60] shrink-0 font-sans text-slate-300">
-      
-      {/* Centered Quote Section */}
-      <div className="flex-1 overflow-hidden relative flex items-center justify-center h-full px-8">
-          <div 
-            className={`transition-all duration-500 ease-in-out transform flex items-center justify-center w-full
-              ${isQuoteVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
-          >
-            <span className="font-medium text-slate-400 text-center truncate">
-              <span className="text-primary font-bold mr-2">✦</span>
-              {shuffledQuotes[currentQuoteIndex]}
-            </span>
+    <div 
+      className={`w-full h-10 flex items-center justify-between text-xs overflow-hidden relative z-[100] shrink-0 font-sans transition-colors duration-500 px-6 border-b ${
+        hasStudied 
+          ? 'bg-white/95 dark:bg-slate-950/95 border-slate-200/50' 
+          : 'bg-rose-50/95 dark:bg-rose-950/20 border-rose-200/50'
+      }`}
+    >
+      {/* Centered Study Progress/Quote section - Fully visible, smaller font */}
+      <div className="flex-grow flex items-center justify-center min-w-0 text-center px-4">
+          <div className="flex items-center justify-center gap-2 animate-fade-in max-w-full">
+              {hasStudied ? (
+                <>
+                  <div className="p-1 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 shrink-0">
+                      <IoTrendingUpOutline size={12} />
+                  </div>
+                  <p className="text-slate-700 dark:text-slate-300 font-extrabold tracking-tight text-[11px] leading-snug">
+                    {selectedQuoteSegments.prefix}
+                    <span className="text-indigo-600 dark:text-indigo-400 font-black px-1.5 py-0.5 bg-indigo-50 dark:bg-indigo-950/80 rounded border border-indigo-100 dark:border-indigo-800/40 mx-0.5 inline-block scale-95 origin-center">
+                      {selectedQuoteSegments.highlight}
+                    </span>
+                    {selectedQuoteSegments.suffix}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="p-1 rounded bg-red-100 dark:bg-red-950/50 text-red-600 shrink-0 animate-pulse">
+                      <IoAlertCircleOutline size={12} />
+                  </div>
+                  <p className="text-rose-800 dark:text-rose-400 font-extrabold tracking-tight text-[11px] leading-snug">
+                    {selectedQuoteSegments.prefix}
+                    <span className="text-red-600 dark:text-red-400 font-black px-1.5 py-0.5 bg-red-50 dark:bg-red-950/80 rounded border border-red-100 dark:border-red-800/40 mx-0.5 inline-block scale-95 origin-center animate-pulse">
+                      {selectedQuoteSegments.highlight}
+                    </span>
+                    {selectedQuoteSegments.suffix}
+                  </p>
+                </>
+              )}
           </div>
       </div>
 
-      {/* Streak Section */}
-      <div className="flex items-center gap-2 h-full px-5 bg-gradient-to-r from-transparent via-[#1a1a1a] to-[#1a1a1a] shrink-0 border-l border-white/5 shadow-[-10px_0_15px_-5px_rgba(17,17,17,1)] relative z-10">
-          <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-              <IoFlash className="text-emerald-400" size={14} />
+      {/* Streak Section - Compact Premium Pill adjusted for h-10 */}
+      <div className={`flex items-center gap-2.5 px-3 py-1 rounded-full shadow-sm hover:shadow transition-all duration-300 group cursor-default border ${
+        hasStudied 
+          ? 'bg-white dark:bg-slate-900 border-slate-200' 
+          : 'bg-rose-100/50 dark:bg-rose-950/40 border-rose-200'
+      }`}>
+          <div className={`w-5 h-5 rounded-full flex items-center justify-center border group-hover:scale-110 transition-transform ${
+            hasStudied 
+              ? 'bg-emerald-100 border-emerald-200 text-emerald-600' 
+              : 'bg-red-100 border-red-200 text-red-600'
+          }`}>
+              <IoFlash size={11} />
           </div>
           <div className="flex flex-col justify-center">
-              <span className="font-black text-white text-[10px] leading-tight flex items-center gap-1.5">
+              <span className={`font-black text-[9px] leading-none tracking-tighter ${
+                hasStudied ? 'text-slate-800 dark:text-slate-200' : 'text-rose-900 dark:text-rose-100'
+              }`}>
                   {currentStreak} DAY STREAK
               </span>
-              <span className="uppercase tracking-[0.2em] text-[7px] text-emerald-400/80 font-bold leading-tight">Consistency Focus</span>
+              <span className={`uppercase tracking-[0.25em] text-[6.5px] font-black leading-none mt-0.5 ${
+                hasStudied ? 'text-emerald-600' : 'text-red-600'
+              }`}>
+                  {hasStudied ? 'Active' : 'Danger'}
+              </span>
           </div>
       </div>
+
+      {/* Beautiful color border at the bottom */}
+      <div className={`absolute bottom-0 left-0 w-full h-[2.5px] ${
+        hasStudied 
+          ? 'bg-gradient-to-r from-primary via-accent to-pink-500' 
+          : 'bg-gradient-to-r from-red-500 via-orange-500 to-rose-600'
+      }`}></div>
 
     </div>
   );
