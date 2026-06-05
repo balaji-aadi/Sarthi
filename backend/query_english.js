@@ -19,12 +19,12 @@ const run = async () => {
     await connectDB();
     
     const tasks = await Task.find({
-        taskName: { $regex: /English (Speaking|Writing) Practice/i }
+        title: { $regex: /English (Speaking|Writing) Practice/i }
     });
     
-    console.log(`Found ${tasks.length} tasks matching the names.`);
+    console.log(`Found ${tasks.length} tasks matching the titles.`);
     tasks.forEach(t => {
-        console.log(`Task ID: ${t._id}, Name: "${t.taskName}", Parent: ${t.parentTask}, Sprint: ${t.sprint}, Branch: ${t.branchId}`);
+        console.log(`Task ID: ${t._id}, Title: "${t.title}", Parent Task ID: ${t.parentTask}`);
     });
     
     process.exit(0);
