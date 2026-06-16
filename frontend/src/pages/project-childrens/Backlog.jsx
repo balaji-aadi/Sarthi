@@ -87,7 +87,7 @@ const Backlog = () => {
     };
 
     const TaskItem = ({ task, index }) => {
-        const isOverdue = task.taskDueDate && moment(task.taskDueDate).isBefore(moment(), 'day') && task.status !== 'done';
+        const isOverdue = task.taskDueDate && moment(task.taskDueDate).isBefore(moment(), 'day') && task.status !== 'done' && task.status !== 'inprogress' && task.status !== 'hold';
 
         return (
             <Draggable draggableId={String(task._id)} index={index}>

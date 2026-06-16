@@ -96,7 +96,7 @@ const FocusTimer = () => {
       const all = res.data?.data || [];
       const backlogTasks = all.filter(t => {
           const isExplicitBacklog = t.status === 'backlog';
-          const isOverdue = t.taskDueDate && moment(t.taskDueDate).isBefore(moment(), 'day') && t.status !== 'done';
+          const isOverdue = t.taskDueDate && moment(t.taskDueDate).isBefore(moment(), 'day') && t.status !== 'done' && t.status !== 'inprogress' && t.status !== 'hold';
           return isExplicitBacklog || isOverdue;
       });
       setAvailableTasks(backlogTasks);
@@ -215,7 +215,7 @@ const FocusTimer = () => {
       const taskObj = availableTasks.find(t => t._id === selectedTask);
       if (taskObj) {
          const durationMins = (taskObj.backlogEstimatedHours ? taskObj.backlogEstimatedHours * 60 : (taskObj.estimatedHours ? taskObj.estimatedHours * 60 : 25));
-         const isTaskBacklog = taskObj.status === 'backlog' || (taskObj.taskDueDate && moment(taskObj.taskDueDate).isBefore(moment(), 'day'));
+         const isTaskBacklog = taskObj.status === 'backlog' || (taskObj.taskDueDate && moment(taskObj.taskDueDate).isBefore(moment(), 'day') && taskObj.status !== 'done' && taskObj.status !== 'inprogress' && taskObj.status !== 'hold');
          
          const focusTimerBinding = {
              taskId: taskObj._id,

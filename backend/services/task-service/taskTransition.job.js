@@ -32,7 +32,7 @@ export const checkAndTransitionTasks = async () => {
         // 2. Status is not 'done' and not 'backlog'
         const tasksToTransition = await Task.find({
             taskDueDate: { $lt: startOfToday },
-            status: { $nin: ['done', 'backlog'] }
+            status: { $nin: ['done', 'backlog', 'inprogress', 'hold'] }
         });
 
         if (tasksToTransition.length === 0) {

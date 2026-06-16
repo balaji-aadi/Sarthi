@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import TaskDetailDrawer from "./TaskDetailDrawer";
 import CreateTask from "./CreateTask";
+import { IoClose, IoCalendarOutline } from "react-icons/io5";
 
 const Board = ({
   tasks,
@@ -38,6 +39,189 @@ const Board = ({
   const [expandedParents, setExpandedParents] = useState([]);
   const reorganizeTimerRef = useRef(null);
 
+  // Release from Hold Modal State
+  const [showReleaseModal, setShowReleaseModal] = useState(false);
+  const [releaseTask, setReleaseTask] = useState(null);
+  const [releaseChildren, setReleaseChildren] = useState([]);
+  const [releaseDates, setReleaseDates] = useState({}); // { [taskId]: { taskStartDate, taskDueDate } }
+  const [releaseDestination, setReleaseDestination] = useState("todo");
+
+  const handleOpenReleaseModal = (task, destinationStatus = "todo") => {
+      setReleaseTask(task);
+      setReleaseDestination(destinationStatus);
+      
+      // Get all child tasks that are currently on Hold
+      const childTasks = (tasks || sortedBoardTasks).filter(t => {
+          const pid = typeof t.parentTask === 'object' ? t.parentTask?._id : t.parentTask;
+          return pid && pid.toString() === task._id.toString() && t.status === 'hold';
+      });
+      setReleaseChildren(childTasks);
+
+      // Initialize dates
+      const todayStr = moment().format("YYYY-MM-DD");
+      const tomorrowStr = moment().add(1, 'day').format("YYYY-MM-DD");
+      
+      const datesObj = {
+          [task._id]: {
+              taskStartDate: task.taskStartDate ? moment(task.taskStartDate).format("YYYY-MM-DD") : todayStr,
+              taskDueDate: task.taskDueDate ? moment(task.taskDueDate).format("YYYY-MM-DD") : tomorrowStr
+          }
+      };
+
+      childTasks.forEach(child => {
+          datesObj[child._id] = {
+              taskStartDate: child.taskStartDate ? moment(child.taskStartDate).format("YYYY-MM-DD") : todayStr,
+              taskDueDate: child.taskDueDate ? moment(child.taskDueDate).format("YYYY-MM-DD") : tomorrowStr
+          };
+      });
+
+      setReleaseDates(datesObj);
+      setShowReleaseModal(true);
+  };
+
+  const handleApplyParentDatesToChildren = () => {
+      const parentDates = releaseDates[releaseTask._id];
+      const updatedDatesObj = { ...releaseDates };
+      releaseChildren.forEach(child => {
+          updatedDatesObj[child._id] = {
+              taskStartDate: parentDates.taskStartDate,
+              taskDueDate: parentDates.taskDueDate
+          };
+      });
+      setReleaseDates(updatedDatesObj);
+      toast.success("Applied parent task dates to all subtasks!");
+  };
+
+  const stopActiveTimerIfMatching = (targetTaskId, associatedChildIds = []) => {
+     const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
+     if (bindingObjStr) {
+        const bindingObj = JSON.parse(bindingObjStr);
+        const activeTaskId = bindingObj.taskId;
+        if (activeTaskId === targetTaskId || associatedChildIds.includes(activeTaskId)) {
+            const timerStateStr = localStorage.getItem("focus_timer_state");
+            if (timerStateStr) {
+                const timerState = JSON.parse(timerStateStr);
+                if (timerState.isActive) {
+                    const startTime = new Date(timerState.startTime);
+                    const endTime = new Date();
+                    const durationSecs = (timerState.accumulatedTime || 0) + Math.floor((endTime - startTime) / 1000);
+                    const actualDuration = Math.max(Math.round(durationSecs / 60), 1); 
+                    
+                     const sData = {
+                         date: new Date().toISOString().split('T')[0],
+                         startTime: timerState.startTime,
+                         endTime: endTime.toISOString(),
+                         duration: actualDuration,
+                         type: "Focus",
+                         task: bindingObj.taskId,
+                         taskName: bindingObj.isBacklog ? `${bindingObj.taskName} (Backlog)` : bindingObj.taskName,
+                         taskIdString: bindingObj.taskIdString,
+                         statusAtCompletion: "hold",
+                         completionState: "incompleted",
+                         estimatedTimeAtStart: timerState.selectedDuration,
+                         isBacklog: !!bindingObj.isBacklog,
+                         originalDueDate: bindingObj.dueDate
+                     };
+                     
+                     FocusApi.createSession(sData).catch(e => console.error(e));
+                     localStorage.removeItem("focus_timer_task_binding");
+                     localStorage.removeItem("focus_timer_state");
+                     localStorage.removeItem("focus_timer_retrievable");
+                     
+                     toast.success("Timer paused and logged. Task was put on hold!");
+                }
+            }
+        }
+     }
+  };
+
+  const handleReleaseSubmit = async () => {
+      // Validate dates
+      const parentDates = releaseDates[releaseTask._id];
+      const pStart = moment(parentDates.taskStartDate).startOf('day');
+      const pDue = moment(parentDates.taskDueDate).endOf('day');
+
+      if (pDue.isBefore(pStart)) {
+          toast.error("Parent task due date cannot be before its start date.");
+          return;
+      }
+
+      for (const child of releaseChildren) {
+          const cDates = releaseDates[child._id];
+          const cStart = moment(cDates.taskStartDate).startOf('day');
+          const cDue = moment(cDates.taskDueDate).endOf('day');
+
+          if (cDue.isBefore(cStart)) {
+              toast.error(`Subtask "${child.taskName}" due date cannot be before its start date.`);
+              return;
+          }
+
+          if (cStart.isBefore(pStart)) {
+              toast.error(`Subtask "${child.taskName}" start date cannot be before parent task start date (${pStart.format("DD/MM/YYYY")}).`);
+              return;
+          }
+
+          if (cDue.isAfter(pDue)) {
+              toast.error(`Subtask "${child.taskName}" due date cannot be after parent task due date (${pDue.format("DD/MM/YYYY")}).`);
+              return;
+          }
+      }
+
+      setShowReleaseModal(false);
+      const loadingToast = toast.loading("Updating dates and status...");
+
+      try {
+          // 1. Update Parent task first in backend
+          const parentPayload = {
+              taskStartDate: releaseDates[releaseTask._id].taskStartDate,
+              taskDueDate: releaseDates[releaseTask._id].taskDueDate,
+              status: releaseDestination,
+              holdDate: null
+          };
+          
+          await TaskApi.updateTask(releaseTask._id, parentPayload);
+          
+          // 2. Update Child tasks in backend
+          for (const child of releaseChildren) {
+              const childPayload = {
+                  taskStartDate: releaseDates[child._id].taskStartDate,
+                  taskDueDate: releaseDates[child._id].taskDueDate,
+                  status: releaseDestination
+              };
+              await TaskApi.updateTask(child._id, childPayload);
+          }
+
+          // 3. Optimistic local state update
+          const updatedIds = [releaseTask._id, ...releaseChildren.map(c => c._id)];
+          const updateTasksState = (prevTasks) => {
+              return prevTasks.map(t => {
+                  if (updatedIds.includes(t._id)) {
+                      const newDates = releaseDates[t._id];
+                      return {
+                          ...t,
+                          status: releaseDestination,
+                          taskStartDate: newDates.taskStartDate,
+                          taskDueDate: newDates.taskDueDate,
+                          holdDate: null
+                      };
+                  }
+                  return t;
+              });
+          };
+
+          if (setTasks) setTasks(updateTasksState);
+          setBoardTasks(updateTasksState);
+
+          toast.dismiss(loadingToast);
+          toast.success("Tasks released from hold successfully!");
+      } catch (err) {
+          toast.dismiss(loadingToast);
+          console.error("Failed to release tasks from hold:", err);
+          toast.error(err.response?.data?.message || "Failed to release tasks from hold");
+          fetchTasks(); // Reload to sync
+      }
+  };
+
   const { currentUser } = useSelector((state) => state.store);
   const isManager = currentUser?.userRole?.name === "projectmanager";
   const isAdmin = currentUser?.userRole?.name === "admin";
@@ -56,7 +240,7 @@ const Board = ({
         // Score 1: Parent's start date has arrived (inherited activation)
         if (task.parentTask) {
             const pId = typeof task.parentTask === 'object' ? task.parentTask._id : task.parentTask;
-            const parent = boardTasks.find(pt => pt._id === pId);
+            const parent = boardTasks.find(pt => pt._id?.toString() === pId?.toString());
             if (parent) {
                 const psd = parent.taskStartDate ? moment(parent.taskStartDate).startOf('day') : null;
                 if (psd && psd.isSameOrBefore(today)) return 1;
@@ -104,6 +288,8 @@ const Board = ({
       // Explicit backlog status
       if (task.status === 'backlog') return true;
       if (task.status === 'done') return false;
+      if (task.status === 'inprogress') return false;
+      if (task.status === 'hold') return false;
 
       // Only treat as backlog if the task's own due date has passed
       const due = task.taskDueDate ? moment(task.taskDueDate) : null;
@@ -123,14 +309,20 @@ const Board = ({
   const allSubtasks = nonBacklogTasks.filter((t) => t.parentTask);
 
   // Derive unique Parent Tasks dynamically from the subtasks available
-  const uniqueParents = Array.from(new Set(allSubtasks.map(t => typeof t.parentTask === 'object' ? t.parentTask._id : t.parentTask)))
+  const uniqueParents = Array.from(new Set(allSubtasks.map(t => {
+      const pid = typeof t.parentTask === 'object' ? t.parentTask?._id : t.parentTask;
+      return pid ? pid.toString() : null;
+  }).filter(Boolean)))
       .map(id => {
-          const sample = allSubtasks.find(t => (typeof t.parentTask === 'object' ? t.parentTask._id : t.parentTask) === id);
+          const sample = allSubtasks.find(t => {
+              const pid = typeof t.parentTask === 'object' ? t.parentTask?._id : t.parentTask;
+              return pid && pid.toString() === id;
+          });
           if (sample && typeof sample.parentTask === 'object') {
               return sample.parentTask;
           }
           // If it's a string ID, try finding it in all board tasks
-          return sortedBoardTasks.find(t => t._id === id);
+          return sortedBoardTasks.find(t => t._id?.toString() === id);
       }).filter(Boolean);
 
   // Group parent tasks by their standard Status columns
@@ -144,10 +336,10 @@ const Board = ({
     } else if (column.id === "todo-subtask") {
       const filteredSubtasks = selectedParentId
         ? allSubtasks.filter(
-            (t) =>
-              (typeof t.parentTask === "object"
-                ? t.parentTask._id
-                : t.parentTask) === selectedParentId
+            (t) => {
+              const pid = typeof t.parentTask === "object" ? t.parentTask?._id : t.parentTask;
+              return pid && pid.toString() === selectedParentId.toString();
+            }
           )
         : allSubtasks;
       combinedTasks = filteredSubtasks.filter((task) => task.status === "todo");
@@ -164,7 +356,7 @@ const Board = ({
             const processedParents = doneParents.map(parent => {
                 const nestedChildren = doneChildren.filter(child => {
                     const pId = typeof child.parentTask === 'object' ? child.parentTask._id : child.parentTask;
-                    return pId === parent._id;
+                    return pId && pId.toString() === parent._id.toString();
                 });
                 
                 const finishDate = parent.activityLogs?.find(log => log.currentStatus === 'done')?.date || parent.updatedAt;
@@ -179,7 +371,7 @@ const Board = ({
             
             const orphanDoneChildren = doneChildren.filter(child => {
                 const pId = typeof child.parentTask === 'object' ? child.parentTask._id : child.parentTask;
-                return !doneParents.find(p => p._id === pId);
+                return !doneParents.find(p => p._id?.toString() === pId?.toString());
             });
             
             // Sort parents by actual finish date (Oldest top, Newest bottom)
@@ -190,10 +382,10 @@ const Board = ({
     } else {
       const filteredSubtasks = selectedParentId
         ? allSubtasks.filter(
-            (t) =>
-              (typeof t.parentTask === "object"
-                ? t.parentTask._id
-                : t.parentTask) === selectedParentId
+            (t) => {
+              const pid = typeof t.parentTask === "object" ? t.parentTask?._id : t.parentTask;
+              return pid && pid.toString() === selectedParentId.toString();
+            }
           )
         : allSubtasks;
 
@@ -303,6 +495,13 @@ const Board = ({
 
     if (!taskToMove) return;
 
+    // Intercept drag out of Hold to display date assignment modal
+    if (source.droppableId === "hold") {
+        const destStatus = destinationColumn.id.startsWith("todo") ? "todo" : destinationColumn.id;
+        handleOpenReleaseModal(taskToMove, destStatus);
+        return;
+    }
+
     // Strict drop validations for the new split columns
     if (taskToMove.parentTask && destinationColumn.id === "todo-parent") {
        return; // Subtasks cannot be dropped in Parent column
@@ -330,7 +529,7 @@ const Board = ({
          const spentMins = taskToMove.duration?.inprogress || 0;
          const accumulatedSecs = spentMins * 60;
          
-         const isTaskBacklog = taskToMove.status === 'backlog' || (taskToMove.taskDueDate && moment(taskToMove.taskDueDate).isBefore(moment(), 'day'));
+         const isTaskBacklog = taskToMove.status === 'backlog' || (taskToMove.taskDueDate && moment(taskToMove.taskDueDate).isBefore(moment(), 'day') && taskToMove.status !== 'done' && taskToMove.status !== 'inprogress' && taskToMove.status !== 'hold');
          
          const focusTimerBinding = {
              taskId: taskToMove._id,
@@ -363,6 +562,19 @@ const Board = ({
     // Optimistic Update
     const oldStatus = taskToMove.status;
     const newStatus = destinationColumn.id.startsWith("todo") ? "todo" : destinationColumn.id;
+    
+    // Stop the timer automatically if moved out of inprogress / hold
+    if (newStatus === "hold") {
+        const childIds = !taskToMove.parentTask 
+            ? (tasks || sortedBoardTasks)
+                .filter(t => {
+                    const pid = typeof t.parentTask === 'object' ? t.parentTask?._id : t.parentTask;
+                    return pid === taskToMove._id;
+                })
+                .map(t => t._id)
+            : [];
+        stopActiveTimerIfMatching(taskToMove._id, childIds);
+    }
     
     // Stop the timer automatically if moved out of inprogress
     if (oldStatus === "inprogress" && newStatus !== "inprogress") {
@@ -417,11 +629,33 @@ const Board = ({
 
     // 1. Update UI immediately
     const updateTasksState = (prevTasks) => {
-      const updatedTasks = prevTasks.map(task =>
+      let updatedTasks = prevTasks.map(task =>
         task._id === taskToMove._id
-          ? { ...task, status: newStatus }
+          ? { ...task, status: newStatus, ...(newStatus === 'hold' ? { holdDate: new Date() } : { holdDate: null }) }
           : task
       );
+
+      // If parent is put on hold, cascade to non-completed children in local state
+      if (!taskToMove.parentTask && newStatus === 'hold') {
+         updatedTasks = updatedTasks.map(task => {
+             const pid = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
+             if (pid === taskToMove._id && task.status !== 'done') {
+                 return { ...task, status: 'hold' };
+             }
+             return task;
+         });
+      }
+
+      // If parent is moved OUT of hold, release held children to todo in local state
+      if (!taskToMove.parentTask && oldStatus === 'hold' && newStatus !== 'hold') {
+         updatedTasks = updatedTasks.map(task => {
+             const pid = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
+             if (pid === taskToMove._id && task.status === 'hold') {
+                 return { ...task, status: 'todo' };
+             }
+             return task;
+         });
+      }
 
       // If moved to 'done' or from 'done', and has a parent, update parent progress locally
       if (taskToMove.parentTask && (newStatus === 'done' || oldStatus === 'done')) {
@@ -510,7 +744,7 @@ const Board = ({
     const spentMins = newTask.duration?.inprogress || 0;
     const accumulatedSecs = spentMins * 60;
     
-    const isTaskBacklog = newTask.status === 'backlog' || (newTask.taskDueDate && moment(newTask.taskDueDate).isBefore(moment(), 'day'));
+    const isTaskBacklog = newTask.status === 'backlog' || (newTask.taskDueDate && moment(newTask.taskDueDate).isBefore(moment(), 'day') && newTask.status !== 'done' && newTask.status !== 'inprogress' && newTask.status !== 'hold');
 
     const focusTimerBinding = {
        taskId: newTask._id,
@@ -638,6 +872,7 @@ const Board = ({
                   isDoneColumn={column.id === "done"}
                   expandedParents={expandedParents}
                   setExpandedParents={setExpandedParents}
+                  onReleaseHold={handleOpenReleaseModal}
                 />
                 </div>            ))}
             </div>
@@ -717,6 +952,223 @@ const Board = ({
                 setTask={setEditTaskData} 
                 setProjectTasks={setTasks} 
               />
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Release from Hold Modal */}
+      {showReleaseModal && releaseTask && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowReleaseModal(false)} />
+          <div className="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl flex flex-col gap-5 border border-slate-100 dark:border-slate-700/50 max-h-[85vh] overflow-hidden z-10 animate-in zoom-in-95 duration-200">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700/50">
+              <div>
+                <h3 className="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">
+                  Release Task from Hold
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Assign new timelines for the parent and nested items to resume work.
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowReleaseModal(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-300 transition-colors"
+              >
+                <IoClose size={18} />
+              </button>
+            </div>
+
+            {/* Task list and date pickers */}
+            <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-4 py-2 custom-scrollbar">
+              
+              {/* Parent Task Card */}
+              <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100/50 dark:border-indigo-900/30 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-md">
+                    Parent Task
+                  </span>
+                  <span className="text-xs font-mono font-bold text-slate-400">
+                    {releaseTask.taskId}
+                  </span>
+                </div>
+                <h4 className="text-sm font-extrabold text-slate-800 dark:text-slate-100">
+                  {releaseTask.taskName}
+                </h4>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-1">
+                      New Start Date
+                    </label>
+                    <input 
+                      type="date"
+                      value={releaseDates[releaseTask._id]?.taskStartDate || ""}
+                      onChange={(e) => {
+                        setReleaseDates(prev => ({
+                          ...prev,
+                          [releaseTask._id]: {
+                            ...prev[releaseTask._id],
+                            taskStartDate: e.target.value
+                          }
+                        }));
+                      }}
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 outline-none focus:ring-1 focus:ring-primary shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-1">
+                      New Due Date
+                    </label>
+                    <input 
+                      type="date"
+                      value={releaseDates[releaseTask._id]?.taskDueDate || ""}
+                      onChange={(e) => {
+                        setReleaseDates(prev => ({
+                          ...prev,
+                          [releaseTask._id]: {
+                            ...prev[releaseTask._id],
+                            taskDueDate: e.target.value
+                          }
+                        }));
+                      }}
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 outline-none focus:ring-1 focus:ring-primary shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Subtasks Section */}
+              {releaseChildren.length > 0 && (
+                <div className="flex flex-col gap-3 mt-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+                    <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.15em]">
+                      Held Subtasks ({releaseChildren.length})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleApplyParentDatesToChildren}
+                      className="text-[10px] font-extrabold text-primary hover:underline uppercase tracking-wider flex items-center gap-1.5 align-middle self-start"
+                    >
+                      <IoCalendarOutline size={13} />
+                      Apply Parent Dates to all Subtasks
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    {releaseChildren.map(child => (
+                      <div key={child._id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/30 border border-slate-200/50 dark:border-slate-800/50 flex flex-col gap-3 ml-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[9px] font-black uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded-md">
+                            Subtask
+                          </span>
+                          <span className="text-xs font-mono font-bold text-slate-400">
+                            {child.taskId}
+                          </span>
+                        </div>
+                        <h5 className="text-xs font-extrabold text-slate-700 dark:text-slate-300">
+                          {child.taskName}
+                        </h5>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-1">
+                              New Start Date
+                            </label>
+                            <input 
+                              type="date"
+                              value={releaseDates[child._id]?.taskStartDate || ""}
+                              onChange={(e) => {
+                                setReleaseDates(prev => ({
+                                  ...prev,
+                                  [child._id]: {
+                                    ...prev[child._id],
+                                    taskStartDate: e.target.value
+                                  }
+                                }));
+                              }}
+                              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-[11px] font-bold text-slate-700 dark:text-slate-300 outline-none focus:ring-1 focus:ring-primary shadow-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-1">
+                              New Due Date
+                            </label>
+                            <input 
+                              type="date"
+                              value={releaseDates[child._id]?.taskDueDate || ""}
+                              onChange={(e) => {
+                                setReleaseDates(prev => ({
+                                  ...prev,
+                                  [child._id]: {
+                                    ...prev[child._id],
+                                    taskDueDate: e.target.value
+                                  }
+                                }));
+                              }}
+                              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-[11px] font-bold text-slate-700 dark:text-slate-300 outline-none focus:ring-1 focus:ring-primary shadow-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-3 border-t border-slate-100 dark:border-slate-700/50">
+              
+              {/* Destination status toggle */}
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Move released to:
+                </span>
+                <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200/50 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setReleaseDestination("todo")}
+                    className={`px-3 py-1.5 text-xs font-extrabold rounded-lg transition-all ${
+                      releaseDestination === "todo" 
+                        ? "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm"
+                        : "text-slate-400 dark:text-slate-500 hover:text-slate-600"
+                    }`}
+                  >
+                    To Do
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setReleaseDestination("inprogress")}
+                    className={`px-3 py-1.5 text-xs font-extrabold rounded-lg transition-all ${
+                      releaseDestination === "inprogress"
+                        ? "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm"
+                        : "text-slate-400 dark:text-slate-500 hover:text-slate-600"
+                    }`}
+                  >
+                    In Progress
+                  </button>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex items-center gap-3 justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowReleaseModal(false)}
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReleaseSubmit}
+                  className="px-5 py-2.5 rounded-xl text-xs font-extrabold text-white bg-primary hover:bg-primary/95 transition-all shadow-md active:scale-95"
+                >
+                  Save & Release Hold
+                </button>
+              </div>
             </div>
           </div>
         </div>

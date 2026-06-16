@@ -296,7 +296,18 @@ tc.updateTask = asyncHandler(async (req, res) => {
     if (milestone !== undefined) updateFields.milestone = milestone || null;
     if (parentTask !== undefined) updateFields.parentTask = parentTask ? new mongoose.Types.ObjectId(parentTask) : null;
     if (additionalNotes !== undefined) updateFields.additionalNotes = additionalNotes;
-    if (status !== undefined) updateFields.status = status;
+    if (status !== undefined) {
+      updateFields.status = status;
+      if (status === 'hold') {
+        if (!existingTask.parentTask) {
+          updateFields.holdDate = new Date();
+        }
+      } else if (existingTask.status === 'hold') {
+        if (!existingTask.parentTask) {
+          updateFields.holdDate = null;
+        }
+      }
+    }
     if (progress !== undefined) updateFields.progress = progress;
     if (status === 'done') updateFields.progress = 100;
     else if (status === 'todo' && progress === undefined) updateFields.progress = 0;
@@ -321,6 +332,11 @@ tc.updateTask = asyncHandler(async (req, res) => {
 
     if (!updatedTask) {
       return res.status(400).json(new ApiError(400, "Task not found"));
+    }
+
+    // Cascade hold status to child tasks if status changed
+    if (status && existingTask.status !== status) {
+        await handleHoldCascade(updatedTask, status, existingTask.status, req.user?._id);
     }
 
     // Only send notification if assignee and projectName are known (either updated or existing)
@@ -488,7 +504,7 @@ tc.getallTasks = asyncHandler(async (req, res) => {
     .populate("milestone", "milestoneName")
     .populate("epic", "epicName")
     .populate("sprint", "sprintName startDate endDate")
-    .populate("parentTask", "taskName taskId")
+    .populate("parentTask", "taskName taskId status taskStartDate taskDueDate holdDate")
     .populate({
       path: "createdBy",
       select: "firstName lastName email"
@@ -496,19 +512,22 @@ tc.getallTasks = asyncHandler(async (req, res) => {
     .sort({ _id: sortOrder })
     .lean();
   
+    // Auto-sync subtasks of held parent tasks
+    const syncedTasks = await autoSyncHeldParentChildren(tasks, req.user?._id);
+
     // Map tasks to include pre-calculated duration
-    tasks.forEach(task => {
+    syncedTasks.forEach(task => {
         task.duration = calculateStatusDuration(task.activityLogs || []);
     });
   
 
-    if (tasks.length === 0) {
+    if (syncedTasks.length === 0) {
       return res.status(200).json(new ApiResponse(200, [], "No tasks found"));
     }
 
     return res
       .status(200)
-      .json(new ApiResponse(200, tasks, "Tasks fetched successfully"));
+      .json(new ApiResponse(200, syncedTasks, "Tasks fetched successfully"));
   } catch (error) {
     console.log("Error------", error);
     return res
@@ -549,6 +568,126 @@ tc.deleteTask = asyncHandler(async (req, res) => {
   }
 });
 
+
+const handleHoldCascade = async (parentTask, newStatus, oldStatus, userId) => {
+    // If it's a parent task
+    if (!parentTask.parentTask) {
+        if (newStatus === 'hold') {
+            // Find all child tasks (supporting both ObjectId and string representations in DB)
+            const childTasks = await Task.find({
+                $or: [
+                    { parentTask: parentTask._id },
+                    { parentTask: parentTask._id.toString() }
+                ]
+            });
+            for (const child of childTasks) {
+                // Only put non-done, non-hold child tasks on hold
+                if (child.status !== 'hold' && child.status !== 'done') {
+                    child.activityLogs.unshift({
+                        oldStatus: child.status,
+                        currentStatus: 'hold',
+                        user: userId,
+                        date: new Date(),
+                        message: `Status had been changed from ${child.status} >>> hold (inherited from parent task hold)`,
+                    });
+                    child.status = 'hold';
+                    child.updatedBy = userId;
+                    await child.save();
+                    AnalyticsService.handleTaskUpdate(child.assignee, child.projectName, child._id, child.status, 'hold').catch(err => console.error("Analytics Error:", err));
+                }
+            }
+        } else if (oldStatus === 'hold' && newStatus !== 'hold') {
+            // Release all held child tasks to 'todo'
+            const childTasks = await Task.find({
+                $or: [
+                    { parentTask: parentTask._id },
+                    { parentTask: parentTask._id.toString() }
+                ]
+            });
+            for (const child of childTasks) {
+                if (child.status === 'hold') {
+                    child.activityLogs.unshift({
+                        oldStatus: 'hold',
+                        currentStatus: 'todo',
+                        user: userId,
+                        date: new Date(),
+                        message: `Status had been changed from hold >>> todo (released from parent task hold)`,
+                    });
+                    child.status = 'todo';
+                    child.updatedBy = userId;
+                    await child.save();
+                    AnalyticsService.handleTaskUpdate(child.assignee, child.projectName, child._id, 'hold', 'todo').catch(err => console.error("Analytics Error:", err));
+                }
+            }
+        }
+    }
+};
+
+const getParentTaskId = (parentTaskField) => {
+    if (!parentTaskField) return null;
+    if (typeof parentTaskField === 'string') return parentTaskField;
+    if (mongoose.Types.ObjectId.isValid(parentTaskField)) return parentTaskField.toString();
+    if (typeof parentTaskField === 'object') {
+        if (parentTaskField._id) return parentTaskField._id.toString();
+        return parentTaskField.toString();
+    }
+    return null;
+};
+
+const autoSyncHeldParentChildren = async (tasks, userId) => {
+    // 1. Find all parent tasks in the fetched list that are on 'hold'
+    const heldParentIds = tasks
+        .filter(t => !t.parentTask && t.status === 'hold')
+        .map(t => t._id.toString());
+        
+    if (heldParentIds.length === 0) return tasks;
+
+    // 2. Loop through all fetched tasks and sync child tasks
+    for (let task of tasks) {
+        const pIdStr = getParentTaskId(task.parentTask);
+        if (pIdStr && heldParentIds.includes(pIdStr)) {
+            // This child belongs to a held parent task.
+            // If it is not 'done' and not 'hold', update it to 'hold'!
+            if (task.status !== 'hold' && task.status !== 'done') {
+                // Update in DB
+                await Task.updateOne(
+                    { _id: task._id },
+                    {
+                        $set: { status: 'hold', updatedBy: userId },
+                        $push: {
+                            activityLogs: {
+                                $each: [{
+                                    oldStatus: task.status,
+                                    currentStatus: 'hold',
+                                    user: userId,
+                                    date: new Date(),
+                                    message: `Status automatically synced to hold because parent task is on hold`,
+                                }],
+                                $position: 0
+                            }
+                        }
+                    }
+                );
+                
+                // Update in returned list object
+                task.status = 'hold';
+                if (!task.activityLogs) task.activityLogs = [];
+                task.activityLogs.unshift({
+                    oldStatus: task.status,
+                    currentStatus: 'hold',
+                    user: userId,
+                    date: new Date(),
+                    message: `Status automatically synced to hold because parent task is on hold`,
+                });
+                
+                // Trigger analytics update
+                AnalyticsService.handleTaskUpdate(task.assignee, task.projectName, task._id, task.status, 'hold').catch(err => console.error("Analytics Error:", err));
+            }
+        }
+    }
+    
+    return tasks;
+};
 
 //update Task status
 tc.updatetaskLog = asyncHandler(async (req, res) => {
@@ -601,6 +740,16 @@ tc.updatetaskLog = asyncHandler(async (req, res) => {
 
     const oldStatus = task.status; // Store old status before updating
 
+    if (status === 'hold') {
+        if (!task.parentTask) {
+            task.holdDate = new Date();
+        }
+    } else if (oldStatus === 'hold') {
+        if (!task.parentTask) {
+            task.holdDate = null;
+        }
+    }
+
     task.activityLogs.unshift({
       oldStatus: task.status,
       currentStatus: status,
@@ -615,6 +764,9 @@ tc.updatetaskLog = asyncHandler(async (req, res) => {
 
     task.updatedBy = req.user?._id;
     await task.save();
+
+    // Cascading Hold Status to children if parent is put on hold / released
+    await handleHoldCascade(task, status, oldStatus, req.user?._id);
 
     // Cascading Progress Updates
     await ProgressService.updateParentTaskProgress(task.parentTask);
@@ -723,13 +875,16 @@ tc.getallTasksfree = asyncHandler(async (req, res) => {
     })
     .sort({ _id: sortOrder });;
 
-    if (tasks.length === 0) {
+    // Auto-sync subtasks of held parent tasks
+    const syncedTasks = await autoSyncHeldParentChildren(tasks, req.user?._id);
+
+    if (syncedTasks.length === 0) {
       return res.status(200).json(new ApiResponse(200, [], "No tasks found"));
     }
 
     return res
       .status(200)
-      .json(new ApiResponse(200, tasks, "Tasks fetched successfully"));
+      .json(new ApiResponse(200, syncedTasks, "Tasks fetched successfully"));
   } catch (error) {
     console.log("Error------", error);
     return res

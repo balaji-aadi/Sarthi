@@ -95,6 +95,10 @@ const taskSchema = new mongoose.Schema(
       default: "todo",
       index: true
     },
+    holdDate: {
+      type: Date,
+      default: null
+    },
     
     // Computed Subs Stats (for optimization)
     subtaskStats: {

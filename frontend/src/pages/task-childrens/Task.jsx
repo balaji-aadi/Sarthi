@@ -215,7 +215,7 @@ import { IoGitNetworkSharp } from "react-icons/io5";
 
 import { useSelector } from "react-redux";
 
-const Task = ({ key, task, index, handleClick }) => {
+const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
   const { currentUser } = useSelector((state) => state.store);
   const canCreateSubtask = currentUser?.userRole?.name === "projectmanager" || currentUser?.userRole?.name === "admin";
   
@@ -334,6 +334,9 @@ const Task = ({ key, task, index, handleClick }) => {
                     
                     {/* Activated Tag */}
                     {(() => {
+                        if (task.status === 'hold' || task.status === 'done' || task.status === 'backlog') return null;
+                        if (task.parentTask && typeof task.parentTask === 'object' && task.parentTask.status === 'hold') return null;
+
                         const today = moment().startOf('day');
                         const ownStart = task.taskStartDate ? moment(task.taskStartDate).startOf('day') : null;
                         const isOwnActive = ownStart && ownStart.isSameOrBefore(today);
@@ -453,13 +456,27 @@ const Task = ({ key, task, index, handleClick }) => {
                         <IoMdTime size={14} className="text-slate-400" />
                                                 {task?.estimatedHours ? `${Math.floor(task.estimatedHours)}h ${Math.round((task.estimatedHours % 1) * 60)}m` : "0h 0m"}
                     </span>
-                    <span className="flex items-center gap-1" title="Due Date">
-                        <FaCalendar size={12} className="text-slate-400" />
+                    <span className={`flex items-center gap-1 ${task.status === 'hold' ? 'text-slate-300 dark:text-slate-600 line-through' : ''}`} title={task.status === 'hold' ? "Inactive - Task on Hold" : "Due Date"}>
+                        <FaCalendar size={12} className={task.status === 'hold' ? 'text-slate-300 dark:text-slate-600' : 'text-slate-400'} />
                         {moment(task.taskDueDate).format("MMM DD")}
                     </span>
                 </div>
                 
                 <div className="flex items-center gap-2">
+                    {task.status === 'hold' && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (onReleaseHold) {
+                                    onReleaseHold(task);
+                                }
+                            }}
+                            className="px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-[10px] font-bold shadow-sm transition-all hover:scale-105 mr-1"
+                            title="Remove from Hold"
+                        >
+                            Remove Hold
+                        </button>
+                    )}
                     {canCreateSubtask && (
                          <button
                             onClick={(e) => {

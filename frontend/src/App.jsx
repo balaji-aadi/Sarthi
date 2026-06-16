@@ -318,7 +318,7 @@ function App() {
         </Route>
 
         {/* Project Specific Routes (Separate Layout) */}
-        <Route path="arenas/:projectId" element={<ProtectedRoute element={<ProjectLayout />} />}>
+        <Route path="project/:projectId" element={<ProtectedRoute element={<ProjectLayout />} />}>
             <Route path="overview" element={<ProtectedRoute element={<ProjectOverview />} />} />
             <Route path="milestones" element={<ProtectedRoute element={<Milestones />} />} />
             <Route path="board" element={<ProtectedRoute element={<ProjectBoard />} />} />
