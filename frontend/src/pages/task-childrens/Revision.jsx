@@ -22,8 +22,7 @@ import toast from 'react-hot-toast';
 import InputField from '../../components/InputField';
 import { IoEllipsisHorizontalOutline } from 'react-icons/io5';
 
-const NoteCell = ({ text }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+const NoteCell = ({ text, onReadMore }) => {
     const [isLong, setIsLong] = useState(false);
     const textRef = useRef(null);
 
@@ -45,22 +44,18 @@ const NoteCell = ({ text }) => {
         <div className="min-w-[200px] max-w-[320px] py-1">
             <div 
                 ref={textRef}
-                className={`text-[11px] font-semibold text-slate-500 leading-[1.6] transition-all duration-300 rich-text-preview break-words whitespace-pre-wrap ${isExpanded ? '' : 'line-clamp-2'}`}
+                className="text-[11px] font-semibold text-slate-500 leading-[1.6] transition-all duration-300 rich-text-preview break-words whitespace-pre-wrap line-clamp-2"
                 dangerouslySetInnerHTML={{ __html: text }}
             />
             {isLong && (
                 <button 
                     onClick={(e) => {
                         e.stopPropagation();
-                        setIsExpanded(!isExpanded);
+                        onReadMore();
                     }}
                     className="flex items-center gap-1 text-[9px] font-black text-primary uppercase tracking-widest mt-1.5 hover:text-primary-dark transition-colors group/read"
                 >
-                    {isExpanded ? (
-                        <>READ LESS <IoChevronUpOutline className="group-hover/read:-translate-y-0.5 transition-transform" /></>
-                    ) : (
-                        <>READ MORE <IoChevronDown className="group-hover/read:translate-y-0.5 transition-transform" /></>
-                    )}
+                    READ MORE <IoChevronDown className="group-hover/read:translate-y-0.5 transition-transform" />
                 </button>
             )}
         </div>
@@ -73,12 +68,14 @@ const Revision = () => {
     const [tasks, setTasks] = useState([]);
     const [projects, setProjects] = useState([]);
     const [filteredTasks, setFilteredTasks] = useState([]);
+    const [stats, setStats] = useState({ currentStreak: 0, longestStreak: 0, revisionsByDate: {}, completedByDate: {} });
     
     // Filters
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedProject, setSelectedProject] = useState('all');
     const [sortBy, setSortBy] = useState('newest');
     const [selectedParent, setSelectedParent] = useState('all');
+    const [selectedDate, setSelectedDate] = useState('');
     const [showFilters, setShowFilters] = useState(true);
     
     // UI State
@@ -86,6 +83,8 @@ const Revision = () => {
     const [showRevisionModal, setShowRevisionModal] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
     const [revisionNote, setRevisionNote] = useState('');
+    const [showNotesModal, setShowNotesModal] = useState(false);
+    const [notesModalTask, setNotesModalTask] = useState(null);
 
     useEffect(() => {
         if (activeBranch) {
@@ -96,9 +95,11 @@ const Revision = () => {
     const loadInitialData = async () => {
         handleLoading(true);
         try {
-            const [tasksRes, projectsRes] = await Promise.all([
+            const timezoneOffset = new Date().getTimezoneOffset();
+            const [tasksRes, projectsRes, statsRes] = await Promise.all([
                 TaskApi.getAllTasks({ filter: { status: 'done' } }),
-                ProjectApi.getAllProjects()
+                ProjectApi.getAllProjects(),
+                TaskApi.getRevisionStats(timezoneOffset)
             ]);
             
             const allTasks = tasksRes.data?.data || [];
@@ -112,6 +113,7 @@ const Revision = () => {
             setTasks(completedChildTasks);
             setFilteredTasks(completedChildTasks);
             setProjects(projectsRes.data?.data || []);
+            setStats(statsRes.data?.data || { currentStreak: 0, longestStreak: 0, revisionsByDate: {}, completedByDate: {} });
         } catch (error) {
             console.error("Failed to load revision data", error);
             toast.error("Failed to load tasks");
@@ -122,7 +124,8 @@ const Revision = () => {
 
     useEffect(() => {
         applyFilters();
-    }, [searchTerm, selectedProject, selectedParent, sortBy, tasks]);
+    }, [searchTerm, selectedProject, selectedParent, sortBy, selectedDate, tasks]);
+
     const applyFilters = () => {
         let result = [...tasks];
 
@@ -140,6 +143,15 @@ const Revision = () => {
 
         if (selectedParent !== 'all') {
             result = result.filter(t => t.parentTask?._id === selectedParent || t.parentTask === selectedParent);
+        }
+
+        if (selectedDate) {
+            result = result.filter(t => {
+                const finishDateRaw = getFinishDateRaw(t);
+                const isCompletedOnDate = finishDateRaw ? moment(finishDateRaw).format('YYYY-MM-DD') === selectedDate : false;
+                const hasRevisionOnDate = t.revisionLogs?.some(log => moment(log.revisionDate).format('YYYY-MM-DD') === selectedDate);
+                return isCompletedOnDate || hasRevisionOnDate;
+            });
         }
 
         // Sorting
@@ -206,6 +218,15 @@ const Revision = () => {
         { value: 'oldest', label: 'Oldest First' }
     ];
 
+    const completedCountOnDate = selectedDate ? tasks.filter(t => {
+        const finishDateRaw = getFinishDateRaw(t);
+        return finishDateRaw ? moment(finishDateRaw).format('YYYY-MM-DD') === selectedDate : false;
+    }).length : 0;
+
+    const revisedCountOnDate = selectedDate ? tasks.filter(t => {
+        return t.revisionLogs?.some(log => moment(log.revisionDate).format('YYYY-MM-DD') === selectedDate);
+    }).length : 0;
+
     return (
         <div className="flex flex-col h-full bg-[#F8FAFC] animate-in fade-in duration-500 overflow-visible">
             {/* Header Area */}
@@ -230,6 +251,51 @@ const Revision = () => {
                             {showFilters ? <IoEyeOffOutline size={14} /> : <IoEyeOutline size={14} />}
                             {showFilters ? 'Hide' : 'Filter'}
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Stats Dashboard Grid */}
+            <div className="px-6 pt-6 grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
+                <div className="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
+                    <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 shrink-0">
+                        <IoCheckmarkCircleOutline size={24} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Problems Done</p>
+                        <h3 className="text-xl font-black text-slate-800 mt-1 leading-none">{tasks.length}</h3>
+                        <p className="text-[10px] font-medium text-slate-400 mt-1.5">Completed coding problems</p>
+                    </div>
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+                    <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 shrink-0 group-hover:scale-110 transition-transform">
+                        <span className="text-2xl">🔥</span>
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Current Streak</p>
+                        <h3 className="text-xl font-black text-slate-800 mt-1 leading-none">
+                            {stats.currentStreak} {stats.currentStreak === 1 ? 'Day' : 'Days'}
+                        </h3>
+                        <p className="text-[10px] font-medium text-slate-400 mt-1.5">
+                            {stats.currentStreak > 0 ? "You're on fire! Keep it up!" : "Log a revision to start your streak!"}
+                        </p>
+                    </div>
+                    {stats.currentStreak > 0 && (
+                        <div className="absolute right-0 bottom-0 top-0 w-1.5 bg-gradient-to-b from-orange-400 to-amber-500"></div>
+                    )}
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
+                    <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
+                        <span className="text-2xl">🏆</span>
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Longest Streak</p>
+                        <h3 className="text-xl font-black text-slate-800 mt-1 leading-none">
+                            {stats.longestStreak} {stats.longestStreak === 1 ? 'Day' : 'Days'}
+                        </h3>
+                        <p className="text-[10px] font-medium text-slate-400 mt-1.5">Your personal best momentum</p>
                     </div>
                 </div>
             </div>
@@ -287,14 +353,51 @@ const Revision = () => {
                             />
                         </div>
 
+                        {/* Date Picker */}
+                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 rounded-xl px-3 py-1.5 mb-2 hover:border-primary/25 transition-all">
+                            <IoCalendarOutline className="text-slate-400 shrink-0" size={14} />
+                            <input 
+                                type="date"
+                                value={selectedDate}
+                                onChange={(e) => setSelectedDate(e.target.value)}
+                                className="bg-transparent text-[10px] font-bold text-slate-700 outline-none border-none cursor-pointer focus:ring-0 p-0"
+                            />
+                        </div>
+
                         <button 
-                            onClick={() => { setSearchTerm(''); setSelectedProject('all'); setSelectedParent('all'); setSortBy('newest'); }}
+                            onClick={() => { setSearchTerm(''); setSelectedProject('all'); setSelectedParent('all'); setSortBy('newest'); setSelectedDate(''); }}
                             className="p-2 mb-2 rounded-xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-rose-500 hover:bg-rose-50 hover:border-rose-100 transition-all shadow-sm"
                             title="Reset"
                         >
                             <IoFilterOutline size={16} />
                         </button>
                     </div>
+                </div>
+            )}
+
+            {/* Date-wise Activity Banner */}
+            {selectedDate && (
+                <div className="bg-primary/5 border border-primary/20 rounded-2xl px-6 py-3 mx-6 mt-4 flex items-center justify-between animate-in fade-in duration-300">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                            <IoCalendarOutline size={16} />
+                        </div>
+                        <div>
+                            <p className="text-xs font-black text-slate-800">
+                                Activity for {moment(selectedDate).format('MMMM DD, YYYY')}
+                            </p>
+                            <p className="text-[10px] font-bold text-slate-500 mt-0.5">
+                                Completed: <span className="text-slate-700 font-extrabold">{completedCountOnDate} {completedCountOnDate === 1 ? 'problem' : 'problems'}</span> · Revised: <span className="text-slate-700 font-extrabold">{revisedCountOnDate} {revisedCountOnDate === 1 ? 'problem' : 'problems'}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <button 
+                        onClick={() => setSelectedDate('')}
+                        className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+                        title="Clear Date Filter"
+                    >
+                        <IoCloseOutline size={18} />
+                    </button>
                 </div>
             )}
 
@@ -342,7 +445,13 @@ const Revision = () => {
                                                 </div>
                                             </td>
                                             <td className="px-4 py-4">
-                                                <NoteCell text={task.additionalNotes} />
+                                                <NoteCell 
+                                                    text={task.additionalNotes} 
+                                                    onReadMore={() => {
+                                                        setNotesModalTask(task);
+                                                        setShowNotesModal(true);
+                                                    }}
+                                                />
                                             </td>
                                             <td className="px-4 py-4">
                                                 <span className="text-[9px] font-black text-primary bg-primary/5 px-2.5 py-0.5 rounded-full border border-primary/10 uppercase tracking-wider">
@@ -373,7 +482,7 @@ const Revision = () => {
 
                                         {expandedTaskId === task._id && (
                                             <tr className="bg-slate-50/30 animate-in slide-in-from-top-1 duration-200">
-                                                <td colSpan="7" className="px-12 py-6">
+                                                <td colSpan="8" className="px-12 py-6">
                                                     <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
                                                         <div className="flex items-center justify-between mb-5 border-b border-slate-50 pb-3">
                                                             <h4 className="text-[10px] font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
@@ -431,7 +540,7 @@ const Revision = () => {
                                     </React.Fragment>
                                 )) : (
                                     <tr>
-                                        <td colSpan="7" className="px-6 py-24 text-center">
+                                        <td colSpan="8" className="px-6 py-24 text-center">
                                             <div className="flex flex-col items-center justify-center opacity-30">
                                                 <IoCheckmarkCircleOutline size={40} className="text-slate-200 mb-4" />
                                                 <p className="text-sm font-black text-slate-700 uppercase tracking-widest">Protocol Clear</p>
@@ -506,6 +615,79 @@ const Revision = () => {
                                         SUBMIT LOG
                                     </button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Reference Notes Modal */}
+            {showNotesModal && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-500" onClick={() => { setShowNotesModal(false); setNotesModalTask(null); }}></div>
+                    <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/20">
+                        <div className="bg-slate-900 px-8 py-10 flex items-center justify-between text-white relative overflow-hidden">
+                            <div className="relative z-10 flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10">
+                                    <IoListOutline size={24} className="text-primary" />
+                                </div>
+                                <div>
+                                    <h3 className="font-black text-xl tracking-tight leading-none">Reference Notes</h3>
+                                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1.5">Study Material</p>
+                                </div>
+                            </div>
+                            <button onClick={() => { setShowNotesModal(false); setNotesModalTask(null); }} className="relative z-10 w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/5">
+                                <IoCloseOutline size={24} />
+                            </button>
+                        </div>
+
+                        <div className="p-8 bg-white flex flex-col max-h-[75vh]">
+                            <div className="mb-6 shrink-0">
+                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-3 block">Task Reference</span>
+                                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-primary font-black shadow-sm border border-slate-100">
+                                            {notesModalTask?.taskName?.[0] || 'T'}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-black text-slate-800 tracking-tight">{notesModalTask?.taskName}</p>
+                                            <p className="text-[9px] font-black text-primary uppercase tracking-widest mt-0.5">{notesModalTask?.projectName?.key || 'MOM'}</p>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        onClick={() => {
+                                            if (notesModalTask?.additionalNotes) {
+                                                const tempEl = document.createElement("div");
+                                                tempEl.innerHTML = notesModalTask.additionalNotes;
+                                                const textToCopy = tempEl.textContent || tempEl.innerText || "";
+                                                navigator.clipboard.writeText(textToCopy);
+                                                toast.success("Notes copied to clipboard!");
+                                            }
+                                        }}
+                                        className="px-3 py-1.5 rounded-xl border border-slate-200 text-[9px] font-black text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition-all active:scale-95"
+                                    >
+                                        COPY TEXT
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-3 block">Content</span>
+                                <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100/50 min-h-[150px]">
+                                    <div 
+                                        className="text-[13px] font-medium text-slate-600 leading-relaxed rich-text-content break-words whitespace-pre-wrap"
+                                        dangerouslySetInnerHTML={{ __html: notesModalTask?.additionalNotes }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end shrink-0">
+                                <button 
+                                    onClick={() => { setShowNotesModal(false); setNotesModalTask(null); }}
+                                    className="px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-[10px] font-black transition-all active:scale-95 shadow-lg shadow-primary/20"
+                                >
+                                    CLOSE
+                                </button>
                             </div>
                         </div>
                     </div>

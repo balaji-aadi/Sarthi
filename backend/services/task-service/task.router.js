@@ -20,5 +20,6 @@ router.route("/update-task-log/:taskId").patch(verifyJWT, verifyBranchAccess, ca
 router.route("/task-import").post(verifyJWT, verifyBranchAccess, checkPermission("CREATE_TASK"), upload.single("file"), taskImports);
 router.route("/deletemilestone/:milestoneId").post(verifyJWT, verifyBranchAccess, checkPermission("DELETE_MILESTONE"), taskController.deletemilestone)
 router.route("/add-revision/:taskId").post(verifyJWT, verifyBranchAccess, taskController.addRevision);
+router.route("/revision-stats").get(verifyJWT, verifyBranchAccess, taskController.getRevisionStats);
 
 export default router;

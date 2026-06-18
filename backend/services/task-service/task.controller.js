@@ -921,4 +921,189 @@ tc.addRevision = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, task, "Revision logged successfully"));
 });
 
+const getLocalDateString = (date, offsetMinutes = 0) => {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return null;
+  const adjusted = new Date(d.getTime() - (offsetMinutes * 60 * 1000));
+  return adjusted.toISOString().split('T')[0];
+};
+
+// Get Revision Stats
+tc.getRevisionStats = asyncHandler(async (req, res) => {
+    try {
+        const timezoneOffset = req.query.timezoneOffset ? parseInt(req.query.timezoneOffset) : 0;
+        
+        const filter = {};
+        if (req.branchId) {
+            filter.branchId = new mongoose.Types.ObjectId(req.branchId);
+        }
+        if (req.user?.email !== "balajiaadi2000@gmail.com") {
+            filter.createdBy = req.user._id;
+        }
+        
+        // Fetch completed subtasks
+        filter.parentTask = { $ne: null };
+        filter.status = "done";
+        
+        const tasks = await Task.find(filter)
+            .populate("projectName", "name key settings")
+            .populate("parentTask", "taskName taskId")
+            .lean();
+        
+        const revisionLogsByDate = {};
+        const completionDates = new Set();
+        const revisionDates = new Set();
+        
+        tasks.forEach(task => {
+            let completionDate = null;
+            if (task.activityLogs && Array.isArray(task.activityLogs)) {
+                const doneLog = [...task.activityLogs]
+                    .reverse()
+                    .find(log => log.currentStatus === 'done');
+                if (doneLog) {
+                    completionDate = doneLog.date;
+                }
+            }
+            if (!completionDate) {
+                completionDate = task.updatedAt || task.createdAt;
+            }
+            
+            const compDateStr = getLocalDateString(completionDate, timezoneOffset);
+            if (compDateStr) {
+                completionDates.add(compDateStr);
+            }
+            
+            if (task.revisionLogs && Array.isArray(task.revisionLogs)) {
+                task.revisionLogs.forEach(log => {
+                    const revDateStr = getLocalDateString(log.revisionDate, timezoneOffset);
+                    if (revDateStr) {
+                        revisionDates.add(revDateStr);
+                        if (!revisionLogsByDate[revDateStr]) {
+                            revisionLogsByDate[revDateStr] = [];
+                        }
+                        revisionLogsByDate[revDateStr].push({
+                            taskId: task._id,
+                            taskName: task.taskName,
+                            taskKey: task.taskId,
+                            projectName: task.projectName?.name || task.projectName,
+                            projectKey: task.projectName?.key || 'MOM',
+                            notes: log.notes,
+                            revisionDate: log.revisionDate,
+                            revisedBy: log.revisedBy
+                        });
+                    }
+                });
+            }
+        });
+        
+        const streakDates = Array.from(revisionDates);
+        
+        const calculateStreak = (dates) => {
+            if (dates.length === 0) return { currentStreak: 0, longestStreak: 0 };
+            
+            const sorted = dates.sort((a, b) => new Date(b) - new Date(a));
+            const todayStr = getLocalDateString(new Date(), timezoneOffset);
+            
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = getLocalDateString(yesterday, timezoneOffset);
+            
+            let currentStreak = 0;
+            let longestStreak = 0;
+            let tempStreak = 0;
+            
+            const sortedAsc = [...dates].sort((a, b) => new Date(a) - new Date(b));
+            if (sortedAsc.length > 0) {
+                tempStreak = 1;
+                longestStreak = 1;
+                for (let i = 1; i < sortedAsc.length; i++) {
+                    const prev = new Date(sortedAsc[i - 1]);
+                    const curr = new Date(sortedAsc[i]);
+                    const diffTime = Math.abs(curr - prev);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if (diffDays === 1) {
+                        tempStreak++;
+                    } else if (diffDays > 1) {
+                        tempStreak = 1;
+                    }
+                    if (tempStreak > longestStreak) {
+                        longestStreak = tempStreak;
+                    }
+                }
+            }
+            
+            let startOffset = 0;
+            if (sorted.includes(todayStr)) {
+                currentStreak = 1;
+            } else if (sorted.includes(yesterdayStr)) {
+                currentStreak = 1;
+                startOffset = 1;
+            } else {
+                currentStreak = 0;
+            }
+            
+            if (currentStreak > 0) {
+                let checkDate = new Date();
+                if (startOffset === 1) {
+                    checkDate.setDate(checkDate.getDate() - 1);
+                }
+                while (true) {
+                    checkDate.setDate(checkDate.getDate() - 1);
+                    const checkDateStr = getLocalDateString(checkDate, timezoneOffset);
+                    if (sorted.includes(checkDateStr)) {
+                        currentStreak++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            
+            return { currentStreak, longestStreak };
+        };
+        
+        const { currentStreak, longestStreak } = calculateStreak(streakDates);
+        
+        const completedByDate = {};
+        tasks.forEach(task => {
+            let completionDate = null;
+            if (task.activityLogs && Array.isArray(task.activityLogs)) {
+                const doneLog = [...task.activityLogs]
+                    .reverse()
+                    .find(log => log.currentStatus === 'done');
+                if (doneLog) {
+                    completionDate = doneLog.date;
+                }
+            }
+            if (!completionDate) {
+                completionDate = task.updatedAt || task.createdAt;
+            }
+            const dateStr = getLocalDateString(completionDate, timezoneOffset);
+            if (dateStr) {
+                if (!completedByDate[dateStr]) {
+                    completedByDate[dateStr] = [];
+                }
+                completedByDate[dateStr].push({
+                    taskId: task._id,
+                    taskName: task.taskName,
+                    taskKey: task.taskId,
+                    projectName: task.projectName?.name || task.projectName,
+                    projectKey: task.projectName?.key || 'MOM',
+                    completionDate
+                });
+            }
+        });
+        
+        return res.status(200).json(new ApiResponse(200, {
+            currentStreak,
+            longestStreak,
+            revisionsByDate: revisionLogsByDate,
+            completedByDate
+        }, "Revision stats fetched successfully"));
+    } catch (error) {
+        console.error("Error fetching revision stats:", error);
+        return res.status(400).json(new ApiError(400, "Error fetching revision stats"));
+    }
+});
+
 export default tc;
