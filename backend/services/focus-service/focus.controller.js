@@ -26,7 +26,7 @@ export const FocusController = {
       await session.save();
 
       // Update Analytics
-      await AnalyticsService.recordFocusTime(req.user.id, duration, session.date, req.branchId);
+      await AnalyticsService.recordFocusTime(req.user.id, duration, session.date, req.branchId, task);
 
       res.status(201).json({ success: true, data: session });
     } catch (error) {
@@ -43,7 +43,7 @@ export const FocusController = {
       }
 
       // Update Analytics
-      await AnalyticsService.removeFocusTime(req.user.id, session.duration, session.date, session.branchId);
+      await AnalyticsService.removeFocusTime(req.user.id, session.duration, session.date, session.branchId, session.task);
 
       res.status(200).json({ success: true, message: "Session deleted successfully" });
     } catch (error) {

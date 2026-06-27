@@ -49,6 +49,7 @@ import FocusTimer from "./pages/focus-timer/FocusTimer";
 import Revision from "./pages/task-childrens/Revision";
 import SettingsGlobal from "./pages/SettingsGlobal";
 import BranchDashboard from "./pages/BranchDashboard";
+import CanvasNotes from "./pages/CanvasNotes";
 import PricingPage from "./pages/subscription/PricingPage";
 
 import ProjectList from "./pages/project-childrens/ProjectList";
@@ -98,6 +99,7 @@ function App() {
        try {
            const timerState = JSON.parse(timerStateStr);
            const bindingObj = JSON.parse(bindingObjStr);
+           if (bindingObj.isRevision) return; // Do not auto-complete revision tasks in background
            
            if (timerState.isActive && timerState.startTime) {
                const durationSetting = timerState.selectedDuration * 60;
@@ -306,6 +308,10 @@ function App() {
           <Route
             path="revision"
             element={<ProtectedRoute element={<Revision />} />}
+          />
+          <Route
+            path="notes"
+            element={<ProtectedRoute element={<CanvasNotes />} />}
           />
           <Route
             path="settings"

@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { TaskApi } from '../../services/api/Task.api';
 import { ProjectApi } from '../../services/api/Project.api';
+import { FocusApi } from '../../services/api/Focus.api';
 import { useLoading } from '../../components/loader/LoaderContext';
 import moment from 'moment';
 import { 
@@ -16,11 +18,25 @@ import {
   IoCloseOutline,
   IoChevronUpOutline,
   IoEyeOutline,
-  IoEyeOffOutline
+  IoEyeOffOutline,
+  IoTimerOutline,
+  IoPlay,
+  IoPause
 } from 'react-icons/io5';
 import toast from 'react-hot-toast';
 import InputField from '../../components/InputField';
 import { IoEllipsisHorizontalOutline } from 'react-icons/io5';
+
+const hasAdditionalNotes = (notes) => {
+    if (!notes) return false;
+    if (typeof notes !== 'string') return false;
+    const stripped = notes.replace(/<[^>]*>?/gm, '');
+    const decoded = stripped
+        .replace(/&nbsp;/gi, '')
+        .replace(/&amp;/gi, '')
+        .trim();
+    return decoded.length > 0;
+};
 
 const NoteCell = ({ text, onReadMore }) => {
     const [isLong, setIsLong] = useState(false);
@@ -38,7 +54,7 @@ const NoteCell = ({ text, onReadMore }) => {
         return () => window.removeEventListener('resize', checkOverflow);
     }, [text]);
 
-    if (!text) return <span className="text-[9px] font-black text-slate-200 uppercase tracking-[0.15em] italic">No Notes</span>;
+    if (!hasAdditionalNotes(text)) return <span className="text-[9px] font-black text-slate-200 uppercase tracking-[0.15em] italic">No Notes</span>;
 
     return (
         <div className="min-w-[200px] max-w-[320px] py-1">
@@ -65,6 +81,7 @@ const NoteCell = ({ text, onReadMore }) => {
 const Revision = () => {
     const { activeBranch } = useSelector((state) => state.store);
     const { handleLoading } = useLoading();
+    const navigate = useNavigate();
     const [tasks, setTasks] = useState([]);
     const [projects, setProjects] = useState([]);
     const [filteredTasks, setFilteredTasks] = useState([]);
@@ -85,6 +102,102 @@ const Revision = () => {
     const [revisionNote, setRevisionNote] = useState('');
     const [showNotesModal, setShowNotesModal] = useState(false);
     const [notesModalTask, setNotesModalTask] = useState(null);
+
+    const [activeTimer, setActiveTimer] = useState(null);
+
+    const updateActiveTimer = () => {
+        const timerStateStr = localStorage.getItem("focus_timer_state");
+        const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
+        if (timerStateStr && bindingObjStr) {
+            try {
+                const timerState = JSON.parse(timerStateStr);
+                const bindingObj = JSON.parse(bindingObjStr);
+                if (bindingObj.isRevision) {
+                    const durationSetting = timerState.selectedDuration * 60;
+                    if (timerState.isActive && timerState.startTime) {
+                        const startTimeMs = new Date(timerState.startTime).getTime();
+                        const nowMs = Date.now();
+                        const sessionSeconds = Math.floor((nowMs - startTimeMs) / 1000);
+                        const totalSpent = (timerState.accumulatedTime || 0) + sessionSeconds;
+                        const remaining = durationSetting - totalSpent;
+                        setActiveTimer({
+                            taskId: bindingObj.taskId,
+                            taskName: bindingObj.taskName.replace("Revision: ", ""),
+                            timeLeft: remaining,
+                            selectedDuration: timerState.selectedDuration,
+                            isActive: true
+                        });
+                    } else {
+                        setActiveTimer({
+                            taskId: bindingObj.taskId,
+                            taskName: bindingObj.taskName.replace("Revision: ", ""),
+                            timeLeft: timerState.timeLeft,
+                            selectedDuration: timerState.selectedDuration,
+                            isActive: false
+                        });
+                    }
+                    return;
+                }
+            } catch(e) { console.error("Error reading revision timer state", e); }
+        }
+        setActiveTimer(null);
+    };
+
+    useEffect(() => {
+        updateActiveTimer();
+        const interval = setInterval(updateActiveTimer, 1000);
+        return () => clearInterval(interval);
+    }, [stats]);
+
+    const handleTogglePlayPause = () => {
+        const timerStateStr = localStorage.getItem("focus_timer_state");
+        if (timerStateStr) {
+            try {
+                const timerState = JSON.parse(timerStateStr);
+                if (timerState.isActive) {
+                    // Pause
+                    const startTimeMs = new Date(timerState.startTime).getTime();
+                    const nowMs = Date.now();
+                    const sessionSeconds = Math.floor((nowMs - startTimeMs) / 1000);
+                    const newAccumulated = (timerState.accumulatedTime || 0) + sessionSeconds;
+                    const durationSetting = timerState.selectedDuration * 60;
+                    const newTimeLeft = durationSetting - newAccumulated;
+
+                    timerState.isActive = false;
+                    timerState.startTime = null;
+                    timerState.accumulatedTime = newAccumulated;
+                    timerState.timeLeft = newTimeLeft;
+                } else {
+                    // Resume
+                    timerState.isActive = true;
+                    timerState.startTime = new Date().toISOString();
+                }
+                localStorage.setItem("focus_timer_state", JSON.stringify(timerState));
+                toast.success(timerState.isActive ? "Timer resumed" : "Timer paused");
+                updateActiveTimer();
+            } catch(e) { console.error("Error toggling timer state", e); }
+        }
+    };
+
+    const handleOpenRevisionLogForActiveTimer = () => {
+        if (activeTimer) {
+            const taskObj = tasks.find(t => t._id === activeTimer.taskId);
+            if (taskObj) {
+                setSelectedTask(taskObj);
+                setShowRevisionModal(true);
+            }
+        }
+    };
+
+    const handleCancelActiveTimer = () => {
+        if (window.confirm("Are you sure you want to cancel the active revision timer? Your progress will not be saved.")) {
+            localStorage.removeItem("focus_timer_task_binding");
+            localStorage.removeItem("focus_timer_state");
+            localStorage.removeItem("focus_timer_retrievable");
+            setActiveTimer(null);
+            toast.success("Revision timer cancelled.");
+        }
+    };
 
     useEffect(() => {
         if (activeBranch) {
@@ -178,6 +291,79 @@ const Revision = () => {
         return date ? moment(date).format('DD MMM') : 'N/A';
     };
 
+    const getLastRevisionInfo = () => {
+        const dates = Object.keys(stats.revisionsByDate || {});
+        if (dates.length === 0) return { date: 'None', count: 0 };
+        const sorted = dates.sort((a, b) => new Date(b) - new Date(a));
+        const lastDate = sorted[0];
+        const count = stats.revisionsByDate[lastDate]?.length || 0;
+        return {
+            date: moment(lastDate).format('DD MMM, YYYY'),
+            count
+        };
+    };
+
+    const getBestRevisionInfo = () => {
+        const dates = Object.keys(stats.revisionsByDate || {});
+        if (dates.length === 0) return { date: 'None', count: 0 };
+        
+        let bestDate = dates[0];
+        let maxCount = stats.revisionsByDate[bestDate]?.length || 0;
+        
+        for (let i = 1; i < dates.length; i++) {
+            const date = dates[i];
+            const count = stats.revisionsByDate[date]?.length || 0;
+            if (count > maxCount) {
+                maxCount = count;
+                bestDate = date;
+            }
+        }
+        
+        return {
+            date: moment(bestDate).format('DD MMM, YYYY'),
+            count: maxCount
+        };
+    };
+
+    const handleReviseWithTimer = (task) => {
+        // Check if there is already a focus timer task binding in localStorage
+        const existingBinding = localStorage.getItem("focus_timer_task_binding");
+        if (existingBinding) {
+            const confirmed = window.confirm("A focus timer is already running. Start a new revision timer and discard the current one?");
+            if (!confirmed) return;
+        }
+
+        // 1. Set the focus timer task binding in localStorage
+        const focusTimerBinding = {
+            taskId: task._id,
+            taskName: `Revision: ${task.taskName}`,
+            taskIdString: task.taskId || 'DSA-X',
+            estimatedHours: 0.5,
+            dueDate: task.taskDueDate,
+            isBacklog: false,
+            isRevision: true
+        };
+        localStorage.setItem("focus_timer_task_binding", JSON.stringify(focusTimerBinding));
+
+        // 2. Set the focus timer state to active, 30 minutes (1800s)
+        const timerState = {
+            timeLeft: 30 * 60,
+            isActive: true,
+            startTime: new Date().toISOString(),
+            accumulatedTime: 0,
+            selectedDuration: 30,
+            currentTheme: { name: 'Indigo', color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.05)', shadow: 'rgba(79, 70, 229, 0.4)' },
+            customHeading: `Revision: ${task.taskName}`,
+            isCustomSessionActive: false
+        };
+        localStorage.setItem("focus_timer_state", JSON.stringify(timerState));
+
+        toast.success(`Starting 30-minute revision timer for: ${task.taskName}`);
+        
+        // Update local state immediately
+        updateActiveTimer();
+    };
+
     const handleAddRevision = async () => {
         if (!revisionNote.trim()) {
             toast.error("Please enter a note for the revision");
@@ -188,6 +374,55 @@ const Revision = () => {
         try {
             await TaskApi.addRevision(selectedTask._id, { notes: revisionNote });
             toast.success("Revision logged successfully");
+            
+            // Check if there is an active focus timer for this exact task
+            const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
+            if (bindingObjStr) {
+                try {
+                    const bindingObj = JSON.parse(bindingObjStr);
+                    if (bindingObj.taskId === selectedTask._id) {
+                        // Compute duration and save the focus session!
+                        const timerStateStr = localStorage.getItem("focus_timer_state");
+                        if (timerStateStr) {
+                            const timerState = JSON.parse(timerStateStr);
+                            const startTimeMs = timerState.startTime ? new Date(timerState.startTime).getTime() : Date.now();
+                            const nowMs = Date.now();
+                            const sessionSeconds = Math.floor((nowMs - startTimeMs) / 1000);
+                            const totalSpent = (timerState.accumulatedTime || 0) + (timerState.isActive ? sessionSeconds : 0);
+                            
+                            const actualDuration = Math.max(Math.round(totalSpent / 60), 1);
+                            
+                            const start = timerState.startTime ? moment(timerState.startTime) : moment();
+                            const end = moment(nowMs);
+                            
+                            const sessionData = {
+                                date: start.format("YYYY-MM-DD"),
+                                startTime: start.toISOString(),
+                                endTime: end.toISOString(),
+                                duration: actualDuration,
+                                type: "Focus",
+                                task: bindingObj.taskId,
+                                taskName: bindingObj.taskName,
+                                taskIdString: bindingObj.taskIdString,
+                                statusAtCompletion: "done",
+                                completionState: "completed",
+                                estimatedTimeAtStart: timerState.selectedDuration
+                            };
+                            
+                            await FocusApi.createSession(sessionData);
+                            toast.success("Focus timer session saved!");
+                        }
+                        
+                        // Clear/reset the focus timer state
+                        localStorage.removeItem("focus_timer_task_binding");
+                        localStorage.removeItem("focus_timer_state");
+                        localStorage.removeItem("focus_timer_retrievable");
+                    }
+                } catch(timerErr) {
+                    console.error("Failed to auto-log focus timer from revision page", timerErr);
+                }
+            }
+            
             setShowRevisionModal(false);
             setRevisionNote('');
             loadInitialData();
@@ -241,6 +476,12 @@ const Revision = () => {
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="flex flex-col items-end mr-4">
+                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Last Revision</span>
+                            <span className="text-base font-black text-indigo-600 leading-none mt-0.5">
+                                {getLastRevisionInfo().date} {getLastRevisionInfo().count > 0 && `(${getLastRevisionInfo().count})`}
+                            </span>
+                        </div>
+                        <div className="flex flex-col items-end mr-4">
                             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Mastery Count</span>
                             <span className="text-base font-black text-slate-800 leading-none">{filteredTasks.length}</span>
                         </div>
@@ -256,7 +497,7 @@ const Revision = () => {
             </div>
 
             {/* Stats Dashboard Grid */}
-            <div className="px-6 pt-6 grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
+            <div className="px-6 pt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
                 <div className="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
                     <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 shrink-0">
                         <IoCheckmarkCircleOutline size={24} />
@@ -298,7 +539,79 @@ const Revision = () => {
                         <p className="text-[10px] font-medium text-slate-400 mt-1.5">Your personal best momentum</p>
                     </div>
                 </div>
+
+                <div className="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 group-hover:scale-110 transition-transform">
+                        <span className="text-2xl">📅</span>
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Last Revision</p>
+                        <h3 className="text-xl font-black text-slate-800 mt-1 leading-none">
+                            {getLastRevisionInfo().date}
+                        </h3>
+                        <p className="text-[10px] font-medium text-slate-400 mt-1.5">
+                            {getLastRevisionInfo().count} {getLastRevisionInfo().count === 1 ? 'problem' : 'problems'} revised
+                        </p>
+                    </div>
+                </div>
             </div>
+
+            {/* Active Revision Timer Banner */}
+            {activeTimer && (
+                <div className="mx-6 mt-6 bg-gradient-to-r from-indigo-600 to-violet-700 text-white rounded-3xl p-5 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-300">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 shrink-0 relative">
+                            <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-emerald-400 opacity-75 top-1 right-1"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 top-1 right-1 absolute"></span>
+                            <IoTimerOutline size={24} className="text-white animate-pulse" />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-widest">Active Revision Session</p>
+                            <h4 className="text-base font-black tracking-tight mt-0.5">{activeTimer.taskName}</h4>
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-6">
+                        {/* Live Timer Counter */}
+                        <div className="font-mono text-3xl font-black tracking-wider flex items-center gap-1 bg-black/15 px-4 py-1.5 rounded-2xl border border-white/5 shadow-inner">
+                            {activeTimer.timeLeft < 0 && <span className="text-rose-400">-</span>}
+                            <span>{Math.abs(Math.floor(activeTimer.timeLeft / 60)).toString().padStart(2, '0')}</span>
+                            <span className="animate-pulse">:</span>
+                            <span>{Math.abs(activeTimer.timeLeft % 60).toString().padStart(2, '0')}</span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                            {/* Pause/Resume Button */}
+                            <button 
+                                onClick={handleTogglePlayPause}
+                                className="p-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl transition-all font-bold text-xs active:scale-95 flex items-center gap-1.5"
+                                title={activeTimer.isActive ? "Pause Timer" : "Resume Timer"}
+                            >
+                                {activeTimer.isActive ? <IoPause size={16} /> : <IoPlay size={16} />}
+                                {activeTimer.isActive ? "PAUSE" : "RESUME"}
+                            </button>
+                            
+                            {/* Complete & Log Button */}
+                            <button 
+                                onClick={handleOpenRevisionLogForActiveTimer}
+                                className="px-5 py-3 bg-emerald-500 hover:bg-emerald-600 border border-emerald-400 text-white rounded-xl transition-all font-black text-xs active:scale-95 shadow-md flex items-center gap-1.5"
+                            >
+                                <IoSyncOutline size={16} />
+                                LOG REVISION
+                            </button>
+                            
+                            {/* Discard Button */}
+                            <button 
+                                onClick={handleCancelActiveTimer}
+                                className="p-3 hover:bg-white/10 rounded-xl transition-all text-indigo-200 hover:text-white font-bold text-xs"
+                                title="Cancel and Discard Timer"
+                            >
+                                DISCARD
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Filter Section - Collapsible */}
             {showFilters && (
@@ -470,13 +783,36 @@ const Revision = () => {
                                                 </div>
                                             </td>
                                             <td className="pl-4 pr-8 py-4 text-right">
-                                                <button 
-                                                    onClick={() => { setSelectedTask(task); setShowRevisionModal(true); }}
-                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-[10px] font-black text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95 group/btn"
-                                                >
-                                                    <IoSyncOutline className="group-hover/btn:animate-spin" size={12} />
-                                                    LOG
-                                                </button>
+                                                <div className="flex items-center justify-end gap-2">
+                                                    {activeTimer && activeTimer.taskId === task._id ? (
+                                                        <button 
+                                                            onClick={handleTogglePlayPause}
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 border border-indigo-600 text-[10px] font-black text-white hover:bg-indigo-700 transition-all active:scale-95 group/revise-btn shadow-md animate-pulse"
+                                                            title={activeTimer.isActive ? "Pause Active Revision Timer" : "Resume Active Revision Timer"}
+                                                        >
+                                                            {activeTimer.isActive ? <IoPause size={12} /> : <IoPlay size={12} />}
+                                                            {activeTimer.timeLeft < 0 && "-"}
+                                                            {Math.abs(Math.floor(activeTimer.timeLeft / 60)).toString().padStart(2, '0')}:
+                                                            {Math.abs(activeTimer.timeLeft % 60).toString().padStart(2, '0')}
+                                                        </button>
+                                                    ) : (
+                                                        <button 
+                                                            onClick={() => handleReviseWithTimer(task)}
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-100 text-[10px] font-black text-indigo-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all active:scale-95 group/revise-btn shadow-sm"
+                                                            title="Start 30-minute Focus Revision Session"
+                                                        >
+                                                            <IoTimerOutline size={12} />
+                                                            TIMER
+                                                        </button>
+                                                    )}
+                                                    <button 
+                                                        onClick={() => { setSelectedTask(task); setShowRevisionModal(true); }}
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-[10px] font-black text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95 group/btn"
+                                                    >
+                                                        <IoSyncOutline className="group-hover/btn:animate-spin" size={12} />
+                                                        LOG
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
 
@@ -491,7 +827,7 @@ const Revision = () => {
                                                             </h4>
                                                         </div>
 
-                                                        {task.additionalNotes && (
+                                                        {hasAdditionalNotes(task.additionalNotes) && (
                                                             <div className="mb-6 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
                                                                <h5 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Original Reference Notes</h5>
                                                                <div 

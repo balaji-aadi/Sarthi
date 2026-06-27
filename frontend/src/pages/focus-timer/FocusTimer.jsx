@@ -8,7 +8,8 @@ import {
   IoStop,
   IoFlame,
   IoColorPaletteOutline,
-  IoRefreshOutline
+  IoRefreshOutline,
+  IoSyncOutline
 } from "react-icons/io5";
 import moment from "moment";
 import { FocusApi } from "../../services/api/Focus.api";
@@ -69,6 +70,10 @@ const FocusTimer = () => {
   const [showBacklogModal, setShowBacklogModal] = useState(false);
   const [backlogTaskData, setBacklogTaskData] = useState(null);
   const [backlogHoursInput, setBacklogHoursInput] = useState("");
+
+  // Revision Modal
+  const [showRevisionModal, setShowRevisionModal] = useState(false);
+  const [revisionNote, setRevisionNote] = useState("");
 
   const triggerConfirm = (msg, action) => {
       setConfirmMessage(msg);
@@ -183,10 +188,13 @@ const FocusTimer = () => {
           const remaining = (selectedDuration * 60) - totalSpent;
           
           if (remaining <= 0) {
-              const hasTask = !!localStorage.getItem("focus_timer_task_binding");
+              const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
+              const bindingObj = bindingObjStr ? JSON.parse(bindingObjStr) : null;
+              const hasTask = !!bindingObj;
               
-              // Overtime limit: 1 hour (3600 seconds)
-              const isOvertimeLimitReached = remaining <= -3600;
+              // Overtime limit: 4 hours for revision (14400s), 1 hour for regular (3600s)
+              const limit = bindingObj?.isRevision ? 14400 : 3600;
+              const isOvertimeLimitReached = remaining <= -limit;
 
               if (!hasTask || isOvertimeLimitReached) {
                   // Standalone session or overtime limit reached: auto-log
@@ -382,6 +390,68 @@ const FocusTimer = () => {
     setStartTime(null);
     setAccumulatedTime(0);
     setTimeLeft(selectedDuration * 60);
+  };
+
+  const handleEndRevision = () => {
+    setShowRevisionModal(true);
+  };
+
+  const handleSubmitRevisionLog = async () => {
+    if (isActive && startTime) {
+      const sessionSeconds = Math.floor((Date.now() - new Date(startTime).getTime()) / 1000);
+      setAccumulatedTime(prev => prev + sessionSeconds);
+    }
+    
+    setIsActive(false);
+    playSound();
+    showNotification();
+    
+    const endTime = new Date();
+    const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
+    if (bindingObjStr) {
+      try {
+        const bindingObj = JSON.parse(bindingObjStr);
+        // actualElapsedSeconds accounts for overtime (timeLeft can be negative)
+        const actualElapsedSeconds = (selectedDuration * 60) - timeLeft;
+        const actualDuration = Math.max(Math.round(actualElapsedSeconds / 60), 1);
+        
+        const newSession = {
+          date: moment().format("YYYY-MM-DD"),
+          startTime: startTime || new Date(),
+          endTime: endTime,
+          duration: actualDuration,
+          type: "Focus",
+          task: bindingObj.taskId || null,
+          taskName: bindingObj.taskName,
+          taskIdString: bindingObj.taskIdString || "N/A",
+          statusAtCompletion: "done",
+          completionState: "completed",
+          estimatedTimeAtStart: selectedDuration
+        };
+
+        await FocusApi.createSession(newSession);
+        await TaskApi.addRevision(bindingObj.taskId, { notes: revisionNote || "Completed revision focus session" });
+        toast.success("Revision and Focus session logged successfully!");
+      } catch (err) {
+        console.error("Failed to complete revision focus log", err);
+        toast.error("Failed to log revision");
+      }
+    }
+
+    // Reset everything
+    localStorage.removeItem("focus_timer_state");
+    localStorage.removeItem("focus_timer_task_binding");
+    setIsBindingActive(false);
+    setIsCustomSessionActive(false);
+    setSelectedTask("");
+    setCustomHeading("");
+    setRevisionNote("");
+    setShowRevisionModal(false);
+    setStartTime(null);
+    setAccumulatedTime(0);
+    setTimeLeft(25 * 60);
+    setSelectedDuration(25);
+    fetchSessions();
   };
 
   const handleDeleteSession = async (sessionId) => {
@@ -635,11 +705,17 @@ const FocusTimer = () => {
                <span>{isActive ? "Pause" : "Start"}</span>
             </button>
 
-            {isActive && (
-                <button onClick={handleReset} className="text-rose-500 font-bold text-sm hover:underline mt-2">
-                    End & Save Session
-                </button>
-            )}
+             {isBindingActive && localStorage.getItem("focus_timer_task_binding") && JSON.parse(localStorage.getItem("focus_timer_task_binding")).isRevision ? (
+                 <button onClick={handleEndRevision} className="text-indigo-600 dark:text-indigo-400 font-bold text-sm hover:underline mt-2 flex items-center gap-1 justify-center">
+                     <IoSyncOutline className="animate-spin-slow" /> End & Log Revision
+                 </button>
+             ) : (
+                 isActive && (
+                     <button onClick={handleReset} className="text-rose-500 font-bold text-sm hover:underline mt-2">
+                         End & Save Session
+                     </button>
+                 )
+             )}
          </div>
       </div>
 
@@ -728,6 +804,48 @@ const FocusTimer = () => {
         </div>
       )}
 
+      {/* Revision Logging Modal */}
+      {showRevisionModal && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => setShowRevisionModal(false)}></div>
+           <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md flex flex-col gap-4 animate-in zoom-in-95 duration-200 border border-slate-100">
+              <div className="flex items-center gap-3 text-indigo-600">
+                 <IoSyncOutline size={28} className="animate-spin-slow" />
+                 <h3 className="text-xl font-bold text-slate-800">Log Revision</h3>
+              </div>
+              <p className="text-slate-600 text-sm font-medium">
+                 Ready to complete your revision for <strong>{localStorage.getItem("focus_timer_task_binding") && JSON.parse(localStorage.getItem("focus_timer_task_binding")).taskName}</strong>? Enter any insights or notes below.
+              </p>
+              
+              <div className="mt-4">
+                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 block">Revision Notes / Key Findings</label>
+                 <textarea 
+                    rows="4"
+                    placeholder="E.g., solved using binary search, optimized time complexity to O(log N)..."
+                    value={revisionNote}
+                    onChange={(e) => setRevisionNote(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors resize-none text-sm"
+                 />
+              </div>
+
+              <div className="flex items-center gap-3 mt-4 justify-end">
+                <button 
+                  onClick={() => setShowRevisionModal(false)}
+                  className="px-4 py-2 rounded-xl text-slate-500 font-bold hover:bg-slate-100 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleSubmitRevisionLog}
+                  className="px-5 py-2.5 rounded-xl font-bold text-white shadow-lg bg-indigo-600 hover:bg-indigo-700 transition-transform active:scale-95"
+                >
+                  Log Revision & Save Timer
+                </button>
+              </div>
+           </div>
+        </div>
+      )}
+ 
       {/* Tabular Reporting Section */}
       <div className="recent-logs-section">
          <div className="section-header flex-col md:flex-row gap-4 items-start md:items-center">

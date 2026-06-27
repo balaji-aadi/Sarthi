@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  IoGridOutline, 
-  IoBriefcaseOutline, 
-  IoPeopleOutline, 
-  IoSettingsOutline, 
-  IoLogOutOutline,
-  IoAdd,
-  IoChevronDown,
-  IoAnalyticsOutline,
-  IoCalendarOutline,
-  IoTimeOutline,
-  IoSyncOutline,
-  IoBusinessOutline,
-  IoArrowForwardOutline
+import {
+    IoGridOutline,
+    IoBriefcaseOutline,
+    IoPeopleOutline,
+    IoSettingsOutline,
+    IoLogOutOutline,
+    IoAdd,
+    IoChevronDown,
+    IoAnalyticsOutline,
+    IoCalendarOutline,
+    IoTimeOutline,
+    IoSyncOutline,
+    IoBusinessOutline,
+    IoArrowForwardOutline,
+    IoDocumentTextOutline
 } from 'react-icons/io5';
 import { ProjectApi } from '../../services/api/Project.api';
 import { useSelector } from 'react-redux';
@@ -42,7 +43,7 @@ const Sidebar = () => {
                 setLoading(false);
             }
         };
-        
+
         if (activeBranch) {
             fetchProjects();
         }
@@ -59,15 +60,16 @@ const Sidebar = () => {
     }, [activeBranch]);
 
     const hiddenRoles = ["developer", "tester", "employee"];
-    
+
     let menuItems = [
         { icon: <IoGridOutline />, label: 'Dashboard', path: '/' },
         { icon: <IoBusinessOutline />, label: 'Branches', path: '/branch' },
         { icon: <IoTimeOutline />, label: 'Focus Timer', path: '/focus-timer' },
         { icon: <IoAnalyticsOutline />, label: 'Performance', path: '/performance' },
         { icon: <IoSyncOutline />, label: 'Revision', path: '/revision' },
+        { icon: <IoDocumentTextOutline />, label: 'Notes', path: '/notes' },
         { icon: <IoBriefcaseOutline />, label: 'Arenas', path: '/arenas' },
-        { icon: <IoPeopleOutline />, label: 'Users', path: '/user' }, 
+        { icon: <IoPeopleOutline />, label: 'Users', path: '/user' },
         { icon: <IoTimeOutline />, label: 'Pricing', path: '/pricing' },
     ];
 
@@ -94,15 +96,15 @@ const Sidebar = () => {
         <aside className="w-72 bg-surface border-r border-borderLight h-full flex flex-col absolute left-0 top-0 overflow-y-auto z-20">
             {/* Logo Area */}
             <div className="p-6 flex items-center gap-3 pb-2">
-                 <img src="/momentum_logo.svg" alt="Momentum Logo" className="w-8 h-8 object-contain drop-shadow-md" />
-                 <div className="flex flex-col">
+                <img src="/momentum_logo.svg" alt="Momentum Logo" className="w-8 h-8 object-contain drop-shadow-md" />
+                <div className="flex flex-col">
                     <h1 className="text-xl font-bold text-textMain tracking-tight leading-none">Momentum</h1>
                     {activeBranch && (
                         <span className="text-[8px] font-black text-primary uppercase tracking-[0.2em] mt-1 opacity-70">
                             {activeBranch.name}
                         </span>
                     )}
-                 </div>
+                </div>
             </div>
 
             {/* Global Timer Active Widget */}
@@ -113,8 +115,8 @@ const Sidebar = () => {
                 {/* Top Section: Branches & Teams */}
                 <div className="mt-4 space-y-1">
                     {topMenuItems.map((item, idx) => (
-                        <NavLink 
-                            key={`top-${idx}`} 
+                        <NavLink
+                            key={`top-${idx}`}
                             to={item.path}
                             className={({ isActive }) => `flex items-center gap-3 px-4 py-2.5 transition-all duration-200 group relative ${isActive ? 'active text-primary' : 'text-textSub hover:text-textMain'}`}
                         >
@@ -134,8 +136,8 @@ const Sidebar = () => {
                 {/* Main Section */}
                 <div className="space-y-1">
                     {mainMenuItems.map((item, idx) => (
-                        <NavLink 
-                            key={`main-${idx}`} 
+                        <NavLink
+                            key={`main-${idx}`}
                             to={item.path}
                             onClick={() => {
                                 if (item.label === 'Dashboard') {
@@ -153,10 +155,10 @@ const Sidebar = () => {
                             </div>
                         </NavLink>
                     ))}
-                    
+
                     {/* Pricing (Conditional) */}
                     {pricingItem && (
-                        <NavLink 
+                        <NavLink
                             to={pricingItem.path}
                             className={({ isActive }) => `flex items-center gap-3 px-4 py-2 transition-all duration-200 group relative ${isActive ? 'active text-primary' : 'text-textSub hover:text-textMain'}`}
                         >
@@ -172,12 +174,12 @@ const Sidebar = () => {
                 </div>
 
                 {/* Favorites/Projects Section */}
-            {/* Favorites/Projects Section */}
+                {/* Favorites/Projects Section */}
                 <div className="mt-8">
-                     <div className="flex items-center justify-between px-4 mb-2">
+                    <div className="flex items-center justify-between px-4 mb-2">
                         <p className="text-xs font-semibold text-textSub uppercase tracking-wider">Arenas</p>
                         {!hiddenRoles.includes(currentUser?.userRole?.name?.toLowerCase()) && (
-                            <button 
+                            <button
                                 className="text-textSub hover:text-primary transition-colors"
                                 onClick={() => navigate('/arenas/create-project')}
                                 title="Create Arena"
@@ -185,8 +187,8 @@ const Sidebar = () => {
                                 <IoAdd size={16} />
                             </button>
                         )}
-                     </div>
-                     <div className="space-y-1">
+                    </div>
+                    <div className="space-y-1">
                         {loading ? (
                             <p className="px-4 text-xs text-textSub">Loading...</p>
                         ) : projects.length > 0 ? (
@@ -194,52 +196,52 @@ const Sidebar = () => {
                                 const projectSlug = project.key?.toLowerCase() || project.name.toLowerCase().replace(/\s+/g, '-');
                                 const isActive = slug ? slug === projectSlug : currentProjectId === project._id;
                                 return (
-                                <div 
-                                    key={project._id || idx} 
-                                    onClick={() => navigate(`/arena/${projectSlug}`)}
-                                    className={`w-full flex items-center gap-3 px-4 py-1.5 cursor-pointer transition-all group ${isActive ? 'text-primary' : 'text-textSub/80 hover:text-textMain'}`}
-                                >
-                                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all ${isActive ? 'bg-primary shadow-[0_0_8px_rgba(79,70,229,0.5)]' : 'bg-slate-300'}`}></span>
-                                    <span className={`text-xs font-bold truncate ${isActive ? 'underline underline-offset-4 decoration-primary/30' : 'group-hover:underline underline-offset-4 decoration-slate-200'}`}>
-                                        {project.name}
-                                    </span>
-                                </div>
+                                    <div
+                                        key={project._id || idx}
+                                        onClick={() => navigate(`/arena/${projectSlug}`)}
+                                        className={`w-full flex items-center gap-3 px-4 py-1.5 cursor-pointer transition-all group ${isActive ? 'text-primary' : 'text-textSub/80 hover:text-textMain'}`}
+                                    >
+                                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all ${isActive ? 'bg-primary shadow-[0_0_8px_rgba(79,70,229,0.5)]' : 'bg-slate-300'}`}></span>
+                                        <span className={`text-xs font-bold truncate ${isActive ? 'underline underline-offset-4 decoration-primary/30' : 'group-hover:underline underline-offset-4 decoration-slate-200'}`}>
+                                            {project.name}
+                                        </span>
+                                    </div>
                                 );
                             })
                         ) : (
                             <p className="px-4 text-xs text-textSub italic">No arenas found</p>
                         )}
                         {projects.length > 5 && (
-                            <button 
+                            <button
                                 onClick={() => navigate('/arenas')}
                                 className="w-full px-4 py-1 text-xs text-primary hover:underline text-left"
                             >
                                 View all
                             </button>
                         )}
-                     </div>
+                    </div>
                 </div>
             </nav>
 
             {/* Bottom Actions */}
             <div className="px-4 py-6 mt-auto space-y-4 border-t border-slate-100/50">
                 <MenuItem icon={<IoSettingsOutline />} label="Settings" path="/settings" isActive={window.location.pathname === '/settings'} />
-                
+
                 {/* User Profile Section - Premium Light */}
                 <div className="p-4 bg-white border border-slate-200 rounded-[1.5rem] shadow-sm hover:shadow-md transition-all duration-500 group relative overflow-hidden">
                     {/* Subtle Gradient Glow */}
                     <div className="absolute -top-12 -right-12 w-24 h-24 bg-primary/5 blur-3xl rounded-full group-hover:bg-primary/10 transition-colors duration-700"></div>
-                    
+
                     <div className="relative flex items-center gap-3">
                         <div className="relative">
                             <div className="absolute -inset-0.5 bg-gradient-to-tr from-primary to-accent rounded-full opacity-20 group-hover:opacity-100 transition-opacity blur-[1px]"></div>
                             {currentUser?.profileImage ? (
                                 <img src={currentUser.profileImage} alt="Profile" className="relative w-10 h-10 rounded-full object-cover border border-white" />
                             ) : (
-                                <img 
-                                  src={`https://ui-avatars.com/api/?name=${currentUser ? (currentUser.firstName + "+" + (currentUser.lastName || "")) : "User"}&background=4F46E5&color=fff&bold=true`} 
-                                  alt="Profile" 
-                                  className="relative w-10 h-10 rounded-full border border-white shadow-sm" 
+                                <img
+                                    src={`https://ui-avatars.com/api/?name=${currentUser ? (currentUser.firstName + "+" + (currentUser.lastName || "")) : "User"}&background=4F46E5&color=fff&bold=true`}
+                                    alt="Profile"
+                                    className="relative w-10 h-10 rounded-full border border-white shadow-sm"
                                 />
                             )}
                         </div>
@@ -254,8 +256,8 @@ const Sidebar = () => {
                             </div>
                         </div>
                     </div>
-                    
-                    <button 
+
+                    <button
                         onClick={() => {
                             localStorage.clear();
                             window.location.href = "/login";
@@ -276,14 +278,13 @@ const MenuItem = ({ icon, label, path, isActive }) => {
     return (
         <button
             onClick={() => navigate(path)}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative group overflow-hidden ${
-                isActive 
-                ? 'text-primary font-black' 
-                : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-            }`}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative group overflow-hidden ${isActive
+                    ? 'text-primary font-black'
+                    : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                }`}
         >
             {isActive && (
-                <motion.div 
+                <motion.div
                     layoutId="sidebar-active"
                     className="absolute inset-0 bg-primary/5 border-l-4 border-primary"
                 />

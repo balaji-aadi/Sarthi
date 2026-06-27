@@ -19,6 +19,7 @@ import dailyAccountabilityRouter from "../services/dailyAccountability-service/d
 import focusRouter from "../services/focus-service/focus.router.js";
 import branchRouter from "../services/branch-service/branch.router.js";
 import subscriptionRouter from "../services/subscription-service/subscription.router.js";
+import noteRouter from "../services/note-service/note.router.js";
 
 
 const router = Router();
@@ -43,5 +44,6 @@ router.use("/daily-accountability", dailyAccountabilityRouter);
 router.use("/focus", focusRouter);
 router.use("/branch", branchRouter);
 router.use("/subscription", subscriptionRouter);
+router.use("/note", noteRouter);
 
 export default router;

@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaRegStickyNote } from "react-icons/fa";
 import { BiCog } from "react-icons/bi";
 import { useContext, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -30,6 +30,11 @@ const routes = [
     path: "daily-accountability",
     name: "Daily Accountability",
     icon: <FaTasks />,
+  },
+  {
+    path: "notes",
+    name: "Notes",
+    icon: <FaRegStickyNote />,
   },
 
   {
@@ -191,7 +196,7 @@ const SideBar = ({ children }) => {
                     <h1 className="text-white font-bold text-2xl tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
                       {currentUser?.firstName ? currentUser.firstName : "Momentum"}
                     </h1>
-                     <p className="text-gray-400 text-[10px] uppercase tracking-widest mt-1">
+                    <p className="text-gray-400 text-[10px] uppercase tracking-widest mt-1">
                       {currentUser?.userRoles?.[0]?.name || currentUser?.userRole?.name || "Simplify Tasks"}
                     </p>
                   </Link>
@@ -205,7 +210,7 @@ const SideBar = ({ children }) => {
           {routes.map((route, index) => {
             // Only admin can see the 'Users' under Arenas, or the top-level 'User'
             const isAdmin = currentUser?.email === "balajiaadi2000@gmail.com";
-            
+
             if (route.name === "User" && !isAdmin) {
               return null;
             }

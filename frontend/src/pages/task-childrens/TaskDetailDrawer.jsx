@@ -8,6 +8,17 @@ import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { server } from '../../services/config';
 
+const hasAdditionalNotes = (notes) => {
+    if (!notes) return false;
+    if (typeof notes !== 'string') return false;
+    const stripped = notes.replace(/<[^>]*>?/gm, '');
+    const decoded = stripped
+        .replace(/&nbsp;/gi, '')
+        .replace(/&amp;/gi, '')
+        .trim();
+    return decoded.length > 0;
+};
+
 const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, canEdit }) => {
     const [task, setTask] = useState(initialTask);
     const [loading, setLoading] = useState(false);
@@ -138,7 +149,7 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                    }}
                                />
                                 
-                                {task?.additionalNotes && (
+                                {hasAdditionalNotes(task?.additionalNotes) && (
                                     <div className="mt-6">
                                         <div className="flex items-center justify-between mb-4">
                                             <h3 className="text-[11px] font-black text-textSub uppercase tracking-[0.2em]">Assignee Notes</h3>

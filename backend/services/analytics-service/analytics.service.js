@@ -77,59 +77,16 @@ class AnalyticsService {
           await this._recordStatUpdate(task.assignee, task.projectName, task, "todo", task.status, statusChangeDate, task.branchId);
       }
 
-      // 2. Historical Hours Logged from Activity Logs
-      // We need to find all durations where status was 'inprogress'
-      if (task.activityLogs && task.activityLogs.length > 1) {
-          const sortedLogs = [...task.activityLogs].sort((a, b) => new Date(a.date) - new Date(b.date));
-          
-          let lastInprogressDate = null;
-          for (const log of sortedLogs) {
-              if (log.currentStatus === "inprogress") {
-                  lastInprogressDate = new Date(log.date);
-              } else if (lastInprogressDate && log.oldStatus === "inprogress") {
-                  const ms = new Date(log.date) - lastInprogressDate;
-                  const hours = Number((ms / (1000 * 60 * 60)).toFixed(2));
-                  if (hours > 0) {
-                      // Apply these hours to the date they were logged
-                      await this._incrementHoursOnly(task.assignee, task.projectName, hours, log.date, task.branchId);
-                  }
-                  lastInprogressDate = null;
-              }
-          }
-      }
     }
 
-    // 3. Sync all Focus Sessions
+    // 2. Sync all Focus Sessions
     const focusSessions = await FocusSession.find({});
     console.log(`Syncing analytics for ${focusSessions.length} focus sessions...`);
     for (const session of focusSessions) {
         if (!session.user || !session.duration) continue;
         
-        // Add Focus Session duration to user's stats
-        await this.recordFocusTime(session.user, session.duration, session.date || session.startTime, session.branchId);
-        
-        // If the focus session is linked to a task, optionally add to project stats
-        if (session.task) {
-            const task = await Task.findById(session.task);
-            if (task && task.projectName) {
-                const hours = Number((session.duration / 60).toFixed(2));
-                const periods = ["daily", "weekly", "monthly", "yearly"];
-                for (const period of periods) {
-                    const normalizedDate = this._normalizeDate(session.date || session.startTime, period);
-                    const query = { entityType: "project", entityId: task.projectName, period, date: normalizedDate };
-                    if (session.branchId) {
-                        query.branchId = session.branchId;
-                    } else if (task.branchId) {
-                        query.branchId = task.branchId;
-                    }
-                    await PerformanceStat.findOneAndUpdate(
-                        query,
-                        { $inc: { "metrics.hoursLogged": hours } },
-                        { upsert: true }
-                    );
-                }
-            }
-        }
+        // Add Focus Session duration to user and project stats
+        await this.recordFocusTime(session.user, session.duration, session.date || session.startTime, session.branchId, session.task);
     }
 
     // 4. Sync Daily Accountability Logs
@@ -180,31 +137,6 @@ class AnalyticsService {
     };
   }
 
-  async _incrementHoursOnly(userId, projectId, hours, date, branchId) {
-      const periods = ["daily", "weekly", "monthly", "yearly"];
-      for (const period of periods) {
-          const normalizedDate = this._normalizeDate(date, period);
-          const update = { $inc: { "metrics.hoursLogged": hours } };
-          
-          const queryUser = { entityType: "user", entityId: userId, period, date: normalizedDate };
-          const queryProject = { entityType: "project", entityId: projectId, period, date: normalizedDate };
-          if (branchId) {
-              queryUser.branchId = branchId;
-              queryProject.branchId = branchId;
-          }
-          
-          await PerformanceStat.findOneAndUpdate(
-              queryUser,
-              update,
-              { upsert: true }
-          );
-          await PerformanceStat.findOneAndUpdate(
-              queryProject,
-              update,
-              { upsert: true }
-          );
-      }
-  }
 
   /**
    * Update or create a PerformanceStat record
@@ -251,37 +183,19 @@ class AnalyticsService {
       }
     }
 
-    // --- TIME LOGGING LOGIC ---
-    if (oldStatus === "inprogress" && task.activityLogs && task.activityLogs.length >= 2) {
-        const sortedLogs = [...task.activityLogs].sort((a, b) => new Date(b.date) - new Date(a.date));
-        const outLog = sortedLogs[0];
-        const inLog = sortedLogs[1];
-
-        if (inLog.currentStatus === "inprogress") {
-            const ms = new Date(outLog.date) - new Date(inLog.date);
-            const hours = ms / (1000 * 60 * 60);
-            if (hours > 0) {
-                update.$inc["metrics.hoursLogged"] = Number(hours.toFixed(2));
-                
-                const isLate = task.taskDueDate ? moment(date).isAfter(moment(task.taskDueDate), 'day') : false;
-                if (isLate || task.status === 'backlog') {
-                   update.$inc["metrics.backlogHoursLogged"] = Number(hours.toFixed(2));
-                }
-            }
-        }
-    }
-
     const query = { entityType, entityId, period, date };
     if (branchId) {
         query.branchId = branchId;
     }
 
-    // Use findOneAndUpdate with upsert to handle increments gracefully
-    await PerformanceStat.findOneAndUpdate(
-      query,
-      update,
-      { upsert: true, new: true, setDefaultsOnInsert: true }
-    );
+    // Only update if there are fields to increment to prevent empty $inc operator errors
+    if (update.$inc && Object.keys(update.$inc).length > 0) {
+        await PerformanceStat.findOneAndUpdate(
+          query,
+          update,
+          { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+    }
   }
 
   /**
@@ -336,9 +250,9 @@ class AnalyticsService {
   }
 
   /**
-   * Record standalone focus session time
+   * Record standalone or task-linked focus session time
    */
-  async recordFocusTime(userId, durationMinutes, date, branchId) {
+  async recordFocusTime(userId, durationMinutes, date, branchId, taskId = null) {
     const hours = Number((durationMinutes / 60).toFixed(2));
     const periods = ["daily", "weekly", "monthly", "yearly"];
     for (const period of periods) {
@@ -352,13 +266,36 @@ class AnalyticsService {
         { $inc: { "metrics.hoursLogged": hours } },
         { upsert: true }
       );
+
+      // If the focus session is linked to a task, add to project stats
+      if (taskId) {
+        const task = await Task.findById(taskId);
+        if (task && task.projectName) {
+          const queryProject = { 
+            entityType: "project", 
+            entityId: task.projectName, 
+            period, 
+            date: normalizedDate 
+          };
+          if (branchId) {
+            queryProject.branchId = branchId;
+          } else if (task.branchId) {
+            queryProject.branchId = task.branchId;
+          }
+          await PerformanceStat.findOneAndUpdate(
+            queryProject,
+            { $inc: { "metrics.hoursLogged": hours } },
+            { upsert: true }
+          );
+        }
+      }
     }
   }
 
   /**
-   * Remove standalone focus session time (for deletions)
+   * Remove focus session time (for deletions)
    */
-  async removeFocusTime(userId, durationMinutes, date, branchId) {
+  async removeFocusTime(userId, durationMinutes, date, branchId, taskId = null) {
     const hours = Number((durationMinutes / 60).toFixed(2));
     const periods = ["daily", "weekly", "monthly", "yearly"];
     for (const period of periods) {
@@ -372,6 +309,29 @@ class AnalyticsService {
         { $inc: { "metrics.hoursLogged": -hours } },
         { upsert: true }
       );
+
+      // If the focus session was linked to a task, remove from project stats
+      if (taskId) {
+        const task = await Task.findById(taskId);
+        if (task && task.projectName) {
+          const queryProject = { 
+            entityType: "project", 
+            entityId: task.projectName, 
+            period, 
+            date: normalizedDate 
+          };
+          if (branchId) {
+            queryProject.branchId = branchId;
+          } else if (task.branchId) {
+            queryProject.branchId = task.branchId;
+          }
+          await PerformanceStat.findOneAndUpdate(
+            queryProject,
+            { $inc: { "metrics.hoursLogged": -hours } },
+            { upsert: true }
+          );
+        }
+      }
     }
   }
 

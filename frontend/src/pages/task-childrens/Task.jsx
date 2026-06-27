@@ -215,6 +215,17 @@ import { IoGitNetworkSharp } from "react-icons/io5";
 
 import { useSelector } from "react-redux";
 
+const hasAdditionalNotes = (notes) => {
+  if (!notes) return false;
+  if (typeof notes !== 'string') return false;
+  const stripped = notes.replace(/<[^>]*>?/gm, '');
+  const decoded = stripped
+    .replace(/&nbsp;/gi, '')
+    .replace(/&amp;/gi, '')
+    .trim();
+  return decoded.length > 0;
+};
+
 const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
   const { currentUser } = useSelector((state) => state.store);
   const canCreateSubtask = currentUser?.userRole?.name === "projectmanager" || currentUser?.userRole?.name === "admin";
@@ -503,7 +514,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
               </div>
 
               {/* Expandable Sections */}
-              {(task?.milestone || task?.additionalNotes || task?.attachments?.length > 0) && (
+              {(task?.milestone || hasAdditionalNotes(task?.additionalNotes) || task?.attachments?.length > 0) && (
                 <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/50">
                     <div className="flex items-center justify-between">
                         <button
@@ -527,7 +538,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
                             </div>
                     </div>
 
-                    {showMilestone && (task.milestone || task.additionalNotes) && (
+                    {showMilestone && (task.milestone || hasAdditionalNotes(task.additionalNotes)) && (
                         <div className="mt-3 text-[11px] leading-relaxed text-slate-600 dark:text-slate-400 animate-in fade-in slide-in-from-top-1 duration-200">
                             {task.milestone && (
                                 <div className="bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg mb-2">
@@ -535,7 +546,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
                                     <p className="line-clamp-3">{task.milestone.summary}</p>
                                 </div>
                             )}
-                            {task.additionalNotes && (
+                            {hasAdditionalNotes(task.additionalNotes) && (
                                 <div 
                                     className="italic bg-amber-50/50 dark:bg-amber-900/10 p-2 rounded-lg border-l-2 border-amber-200 dark:border-amber-800/30 prose prose-xs dark:prose-invert max-w-none"
                                     dangerouslySetInnerHTML={{ __html: task.additionalNotes }}
