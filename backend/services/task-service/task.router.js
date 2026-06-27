@@ -21,5 +21,7 @@ router.route("/task-import").post(verifyJWT, verifyBranchAccess, checkPermission
 router.route("/deletemilestone/:milestoneId").post(verifyJWT, verifyBranchAccess, checkPermission("DELETE_MILESTONE"), taskController.deletemilestone)
 router.route("/add-revision/:taskId").post(verifyJWT, verifyBranchAccess, taskController.addRevision);
 router.route("/revision-stats").get(verifyJWT, verifyBranchAccess, taskController.getRevisionStats);
+router.route("/completed-parents").get(verifyJWT, verifyBranchAccess, taskController.getCompletedParents);
+router.route("/suggest-challenge").post(verifyJWT, verifyBranchAccess, taskController.suggestRevisionChallenge);
 
 export default router;

@@ -21,7 +21,10 @@ import {
   IoEyeOffOutline,
   IoTimerOutline,
   IoPlay,
-  IoPause
+  IoPause,
+  IoSparklesOutline,
+  IoOpenOutline,
+  IoRefreshOutline
 } from 'react-icons/io5';
 import toast from 'react-hot-toast';
 import InputField from '../../components/InputField';
@@ -104,6 +107,14 @@ const Revision = () => {
     const [notesModalTask, setNotesModalTask] = useState(null);
 
     const [activeTimer, setActiveTimer] = useState(null);
+
+    // AI Challenge State
+    const [showAiModal, setShowAiModal] = useState(false);
+    const [completedParents, setCompletedParents] = useState([]);
+    const [selectedParentId, setSelectedParentId] = useState('random');
+    const [isGeneratingChallenge, setIsGeneratingChallenge] = useState(false);
+    const [generatedChallenge, setGeneratedChallenge] = useState(null);
+    const [showHint, setShowHint] = useState(false);
 
     const updateActiveTimer = () => {
         const timerStateStr = localStorage.getItem("focus_timer_state");
@@ -434,6 +445,84 @@ const Revision = () => {
         }
     };
 
+    const handleOpenAiChallengeModal = async () => {
+        setShowAiModal(true);
+        setGeneratedChallenge(null);
+        setSelectedParentId("random");
+        setShowHint(false);
+        try {
+            const res = await TaskApi.getCompletedParents();
+            const allCompletedParents = res.data?.data || [];
+            // Filter completed parents to only those belonging to the selected project (Arena)
+            const filtered = allCompletedParents.filter(p => {
+                const proj = p.projectName;
+                const projId = typeof proj === 'object' ? proj?._id : proj;
+                return projId === selectedProject;
+            });
+            setCompletedParents(filtered);
+        } catch (error) {
+            console.error("Failed to load completed parents", error);
+            toast.error("Failed to load completed patterns");
+        }
+    };
+
+    const handleGenerateChallenge = async () => {
+        setIsGeneratingChallenge(true);
+        setGeneratedChallenge(null);
+        setShowHint(false);
+        try {
+            const payload = {
+                parentTaskId: selectedParentId === "random" ? "random" : selectedParentId
+            };
+            
+            // If random, select a random one from our filtered completedParents
+            if (selectedParentId === "random") {
+                if (completedParents.length > 0) {
+                    const randomParent = completedParents[Math.floor(Math.random() * completedParents.length)];
+                    payload.parentTaskId = randomParent._id;
+                } else {
+                    toast.error("Please complete a parent task first before generating a challenge.");
+                    setIsGeneratingChallenge(false);
+                    return;
+                }
+            }
+
+            const res = await TaskApi.suggestRevisionChallenge(payload);
+            setGeneratedChallenge(res.data?.data);
+        } catch (error) {
+            console.error("Failed to generate AI challenge", error);
+            toast.error(error.response?.data?.message || "Failed to generate AI challenge");
+        } finally {
+            setIsGeneratingChallenge(false);
+        }
+    };
+
+    const handleAcceptChallenge = async () => {
+        if (!generatedChallenge) return;
+        handleLoading(true);
+        try {
+            const payload = {
+                projectName: selectedProject,
+                taskName: generatedChallenge.problemTitle,
+                taskPriority: "medium",
+                taskType: "AI Challenge",
+                parentTask: generatedChallenge.parentTaskId,
+                status: "todo",
+                taskDescription: generatedChallenge.description,
+                additionalNotes: `<h3>AI Solution Approach Hint</h3><p>${generatedChallenge.hint}</p><br/>Platform: <b>${generatedChallenge.platform}</b><br/>Asked in Companies: <b>${generatedChallenge.companies?.join(", ") || "N/A"}</b><br/>Link to Problem: <a href="${generatedChallenge.problemUrl}" target="_blank" rel="noopener noreferrer">${generatedChallenge.problemTitle}</a>`
+            };
+            await TaskApi.createTask(payload);
+            toast.success("AI Challenge accepted and added to tasks!");
+            setShowAiModal(false);
+            loadInitialData(); // Refresh revision page tasks
+        } catch (error) {
+            console.error("Failed to accept challenge", error);
+            toast.error(error.response?.data?.message || "Failed to accept challenge");
+        } finally {
+            handleLoading(false);
+        }
+    };
+
     const projectOptions = [
         { value: 'all', label: 'All Arenas' },
         ...projects.map(p => ({ value: p._id, label: p.key || p.name }))
@@ -462,6 +551,9 @@ const Revision = () => {
         return t.revisionLogs?.some(log => moment(log.revisionDate).format('YYYY-MM-DD') === selectedDate);
     }).length : 0;
 
+    const selectedProjObj = projects.find(p => p._id === selectedProject);
+    const isAiEligible = selectedProject !== 'all' && selectedProjObj && selectedProjObj.key !== 'ESP';
+
     return (
         <div className="flex flex-col h-full bg-[#F8FAFC] animate-in fade-in duration-500 overflow-visible">
             {/* Header Area */}
@@ -485,6 +577,23 @@ const Revision = () => {
                             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Mastery Count</span>
                             <span className="text-base font-black text-slate-800 leading-none">{filteredTasks.length}</span>
                         </div>
+                        <button 
+                            onClick={() => {
+                                if (selectedProject === 'all') {
+                                    toast.error("Please select a specific Arena (e.g., DSA) in the filters to use the AI Challenge.");
+                                    return;
+                                }
+                                if (selectedProjObj?.key === 'ESP') {
+                                    toast.error("AI Challenges are disabled for the ESP Arena.");
+                                    return;
+                                }
+                                handleOpenAiChallengeModal();
+                            }}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg shadow-indigo-600/20 active:scale-95 shrink-0"
+                        >
+                            <IoSparklesOutline size={14} />
+                            AI Challenge
+                        </button>
                         <button 
                             onClick={() => setShowFilters(!showFilters)}
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all border ${showFilters ? 'bg-slate-50 text-slate-600 border-slate-200' : 'bg-primary text-white border-primary shadow-lg shadow-primary/20'}`}
@@ -745,7 +854,14 @@ const Revision = () => {
                                             </td>
                                             <td className="px-4 py-4">
                                                 <div className="flex flex-col">
-                                                    <span className="text-[13px] font-black text-slate-700 group-hover:text-primary transition-colors leading-tight mb-0.5">{task.taskName}</span>
+                                                    <span className="text-[13px] font-black text-slate-700 group-hover:text-primary transition-colors leading-tight mb-0.5 flex items-center gap-1.5">
+                                                        {task.taskName}
+                                                        {task.taskType === "AI Challenge" && (
+                                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-extrabold bg-violet-100 text-violet-700 border border-violet-200 uppercase tracking-widest leading-none scale-90 origin-left">
+                                                                AI
+                                                            </span>
+                                                        )}
+                                                    </span>
                                                     <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest">{task.taskId || 'DSA-X'}</span>
                                                 </div>
                                             </td>
@@ -1025,6 +1141,179 @@ const Revision = () => {
                                     CLOSE
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* AI Challenge Modal */}
+            {showAiModal && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    <div 
+                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-500" 
+                        onClick={() => { if (!isGeneratingChallenge) setShowAiModal(false); }}
+                    ></div>
+                    <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100 flex flex-col max-h-[90vh]">
+                        {/* Modal Header */}
+                        <div className="bg-gradient-to-r from-violet-600 to-indigo-700 px-8 py-10 flex items-center justify-between text-white relative overflow-hidden shrink-0">
+                            {/* Decorative background glow */}
+                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                            
+                            <div className="relative z-10 flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10 shrink-0">
+                                    <IoSparklesOutline size={24} className="text-white animate-pulse" />
+                                </div>
+                                <div>
+                                    <h3 className="font-black text-xl tracking-tight leading-none">AI Revision Challenge</h3>
+                                    <p className="text-violet-200 text-[10px] font-bold uppercase tracking-widest mt-1.5">Reinforce Your Patterns</p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => { if (!isGeneratingChallenge) setShowAiModal(false); }} 
+                                disabled={isGeneratingChallenge}
+                                className="relative z-10 w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/5 active:scale-95 disabled:opacity-50"
+                            >
+                                <IoCloseOutline size={24} />
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-8 bg-white flex flex-col overflow-y-auto custom-scrollbar flex-1">
+                            {!generatedChallenge && !isGeneratingChallenge && (
+                                <div className="space-y-6">
+                                    <div>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Select Completed Pattern</label>
+                                        <select 
+                                            value={selectedParentId}
+                                            onChange={(e) => setSelectedParentId(e.target.value)}
+                                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all cursor-pointer"
+                                        >
+                                            <option value="random">🎲 Random Completed Pattern</option>
+                                            {completedParents.map(p => (
+                                                <option key={p._id} value={p._id}>
+                                                    {p.taskName}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-violet-50/50 rounded-2xl border border-violet-100 flex gap-3 text-violet-800">
+                                        <span className="text-lg">💡</span>
+                                        <p className="text-xs font-semibold leading-relaxed">
+                                            This AI generator will analyze your selected pattern, scan the problems you have already solved, and suggest a medium difficulty company-asked problem from LeetCode, GeeksforGeeks, or Codeforces that you haven't done yet!
+                                        </p>
+                                    </div>
+
+                                    <button 
+                                        onClick={handleGenerateChallenge}
+                                        className="w-full px-6 py-4 rounded-xl text-[11px] font-black text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 shadow-lg shadow-indigo-600/20 transition-all active:scale-95 flex items-center justify-center gap-2 mt-4"
+                                    >
+                                        <IoSparklesOutline size={14} />
+                                        GENERATE REVISION CHALLENGE
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Loading State */}
+                            {isGeneratingChallenge && (
+                                <div className="flex flex-col items-center justify-center py-12 space-y-4 animate-in fade-in duration-300">
+                                    <div className="relative w-16 h-16 flex items-center justify-center">
+                                        <div className="absolute inset-0 rounded-full border-4 border-violet-100 border-t-indigo-600 animate-spin"></div>
+                                        <IoSparklesOutline size={24} className="text-indigo-600 animate-pulse" />
+                                    </div>
+                                    <div className="text-center">
+                                        <h4 className="text-sm font-black text-slate-800">AI is selecting a challenge...</h4>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Filtering your solved problems</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Challenge Result */}
+                            {generatedChallenge && !isGeneratingChallenge && (
+                                <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+                                    <div className="p-5 bg-gradient-to-br from-slate-50 to-indigo-50/20 rounded-3xl border border-slate-100 space-y-4 relative overflow-hidden">
+                                        {/* Platform and Title */}
+                                        <div>
+                                            <span className="text-[9px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100 uppercase tracking-wider">
+                                                {generatedChallenge.platform}
+                                            </span>
+                                            <h4 className="text-base font-black text-slate-800 tracking-tight mt-2 flex items-center gap-1.5">
+                                                {generatedChallenge.problemTitle}
+                                                <a 
+                                                    href={generatedChallenge.problemUrl} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className="text-slate-400 hover:text-indigo-600 transition-colors p-1"
+                                                    title="Open Problem Link"
+                                                >
+                                                    <IoOpenOutline size={16} />
+                                                </a>
+                                            </h4>
+                                        </div>
+
+                                        {/* Description */}
+                                        <div className="space-y-1">
+                                            <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest block">Problem Summary</span>
+                                            <p className="text-xs font-semibold text-slate-600 leading-relaxed">
+                                                {generatedChallenge.description}
+                                            </p>
+                                        </div>
+
+                                        {/* Companies */}
+                                        {generatedChallenge.companies && generatedChallenge.companies.length > 0 && (
+                                            <div className="space-y-1.5">
+                                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest block">Asked in Companies</span>
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {generatedChallenge.companies.map((c, i) => (
+                                                        <span key={i} className="text-[9px] font-bold text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-lg shadow-sm">
+                                                            {c}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Collapsible Hint */}
+                                    <div>
+                                        <button 
+                                            onClick={() => setShowHint(!showHint)}
+                                            className="w-full flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-slate-100/50 transition-colors"
+                                        >
+                                            <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                                                💡 Reveal AI Approach Hint
+                                            </span>
+                                            <span className="text-slate-400 transition-transform">
+                                                {showHint ? "Hide" : "Show"}
+                                            </span>
+                                        </button>
+                                        {showHint && (
+                                            <div className="mt-3 p-5 bg-violet-50/30 border border-violet-100 rounded-2xl text-xs font-semibold text-slate-600 leading-relaxed animate-in slide-in-from-top-2 duration-300">
+                                                {generatedChallenge.hint}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-3 pt-2 shrink-0">
+                                        <button 
+                                            onClick={handleGenerateChallenge}
+                                            className="px-4 py-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-[10px] font-black text-slate-500 hover:text-slate-700 transition-all flex items-center gap-1.5"
+                                            title="Get a different challenge"
+                                        >
+                                            <IoRefreshOutline size={16} />
+                                            TRY ANOTHER
+                                        </button>
+                                        <button 
+                                            onClick={handleAcceptChallenge}
+                                            className="flex-1 px-6 py-4 rounded-xl text-[10px] font-black text-white bg-primary hover:bg-primary-dark shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center justify-center gap-2"
+                                        >
+                                            <IoCheckmarkCircleOutline size={16} />
+                                            ACCEPT & ADD TO TASKS
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

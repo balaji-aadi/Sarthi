@@ -12,4 +12,6 @@ export const TaskApi = {
    getLastCreatedTask: () => Api.get("task/get-last-created"),
    addRevision: (id, payload) => Api.post(`task/add-revision/${id}`, payload),
    getRevisionStats: (timezoneOffset) => Api.get(`task/revision-stats?timezoneOffset=${timezoneOffset}`),
+   getCompletedParents: () => Api.get("task/completed-parents"),
+   suggestRevisionChallenge: (payload) => Api.post("task/suggest-challenge", payload),
 };

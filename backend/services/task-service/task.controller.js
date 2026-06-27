@@ -11,6 +11,7 @@ import notificationService from "../notification-service/notification.service.js
 import { socketService } from "../../socket-instance.js";
 import { ProgressService } from "../progress-service/progress.service.js";
 import AnalyticsService from "../analytics-service/analytics.service.js";
+import axios from "axios";
 
 const tc = {};
 
@@ -1103,6 +1104,146 @@ tc.getRevisionStats = asyncHandler(async (req, res) => {
     } catch (error) {
         console.error("Error fetching revision stats:", error);
         return res.status(400).json(new ApiError(400, "Error fetching revision stats"));
+    }
+});
+
+// Get Completed Parent Tasks (Patterns)
+tc.getCompletedParents = asyncHandler(async (req, res) => {
+    try {
+        const filter = {
+            parentTask: null,
+            status: "done"
+        };
+        
+        if (req.branchId) {
+            filter.branchId = new mongoose.Types.ObjectId(req.branchId);
+        }
+        if (req.user?.email !== "balajiaadi2000@gmail.com") {
+            filter.createdBy = req.user._id;
+        }
+
+        const completedParents = await Task.find(filter)
+            .populate("projectName", "name key")
+            .select("taskName taskId status projectName")
+            .lean();
+
+        return res.status(200).json(
+            new ApiResponse(200, completedParents, "Completed parent tasks retrieved successfully")
+        );
+    } catch (error) {
+        console.error("Error fetching completed parent tasks:", error);
+        return res.status(500).json(new ApiError(500, error.message || "Error fetching completed parent tasks"));
+    }
+});
+
+// Suggest Revision Challenge using AI
+tc.suggestRevisionChallenge = asyncHandler(async (req, res) => {
+    const { parentTaskId } = req.body;
+    const apiKey = process.env.GROQ_API_KEY;
+
+    if (!apiKey) {
+        throw new ApiError(500, "Groq API key is not configured on backend server");
+    }
+
+    let parentTask = null;
+    if (parentTaskId && parentTaskId !== "random") {
+        parentTask = await Task.findById(parentTaskId).populate("projectName");
+        if (!parentTask) {
+            throw new ApiError(404, "Selected parent task not found");
+        }
+    } else {
+        // Pick a random completed parent task
+        const filter = { parentTask: null, status: "done" };
+        if (req.branchId) {
+            filter.branchId = new mongoose.Types.ObjectId(req.branchId);
+        }
+        if (req.user?.email !== "balajiaadi2000@gmail.com") {
+            filter.createdBy = req.user._id;
+        }
+        
+        // Exclude projects with key ESP
+        const eligibleProjects = await Project.find({ key: { $ne: "ESP" } }).select("_id");
+        const eligibleProjectIds = eligibleProjects.map(p => p._id);
+        filter.projectName = { $in: eligibleProjectIds };
+
+        const completedParents = await Task.find(filter).populate("projectName");
+        if (completedParents.length === 0) {
+            throw new ApiError(400, "No completed parent tasks found. Please complete a parent pattern task first.");
+        }
+        parentTask = completedParents[Math.floor(Math.random() * completedParents.length)];
+    }
+
+    if (parentTask.projectName?.key === "ESP") {
+        throw new ApiError(400, "AI Challenges are disabled for ESP Arena");
+    }
+
+    // Fetch child tasks (solved problems) under this parent task
+    const childTasks = await Task.find({ parentTask: parentTask._id }).select("taskName").lean();
+    const solvedProblems = childTasks.map(t => t.taskName);
+    const solvedProblemsStr = solvedProblems.length > 0 
+        ? solvedProblems.map((p, i) => `${i+1}. ${p}`).join("\n") 
+        : "None (no solved problems yet under this pattern)";
+
+    const prompt = `
+You are an expert DSA (Data Structures and Algorithms) coach.
+The user is revising the coding pattern/topic: "${parentTask.taskName}".
+They have already solved the following problems under this pattern:
+${solvedProblemsStr}
+
+Task:
+Suggest a random, high-quality coding problem of Medium difficulty that fits this pattern ("${parentTask.taskName}").
+The problem must:
+1. Be from a well-known coding platform (LeetCode, Codeforces, or GeeksforGeeks).
+2. NOT be in the solved problems list above.
+3. Have been asked in past technical interviews at major companies (like Google, Amazon, Microsoft, Meta, Netflix, Uber, etc.).
+
+You MUST respond ONLY with a valid JSON object matching the schema below.
+
+JSON Schema:
+{
+  "parentTaskId": "${parentTask._id}",
+  "parentTaskName": "${parentTask.taskName}",
+  "problemTitle": "Clean title of the problem (e.g. 'LeetCode 3: Longest Substring Without Repeating Characters')",
+  "platform": "LeetCode / Codeforces / GeeksforGeeks",
+  "problemUrl": "Provide a valid direct URL to the problem, or a search URL on the platform if direct link is unknown",
+  "companies": ["Company1", "Company2"],
+  "description": "A very concise 1-2 sentence description of the problem's task/rules",
+  "hint": "A helpful hint on how to approach this problem specifically using the '${parentTask.taskName}' pattern"
+}
+`;
+
+    try {
+        const response = await axios.post(
+            `https://api.groq.com/openai/v1/chat/completions`,
+            {
+                model: "llama-3.3-70b-versatile",
+                messages: [
+                    {
+                        role: "user",
+                        content: prompt
+                    }
+                ],
+                response_format: {
+                    type: "json_object"
+                }
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${apiKey}`,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        let responseText = response.data?.choices?.[0]?.message?.content || "";
+        const challenge = JSON.parse(responseText.trim());
+
+        return res.status(200).json(
+            new ApiResponse(200, challenge, "AI revision challenge generated successfully")
+        );
+    } catch (error) {
+        console.error("Groq Revision Challenge Suggestion Error:", error.response?.data || error.message);
+        throw new ApiError(500, `AI challenge generation failed: ${error.message}`);
     }
 });
 
