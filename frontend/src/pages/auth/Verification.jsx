@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AuthApi } from "../../services/api/Auth.api";
 import toast from "react-hot-toast";
 import { useLoading } from "../../components/loader/LoaderContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Verification = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -19,21 +19,22 @@ const Verification = () => {
   const handleOtp = async () => {
     handleLoading(true);
     try {
-      const res = await AuthApi.otpVerification(payload);
-      console.log(res.data);
+      await AuthApi.otpVerification(payload);
       navigate("/reset");
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      toast.error("OTP verification failed");
     }
-
     handleLoading(false);
   };
+
   const handleResend = async () => {
     try {
       await AuthApi.generateOTP({ email });
-      toast.success("OTP send successfully");
+      toast.success("OTP sent successfully");
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      toast.error("Resend failed");
     }
   };
 
@@ -53,44 +54,59 @@ const Verification = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold text-center mb-4">Enter OTP</h2>
+    <div className="bg-slate-50 text-slate-800 min-h-screen relative flex items-center justify-center p-6 selection:bg-primary/20">
+      {/* Ambient background accent */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[140px]" />
+      </div>
 
-        <div className="text-center text-sm mt-4 text-primaryBg mb-5">
-          Enter the 4 digit OTP that was send to<br></br>
-          <p className="text-sm  text-blue-400"> {email} </p>
+      <div className="bg-white border border-slate-100 p-10 rounded-[2.5rem] shadow-xl shadow-slate-200/50 w-full max-w-md relative overflow-hidden z-10">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+        
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-bold mb-2 text-slate-900">Enter OTP</h2>
+          <p className="text-slate-500 text-sm">
+            Enter the 6-digit verification code sent to:<br/>
+            <span className="font-bold text-primary">{email}</span>
+          </p>
         </div>
 
-        <div className="flex justify-between gap-9">
-          {otp.map((digit, index) => (
-            <input
-              key={index}
-              id={`otp-input-${index}`}
-              type="text"
-              value={digit}
-              onChange={(e) => handleChange(e, index)}
-              maxLength={1}
-              className="w-12 h-12 text-2xl text-center border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          ))}
-        </div>
+        <div className="space-y-6">
+          <div className="flex justify-between gap-2.5">
+            {otp.map((digit, index) => (
+              <input
+                key={index}
+                id={`otp-input-${index}`}
+                type="text"
+                value={digit}
+                onChange={(e) => handleChange(e, index)}
+                maxLength={1}
+                className="w-12 h-14 text-2xl text-center border-2 border-slate-100 bg-slate-50 rounded-xl focus:border-primary/35 focus:bg-white outline-none transition-all font-bold text-slate-800"
+              />
+            ))}
+          </div>
 
-        <button
-          type="submit"
-          onClick={handleOtp}
-          className="mt-4 w-full py-2 px-4 bg-indigo-500  text-white font-semibold rounded-md hover:bg-indigo-600"
-        >
-          Submit
-        </button>
-
-        <div className="flex justify-between mt-2">
           <button
-            className="text-blue-400 text-sm cursor-pointer"
-            onClick={handleResend}
+            type="button"
+            onClick={handleOtp}
+            disabled={otp.some(d => !d)}
+            className="w-full py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-black uppercase tracking-widest shadow-md hover:shadow-lg shadow-primary/10 transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:translate-y-0 disabled:shadow-none active:scale-[0.98]"
           >
-            Resend OTP
+            Verify & Proceed
           </button>
+
+          <div className="flex justify-between items-center pt-4 border-t border-slate-100 mt-6 text-sm">
+            <button
+              onClick={handleResend}
+              className="text-primary font-bold hover:underline transition-colors cursor-pointer"
+            >
+              Resend OTP
+            </button>
+            <Link to="/login" className="text-slate-400 hover:text-slate-600 transition-colors font-medium">
+              Back to Sign In
+            </Link>
+          </div>
         </div>
       </div>
     </div>

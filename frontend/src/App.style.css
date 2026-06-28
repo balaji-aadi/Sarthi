@@ -10,9 +10,9 @@
 :root {
   --sidebarfontcolor: #5e6b88;
   --sidebarbg: #2a3140;
-  --primary-blueColor: #0162e8;
-  --primary-bgColor: #ecf0fa;
-  --primary-btnColor: #0162e8;
+  --primary-blueColor: #E34234;
+  --primary-bgColor: #FDF2F1;
+  --primary-btnColor: #E34234;
 }
 
 input::-webkit-outer-spin-button,

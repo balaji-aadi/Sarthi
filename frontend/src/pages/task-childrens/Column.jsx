@@ -106,10 +106,10 @@ const Column = ({ column, handleClick, isDoneColumn, expandedParents, setExpande
            <div
              ref={provided.innerRef}
              {...provided.droppableProps}
-             className={`flex-1 min-h-0 flex flex-col transition-colors duration-300 rounded-xl ${snapshot.isDraggingOver
-               ? "bg-indigo-50/50 dark:bg-indigo-900/10 ring-2 ring-indigo-200/50 dark:ring-indigo-800/20"
-               : ""
-               }`}
+              className={`flex-1 min-h-0 flex flex-col transition-colors duration-300 rounded-xl ${snapshot.isDraggingOver
+                ? "bg-vermilion-50/30 dark:bg-vermilion-950/10 ring-2 ring-primary/20 dark:ring-primary/20"
+                : ""
+                }`}
            >
              {/* vertical scroll lives in this child so the droppable itself isn’t scrollable */}
              <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-20 pr-1 lg:pr-2 custom-scrollbar">

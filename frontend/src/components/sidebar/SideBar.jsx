@@ -192,9 +192,9 @@ const SideBar = ({ children }) => {
               >
                 <div className="bg-transparent flex flex-col items-center justify-center p-4">
                   <Link to={"/"} className="text-center flex flex-col items-center">
-                    <img src="/momentum_logo.svg" alt="Momentum Logo" className="w-14 h-14 mb-2 drop-shadow-md" />
-                    <h1 className="text-white font-bold text-2xl tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-                      {currentUser?.firstName ? currentUser.firstName : "Momentum"}
+                    <img src="/momentum_logo.svg" alt="Sarathi Logo" className="w-14 h-14 mb-2 drop-shadow-md" />
+                    <h1 className="text-white font-bold text-2xl tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#E34234] to-[#FF7F50]">
+                      {currentUser?.firstName ? currentUser.firstName : "Sarathi"}
                     </h1>
                     <p className="text-gray-400 text-[10px] uppercase tracking-widest mt-1">
                       {currentUser?.userRoles?.[0]?.name || currentUser?.userRole?.name || "Simplify Tasks"}

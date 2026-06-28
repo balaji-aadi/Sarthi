@@ -50,7 +50,7 @@ const GlobalTimerWidget = () => {
     return (
         <div 
             onClick={() => navigate('/focus-timer')}
-            className={`mx-4 mb-4 p-3 rounded-xl shadow-lg cursor-pointer transition-all group animate-in slide-in-from-left duration-300 ${isOvertime ? 'bg-rose-600 shadow-rose-200 hover:bg-rose-700' : 'bg-indigo-600 shadow-indigo-200 hover:bg-indigo-700'}`}
+            className={`mx-4 mb-4 p-3 rounded-xl shadow-lg cursor-pointer transition-all group animate-in slide-in-from-left duration-300 ${isOvertime ? 'bg-rose-600 shadow-rose-200 hover:bg-rose-700' : 'bg-primary shadow-primary/25 hover:bg-primaryHover'}`}
         >
             <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2 text-white/80">

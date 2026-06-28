@@ -191,7 +191,7 @@ const Milestones = ({ projectId: propsProjectId }) => {
                                                             <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider ${
                                                                 task.taskPriority === 'high' ? 'bg-red-100 text-red-600' : 
                                                                 task.taskPriority === 'medium' ? 'bg-orange-100 text-orange-600' : 
-                                                                'bg-blue-100 text-blue-600'
+                                                                'bg-slate-100 text-slate-600'
                                                             }`}>
                                                                 {task.taskPriority}
                                                             </span>

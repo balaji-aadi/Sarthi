@@ -96,9 +96,9 @@ const Sidebar = () => {
         <aside className="w-72 bg-surface border-r border-borderLight h-full flex flex-col absolute left-0 top-0 overflow-y-auto z-20">
             {/* Logo Area */}
             <div className="p-6 flex items-center gap-3 pb-2">
-                <img src="/momentum_logo.svg" alt="Momentum Logo" className="w-8 h-8 object-contain drop-shadow-md" />
+                <img src="/momentum_logo.svg" alt="Sarathi Logo" className="w-8 h-8 object-contain drop-shadow-md" />
                 <div className="flex flex-col">
-                    <h1 className="text-xl font-bold text-textMain tracking-tight leading-none">Momentum</h1>
+                    <h1 className="text-xl font-bold text-textMain tracking-tight leading-none">Sarathi</h1>
                     {activeBranch && (
                         <span className="text-[8px] font-black text-primary uppercase tracking-[0.2em] mt-1 opacity-70">
                             {activeBranch.name}
@@ -239,7 +239,7 @@ const Sidebar = () => {
                                 <img src={currentUser.profileImage} alt="Profile" className="relative w-10 h-10 rounded-full object-cover border border-white" />
                             ) : (
                                 <img
-                                    src={`https://ui-avatars.com/api/?name=${currentUser ? (currentUser.firstName + "+" + (currentUser.lastName || "")) : "User"}&background=4F46E5&color=fff&bold=true`}
+                                    src={`https://ui-avatars.com/api/?name=${currentUser ? (currentUser.firstName + "+" + (currentUser.lastName || "")) : "User"}&background=E34234&color=fff&bold=true`}
                                     alt="Profile"
                                     className="relative w-10 h-10 rounded-full border border-white shadow-sm"
                                 />

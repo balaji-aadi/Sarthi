@@ -13,7 +13,7 @@ const MOCKING_QUOTES = [
   {
     prefix: "Yesterday, ",
     highlight: "nothing worked",
-    suffix: ". Drop your phone, close your browser tabs, and build your momentum right now!"
+    suffix: ". Drop your phone, close your browser tabs, and build your focus with Sarathi right now!"
   },
   {
     prefix: "Absolute ",
@@ -28,7 +28,7 @@ const MOCKING_QUOTES = [
   {
     prefix: "You logged a big ",
     highlight: "0h grind",
-    suffix: " yesterday. Momentum doesn't build itself while you procrastinate. Reset, focus, and grind today!"
+    suffix: " yesterday. Sarathi doesn't build itself while you procrastinate. Reset, focus, and grind today!"
   }
 ];
 
@@ -51,17 +51,17 @@ const MOTIVATIONAL_QUOTES = [
   {
     prefix: "You studied for ",
     highlight: "{TIME}",
-    suffix: " yesterday. Your momentum streak is burning hot—aim higher today!"
+    suffix: " yesterday. Your Sarathi streak is burning hot—aim higher today!"
   }
 ];
 
 const GlobalTopBar = () => {
   const { currentUser, activeBranch } = useSelector((state) => state.store);
   const [stats, setStats] = useState([]);
-  const [isBarEnabled, setIsBarEnabled] = useState(localStorage.getItem('momentum_show_topbar') !== 'false');
+  const [isBarEnabled, setIsBarEnabled] = useState(localStorage.getItem('sarathi_show_topbar') !== 'false');
 
   useEffect(() => {
-    const handleToggle = () => setIsBarEnabled(localStorage.getItem('momentum_show_topbar') !== 'false');
+    const handleToggle = () => setIsBarEnabled(localStorage.getItem('sarathi_show_topbar') !== 'false');
     window.addEventListener('topbarToggled', handleToggle);
     return () => window.removeEventListener('topbarToggled', handleToggle);
   }, []);
@@ -174,12 +174,12 @@ const GlobalTopBar = () => {
           <div className="flex items-center justify-center gap-2 animate-fade-in max-w-full">
               {hasStudied ? (
                 <>
-                  <div className="p-1 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 shrink-0">
+                  <div className="p-1 rounded bg-vermilion-50 dark:bg-vermilion-950/20 text-primary shrink-0">
                       <IoTrendingUpOutline size={12} />
                   </div>
                   <p className="text-slate-700 dark:text-slate-300 font-extrabold tracking-tight text-[11px] leading-snug">
                     {selectedQuoteSegments.prefix}
-                    <span className="text-indigo-600 dark:text-indigo-400 font-black px-1.5 py-0.5 bg-indigo-50 dark:bg-indigo-950/80 rounded border border-indigo-100 dark:border-indigo-800/40 mx-0.5 inline-block scale-95 origin-center">
+                    <span className="text-primary dark:text-vermilion-400 font-black px-1.5 py-0.5 bg-vermilion-50 dark:bg-vermilion-950/80 rounded border border-vermilion-100 dark:border-vermilion-800/40 mx-0.5 inline-block scale-95 origin-center">
                       {selectedQuoteSegments.highlight}
                     </span>
                     {selectedQuoteSegments.suffix}
@@ -229,11 +229,10 @@ const GlobalTopBar = () => {
           </div>
       </div>
 
-      {/* Beautiful color border at the bottom */}
       <div className={`absolute bottom-0 left-0 w-full h-[2.5px] ${
         hasStudied 
-          ? 'bg-gradient-to-r from-primary via-accent to-pink-500' 
-          : 'bg-gradient-to-r from-red-500 via-orange-500 to-rose-600'
+          ? 'bg-primary' 
+          : 'bg-slate-400'
       }`}></div>
 
     </div>

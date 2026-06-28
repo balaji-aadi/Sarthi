@@ -255,7 +255,7 @@ const PerformanceDashboard = () => {
             {/* Header */}
             <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 pb-6 border-b border-slate-100">
                 <div className="flex items-center gap-4 min-w-fit">
-                    <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-200 shrink-0">
+                    <div className="w-14 h-14 bg-slate-800 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-slate-200 shrink-0">
                         <IoBarChartOutline size={28} />
                     </div>
                     <div>
@@ -293,7 +293,7 @@ const PerformanceDashboard = () => {
                                     <button
                                         key={t}
                                         onClick={() => setActiveTab(t)}
-                                        className={`px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === t ? 'bg-white text-indigo-600 shadow-md font-black' : 'text-slate-500 hover:text-slate-700'}`}
+                                        className={`px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === t ? 'bg-white text-primary shadow-md font-black' : 'text-slate-500 hover:text-slate-700'}`}
                                     >
                                         {t}
                                     </button>
@@ -308,7 +308,7 @@ const PerformanceDashboard = () => {
                                 <button
                                     key={p}
                                     onClick={() => setPeriod(p)}
-                                    className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${period === p ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${period === p ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-slate-400 hover:text-slate-600'}`}
                                 >
                                     {p}
                                 </button>
@@ -316,17 +316,17 @@ const PerformanceDashboard = () => {
                         </div>
 
                         {period === 'daily' && (
-                            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-indigo-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
-                                <IoCalendarOutline className="text-indigo-600" size={14} />
+                            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                                <IoCalendarOutline className="text-primary" size={14} />
                                 <div className="flex flex-col">
-                                    <span className="text-[7px] font-black text-indigo-400 uppercase leading-none mb-0.5">
+                                    <span className="text-[7px] font-black text-vermilion-400 uppercase leading-none mb-0.5">
                                         SELECT DATE
                                     </span>
                                     <input 
                                         type="date" 
                                         value={selectedDate}
                                         onChange={(e) => setSelectedDate(e.target.value)}
-                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-indigo-700 focus:ring-0 p-0 h-auto"
+                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 p-0 h-auto"
                                     />
                                 </div>
                             </div>
@@ -334,26 +334,26 @@ const PerformanceDashboard = () => {
 
                         {period === 'weekly' && (
                             <>
-                                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-indigo-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
-                                    <IoCalendarOutline className="text-indigo-600" size={14} />
+                                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                                    <IoCalendarOutline className="text-primary" size={14} />
                                     <div className="flex flex-col">
-                                        <span className="text-[7px] font-black text-indigo-400 uppercase leading-none mb-0.5">SELECT MONTH</span>
+                                        <span className="text-[7px] font-black text-vermilion-400 uppercase leading-none mb-0.5">SELECT MONTH</span>
                                         <input 
                                             type="month" 
                                             value={selectedMonth}
                                             onChange={(e) => setSelectedMonth(e.target.value)}
-                                            className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-indigo-700 focus:ring-0 cursor-pointer p-0 h-auto"
+                                            className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 cursor-pointer p-0 h-auto"
                                         />
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-indigo-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
-                                    <IoFlaskOutline className="text-indigo-600" size={14} />
+                                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                                    <IoFlaskOutline className="text-primary" size={14} />
                                     <div className="flex flex-col">
-                                        <span className="text-[7px] font-black text-indigo-400 uppercase leading-none mb-0.5">SELECT WEEK</span>
+                                        <span className="text-[7px] font-black text-vermilion-400 uppercase leading-none mb-0.5">SELECT WEEK</span>
                                         <select 
                                             value={selectedWeekIndex}
                                             onChange={(e) => setSelectedWeekIndex(parseInt(e.target.value))}
-                                            className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-indigo-700 focus:ring-0 p-0 h-auto cursor-pointer appearance-none"
+                                            className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 p-0 h-auto cursor-pointer appearance-none"
                                         >
                                             {getWeeksInMonth(selectedMonth).map((w, idx) => (
                                                 <option key={idx} value={idx}>{w.display}</option>
@@ -365,56 +365,56 @@ const PerformanceDashboard = () => {
                         )}
 
                         {period === 'monthly' && (
-                            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-indigo-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
-                                <IoCalendarOutline className="text-indigo-600" size={14} />
+                            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                                <IoCalendarOutline className="text-primary" size={14} />
                                 <div className="flex flex-col">
-                                    <span className="text-[7px] font-black text-indigo-400 uppercase leading-none mb-0.5">SELECT MONTH</span>
+                                    <span className="text-[7px] font-black text-vermilion-400 uppercase leading-none mb-0.5">SELECT MONTH</span>
                                     <input 
                                         type="month" 
                                         value={selectedMonth}
                                         onChange={(e) => setSelectedMonth(e.target.value)}
-                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-indigo-700 focus:ring-0 cursor-pointer p-0 h-auto"
+                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 cursor-pointer p-0 h-auto"
                                     />
                                 </div>
                             </div>
                         )}
 
                         {period === 'yearly' && (
-                            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-indigo-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
-                                <IoCalendarOutline className="text-indigo-600" size={14} />
+                            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                                <IoCalendarOutline className="text-primary" size={14} />
                                 <div className="flex flex-col">
-                                    <span className="text-[7px] font-black text-indigo-400 uppercase leading-none mb-0.5">SELECT YEAR</span>
+                                    <span className="text-[7px] font-black text-vermilion-400 uppercase leading-none mb-0.5">SELECT YEAR</span>
                                     <input 
                                         type="number" 
                                         min="2020"
                                         max="2030"
                                         value={selectedYear}
                                         onChange={(e) => setSelectedYear(e.target.value)}
-                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-indigo-700 focus:ring-0 p-0 h-5 w-12"
+                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 p-0 h-5 w-12"
                                     />
                                 </div>
                             </div>
                         )}
 
                         {period === 'custom' && (
-                            <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-xl border border-indigo-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                            <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[8px] font-black text-indigo-400 uppercase">From</span>
+                                    <span className="text-[8px] font-black text-vermilion-400 uppercase">From</span>
                                     <input 
                                         type="date" 
                                         value={customStart}
                                         onChange={(e) => setCustomStart(e.target.value)}
-                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-indigo-700 focus:ring-0 p-0"
+                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 p-0"
                                     />
                                 </div>
-                                <div className="w-px h-3 bg-indigo-100"></div>
+                                <div className="w-px h-3 bg-vermilion-100"></div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[8px] font-black text-indigo-400 uppercase">To</span>
+                                    <span className="text-[8px] font-black text-vermilion-400 uppercase">To</span>
                                     <input 
                                         type="date" 
                                         value={customEnd}
                                         onChange={(e) => setCustomEnd(e.target.value)}
-                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-indigo-700 focus:ring-0 p-0"
+                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 p-0"
                                     />
                                 </div>
                             </div>
@@ -474,13 +474,13 @@ const PerformanceDashboard = () => {
                                         <div className="flex bg-slate-100 p-1 rounded-xl mt-2 w-fit">
                                             <button 
                                                 onClick={() => setChartView('trend')}
-                                                className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${chartView === 'trend' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400'}`}
+                                                className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${chartView === 'trend' ? 'bg-white text-primary shadow-sm' : 'text-slate-400'}`}
                                             >
                                                 Daily Trend
                                             </button>
                                             <button 
                                                 onClick={() => setChartView('weekly')}
-                                                className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${chartView === 'weekly' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400'}`}
+                                                className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${chartView === 'weekly' ? 'bg-white text-primary shadow-sm' : 'text-slate-400'}`}
                                             >
                                                 Weekly View
                                             </button>
@@ -488,8 +488,8 @@ const PerformanceDashboard = () => {
                                     )}
                                 </div>
                                 <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest">
-                                    <span className="flex items-center gap-1.5" style={{ color: '#4f46e5' }}><span className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#6366f1' }}></span> POINTS</span>
-                                    <span className="flex items-center gap-1.5" style={{ color: '#3b82f6' }}><span className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#93c5fd' }}></span> HOURS</span>
+                                    <span className="flex items-center gap-1.5" style={{ color: '#E34234' }}><span className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#E34234' }}></span> POINTS</span>
+                                    <span className="flex items-center gap-1.5" style={{ color: '#FF7F50' }}><span className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#FFA590' }}></span> HOURS</span>
                                 </div>
                             </div>
                             <div className="h-[300px] w-full">
@@ -519,8 +519,8 @@ const PerformanceDashboard = () => {
                                                 itemStyle={{ fontWeight: 900, padding: '2px 0' }}
                                                 formatter={(value, name) => [name === 'hours' ? `${Number(value).toFixed(2)} hrs` : value, name.toUpperCase()]}
                                             />
-                                            <Bar dataKey="points" fill="#6366f1" radius={[6, 6, 0, 0]} barSize={24} />
-                                            <Bar dataKey="hours" fill="#93c5fd" radius={[6, 6, 0, 0]} barSize={24} />
+                                            <Bar dataKey="points" fill="#E34234" radius={[6, 6, 0, 0]} barSize={24} />
+                                            <Bar dataKey="hours" fill="#FF7F50" radius={[6, 6, 0, 0]} barSize={24} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 ) : stats.length > 0 ? (
@@ -528,12 +528,12 @@ const PerformanceDashboard = () => {
                                         <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                             <defs>
                                                 <linearGradient id="colorPoints" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
-                                                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                                                    <stop offset="5%" stopColor="#E34234" stopOpacity={0.1}/>
+                                                    <stop offset="95%" stopColor="#E34234" stopOpacity={0}/>
                                                 </linearGradient>
                                                 <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#93c5fd" stopOpacity={0.1}/>
-                                                    <stop offset="95%" stopColor="#93c5fd" stopOpacity={0}/>
+                                                    <stop offset="5%" stopColor="#FF7F50" stopOpacity={0.1}/>
+                                                    <stop offset="95%" stopColor="#FF7F50" stopOpacity={0}/>
                                                 </linearGradient>
                                             </defs>
                                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -558,7 +558,7 @@ const PerformanceDashboard = () => {
                                             <Area 
                                                 type="monotone" 
                                                 dataKey="points" 
-                                                stroke="#4f46e5" 
+                                                stroke="#E34234" 
                                                 strokeWidth={4} 
                                                 fillOpacity={1} 
                                                 fill="url(#colorPoints)" 
@@ -566,7 +566,7 @@ const PerformanceDashboard = () => {
                                             <Area 
                                                 type="monotone" 
                                                 dataKey="hours" 
-                                                stroke="#93c5fd" 
+                                                stroke="#FF7F50" 
                                                 strokeWidth={2} 
                                                 fillOpacity={1} 
                                                 fill="url(#colorHours)" 
@@ -582,8 +582,8 @@ const PerformanceDashboard = () => {
 
                         {/* Distribution Card - Fail-safe inline styles */}
                         <div 
-                            style={{ backgroundColor: '#1e1b4b', color: '#ffffff' }}
-                            className="p-8 rounded-[2.5rem] shadow-xl shadow-indigo-200/50 flex flex-col justify-between overflow-hidden relative group"
+                            style={{ backgroundColor: '#1e293b', color: '#ffffff' }}
+                            className="p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 flex flex-col justify-between overflow-hidden relative group"
                         >
                             <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all duration-700"></div>
                             <div className="relative z-10">
@@ -591,14 +591,14 @@ const PerformanceDashboard = () => {
                                 <div className="space-y-6">
                                     <DistributionItem label="Completed" value={aggregate.completed} total={aggregate.total} color="bg-emerald-400" isDark />
                                     <DistributionItem label="On-Time" value={aggregate.onTime} total={aggregate.completed} color="bg-amber-400" isDark />
-                                    <DistributionItem label="Story Points" value={aggregate.points} total={aggregate.points + 10} color="bg-blue-400" isDark />
+                                    <DistributionItem label="Story Points" value={aggregate.points} total={aggregate.points + 10} color="bg-primary" isDark />
                                 </div>
                             </div>
                             <div className="relative z-10 mt-8 pt-6 border-t border-white/10">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl">🚀</div>
                                     <div>
-                                        <p className="text-[11px] font-black uppercase tracking-widest mb-0.5" style={{ color: '#c7d2fe' }}>Efficiency Score</p>
+                                        <p className="text-[11px] font-black uppercase tracking-widest mb-0.5" style={{ color: '#e2e8f0' }}>Efficiency Score</p>
                                         <p className="text-lg font-black" style={{ color: '#ffffff' }}>{onTimeRate}% Punctual</p>
                                     </div>
                                 </div>
@@ -621,7 +621,7 @@ const PerformanceDashboard = () => {
                                     .map((s, idx) => (
                                      <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white cursor-pointer transition-all hover:scale-[1.02] hover:shadow-md">
                                          <div className="flex items-center gap-4">
-                                             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-indigo-600 shadow-sm">
+                                             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-primary shadow-sm">
                                                  <IoCheckmarkDoneCircleOutline size={20} />
                                              </div>
                                              <div>
@@ -632,9 +632,9 @@ const PerformanceDashboard = () => {
                                              </div>
                                          </div>
                                          <div className="text-right">
-                                             <p className="font-black text-indigo-600">+{s.metrics.storyPointsDone} PTS</p>
+                                             <p className="font-black text-primary">+{s.metrics.storyPointsDone} PTS</p>
                                              <div className="h-1 w-20 bg-slate-200 rounded-full mt-1 overflow-hidden">
-                                                 <div className="bg-indigo-500 h-full" style={{ width: `${Math.min(s.metrics.storyPointsDone * 10, 100)}%` }}></div>
+                                                 <div className="bg-primary h-full" style={{ width: `${Math.min(s.metrics.storyPointsDone * 10, 100)}%` }}></div>
                                              </div>
                                          </div>
                                      </div>
@@ -656,8 +656,8 @@ const PerformanceDashboard = () => {
                                  <h3 className="text-xl font-black text-slate-800 tracking-tight">Focus Mastery Logs</h3>
                                  <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Self-directed study & deep work sessions</p>
                              </div>
-                             <div className="bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100">
-                                 <span className="text-indigo-600 font-black text-sm">
+                             <div className="bg-vermilion-50 px-4 py-2 rounded-xl border border-vermilion-100">
+                                 <span className="text-primary font-black text-sm">
                                      Total: {Number(focusSessions.reduce((acc, s) => acc + (s.duration || 0), 0) / 60).toFixed(1)} hrs focus
                                  </span>
                              </div>
@@ -667,7 +667,7 @@ const PerformanceDashboard = () => {
                              {focusSessions.length > 0 ? focusSessions.slice(0, 6).map((session, idx) => (
                                  <div key={idx} className="p-5 bg-slate-50 rounded-[1.5rem] border border-slate-100 hover:bg-white hover:shadow-lg transition-all group">
                                      <div className="flex items-center justify-between mb-3">
-                                         <span className="text-[10px] font-black uppercase tracking-widest text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">
+                                         <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-vermilion-50 px-2 py-0.5 rounded-md">
                                              {moment(session.date).format('MMM DD')}
                                          </span>
                                          <span className="text-xs font-black text-slate-800">{session.duration} MINS</span>
@@ -681,7 +681,7 @@ const PerformanceDashboard = () => {
                                          </div>
                                      </div>
                                      <div className="mt-3 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                         <div className="bg-gradient-to-r from-indigo-500 to-primary h-full" style={{ width: `${Math.min((session.duration / 60) * 100, 100)}%` }}></div>
+                                         <div className="bg-gradient-to-r from-primary to-primary h-full" style={{ width: `${Math.min((session.duration / 60) * 100, 100)}%` }}></div>
                                      </div>
                                  </div>
                              )) : (
@@ -694,7 +694,7 @@ const PerformanceDashboard = () => {
                          {focusSessions.length > 6 && (
                              <button 
                                 onClick={() => navigate('/focus-timer')}
-                                className="w-full mt-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-indigo-600 hover:text-indigo-800 transition-all border border-indigo-100 hover:bg-indigo-50 rounded-xl italic"
+                                className="w-full mt-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-primary hover:text-primaryHover transition-all border border-vermilion-100 hover:bg-vermilion-50 rounded-xl italic"
                              >
                                  View full focus history →
                              </button>
@@ -706,7 +706,7 @@ const PerformanceDashboard = () => {
                 <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-5">
-                            <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+                            <div className="w-14 h-14 bg-vermilion-50 text-primary rounded-2xl flex items-center justify-center">
                                 <IoPeopleOutline size={28} />
                             </div>
                             <div>
@@ -807,7 +807,7 @@ const PerformanceDashboard = () => {
                                                     )}
                                                 </td>
                                                 <td className="px-8 py-5 text-right">
-                                                    <button className="p-2 hover:bg-slate-200 rounded-xl transition-all text-slate-400 group-hover:text-indigo-600">
+                                                    <button className="p-2 hover:bg-slate-200 rounded-xl transition-all text-slate-400 group-hover:text-primary">
                                                         <IoChevronForward size={18} />
                                                     </button>
                                                 </td>
@@ -831,7 +831,7 @@ const PerformanceDashboard = () => {
                     <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setSelectedMember(null)}></div>
                     <div className="relative w-full max-w-2xl animate-in zoom-in-95 duration-200">
                         <div className="bg-white rounded-[3rem] overflow-hidden shadow-2xl">
-                             <div className="bg-indigo-600 p-8 text-white flex justify-between items-center">
+                             <div className="bg-slate-800 p-8 text-white flex justify-between items-center">
                                  <div className="flex items-center gap-4">
                                      <img 
                                         src={selectedMember.profileImage || `https://ui-avatars.com/api/?name=${selectedMember.firstName}+${selectedMember.lastName}&background=random`} 
@@ -840,7 +840,7 @@ const PerformanceDashboard = () => {
                                      />
                                      <div>
                                          <h2 className="text-2xl font-black">{selectedMember.firstName} {selectedMember.lastName}</h2>
-                                         <p className="text-indigo-100/80 font-bold uppercase tracking-widest text-xs mt-1">Consistency Profile</p>
+                                         <p className="text-slate-400 font-bold uppercase tracking-widest text-xs mt-1">Consistency Profile</p>
                                      </div>
                                  </div>
                                  <button 
@@ -852,7 +852,7 @@ const PerformanceDashboard = () => {
                              </div>
                              <div className="p-8">
                                  {memberLoading ? (
-                                     <div className="h-64 flex items-center justify-center text-indigo-600">
+                                     <div className="h-64 flex items-center justify-center text-primary">
                                          <div className="animate-spin rounded-full h-12 w-12 border-4 border-current border-t-transparent"></div>
                                      </div>
                                  ) : (
@@ -869,9 +869,9 @@ const PerformanceDashboard = () => {
 
 const StatCard = ({ icon, label, value, subtext, color, trend }) => {
     const colors = {
-        indigo: 'text-indigo-600 bg-indigo-50 border-indigo-100',
+        indigo: 'text-primary bg-vermilion-50 border-vermilion-100',
         emerald: 'text-emerald-600 bg-emerald-50 border-emerald-100',
-        blue: 'text-blue-600 bg-blue-50 border-blue-100',
+        blue: 'text-slate-600 bg-slate-50 border-slate-100',
         amber: 'text-amber-600 bg-amber-50 border-amber-100',
     };
 

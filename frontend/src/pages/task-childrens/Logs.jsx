@@ -151,7 +151,7 @@ const Logs = ({ task, type }) => {
                           .utc(log.end_date)
                           .diff(moment.utc(currentDate), "days") >= 0 ? (
                           <>
-                            <span className="text-blue-500 font-semibold">
+                            <span className="text-slate-600 font-semibold">
                               Due in{" "}
                               {moment
                                 .utc(log?.end_date)
@@ -177,7 +177,7 @@ const Logs = ({ task, type }) => {
                           .utc(log.dueDate)
                           .diff(moment.utc(log.createdAt), "days") >= 0 ? (
                           <>
-                            <span className="text-blue-500 font-semibold">
+                            <span className="text-slate-600 font-semibold">
                               Due in{" "}
                               {moment
                                 .utc(log.dueDate)
@@ -236,7 +236,7 @@ const Logs = ({ task, type }) => {
                     <BiSolidCheckCircle className="text-3xl" />
                   </button>
                   <button
-                    className="text-blue-500 hover:text-blue-600"
+                     className="text-slate-500 hover:text-slate-700"
                     onClick={() => handleEdit(log?._id)}
                     title="Edit"
                   >
@@ -268,8 +268,8 @@ const Logs = ({ task, type }) => {
                   </span>
                 </div>
 
-                <div className="flex-1 min-w-[120px] flex items-center gap-2 bg-blue-100/80 text-blue-800 px-3 py-1 rounded-xl shadow-sm border border-blue-200">
-                  <i className="fas fa-spinner text-blue-600 animate-spin text-xs"></i>
+                 <div className="flex-1 min-w-[120px] flex items-center gap-2 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl shadow-sm border border-slate-200">
+                  <i className="fas fa-spinner text-slate-500 animate-spin text-xs"></i>
                   <span className="font-bold text-xs">
                     In Progress: {formatDuration(task.duration?.inprogress)}
                   </span>

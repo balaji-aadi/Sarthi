@@ -2,6 +2,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import GlobalConsistencyModal from '../analytics/GlobalConsistencyModal';
+import SarathiBot from '../sarathi/SarathiBot';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLoading } from '../loader/LoaderContext';
 import React, { useEffect, useState, useRef } from 'react';
@@ -139,6 +140,7 @@ const MainLayout = () => {
 
             {/* Global Modals */}
             <GlobalConsistencyModal />
+            <SarathiBot />
         </div>
     );
 };

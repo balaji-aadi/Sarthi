@@ -266,9 +266,9 @@ const ProjectList = () => {
                                                 </button>
                                              )}
                                              <button 
-                                                onClick={(e) => { e.stopPropagation(); handleEditProject(project); }}
-                                                className="w-8 h-8 flex items-center justify-center text-blue-500 bg-white shadow-sm border border-blue-100 rounded-xl hover:bg-blue-50 transition-colors"
-                                                title="Edit Arena"
+                                                 onClick={(e) => { e.stopPropagation(); handleEditProject(project); }}
+                                                 className="w-8 h-8 flex items-center justify-center text-primary bg-white shadow-sm border border-vermilion-100 rounded-xl hover:bg-vermilion-50 transition-colors"
+                                                 title="Edit Arena"
                                              >
                                                 <FaEdit size={14} />
                                              </button>
@@ -279,7 +279,7 @@ const ProjectList = () => {
                                                  {(project.teamMembers || []).slice(0, 3).map((member, idx) => (
                                                      <img 
                                                         key={idx}
-                                                        src={member.profileImage || `https://ui-avatars.com/api/?name=${member.firstName}+${member.lastName}&background=4f46e5&color=fff`}
+                                                        src={member.profileImage || `https://ui-avatars.com/api/?name=${member.firstName}+${member.lastName}&background=E34234&color=fff`}
                                                         alt={member.firstName}
                                                         className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-sm"
                                                         title={`${member.firstName} ${member.lastName}`}

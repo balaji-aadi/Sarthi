@@ -15,7 +15,7 @@ const SettingsGlobal = () => {
     const { currentUser } = useSelector((state) => state.store);
     const isAdmin = currentUser?.email === "balajiaadi2000@gmail.com";
 
-    const [showTopBar, setShowTopBar] = useState(localStorage.getItem('momentum_show_topbar') !== 'false');
+    const [showTopBar, setShowTopBar] = useState(localStorage.getItem('sarathi_show_topbar') !== 'false');
     const [subscription, setSubscription] = useState('free');
     const [subLoading, setSubLoading] = useState(false);
 
@@ -49,7 +49,7 @@ const SettingsGlobal = () => {
     const handleToggleTopBar = () => {
         const newValue = !showTopBar;
         setShowTopBar(newValue);
-        localStorage.setItem('momentum_show_topbar', newValue.toString());
+        localStorage.setItem('sarathi_show_topbar', newValue.toString());
         window.dispatchEvent(new Event('topbarToggled'));
         toast.success(`Study Competitor Bar ${newValue ? 'enabled' : 'disabled'}`);
     };
@@ -165,32 +165,7 @@ const SettingsGlobal = () => {
                         {activeTab === 'features' && (
                             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 
-                                {/* Global User Preferences */}
-                                <div className="mb-8">
-                                    <h2 className="text-xl font-black text-slate-800 tracking-tight">Global Interface</h2>
-                                    <p className="text-sm font-medium text-slate-400 mt-1">Customize your global app experience.</p>
-                                </div>
-
-                                <div className="space-y-6 mb-12">
-                                    <div className="bg-slate-50 rounded-2xl border border-slate-100 p-6">
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <h3 className="text-base font-black text-slate-800">Yesterday's Study Competitor Bar</h3>
-                                                <p className="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-relaxed">Displays a global top bar tracking your previous day's study time to motivate you to compete with your past performance, or delivers accountability warning alerts if no work was completed.</p>
-                                            </div>
-                                            <button 
-                                                onClick={handleToggleTopBar}
-                                                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${showTopBar ? 'bg-primary' : 'bg-slate-200'}`}
-                                                role="switch"
-                                                aria-checked={showTopBar}
-                                            >
-                                                <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${showTopBar ? 'translate-x-5' : 'translate-x-0'}`} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Project Features */}
+                                 {/* Project Features */}
                                 <div className="mb-8 border-t border-slate-200/60 pt-8">
                                     <h2 className="text-xl font-black text-slate-800 tracking-tight">Project Features</h2>
                                     <p className="text-sm font-medium text-slate-400 mt-1">Enable or disable specific features on a per-project basis.</p>

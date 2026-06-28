@@ -107,14 +107,14 @@ const CalendarBoard = ({ tasks = [], isLoading, onTaskClick }) => {
                 {/* Guide & Utility Header */}
                 <div className="bg-gradient-to-r from-violet-50/60 to-purple-50/40 dark:from-violet-950/20 dark:to-purple-950/10 rounded-2xl border border-violet-100/40 p-4 flex flex-col gap-3">
                     <div className="flex gap-2.5">
-                        <div className="p-2 rounded-xl bg-violet-500/10 text-violet-600 shrink-0">
+                        <div className="p-2 rounded-xl bg-vermilion-50 text-primary shrink-0">
                             <IoInformationCircleOutline size={18} />
                         </div>
                         <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mt-1.5">Sprint Planner</h3>
                     </div>
                     <p className="text-[11px] font-semibold text-slate-500 leading-relaxed">
                         Map daily deadline distributions. Tasks are color-coded by lifecyle state 
-                        (<span className="text-rose-600 font-bold">Backlogs are Rose</span>, <span className="text-indigo-600 font-bold">Active in Indigo</span>). 
+                        (<span className="text-rose-600 font-bold">Backlogs are Rose</span>, <span className="text-primary font-bold">Active in Vermilion</span>). 
                         Click "+ more" on busy days to check item overlays.
                     </p>
                 </div>
@@ -164,13 +164,13 @@ const CalendarBoard = ({ tasks = [], isLoading, onTaskClick }) => {
                             {nextTask && (
                                 <div 
                                     onClick={() => onTaskClick?.(nextTask)}
-                                    className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/60 hover:bg-indigo-50/50 border border-slate-100 hover:border-indigo-100 rounded-xl p-3 transition-all cursor-pointer group mt-auto"
+                                    className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/60 hover:bg-vermilion-50/30 border border-slate-100 hover:border-vermilion-100 rounded-xl p-3 transition-all cursor-pointer group mt-auto"
                                 >
                                     <div className="flex flex-col items-start gap-1 flex-grow">
-                                        <span className="text-[8px] font-black uppercase tracking-widest text-indigo-600">Next Upcoming Milestone</span>
-                                        <span className="text-[10px] font-black text-slate-700 dark:text-slate-300 truncate max-w-[200px] group-hover:text-indigo-600 transition-colors">{nextTask.taskName}</span>
+                                        <span className="text-[8px] font-black uppercase tracking-widest text-primary">Next Upcoming Milestone</span>
+                                        <span className="text-[10px] font-black text-slate-700 dark:text-slate-300 truncate max-w-[200px] group-hover:text-primary transition-colors">{nextTask.taskName}</span>
                                     </div>
-                                    <div className="text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all">
+                                    <div className="text-slate-400 group-hover:text-primary group-hover:translate-x-0.5 transition-all">
                                         <IoArrowForwardOutline size={14} />
                                     </div>
                                 </div>

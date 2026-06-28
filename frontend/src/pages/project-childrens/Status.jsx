@@ -156,13 +156,13 @@ const Status = () => {
             </h3>
             <div className="flex justify-end gap-4">
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold "
+                className="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-lg font-semibold transition-colors"
                 onClick={handleShowMilestones}
               >
                 Show Milestones
               </button>
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold "
+                className="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-lg font-semibold transition-colors"
                 onClick={handleCreateProject}
               >
                 Create Project

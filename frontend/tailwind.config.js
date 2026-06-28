@@ -13,10 +13,22 @@ module.exports = {
         borderLight: "#E2E8F0", // Slate 200 - Borders
         
         // Brand Colors
-        primary: "#4F46E5",    // Indigo 600 - Main Brand Color
-        primaryHover: "#4338CA", // Indigo 700
-        secondary: "#EC4899",  // Pink 500
-        accent: "#8B5CF6",     // Violet 500
+        vermilion: {
+          50: '#FDF2F1',
+          100: '#FCE4E2',
+          200: '#FA9A93',
+          300: '#F87A70',
+          400: '#F65A4E',
+          500: '#E34234', // Main Vermilion
+          600: '#C93226', // Hover Vermilion
+          700: '#A9241C',
+          800: '#891812',
+          900: '#690F0B',
+        },
+        primary: "#E34234",    // Vermilion - Main Brand Color
+        primaryHover: "#C93226", // Vermilion Hover
+        secondary: "#1E293B",  // Slate 800
+        accent: "#E34234",     // Vermilion
 
         // Status Colors (Pills)
         success: "#10B981",    // Emerald 500

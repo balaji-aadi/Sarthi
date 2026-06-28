@@ -103,7 +103,7 @@ const Backlog = () => {
                             <div className={`w-2 h-2 rounded-full ${
                                  task.taskPriority === 'high' ? 'bg-red-500' : 
                                  task.taskPriority === 'medium' ? 'bg-orange-500' : 
-                                 'bg-blue-500'
+                                 'bg-slate-400'
                             }`}></div>
                             <span className="text-sm text-textMain font-medium">{task.taskName}</span>
                              <span className="text-xs text-textSub font-mono px-1.5 py-0.5 bg-slate-100 rounded">

@@ -18,7 +18,7 @@ import { toast } from "react-hot-toast";
 import "./FocusTimer.style.css";
 
 const themes = [
-  { name: 'Indigo', color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.05)', shadow: 'rgba(79, 70, 229, 0.4)' },
+  { name: 'Vermilion', color: '#E34234', bg: 'rgba(227, 66, 52, 0.05)', shadow: 'rgba(227, 66, 52, 0.4)' },
   { name: 'Rose', color: '#e11d48', bg: 'rgba(225, 29, 72, 0.05)', shadow: 'rgba(225, 29, 72, 0.4)' },
   { name: 'Emerald', color: '#10b981', bg: 'rgba(16, 185, 129, 0.05)', shadow: 'rgba(16, 185, 129, 0.4)' },
   { name: 'Amber', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.05)', shadow: 'rgba(245, 158, 11, 0.4)' },
@@ -706,7 +706,7 @@ const FocusTimer = () => {
             </button>
 
              {isBindingActive && localStorage.getItem("focus_timer_task_binding") && JSON.parse(localStorage.getItem("focus_timer_task_binding")).isRevision ? (
-                 <button onClick={handleEndRevision} className="text-indigo-600 dark:text-indigo-400 font-bold text-sm hover:underline mt-2 flex items-center gap-1 justify-center">
+                 <button onClick={handleEndRevision} className="text-primary dark:text-vermilion-400 font-bold text-sm hover:underline mt-2 flex items-center gap-1 justify-center">
                      <IoSyncOutline className="animate-spin-slow" /> End & Log Revision
                  </button>
              ) : (
@@ -809,7 +809,7 @@ const FocusTimer = () => {
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => setShowRevisionModal(false)}></div>
            <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md flex flex-col gap-4 animate-in zoom-in-95 duration-200 border border-slate-100">
-              <div className="flex items-center gap-3 text-indigo-600">
+              <div className="flex items-center gap-3 text-primary">
                  <IoSyncOutline size={28} className="animate-spin-slow" />
                  <h3 className="text-xl font-bold text-slate-800">Log Revision</h3>
               </div>
@@ -824,7 +824,7 @@ const FocusTimer = () => {
                     placeholder="E.g., solved using binary search, optimized time complexity to O(log N)..."
                     value={revisionNote}
                     onChange={(e) => setRevisionNote(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors resize-none text-sm"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none text-sm"
                  />
               </div>
 
@@ -837,7 +837,7 @@ const FocusTimer = () => {
                 </button>
                 <button 
                   onClick={handleSubmitRevisionLog}
-                  className="px-5 py-2.5 rounded-xl font-bold text-white shadow-lg bg-indigo-600 hover:bg-indigo-700 transition-transform active:scale-95"
+                  className="px-5 py-2.5 rounded-xl font-bold text-white shadow-lg bg-primary hover:bg-primaryHover transition-transform active:scale-95"
                 >
                   Log Revision & Save Timer
                 </button>

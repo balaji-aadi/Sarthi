@@ -61,17 +61,17 @@ const GlobalConsistencyModal = () => {
                     <div className="p-4 sm:p-6 min-h-[350px] flex flex-col justify-center items-center relative overflow-hidden">
                         {loading ? (
                             <div className="flex flex-col items-center gap-12 animate-in fade-in duration-700">
-                                {/* Premium Momentum Loader */}
+                                {/* Premium Sarathi Loader */}
                                 <div className="relative">
                                     {/* Rotating Outer Rings */}
-                                    <div className="absolute inset-0 scale-150 opacity-20 border-t-2 border-indigo-500 rounded-full animate-spin duration-[3s]"></div>
+                                    <div className="absolute inset-0 scale-150 opacity-20 border-t-2 border-[#E34234] rounded-full animate-spin duration-[3s]"></div>
                                     <div className="absolute inset-0 scale-125 opacity-10 border-r-2 border-emerald-500 rounded-full animate-spin duration-[5s] reverse"></div>
                                     
                                     {/* Central Pulsing Core */}
-                                    <div className="w-24 h-24 bg-gradient-to-tr from-indigo-600 to-emerald-500 rounded-[2rem] flex items-center justify-center shadow-2xl relative z-10 animate-pulse">
+                                    <div className="w-24 h-24 bg-gradient-to-tr from-[#E34234] to-emerald-500 rounded-[2rem] flex items-center justify-center shadow-2xl relative z-10 animate-pulse">
                                         <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
                                         {/* Glow Effect */}
-                                        <div className="absolute inset-0 bg-indigo-500 blur-2xl opacity-20 -z-10 animate-pulse"></div>
+                                        <div className="absolute inset-0 bg-[#E34234] blur-2xl opacity-20 -z-10 animate-pulse"></div>
                                     </div>
                                     
                                     {/* Particle Dots */}
@@ -80,12 +80,12 @@ const GlobalConsistencyModal = () => {
                                 </div>
 
                                 <div className="flex flex-col items-center gap-3">
-                                    <h3 className="text-white text-lg font-black uppercase tracking-[0.4em] translate-x-1">Momentum</h3>
+                                    <h3 className="text-white text-lg font-black uppercase tracking-[0.4em] translate-x-1">Sarathi</h3>
                                     <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest animate-pulse">Syncing Reliability Stats...</p>
                                 </div>
 
                                 {/* Background Ambient Light (Bottom) */}
-                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-600/5 blur-[120px] rounded-full"></div>
+                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#E34234]/5 blur-[120px] rounded-full"></div>
                             </div>
                         ) : (
                             <div className="animate-in fade-in zoom-in-95 duration-500 w-full max-w-lg mx-auto">

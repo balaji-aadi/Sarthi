@@ -742,7 +742,7 @@ const CreateTask = ({
                           type="file"
                           name="attachments"
                           onChange={handleFileChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                         />
                         {/* Show Existing Attachment */}
                         {task?.attachments && Array.isArray(task.attachments) ? (
@@ -754,7 +754,7 @@ const CreateTask = ({
                                   href={fileUrl.startsWith('http') ? fileUrl : `${server}file/get-file/${fileUrl}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-blue-600 hover:underline break-all"
+                                  className="text-primary hover:underline break-all"
                                 >
                                   {fileUrl.split('/').pop() || `Attachment ${i + 1}`}
                                 </a>
@@ -769,7 +769,7 @@ const CreateTask = ({
                                 href={task.attachments}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-600 hover:underline break-all"
+                                className="text-primary hover:underline break-all"
                               >
                                 {task.attachments.split('/').pop() || "View Attachment"}
                               </a>
@@ -872,8 +872,8 @@ const CreateTask = ({
                           error={formik.touched.parentTask && formik.errors.parentTask}
                         />
                         {parentTaskData && (
-                          <div className="mt-1 flex flex-col gap-1 px-3 py-2 bg-blue-50 border border-blue-100 rounded-lg shadow-inner">
-                            <p className="text-[10px] font-bold text-blue-700 uppercase tracking-wider">Parent Constraints</p>
+                          <div className="mt-1 flex flex-col gap-1 px-3 py-2 bg-vermilion-50 border border-vermilion-100 rounded-lg shadow-inner">
+                            <p className="text-[10px] font-bold text-primary uppercase tracking-wider">Parent Constraints</p>
                             <div className="flex justify-between text-[11px] font-semibold text-textMain">
                               <span>Start: {moment(parentTaskData.taskStartDate).format("MMM DD, YYYY")}</span>
                               <span>Due: {moment(parentTaskData.taskDueDate).format("MMM DD, YYYY")}</span>
@@ -940,7 +940,8 @@ const CreateTask = ({
                         readOnly={!canEditRestrictedFields && id ? true : false}
                         onBlur={formik.handleBlur}
                         error={
-                          formik.touched.taskDueDate && formik.errors.taskDueDate
+                          formik.touched.taskDueDate &&
+                          formik.errors.taskDueDate
                         }
                         isRequired
                       />
@@ -964,7 +965,7 @@ const CreateTask = ({
                   {id && (
                     <button
                       type="submit"
-                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none"
+                      className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primaryHover focus:outline-none"
                       onClick={handleClose}
                     >
                       Close
@@ -981,7 +982,7 @@ const CreateTask = ({
                     <button
                       type="submit"
                       disabled={formik.isSubmitting}
-                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none disabled:opacity-50"
+                      className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primaryHover focus:outline-none disabled:opacity-50"
                     >
                       {id ? "Update" : "Create"} Task
                     </button>
@@ -999,7 +1000,7 @@ const CreateTask = ({
                   <h4 className="font-bold text-sm text-slate-700">Summary</h4>
                   <p className="text-[11px] text-slate-500">Quick task info</p>
                 </div>
-                <div className="text-sm font-black px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full">{formik.values.progress}%</div>
+                <div className="text-sm font-black px-3 py-1 bg-vermilion-50 text-primary rounded-full">{formik.values.progress}%</div>
               </div>
 
               <div className="space-y-3 text-sm text-slate-700">
@@ -1063,7 +1064,7 @@ const CreateTask = ({
               type="button"
               onClick={() => document.getElementById('create-task-form')?.requestSubmit()}
               disabled={formik.isSubmitting}
-              className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+              className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primaryHover disabled:opacity-50"
             >
               {id ? "Update" : "Create"} Task
             </button>

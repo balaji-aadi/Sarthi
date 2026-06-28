@@ -28,11 +28,15 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+
+  *:focus {
+    outline: none !important;
+  }
 }
 
 :root {
-    --primary: 79, 70, 229;
-    --accent: 139, 92, 246;
+    --primary: 227, 66, 52;
+    --accent: 227, 66, 52;
     --success: 16, 185, 129;
     --warning: 245, 158, 11;
     --danger: 239, 68, 68;
@@ -86,7 +90,7 @@
 
 /* Gradient Text */
 .text-gradient {
-  background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+  background: linear-gradient(135deg, #E34234 0%, #FF7F50 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -97,7 +101,7 @@
 }
 
 .pill-success { @apply bg-emerald-50 text-emerald-600 border-emerald-100; }
-.pill-primary { @apply bg-indigo-50 text-indigo-600 border-indigo-100; }
+.pill-primary { @apply bg-vermilion-50 text-primary border-vermilion-100; }
 .pill-warning { @apply bg-amber-50 text-amber-600 border-amber-100; }
 
 /* Dashboard Card */

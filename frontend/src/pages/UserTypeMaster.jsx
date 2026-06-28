@@ -76,7 +76,7 @@ const UserTypeMaster = () => {
         <h1 className="text-2xl font-bold text-gray-800">User Type Master</h1>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primaryHover transition-colors"
         >
           <FiPlus /> Add New Role
         </button>
@@ -182,7 +182,7 @@ const UserTypeMaster = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primaryHover"
                 >
                   {editingRole ? "Update" : "Create"}
                 </button>

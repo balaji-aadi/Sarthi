@@ -243,7 +243,7 @@ const TaskTable = ({ tasks = [], isLoading, onProjectChange, onMemberChange, pro
                                                         >
                                                             {task.taskName}
                                                         </span>
-                                                        <span className="text-[10px] text-textSub uppercase font-bold tracking-tighter">{task.projectName?.name || 'Momentum'}</span>
+                                                        <span className="text-[10px] text-textSub uppercase font-bold tracking-tighter">{task.projectName?.name || 'Sarathi'}</span>
                                                     </div>
                                                 </div>
                                                 <div className="hidden md:block md:col-span-1">

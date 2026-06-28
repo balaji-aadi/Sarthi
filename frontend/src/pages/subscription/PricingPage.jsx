@@ -41,12 +41,12 @@ const PricingPage = () => {
         },
         {
             id: 'monthly',
-            name: 'Momentum Monthly',
+            name: 'Sarathi Monthly',
             price: '199',
             duration: '1 Month',
             description: 'Perfect for individual focus sprints.',
             features: ['Unlimited Projects', 'Priority Support', 'Cloud Sync', 'No Time Limits'],
-            color: 'from-indigo-500 to-blue-600',
+            color: 'from-vermilion-500 to-orange-600',
             popular: false
         },
         {
@@ -54,7 +54,7 @@ const PricingPage = () => {
             name: 'Productivity Pro',
             price: '1199',
             duration: '6 Months',
-            description: 'Sustain your momentum over time.',
+            description: 'Sustain your focus over time.',
             features: ['All Monthly Features', 'Advanced Analytics', 'Performance Reports', 'Save 15%'],
             color: 'from-violet-500 to-purple-600',
             popular: true
@@ -95,7 +95,7 @@ const PricingPage = () => {
             const verifyRes = await SubscriptionApi.verifyPayment({ 
                 transactionId: orderRes.data?.data?.transactionId, 
                 status: status,
-                gatewayToken: "MOMENTUM_SECURE_PAY_" + Math.random().toString(36).substring(7).toUpperCase()
+                gatewayToken: "SARATHI_SECURE_PAY_" + Math.random().toString(36).substring(7).toUpperCase()
             });
             
             dispatch(updateCurrentUser(verifyRes.data?.data));
@@ -125,7 +125,7 @@ const PricingPage = () => {
         <div className="min-h-full bg-slate-50 text-slate-800 p-6 sm:p-12 overflow-y-auto custom-scrollbar relative font-sans">
             <style>{`
                 .text-gradient {
-                    background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+                    background: linear-gradient(135deg, #E34234 0%, #FF7F50 100%);
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
                 }
@@ -144,10 +144,10 @@ const PricingPage = () => {
                             <motion.div 
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 mb-6"
+                                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-vermilion-50 border border-vermilion-100 mb-6"
                             >
-                                <IoFlashOutline className="text-indigo-600" size={14} />
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600">Momentum Premium</span>
+                                <IoFlashOutline className="text-vermilion-600" size={14} />
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-vermilion-600">Sarathi Premium</span>
                             </motion.div>
                             <h1 className="text-5xl md:text-6xl font-black mb-6 tracking-tight text-slate-900 leading-[1.1]">
                                 Choose your <span className="text-gradient">Power Level.</span>
@@ -163,10 +163,10 @@ const PricingPage = () => {
                                 <motion.div
                                     key={plan.id}
                                     whileHover={{ y: -8 }}
-                                    className={`relative bg-white border ${plan.popular ? 'border-indigo-200 shadow-xl' : 'border-slate-100'} p-8 rounded-[2.5rem] flex flex-col group transition-all duration-300`}
+                                    className={`relative bg-white border ${plan.popular ? 'border-primary shadow-xl' : 'border-slate-100'} p-8 rounded-[2.5rem] flex flex-col group transition-all duration-300`}
                                 >
                                     {plan.popular && (
-                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg">
+                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg">
                                             Most Popular
                                         </div>
                                     )}
@@ -186,7 +186,7 @@ const PricingPage = () => {
                                     <div className="space-y-4 mb-8 flex-grow">
                                         {plan.features.map((feature, fidx) => (
                                             <div key={fidx} className="flex items-start gap-2.5">
-                                                <IoCheckmarkCircle className="text-indigo-500 mt-0.5 shrink-0" size={16} />
+                                                <IoCheckmarkCircle className="text-primary mt-0.5 shrink-0" size={16} />
                                                 <span className="text-slate-600 text-[13px] font-bold leading-tight">{feature}</span>
                                             </div>
                                         ))}
@@ -196,7 +196,7 @@ const PricingPage = () => {
                                         onClick={() => handleSelectPlan(plan)}
                                         className={`w-full py-4 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all active:scale-[0.98] ${
                                             plan.popular 
-                                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 hover:bg-indigo-700' 
+                                            ? 'bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primaryHover' 
                                             : 'bg-slate-50 text-slate-600 border border-slate-100 hover:bg-slate-100'
                                         }`}
                                     >
@@ -230,13 +230,13 @@ const PricingPage = () => {
                         <header className="flex items-center justify-between mb-12">
                             <button 
                                 onClick={() => setStep('plans')}
-                                className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-all font-black uppercase tracking-widest text-[10px] group"
+                                className="flex items-center gap-2 text-slate-400 hover:text-primary transition-all font-black uppercase tracking-widest text-[10px] group"
                             >
                                 <IoChevronBackOutline size={16} className="group-hover:-translate-x-1 transition-transform" />
                                 Back
                             </button>
                             <div className="flex items-center gap-2">
-                                <IoShieldCheckmarkOutline className="text-indigo-600" size={18} />
+                                <IoShieldCheckmarkOutline className="text-primary" size={18} />
                                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Secure Checkout</span>
                             </div>
                         </header>
@@ -263,7 +263,7 @@ const PricingPage = () => {
 
                                 <div className="flex justify-between items-baseline mb-12">
                                     <span className="text-slate-900 font-black uppercase tracking-widest text-xs">Total Due Today</span>
-                                    <span className="text-4xl font-black text-indigo-600">₹{selectedPlan?.price}</span>
+                                    <span className="text-4xl font-black text-primary">₹{selectedPlan?.price}</span>
                                 </div>
 
                                 <div className="space-y-3">
@@ -288,7 +288,7 @@ const PricingPage = () => {
                                             required
                                             value={cardData.name}
                                             onChange={(e) => setCardData({...cardData, name: e.target.value.toUpperCase()})}
-                                            className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all placeholder:text-slate-300"
+                                            className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 font-bold outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-slate-300"
                                             placeholder="BALAJI AADI"
                                         />
                                     </div>
@@ -302,7 +302,7 @@ const PricingPage = () => {
                                                 maxLength="19"
                                                 value={formatCardNumber(cardData.number)}
                                                 onChange={(e) => setCardData({...cardData, number: e.target.value})}
-                                                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all placeholder:text-slate-300 pr-12"
+                                                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 font-bold outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-slate-300 pr-12"
                                                 placeholder="0000 0000 0000 0000"
                                             />
                                             <IoCardOutline className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
@@ -318,7 +318,7 @@ const PricingPage = () => {
                                                 maxLength="5"
                                                 value={cardData.expiry}
                                                 onChange={(e) => setCardData({...cardData, expiry: e.target.value})}
-                                                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-center placeholder:text-slate-300"
+                                                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 font-bold outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-center placeholder:text-slate-300"
                                                 placeholder="MM / YY"
                                             />
                                         </div>
@@ -331,7 +331,7 @@ const PricingPage = () => {
                                                     maxLength="3"
                                                     value={cardData.cvc}
                                                     onChange={(e) => setCardData({...cardData, cvc: e.target.value})}
-                                                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-center placeholder:text-slate-300"
+                                                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 font-bold outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-center placeholder:text-slate-300"
                                                     placeholder="•••"
                                                 />
                                                 <IoLockClosedOutline className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
@@ -343,13 +343,13 @@ const PricingPage = () => {
                                         <button 
                                             type="submit"
                                             disabled={loading}
-                                            className="w-full py-4 bg-indigo-600 text-white font-black rounded-xl shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-[0.98] flex items-center justify-center gap-3 uppercase tracking-widest text-[11px] disabled:opacity-50"
+                                            className="w-full py-4 bg-primary text-white font-black rounded-xl shadow-xl shadow-primary/20 hover:bg-primaryHover transition-all active:scale-[0.98] flex items-center justify-center gap-3 uppercase tracking-widest text-[11px] disabled:opacity-50"
                                         >
                                             {loading ? 'Processing...' : `Pay ₹${selectedPlan?.price}`}
                                             {!loading && <IoArrowForwardOutline size={18} />}
                                         </button>
                                         <p className="text-[9px] text-center text-slate-400 font-bold uppercase tracking-widest mt-6 flex items-center justify-center gap-2">
-                                            <IoShieldCheckmarkOutline className="text-indigo-500" size={12} />
+                                            <IoShieldCheckmarkOutline className="text-primary" size={12} />
                                             Encrypted & Secure Payment
                                         </p>
                                     </div>
@@ -370,9 +370,9 @@ const PricingPage = () => {
                             <motion.div 
                                 animate={{ rotate: 360 }}
                                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                className="absolute inset-0 border-4 border-indigo-50 border-t-indigo-600 rounded-full"
+                                className="absolute inset-0 border-4 border-vermilion-50 border-t-primary rounded-full"
                             />
-                            <div className="absolute inset-0 flex items-center justify-center text-indigo-600">
+                            <div className="absolute inset-0 flex items-center justify-center text-primary">
                                 <IoLockClosedOutline size={32} className="animate-pulse" />
                             </div>
                         </div>

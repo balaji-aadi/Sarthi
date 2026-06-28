@@ -363,7 +363,7 @@ const Revision = () => {
             startTime: new Date().toISOString(),
             accumulatedTime: 0,
             selectedDuration: 30,
-            currentTheme: { name: 'Indigo', color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.05)', shadow: 'rgba(79, 70, 229, 0.4)' },
+            currentTheme: { name: 'Vermilion', color: '#E34234', bg: 'rgba(227, 66, 52, 0.05)', shadow: 'rgba(227, 66, 52, 0.4)' },
             customHeading: `Revision: ${task.taskName}`,
             isCustomSessionActive: false
         };
@@ -569,7 +569,7 @@ const Revision = () => {
                     <div className="flex items-center gap-3">
                         <div className="flex flex-col items-end mr-4">
                             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Last Revision</span>
-                            <span className="text-base font-black text-indigo-600 leading-none mt-0.5">
+                            <span className="text-base font-black text-primary leading-none mt-0.5">
                                 {getLastRevisionInfo().date} {getLastRevisionInfo().count > 0 && `(${getLastRevisionInfo().count})`}
                             </span>
                         </div>
@@ -589,7 +589,7 @@ const Revision = () => {
                                 }
                                 handleOpenAiChallengeModal();
                             }}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg shadow-indigo-600/20 active:scale-95 shrink-0"
+                             className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all bg-primary hover:bg-primaryHover text-white shadow-md shadow-primary/20 active:scale-95 shrink-0"
                         >
                             <IoSparklesOutline size={14} />
                             AI Challenge
@@ -637,7 +637,7 @@ const Revision = () => {
                 </div>
 
                 <div className="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
-                    <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
+                    <div className="w-12 h-12 bg-vermilion-50 rounded-2xl flex items-center justify-center text-primary shrink-0">
                         <span className="text-2xl">🏆</span>
                     </div>
                     <div>
@@ -645,12 +645,12 @@ const Revision = () => {
                         <h3 className="text-xl font-black text-slate-800 mt-1 leading-none">
                             {stats.longestStreak} {stats.longestStreak === 1 ? 'Day' : 'Days'}
                         </h3>
-                        <p className="text-[10px] font-medium text-slate-400 mt-1.5">Your personal best momentum</p>
+                         <p className="text-[10px] font-medium text-slate-400 mt-1.5">Your personal best streak</p>
                     </div>
                 </div>
 
                 <div className="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
-                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 bg-vermilion-50 rounded-2xl flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
                         <span className="text-2xl">📅</span>
                     </div>
                     <div>
@@ -667,7 +667,7 @@ const Revision = () => {
 
             {/* Active Revision Timer Banner */}
             {activeTimer && (
-                <div className="mx-6 mt-6 bg-gradient-to-r from-indigo-600 to-violet-700 text-white rounded-3xl p-5 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-300">
+                <div className="mx-6 mt-6 bg-slate-800 text-white rounded-3xl p-5 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-300">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 shrink-0 relative">
                             <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-emerald-400 opacity-75 top-1 right-1"></span>
@@ -675,7 +675,7 @@ const Revision = () => {
                             <IoTimerOutline size={24} className="text-white animate-pulse" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-widest">Active Revision Session</p>
+                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Revision Session</p>
                             <h4 className="text-base font-black tracking-tight mt-0.5">{activeTimer.taskName}</h4>
                         </div>
                     </div>
@@ -712,7 +712,7 @@ const Revision = () => {
                             {/* Discard Button */}
                             <button 
                                 onClick={handleCancelActiveTimer}
-                                className="p-3 hover:bg-white/10 rounded-xl transition-all text-indigo-200 hover:text-white font-bold text-xs"
+                                className="p-3 hover:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-white font-bold text-xs"
                                 title="Cancel and Discard Timer"
                             >
                                 DISCARD
@@ -776,7 +776,7 @@ const Revision = () => {
                         </div>
 
                         {/* Date Picker */}
-                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 rounded-xl px-3 py-1.5 mb-2 hover:border-primary/25 transition-all">
+                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 rounded-xl px-3 py-1.5 mb-2 hover:border-slate-200 transition-all">
                             <IoCalendarOutline className="text-slate-400 shrink-0" size={14} />
                             <input 
                                 type="date"
@@ -866,7 +866,7 @@ const Revision = () => {
                                                 </div>
                                             </td>
                                             <td className="px-4 py-4">
-                                                <div className="flex items-center gap-2 px-2.5 py-1 bg-slate-50 rounded-lg w-fit border border-slate-100 group-hover:bg-white group-hover:border-primary/20 transition-all">
+                                                <div className="flex items-center gap-2 px-2.5 py-1 bg-slate-50 rounded-lg w-fit border border-slate-100 group-hover:bg-white group-hover:border-slate-200 transition-all">
                                                     <div className="w-1 h-1 rounded-full bg-slate-300 group-hover:bg-primary transition-colors"></div>
                                                     <span className="text-[10px] font-bold text-slate-500 group-hover:text-slate-700 truncate max-w-[200px]">
                                                         {task.parentTask?.taskName || 'Individual Task'}
@@ -903,7 +903,7 @@ const Revision = () => {
                                                     {activeTimer && activeTimer.taskId === task._id ? (
                                                         <button 
                                                             onClick={handleTogglePlayPause}
-                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 border border-indigo-600 text-[10px] font-black text-white hover:bg-indigo-700 transition-all active:scale-95 group/revise-btn shadow-md animate-pulse"
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary border border-primary text-[10px] font-black text-white hover:bg-primaryHover transition-all active:scale-95 group/revise-btn shadow-md animate-pulse"
                                                             title={activeTimer.isActive ? "Pause Active Revision Timer" : "Resume Active Revision Timer"}
                                                         >
                                                             {activeTimer.isActive ? <IoPause size={12} /> : <IoPlay size={12} />}
@@ -914,7 +914,7 @@ const Revision = () => {
                                                     ) : (
                                                         <button 
                                                             onClick={() => handleReviseWithTimer(task)}
-                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-100 text-[10px] font-black text-indigo-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all active:scale-95 group/revise-btn shadow-sm"
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-vermilion-50 border border-vermilion-100 text-[10px] font-black text-primary hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95 group/revise-btn shadow-sm"
                                                             title="Start 30-minute Focus Revision Session"
                                                         >
                                                             <IoTimerOutline size={12} />
@@ -963,7 +963,7 @@ const Revision = () => {
                                                         {task.revisionLogs && task.revisionLogs.length > 0 ? (
                                                             <div className="space-y-2">
                                                                 {task.revisionLogs.map((log, lIdx) => (
-                                                                    <div key={lIdx} className="bg-slate-50/30 p-3 rounded-xl border border-slate-50 flex items-start gap-3 hover:border-primary/10 transition-all">
+                                                                    <div key={lIdx} className="bg-slate-50/30 p-3 rounded-xl border border-slate-50 flex items-start gap-3 hover:border-slate-100 transition-all">
                                                                         <div className="shrink-0 w-6 h-6 rounded-full bg-white flex items-center justify-center text-[9px] font-black text-primary border border-slate-100">
                                                                             {lIdx + 1}
                                                                         </div>
@@ -1155,7 +1155,7 @@ const Revision = () => {
                     ></div>
                     <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100 flex flex-col max-h-[90vh]">
                         {/* Modal Header */}
-                        <div className="bg-gradient-to-r from-violet-600 to-indigo-700 px-8 py-10 flex items-center justify-between text-white relative overflow-hidden shrink-0">
+                        <div className="bg-slate-800 px-8 py-10 flex items-center justify-between text-white relative overflow-hidden shrink-0">
                             {/* Decorative background glow */}
                             <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
                             
@@ -1165,7 +1165,7 @@ const Revision = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-black text-xl tracking-tight leading-none">AI Revision Challenge</h3>
-                                    <p className="text-violet-200 text-[10px] font-bold uppercase tracking-widest mt-1.5">Reinforce Your Patterns</p>
+                                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1.5">Reinforce Your Patterns</p>
                                 </div>
                             </div>
                             <button 
@@ -1197,7 +1197,7 @@ const Revision = () => {
                                         </select>
                                     </div>
                                     
-                                    <div className="p-4 bg-violet-50/50 rounded-2xl border border-violet-100 flex gap-3 text-violet-800">
+                                    <div className="p-4 bg-vermilion-50 rounded-2xl border border-vermilion-100 flex gap-3 text-primary">
                                         <span className="text-lg">💡</span>
                                         <p className="text-xs font-semibold leading-relaxed">
                                             This AI generator will analyze your selected pattern, scan the problems you have already solved, and suggest a medium difficulty company-asked problem from LeetCode, GeeksforGeeks, or Codeforces that you haven't done yet!
@@ -1206,7 +1206,7 @@ const Revision = () => {
 
                                     <button 
                                         onClick={handleGenerateChallenge}
-                                        className="w-full px-6 py-4 rounded-xl text-[11px] font-black text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 shadow-lg shadow-indigo-600/20 transition-all active:scale-95 flex items-center justify-center gap-2 mt-4"
+                                        className="w-full px-6 py-4 rounded-xl text-[11px] font-black text-white bg-primary hover:bg-primaryHover shadow-md shadow-primary/20 transition-all active:scale-95 flex items-center justify-center gap-2 mt-4"
                                     >
                                         <IoSparklesOutline size={14} />
                                         GENERATE REVISION CHALLENGE
@@ -1218,8 +1218,8 @@ const Revision = () => {
                             {isGeneratingChallenge && (
                                 <div className="flex flex-col items-center justify-center py-12 space-y-4 animate-in fade-in duration-300">
                                     <div className="relative w-16 h-16 flex items-center justify-center">
-                                        <div className="absolute inset-0 rounded-full border-4 border-violet-100 border-t-indigo-600 animate-spin"></div>
-                                        <IoSparklesOutline size={24} className="text-indigo-600 animate-pulse" />
+                                        <div className="absolute inset-0 rounded-full border-4 border-vermilion-100 border-t-primary animate-spin"></div>
+                                        <IoSparklesOutline size={24} className="text-primary animate-pulse" />
                                     </div>
                                     <div className="text-center">
                                         <h4 className="text-sm font-black text-slate-800">AI is selecting a challenge...</h4>
@@ -1231,10 +1231,10 @@ const Revision = () => {
                             {/* Challenge Result */}
                             {generatedChallenge && !isGeneratingChallenge && (
                                 <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
-                                    <div className="p-5 bg-gradient-to-br from-slate-50 to-indigo-50/20 rounded-3xl border border-slate-100 space-y-4 relative overflow-hidden">
+                                    <div className="p-5 bg-gradient-to-br from-slate-50 to-vermilion-50/20 rounded-3xl border border-slate-100 space-y-4 relative overflow-hidden">
                                         {/* Platform and Title */}
                                         <div>
-                                            <span className="text-[9px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100 uppercase tracking-wider">
+                                            <span className="text-[9px] font-black text-primary bg-vermilion-50 px-2.5 py-0.5 rounded-full border border-vermilion-100 uppercase tracking-wider">
                                                 {generatedChallenge.platform}
                                             </span>
                                             <h4 className="text-base font-black text-slate-800 tracking-tight mt-2 flex items-center gap-1.5">
@@ -1243,7 +1243,7 @@ const Revision = () => {
                                                     href={generatedChallenge.problemUrl} 
                                                     target="_blank" 
                                                     rel="noopener noreferrer"
-                                                    className="text-slate-400 hover:text-indigo-600 transition-colors p-1"
+                                                    className="text-slate-400 hover:text-primary transition-colors p-1"
                                                     title="Open Problem Link"
                                                 >
                                                     <IoOpenOutline size={16} />

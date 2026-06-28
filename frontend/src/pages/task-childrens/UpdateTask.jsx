@@ -153,7 +153,7 @@ const UpdateTask = () => {
             statusColor = "bg-yellow-500";
             break;
           case "hold":
-            statusColor = "bg-blue-500";
+            statusColor = "bg-slate-500";
             break;
           default:
             statusColor = "bg-gray-500";

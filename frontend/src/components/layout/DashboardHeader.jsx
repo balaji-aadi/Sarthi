@@ -192,14 +192,14 @@ const DashboardHeader = ({
                         onClick={() => setIsFiltersOpen(!isFiltersOpen)}
                         className={`px-5 py-3 rounded-2xl border text-[10px] font-black uppercase tracking-wider flex items-center gap-2 transition-all duration-300 ${
                             isFiltersOpen 
-                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-600/20' 
+                            ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' 
                             : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm'
                         }`}
                     >
                         <IoFilterOutline size={14} className={isFiltersOpen ? "rotate-180 transition-transform duration-300" : ""} />
                         <span>{isFiltersOpen ? 'Hide Controls' : 'Refine View'}</span>
                         {isAnyFilterActive && !isFiltersOpen && (
-                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
                         )}
                     </button>
 

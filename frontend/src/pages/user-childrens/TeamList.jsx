@@ -200,7 +200,7 @@ const TeamList = () => {
                                     >
                                          <div className="relative mb-4">
                                              <img 
-                                                 src={user.profileImage || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=4f46e5&color=fff`} 
+                                                 src={user.profileImage || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=E34234&color=fff`} 
                                                  alt={user.firstName} 
                                                  className="w-24 h-24 rounded-[2rem] object-cover border-4 border-white shadow-md transition-transform group-hover:scale-105"
                                              />

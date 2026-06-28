@@ -93,7 +93,7 @@ const MilestoneLists = () => {
                 </h3>
 
                 <button
-                    className="bg-blue-500 text-white px-6 py-2 rounded-md mt-4"
+                    className="bg-primary hover:bg-primaryHover text-white px-6 py-2 rounded-md mt-4 transition-colors"
                     onClick={exportToExcel}
                 >
                     Export to Excel

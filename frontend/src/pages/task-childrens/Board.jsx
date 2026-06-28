@@ -547,7 +547,7 @@ const Board = ({
             startTime: new Date().toISOString(),
             accumulatedTime: accumulatedSecs,
             selectedDuration: durationMins,
-            currentTheme: { name: 'Indigo', color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.05)', shadow: 'rgba(79, 70, 229, 0.4)' }
+            currentTheme: { name: 'Vermilion', color: '#E34234', bg: 'rgba(227, 66, 52, 0.05)', shadow: 'rgba(227, 66, 52, 0.4)' }
          };
          localStorage.setItem("focus_timer_state", JSON.stringify(state));
          
@@ -762,7 +762,7 @@ const Board = ({
        startTime: new Date().toISOString(),
        accumulatedTime: accumulatedSecs,
        selectedDuration: durationMins,
-       currentTheme: { name: 'Indigo', color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.05)', shadow: 'rgba(79, 70, 229, 0.4)' }
+       currentTheme: { name: 'Vermilion', color: '#E34234', bg: 'rgba(227, 66, 52, 0.05)', shadow: 'rgba(227, 66, 52, 0.4)' }
     };
     localStorage.setItem("focus_timer_state", JSON.stringify(state));
     
@@ -984,9 +984,9 @@ const Board = ({
             <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-4 py-2 custom-scrollbar">
               
               {/* Parent Task Card */}
-              <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100/50 dark:border-indigo-900/30 flex flex-col gap-3">
+              <div className="p-4 rounded-2xl bg-vermilion-50/50 dark:bg-vermilion-950/20 border border-vermilion-100/50 dark:border-vermilion-900/30 flex flex-col gap-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-vermilion-100 dark:bg-vermilion-900/50 text-primary dark:text-vermilion-300 px-2 py-0.5 rounded-md">
                     Parent Task
                   </span>
                   <span className="text-xs font-mono font-bold text-slate-400">

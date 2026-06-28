@@ -140,9 +140,9 @@ const DeveloperTaskComponent = () => {
     {
       title: "Total Tasks",
       value: tasks.total,
-      icon: <FiActivity className="text-blue-500" size={24} />,
-      bgColor: "bg-blue-50",
-      textColor: "text-blue-600"
+      icon: <FiActivity className="text-primary" size={24} />,
+      bgColor: "bg-vermilion-50",
+      textColor: "text-primary"
     },
     {
       title: "Pending",
@@ -200,7 +200,7 @@ const DeveloperTaskComponent = () => {
           </p>
         </div>
         <div className="mt-4 md:mt-0">
-          <span className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+          <span className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200">
             {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </span>
         </div>

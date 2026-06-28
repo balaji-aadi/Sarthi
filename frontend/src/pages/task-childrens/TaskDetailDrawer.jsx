@@ -74,7 +74,7 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
 
     const statusColors = {
         todo: "bg-slate-500/10 text-slate-600 border-slate-200/50",
-        inprogress: "bg-blue-500/10 text-blue-600 border-blue-200/50",
+        inprogress: "bg-vermilion-50 text-primary border-vermilion-200/50",
         review: "bg-purple-500/10 text-purple-600 border-purple-200/50",
         done: "bg-green-500/10 text-green-600 border-green-200/50",
         hold: "bg-orange-500/10 text-orange-600 border-orange-200/50",
@@ -153,10 +153,10 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                     <div className="mt-6">
                                         <div className="flex items-center justify-between mb-4">
                                             <h3 className="text-[11px] font-black text-textSub uppercase tracking-[0.2em]">Assignee Notes</h3>
-                                            <div className="h-px flex-1 bg-gradient-to-r from-blue-200/50 to-transparent ml-4" />
+                                            <div className="h-px flex-1 bg-gradient-to-r from-vermilion-200/50 to-transparent ml-4" />
                                         </div>
                                         <div 
-                                            className="text-textMain text-xs leading-relaxed bg-blue-50/30 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100/50 dark:border-blue-800/30"
+                                            className="text-textMain text-xs leading-relaxed bg-vermilion-50/20 dark:bg-vermilion-900/10 p-4 rounded-xl border border-vermilion-100/30 dark:border-vermilion-800/30"
                                             dangerouslySetInnerHTML={{ 
                                                 __html: task.additionalNotes
                                                     .replace(/&lt;/g, '<')
@@ -219,7 +219,7 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                     {subtasks.map(sub => (
                                                         <div key={sub._id} className="group p-3 bg-white border border-borderLight rounded-xl hover:border-primary/30 hover:shadow-sm transition-all flex items-center justify-between">
                                                             <div className="flex items-center gap-3 min-w-0">
-                                                                <div className={`w-2 h-2 rounded-full shrink-0 ${sub.status === 'done' ? 'bg-green-500' : 'bg-blue-400'}`} />
+                                                                <div className={`w-2 h-2 rounded-full shrink-0 ${sub.status === 'done' ? 'bg-green-500' : 'bg-slate-400'}`} />
                                                                 <div className="min-w-0">
                                                                     <p className={`text-sm font-bold truncate leading-none mb-1 ${sub.status === 'done' ? 'text-textSub/60 line-through' : 'text-textMain'}`}>{sub.taskName}</p>
                                                                     <div className="flex items-center gap-2">

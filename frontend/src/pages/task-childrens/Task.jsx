@@ -316,14 +316,14 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            className={`group relative bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm transition-colors duration-200 hover:shadow-md hover:border-primary/40 overflow-hidden ${
+            className={`group relative bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm transition-colors duration-200 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 overflow-hidden ${
                 task.parentTask 
                 ? "ml-4 w-[calc(100%-1rem)]" 
                 : "w-full"
             }`}
           >
             {/* Hierarchy Accent Bar */}
-            <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-xl ${task.parentTask ? 'bg-blue-500' : 'bg-indigo-500'}`} />
+            <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-xl ${task.parentTask ? 'bg-slate-300' : 'bg-primary'}`} />
 
             <div className="p-3.5 sm:p-4">
               {/* Header / Breadcrumbs */}
@@ -360,7 +360,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
 
                         if (isOwnActive || isParentActive) {
                             return (
-                                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-indigo-600 text-white rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm animate-pulse">
+                                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-primary text-white rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm animate-pulse">
                                     <span className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_5px_rgba(255,255,255,0.8)]"></span>
                                     Activated
                                 </div>
@@ -418,7 +418,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
                         <span>{task.taskName}</span>
                     </h4>
                     <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
-                        <span className="truncate">{task.projectName?.name || 'Momentum'}</span>
+                        <span className="truncate">{task.projectName?.name || 'Sarathi'}</span>
                         {task.subtaskStats?.total > 0 && (
                             <>
                                 <span className="text-slate-300 dark:text-slate-700">•</span>
@@ -446,13 +446,13 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
                         <span className="text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1">
                             <FiActivity size={10} /> Progress
                         </span>
-                        <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400">
+                        <span className="text-[10px] font-black text-primary dark:text-vermilion-400">
                         {Math.round((task.subtaskStats.completed / task.subtaskStats.total) * 100)}%
                         </span>
                     </div>
                     <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700/50 rounded-full overflow-hidden shadow-inner flex">
                         <div 
-                        className="bg-gradient-to-r from-indigo-500 to-blue-500 h-full rounded-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(99,102,241,0.4)]"
+                        className="bg-primary h-full rounded-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(227,66,52,0.15)]"
                         style={{ width: `${(task.subtaskStats.completed / task.subtaskStats.total) * 100}%` }}
                         />
                     </div>
@@ -494,7 +494,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
                                 e.stopPropagation();
                                 navigate('/task/create-task', { state: { parentTask: task, project: task.projectName } });
                             }}
-                            className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all border border-blue-100 dark:border-blue-800/30 shadow-sm"
+                             className="p-1.5 rounded-lg bg-vermilion-50 dark:bg-vermilion-900/20 text-primary dark:text-vermilion-400 hover:bg-vermilion-100 dark:hover:bg-vermilion-900/40 transition-all border border-vermilion-100 dark:border-vermilion-800/30 shadow-sm"
                             title="Add Subtask"
                         >
                             <IoGitNetworkSharp size={14} />
@@ -519,7 +519,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
                     <div className="flex items-center justify-between">
                         <button
                             onClick={() => setShowMilestone(!showMilestone)}
-                            className="flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide hover:underline"
+                            className="flex items-center gap-1 text-[10px] font-bold text-primary dark:text-vermilion-400 uppercase tracking-wide hover:underline"
                         >
                             {showMilestone ? <FiChevronUp /> : <FiChevronDown />}
                             {task.milestone ? "Milestone" : "Details"}
@@ -530,7 +530,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
                                     const filename = file.split('/').pop() || `File ${i + 1}`;
                                     const displayName = filename.includes('-') ? filename.split('-').slice(1).join('-') : filename;
                                     return (
-                                        <a key={i} href={fileUrl} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-blue-500 transition-all p-1.5 hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-lg group/attachment" title={`Download ${displayName}`}>
+                                        <a key={i} href={fileUrl} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary transition-all p-1.5 hover:bg-vermilion-50 dark:hover:bg-vermilion-900/40 rounded-lg group/attachment" title={`Download ${displayName}`}>
                                             <IoFileTrayFull size={14} className="group-hover/attachment:scale-110 transition-transform" />
                                         </a>
                                     );
