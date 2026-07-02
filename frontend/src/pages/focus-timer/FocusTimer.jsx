@@ -177,6 +177,59 @@ const FocusTimer = () => {
     localStorage.setItem("focus_timer_state", JSON.stringify(state));
   }, [timeLeft, isActive, startTime, accumulatedTime, selectedDuration, currentTheme, customHeading, isCustomSessionActive]);
 
+  const handleAiChallengeAutoExtend = React.useCallback(async () => {
+      playSound();
+      showNotification();
+      
+      const endTime = new Date();
+      const actualDuration = selectedDuration;
+      
+      const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
+      if (!bindingObjStr) return;
+      const bindingObj = JSON.parse(bindingObjStr);
+      
+      const newSession = {
+          date: moment().format("YYYY-MM-DD"),
+          startTime: startTime || new Date(),
+          endTime: endTime,
+          duration: actualDuration,
+          type: "Focus",
+          task: bindingObj.taskId,
+          taskName: bindingObj.taskName,
+          taskIdString: bindingObj.taskIdString,
+          statusAtCompletion: "inprogress",
+          completionState: "incompleted",
+          estimatedTimeAtStart: selectedDuration,
+          isBacklog: false,
+          originalDueDate: bindingObj.dueDate
+      };
+      
+      try {
+          await FocusApi.createSession(newSession);
+          toast.success("AI Challenge block logged. Automatically adding 20 minutes!");
+      } catch (err) {
+          console.error("Failed to log AI Challenge auto-extend session", err);
+      }
+      
+      const newStartTime = new Date();
+      setStartTime(newStartTime);
+      setAccumulatedTime(0);
+      setSelectedDuration(20);
+      setTimeLeft(20 * 60);
+      
+      const timerState = {
+          timeLeft: 20 * 60,
+          isActive: true,
+          startTime: newStartTime.toISOString(),
+          accumulatedTime: 0,
+          selectedDuration: 20,
+          currentTheme: currentTheme,
+          customHeading: bindingObj.taskName,
+          isCustomSessionActive: false
+      };
+      localStorage.setItem("focus_timer_state", JSON.stringify(timerState));
+  }, [startTime, selectedDuration, currentTheme]);
+
   useEffect(() => {
     if (isActive) {
       timerRef.current = setInterval(() => {
@@ -191,6 +244,11 @@ const FocusTimer = () => {
               const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
               const bindingObj = bindingObjStr ? JSON.parse(bindingObjStr) : null;
               const hasTask = !!bindingObj;
+              
+              if (bindingObj && bindingObj.taskType === "AI Challenge") {
+                  handleAiChallengeAutoExtend();
+                  return;
+              }
               
               // Overtime limit: 4 hours for revision (14400s), 1 hour for regular (3600s)
               const limit = bindingObj?.isRevision ? 14400 : 3600;
@@ -216,22 +274,24 @@ const FocusTimer = () => {
       clearInterval(timerRef.current);
     }
     return () => clearInterval(timerRef.current);
-  }, [isActive, startTime, accumulatedTime, selectedDuration]);
+  }, [isActive, startTime, accumulatedTime, selectedDuration, handleAiChallengeAutoExtend]);
 
   const handleStart = () => {
     if (selectedTask && !isBindingActive) {
       const taskObj = availableTasks.find(t => t._id === selectedTask);
       if (taskObj) {
-         const durationMins = (taskObj.backlogEstimatedHours ? taskObj.backlogEstimatedHours * 60 : (taskObj.estimatedHours ? taskObj.estimatedHours * 60 : 25));
+         const isAiChallenge = taskObj.taskType === "AI Challenge";
+         const durationMins = isAiChallenge ? 40 : (taskObj.backlogEstimatedHours ? taskObj.backlogEstimatedHours * 60 : (taskObj.estimatedHours ? taskObj.estimatedHours * 60 : 25));
          const isTaskBacklog = taskObj.status === 'backlog' || (taskObj.taskDueDate && moment(taskObj.taskDueDate).isBefore(moment(), 'day') && taskObj.status !== 'done' && taskObj.status !== 'inprogress' && taskObj.status !== 'hold');
          
          const focusTimerBinding = {
              taskId: taskObj._id,
              taskName: taskObj.taskName,
              taskIdString: taskObj.taskId,
-             estimatedHours: taskObj.backlogEstimatedHours || taskObj.estimatedHours || 0,
+             estimatedHours: isAiChallenge ? (40 / 60) : (taskObj.backlogEstimatedHours || taskObj.estimatedHours || 0),
              dueDate: taskObj.taskDueDate,
-             isBacklog: isTaskBacklog
+             isBacklog: isTaskBacklog,
+             taskType: taskObj.taskType
          };
          localStorage.setItem("focus_timer_task_binding", JSON.stringify(focusTimerBinding));
          setIsBindingActive(true);

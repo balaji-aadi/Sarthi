@@ -36,6 +36,7 @@ tc.createTask = asyncHandler(async (req, res) => {
       dependentTasks,
       attachments,
       additionalNotes,
+      youtubeUrl,
       status,
       progress,
       parentTask,
@@ -133,6 +134,7 @@ tc.createTask = asyncHandler(async (req, res) => {
       sprint,
       dependentTasks,
       additionalNotes,
+      youtubeUrl,
       attachments,
       milestone: milestone || null,
       status,
@@ -227,6 +229,7 @@ tc.updateTask = asyncHandler(async (req, res) => {
       epic,
       sprint,
       additionalNotes,
+      youtubeUrl,
       progress,
       parentTask,
     } = req.body;
@@ -297,6 +300,7 @@ tc.updateTask = asyncHandler(async (req, res) => {
     if (milestone !== undefined) updateFields.milestone = milestone || null;
     if (parentTask !== undefined) updateFields.parentTask = parentTask ? new mongoose.Types.ObjectId(parentTask) : null;
     if (additionalNotes !== undefined) updateFields.additionalNotes = additionalNotes;
+    if (youtubeUrl !== undefined) updateFields.youtubeUrl = youtubeUrl;
     if (status !== undefined) {
       updateFields.status = status;
       if (status === 'hold') {

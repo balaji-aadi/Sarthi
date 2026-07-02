@@ -8,4 +8,5 @@ export const AuthApi = {
   generateOTP: (payload) => Api.post("user/generate-otp", payload),
   otpVerification: (payload) => Api.post("user/verify-otp", payload),
   ResetPassword: (payload) => Api.post("user/reset-password", payload),
+  zohoLogin: (payload) => Api.post("user/zoho-login", payload),
 };

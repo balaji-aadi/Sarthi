@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
-import { login, googleLogin } from "../../store/slices/storeSlice";
-import { IoEyeSharp, IoLogoGoogle, IoPerson } from "react-icons/io5";
+import { login } from "../../store/slices/storeSlice";
+import { IoEyeSharp, IoPerson } from "react-icons/io5";
 import { TbEyeClosed } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { useLoading } from "../../components/loader/LoaderContext";
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../../firebaseConfig";
 import { motion, AnimatePresence } from "framer-motion";
-
-googleProvider.addScope('email');
-googleProvider.addScope('profile');
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -48,15 +43,28 @@ const Login = () => {
     },
   });
 
-  const handleGoogleLogin = async () => {
+  const handleZohoLogin = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      await dispatch(googleLogin(user)).unwrap();
-      navigate("/");
+      const clientId = import.meta.env.VITE_ZOHO_CLIENT_ID;
+      const redirectUri = import.meta.env.VITE_ZOHO_REDIRECT_URI;
+      const accountsUrl = import.meta.env.VITE_ZOHO_ACCOUNTS_URL || "https://accounts.zoho.com";
+
+      if (!clientId || !redirectUri) {
+        toast.error("Zoho Client ID or Redirect URI is not configured on the frontend.");
+        return;
+      }
+
+      // Generate secure state parameter for CSRF validation
+      const array = new Uint32Array(1);
+      window.crypto.getRandomValues(array);
+      const state = array[0].toString(36);
+      sessionStorage.setItem("zoho_oauth_state", state);
+
+      // Redirect to Zoho Accounts
+      window.location.href = `${accountsUrl}/oauth/v2/auth?response_type=code&client_id=${clientId}&scope=openid,email,profile&redirect_uri=${encodeURIComponent(redirectUri)}&prompt=consent&state=${state}`;
     } catch (error) {
-        console.error("Google Login Error:", error);
-        toast.error("Google Login Failed");
+      console.error("Zoho Login Initiation Error:", error);
+      toast.error("Failed to initiate Zoho Login");
     }
   };
 
@@ -144,11 +152,16 @@ const Login = () => {
                 <div className="space-y-6">
                     <button
                         type="button"
-                        onClick={handleGoogleLogin}
-                        className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-white text-slate-800 font-bold border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all active:scale-[0.98] shadow-sm"
+                        onClick={handleZohoLogin}
+                        className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-white text-slate-800 font-bold border border-slate-200 rounded-2xl hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.98] shadow-sm"
                     >
-                        <IoLogoGoogle className="text-xl text-primary" />
-                        <span>Continue with Google</span>
+                        <svg viewBox="0 0 100 100" className="w-5 h-5 flex-shrink-0">
+                            <rect x="5" y="5" width="40" height="40" rx="8" fill="#E21A22" />
+                            <rect x="55" y="5" width="40" height="40" rx="8" fill="#00A250" />
+                            <rect x="5" y="55" width="40" height="40" rx="8" fill="#1877F2" />
+                            <rect x="55" y="55" width="40" height="40" rx="8" fill="#F4B400" />
+                        </svg>
+                        <span>Continue with Zoho</span>
                     </button>
 
                     <div className="relative flex items-center">

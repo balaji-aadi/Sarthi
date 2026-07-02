@@ -89,6 +89,7 @@ export const taskValidationSchema = Yup.object({
   dependencyType: Yup.string(),
   sprint: Yup.string().nullable(),
   parentTask: Yup.string().nullable(),
+  youtubeUrl: Yup.string().url("Must be a valid URL").nullable(),
 });
 
 export const userValidationSchema = (isUpdating) =>

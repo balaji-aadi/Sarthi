@@ -25,28 +25,16 @@ export const logout = createAsyncThunk("logout", async () => {
   }
 });
 
-export const googleLogin = createAsyncThunk(
-  "auth/googleLogin",
-  async (user, { rejectWithValue }) => {
+export const zohoLogin = createAsyncThunk(
+  "auth/zohoLogin",
+  async (payload, { rejectWithValue }) => {
     try {
-      // In a real app, you'd send the firebase token to your backend here.
-      // For now, we'll return the firebase user as the payload.
-      // const response = await AuthApi.googleLogin(user.accessToken);
-      // return response.data;
-      return {
-        data: {
-          user: {
-            firstName: user.displayName.split(" ")[0],
-            lastName: user.displayName.split(" ")[1] || "",
-            email: user.email,
-            userRole: { name: "User" }, // Default role
-          },
-          accessToken: user.accessToken,
-          refreshToken: "mock-refresh-token",
-        },
-      };
+      const response = await AuthApi.zohoLogin(payload);
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(
+        error.response?.data?.message || "Zoho Login failed"
+      );
     }
   }
 );
@@ -113,12 +101,12 @@ const storeSlice = createSlice({
         state.error = true;
         state.success = false;
       })
-      .addCase(googleLogin.pending, (state) => {
+      .addCase(zohoLogin.pending, (state) => {
         state.loading = true;
         state.error = false;
         state.success = false;
       })
-      .addCase(googleLogin.fulfilled, (state, action) => {
+      .addCase(zohoLogin.fulfilled, (state, action) => {
         state.loading = false;
         state.error = false;
         state.success = true;
@@ -129,11 +117,11 @@ const storeSlice = createSlice({
         localStorage.setItem("refreshToken", action.payload.data.refreshToken);
         toast.success(`Welcome ${action.payload.data?.user?.firstName}`);
       })
-      .addCase(googleLogin.rejected, (state, action) => {
+      .addCase(zohoLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
         state.success = false;
-        toast.error("Google Login Failed");
+        toast.error(action.payload || "Zoho Login Failed");
       })
 
       .addCase(logout.pending, (state) => {

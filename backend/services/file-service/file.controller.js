@@ -54,23 +54,29 @@ fc.uploadFiles = asyncHandler (async (req, res) => {
         }
 
         let files = Array.isArray(req.files.file) ? req.files.file : [req.files.file];
+        const uploadedFiles = [];
 
         await Promise.all(files.map(async (file) => {
-            
             if (file.size > MAX_FILE_SIZE) {
                 throw new ApiError(400, `File size should not exceed 5MB`);
             }
-            const targetPath = path.join(UPLOAD_DIR, file.name);
+
+            const timestamp = Date.now();
+            const randomStr = Math.random().toString(36).substring(2, 9);
+            const ext = path.extname(file.name).toLowerCase();
+            const base = path.basename(file.name, path.extname(file.name)).replace(/[^a-zA-Z0-9]/g, "_");
+            const safeName = `${timestamp}_${randomStr}_${base}${ext}`;
+            const targetPath = path.join(UPLOAD_DIR, safeName);
 
             try {
                 await file.mv(targetPath);
+                uploadedFiles.push(safeName);
             } catch (error) {
                 console.error("File handling error:", error);
                 throw new ApiError(400, `Error processing file: ${file.name}`);
             }
         }));
 
-        const uploadedFiles = files.map(f => f.name);
         return res.status(201).json(new ApiResponse(201, { filenames: uploadedFiles }, "File(s) uploaded successfully!"));
 
     } catch (error) {

@@ -13,7 +13,7 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import CreateProject from "./pages/project-childrens/CreateProject";
 import Project from "./pages/Project";
 import Teams from "./pages/project-childrens/Teams";
@@ -35,6 +35,8 @@ import TestingProgressOverview from "./pages/testing-childrens/Dashboard";
 import TestLogUpdate from "./pages/testing-childrens/TestLogUpdates";
 import MyTasks from "./pages/testing-childrens/MyTasks";
 import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import ZohoCallback from "./pages/auth/ZohoCallback";
 import ProtectedRoute, { PublicRoute } from "./ProtectedRoute";
 import Forget from "./pages/auth/Forget";
 import Verification from "./pages/auth/Verification";
@@ -107,37 +109,76 @@ function App() {
                const sessionSeconds = Math.floor((nowMs - startTimeMs) / 1000);
                const totalSpent = (timerState.accumulatedTime || 0) + sessionSeconds;
                
-               if (totalSpent >= durationSetting) {
-                   // Expiration Reached completely in the background
-                   const actualDuration = Math.max(Math.round(durationSetting / 60), 1);
-                   const start = moment(timerState.startTime);
-                   const end = moment(nowMs);
-                   
-                   const sessionData = {
-                       date: start.format("YYYY-MM-DD"),
-                       startTime: start.toISOString(),
-                       endTime: end.toISOString(),
-                       duration: actualDuration,
-                       type: "Focus",
-                       task: bindingObj.taskId,
-                       taskName: bindingObj.taskName,
-                       taskIdString: bindingObj.taskIdString,
-                       statusAtCompletion: "backlog",
-                       completionState: "incompleted",
-                       estimatedTimeAtStart: timerState.selectedDuration
-                   };
-                   
-                   await FocusApi.createSession(sessionData);
-                   await TaskApi.taskLogs(bindingObj.taskId, { status: "backlog" });
-                   
-                   localStorage.removeItem("focus_timer_task_binding");
-                   localStorage.removeItem("focus_timer_state");
-                   localStorage.removeItem("focus_timer_retrievable");
-                   
-                   // Launch Global Modal
-                   setExpiredTaskData(bindingObj);
-                   setShowGlobalBacklogModal(true);
-               }
+                if (totalSpent >= durationSetting) {
+                    if (bindingObj.taskType === "AI Challenge") {
+                        // AI Challenge Auto-extend:
+                        // 1. Log the elapsed block (durationSetting minutes)
+                        const actualDuration = Math.round(durationSetting / 60);
+                        const start = moment(timerState.startTime);
+                        const end = moment(nowMs);
+                        
+                        const sessionData = {
+                            date: start.format("YYYY-MM-DD"),
+                            startTime: start.toISOString(),
+                            endTime: end.toISOString(),
+                            duration: actualDuration,
+                            type: "Focus",
+                            task: bindingObj.taskId,
+                            taskName: bindingObj.taskName,
+                            taskIdString: bindingObj.taskIdString,
+                            statusAtCompletion: "inprogress",
+                            completionState: "incompleted",
+                            estimatedTimeAtStart: timerState.selectedDuration,
+                            isBacklog: false,
+                            originalDueDate: bindingObj.dueDate
+                        };
+                        
+                        await FocusApi.createSession(sessionData);
+                        
+                        // 2. Auto-extend: reset timer state to active, 20 minutes
+                        const newTimerState = {
+                            ...timerState,
+                            timeLeft: 20 * 60,
+                            isActive: true,
+                            startTime: new Date().toISOString(),
+                            accumulatedTime: 0,
+                            selectedDuration: 20
+                        };
+                        localStorage.setItem("focus_timer_state", JSON.stringify(newTimerState));
+                        toast.success("AI Challenge block completed. Automatically extended by 20 minutes.");
+                        return;
+                    }
+
+                    // Expiration Reached completely in the background
+                    const actualDuration = Math.max(Math.round(durationSetting / 60), 1);
+                    const start = moment(timerState.startTime);
+                    const end = moment(nowMs);
+                    
+                    const sessionData = {
+                        date: start.format("YYYY-MM-DD"),
+                        startTime: start.toISOString(),
+                        endTime: end.toISOString(),
+                        duration: actualDuration,
+                        type: "Focus",
+                        task: bindingObj.taskId,
+                        taskName: bindingObj.taskName,
+                        taskIdString: bindingObj.taskIdString,
+                        statusAtCompletion: "backlog",
+                        completionState: "incompleted",
+                        estimatedTimeAtStart: timerState.selectedDuration
+                    };
+                    
+                    await FocusApi.createSession(sessionData);
+                    await TaskApi.taskLogs(bindingObj.taskId, { status: "backlog" });
+                    
+                    localStorage.removeItem("focus_timer_task_binding");
+                    localStorage.removeItem("focus_timer_state");
+                    localStorage.removeItem("focus_timer_retrievable");
+                    
+                    // Launch Global Modal
+                    setExpiredTaskData(bindingObj);
+                    setShowGlobalBacklogModal(true);
+                }
            }
        } catch (e) { console.error("Global timer monitor err", e); }
     };
@@ -174,6 +215,8 @@ function App() {
           element={<PublicRoute element={<Verification />} />}
         />
         <Route path="/login" element={<PublicRoute element={<Login />} />} />
+        <Route path="/register" element={<PublicRoute element={<Register />} />} />
+        <Route path="/auth/zoho/callback" element={<PublicRoute element={<ZohoCallback />} />} />
         {/* Athentication routes end here */}
 
         <Route path="/" element={<MainLayout />}>

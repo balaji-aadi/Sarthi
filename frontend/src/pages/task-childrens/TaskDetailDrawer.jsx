@@ -19,6 +19,13 @@ const hasAdditionalNotes = (notes) => {
     return decoded.length > 0;
 };
 
+const getYoutubeId = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+};
+
 const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, canEdit }) => {
     const [task, setTask] = useState(initialTask);
     const [loading, setLoading] = useState(false);
@@ -148,6 +155,25 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                        })()
                                    }}
                                />
+                                
+                                {task?.youtubeUrl && getYoutubeId(task.youtubeUrl) && (
+                                    <div className="mt-6">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="text-[11px] font-black text-textSub uppercase tracking-[0.2em]">YouTube Video</h3>
+                                            <div className="h-px flex-1 bg-gradient-to-r from-red-500/30 to-transparent ml-4" />
+                                        </div>
+                                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm">
+                                            <iframe
+                                                src={`https://www.youtube.com/embed/${getYoutubeId(task.youtubeUrl)}`}
+                                                title="YouTube video player"
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowFullScreen
+                                                className="absolute inset-0 w-full h-full"
+                                            ></iframe>
+                                        </div>
+                                    </div>
+                                )}
                                 
                                 {hasAdditionalNotes(task?.additionalNotes) && (
                                     <div className="mt-6">

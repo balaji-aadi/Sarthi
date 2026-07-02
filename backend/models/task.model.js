@@ -62,6 +62,10 @@ const taskSchema = new mongoose.Schema(
     additionalNotes: {
       type: String
     },
+    youtubeUrl: {
+      type: String,
+      required: false
+    },
     attachments: [{ 
       type: String 
     }],

@@ -249,6 +249,7 @@ const CreateTask = ({
       parentTask: "", // New Field
       attachments: null,
       additionalNotes: "",
+      youtubeUrl: "",
       assignee: currentUser?._id || "",
       taskStartDate: "",
       taskDueDate: "",
@@ -419,6 +420,7 @@ const CreateTask = ({
         estMinutes: task.estimatedHours ? Math.round((task.estimatedHours % 1) * 60) : "",
         progress: task.progress || 0,
         additionalNotes: task?.additionalNotes || "",
+        youtubeUrl: task?.youtubeUrl || "",
         taskType: task.taskType || "",
         attachments: task.attachments || "",
         assignee: task.assignee?._id || task.assignee || currentUser?._id || "",
@@ -954,6 +956,16 @@ const CreateTask = ({
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       placeholder="Enter specific instructions or notes..."
+                    />
+                    <InputField
+                      label="YouTube Video URL"
+                      name="youtubeUrl"
+                      type="text"
+                      value={formik.values.youtubeUrl}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.youtubeUrl && formik.errors.youtubeUrl}
+                      placeholder="Paste YouTube video URL here (e.g. https://www.youtube.com/watch?v=...)"
                     />
                   </div>
 

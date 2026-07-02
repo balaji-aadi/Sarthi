@@ -7,6 +7,8 @@ import { UserRole } from "../../models/role.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
+import axios from "axios";
+import crypto from "crypto";
 
 const uc = {}
 
@@ -567,6 +569,131 @@ uc.createFCMToken = asyncHandler(async (req, res) => {
   }
  
 })
+
+
+uc.zohoLogin = asyncHandler(async (req, res) => {
+  const { code, accountsServer } = req.body;
+
+  if (!code || !accountsServer) {
+    return res.status(400).json(new ApiError(400, "Missing required parameters: code or accountsServer"));
+  }
+
+  // SSRF Protection: Validate Zoho Accounts Server domain
+  const allowedZohoDomains = /^https:\/\/accounts\.zoho\.(com|in|eu|com\.au|com\.cn|ca|jp|fr|de|uk)$/i;
+  if (!allowedZohoDomains.test(accountsServer)) {
+    return res.status(400).json(new ApiError(400, "Invalid accounts server domain"));
+  }
+
+  const clientId = process.env.ZOHO_CLIENT_ID;
+  const clientSecret = process.env.ZOHO_CLIENT_SECRET;
+  const redirectUri = process.env.ZOHO_REDIRECT_URI;
+
+  if (!clientId || !clientSecret || !redirectUri) {
+    return res.status(500).json(new ApiError(500, "Zoho OAuth environment variables are not configured on the server"));
+  }
+
+  try {
+    // Exchange Authorization Code for Access Token
+    const tokenResponse = await axios.post(`${accountsServer}/oauth/v2/token`, null, {
+      params: {
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+        grant_type: "authorization_code"
+      }
+    });
+
+    const { access_token } = tokenResponse.data;
+    if (!access_token) {
+      console.error("Zoho Token Exchange Error Response:", tokenResponse.data);
+      return res.status(400).json(new ApiError(400, tokenResponse.data.error || "Failed to exchange Zoho authorization code"));
+    }
+
+    // Retrieve User Info from Zoho
+    const userInfoResponse = await axios.get(`${accountsServer}/oauth/v2/userinfo`, {
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
+    });
+
+    const userInfo = userInfoResponse.data;
+    if (!userInfo || !userInfo.email) {
+      console.error("Zoho User Info Fetch Error Response:", userInfoResponse.data);
+      return res.status(400).json(new ApiError(400, "Failed to retrieve user email from Zoho account"));
+    }
+
+    const email = userInfo.email.toLowerCase();
+    
+    // Check if user already exists
+    let user = await User.findOne({ email }).populate("userRole").populate("userRoles");
+
+    if (user) {
+      if (user.isActive === false) {
+        return res.status(403).json(new ApiError(403, "The account is disabled. Contact the admin to enable"));
+      }
+
+      const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(res, user);
+
+      const loggedInUser = user.toObject();
+      delete loggedInUser.password;
+      delete loggedInUser.refreshToken;
+      delete loggedInUser.otp;
+      delete loggedInUser.otpTime;
+
+      const options = { httpOnly: true, secure: true };
+      return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "Logged in via Zoho successfully"));
+    } else {
+      // Auto-register new Zoho user
+      const firstName = userInfo.first_name || userInfo.given_name || userInfo.name?.split(" ")[0] || "Zoho";
+      const lastName = userInfo.last_name || userInfo.family_name || userInfo.name?.split(" ").slice(1).join(" ") || "";
+      
+      // Find employee/user role for defaults
+      let role = await UserRole.findOne({ name: "employee" });
+      if (!role) {
+        role = await UserRole.findOne({ name: "user" });
+      }
+
+      // Generate a strong random password
+      const generatedPassword = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(-10) + "A1!";
+
+      const newUser = await User.create({
+        email,
+        firstName,
+        lastName,
+        password: generatedPassword,
+        userRole: role ? role._id : undefined,
+        userRoles: role ? [role._id] : [],
+        isActive: true,
+        profileImage: userInfo.profile_pic_url || null,
+      });
+
+      const populatedUser = await User.findById(newUser._id).populate("userRole").populate("userRoles");
+
+      const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(res, populatedUser);
+
+      const loggedInUser = populatedUser.toObject();
+      delete loggedInUser.password;
+      delete loggedInUser.refreshToken;
+      delete loggedInUser.otp;
+      delete loggedInUser.otpTime;
+
+      const options = { httpOnly: true, secure: true };
+      return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "Registered and logged in via Zoho successfully"));
+    }
+  } catch (error) {
+    console.error("Error during Zoho Login backend process:", error.response?.data || error.message || error);
+    return res.status(500).json(new ApiError(500, error.response?.data?.error || "Internal Server Error during Zoho authentication"));
+  }
+});
 
 
 export default uc

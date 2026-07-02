@@ -525,20 +525,21 @@ const Board = ({
         }
      } else {
          // Automatically start the timer context
-         const durationMins = (taskToMove.backlogEstimatedHours ? taskToMove.backlogEstimatedHours * 60 : (taskToMove.estimatedHours ? taskToMove.estimatedHours * 60 : 25));
-         const spentMins = taskToMove.duration?.inprogress || 0;
-         const accumulatedSecs = spentMins * 60;
+          const isAiChallenge = taskToMove.taskType === "AI Challenge";
+          const durationMins = isAiChallenge ? 40 : (taskToMove.backlogEstimatedHours ? taskToMove.backlogEstimatedHours * 60 : (taskToMove.estimatedHours ? taskToMove.estimatedHours * 60 : 25));
+          const spentMins = taskToMove.duration?.inprogress || 0;
+          const accumulatedSecs = spentMins * 60;
          
          const isTaskBacklog = taskToMove.status === 'backlog' || (taskToMove.taskDueDate && moment(taskToMove.taskDueDate).isBefore(moment(), 'day') && taskToMove.status !== 'done' && taskToMove.status !== 'inprogress' && taskToMove.status !== 'hold');
-         
          const focusTimerBinding = {
-             taskId: taskToMove._id,
-             taskName: taskToMove.taskName,
-             taskIdString: taskToMove.taskId,
-             estimatedHours: taskToMove.backlogEstimatedHours || taskToMove.estimatedHours || 0,
-             dueDate: taskToMove.taskDueDate,
-             isBacklog: isTaskBacklog
-         };
+              taskId: taskToMove._id,
+              taskName: taskToMove.taskName,
+              taskIdString: taskToMove.taskId,
+              estimatedHours: isAiChallenge ? (40 / 60) : (taskToMove.backlogEstimatedHours || taskToMove.estimatedHours || 0),
+              dueDate: taskToMove.taskDueDate,
+              isBacklog: isTaskBacklog,
+              taskType: taskToMove.taskType
+          };
          localStorage.setItem("focus_timer_task_binding", JSON.stringify(focusTimerBinding));
          
          const state = {

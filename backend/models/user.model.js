@@ -36,8 +36,9 @@ const userSchema = new Schema(
     phoneNumber: {
       type: String,
       maxlength: 15,
-      required: true,
+      required: false,
       unique: true,
+      sparse: true,
     },
     address: {
       type: String,

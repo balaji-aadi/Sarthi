@@ -23,7 +23,7 @@ noteController.getNotes = asyncHandler(async (req, res) => {
  */
 noteController.createNote = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-  const { content, imageUrl, color, position, size, isPinned } = req.body;
+  const { content, imageUrl, color, position, size, isPinned, title, tags } = req.body;
 
   const newNote = await Note.create({
     userId,
@@ -32,7 +32,9 @@ noteController.createNote = asyncHandler(async (req, res) => {
     color: color || "#fef08a",
     position: position || { x: 100, y: 100 },
     size: size || { width: 250, height: 180 },
-    isPinned: isPinned || false
+    isPinned: isPinned || false,
+    title: title || "",
+    tags: tags || []
   });
 
   return res.status(201).json(
@@ -53,7 +55,7 @@ noteController.updateNote = asyncHandler(async (req, res) => {
   }
 
   // Update properties if provided in body
-  const fields = ["content", "imageUrl", "color", "position", "size", "isPinned"];
+  const fields = ["content", "imageUrl", "color", "position", "size", "isPinned", "title", "tags"];
   fields.forEach(field => {
     if (req.body[field] !== undefined) {
       note[field] = req.body[field];
@@ -89,13 +91,13 @@ noteController.deleteNote = asyncHandler(async (req, res) => {
  */
 noteController.aiEnhance = asyncHandler(async (req, res) => {
   const { content, action } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
 
   if (!content) {
     throw new ApiError(400, "Content is required for AI enhancement");
   }
   if (!apiKey) {
-    throw new ApiError(500, "Gemini API key is not configured on backend server");
+    throw new ApiError(500, "Groq API key is not configured on backend server");
   }
 
   const prompt = `
@@ -113,23 +115,31 @@ Return ONLY the plain text of the updated note content. Do not write any introdu
 
   try {
     const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      "https://api.groq.com/openai/v1/chat/completions",
       {
-        contents: [
+        model: "llama-3.3-70b-versatile",
+        messages: [
           {
-            parts: [{ text: prompt }]
+            role: "user",
+            content: prompt
           }
         ]
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        }
       }
     );
 
-    const rewrittenText = response.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || content;
+    const rewrittenText = response.data?.choices?.[0]?.message?.content?.trim() || content;
 
     return res.status(200).json(
       new ApiResponse(200, { enhancedContent: rewrittenText }, "Content enhanced successfully")
     );
   } catch (error) {
-    console.error("Gemini Enhance Error:", error.response?.data || error.message);
+    console.error("Groq Enhance Error:", error.response?.data || error.message);
     throw new ApiError(500, `AI enhancement failed: ${error.message}`);
   }
 });
@@ -139,13 +149,13 @@ Return ONLY the plain text of the updated note content. Do not write any introdu
  */
 noteController.aiSuggest = asyncHandler(async (req, res) => {
   const { notes, requirement } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
 
   if (!requirement) {
     throw new ApiError(400, "Requirement description is required");
   }
   if (!apiKey) {
-    throw new ApiError(500, "Gemini API key is not configured on backend server");
+    throw new ApiError(500, "Groq API key is not configured on backend server");
   }
 
   const existingNotesSummary = notes && notes.length > 0 
@@ -189,17 +199,28 @@ JSON Schema:
 
   try {
     const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      "https://api.groq.com/openai/v1/chat/completions",
       {
-        contents: [
+        model: "llama-3.3-70b-versatile",
+        messages: [
           {
-            parts: [{ text: prompt }]
+            role: "user",
+            content: prompt
           }
-        ]
+        ],
+        response_format: {
+          type: "json_object"
+        }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        }
       }
     );
 
-    let responseText = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    let responseText = response.data?.choices?.[0]?.message?.content || "";
     
     // Clean up potential markdown formatting wrapping the JSON
     if (responseText.includes("```json")) {
@@ -214,7 +235,7 @@ JSON Schema:
       new ApiResponse(200, result, "AI suggestions fetched successfully")
     );
   } catch (error) {
-    console.error("Gemini Suggest Error:", error.response?.data || error.message);
+    console.error("Groq Suggest Error:", error.response?.data || error.message);
     throw new ApiError(500, `AI suggestions failed: ${error.message}`);
   }
 });

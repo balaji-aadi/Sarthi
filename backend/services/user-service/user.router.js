@@ -9,6 +9,7 @@ const router = Router();
 
 router.route("/register").post(userController.registerUser)
 router.route("/login").post(userController.loginUser)
+router.route("/zoho-login").post(userController.zohoLogin)
 router.route("/refresh-token").post(userController.refreshAccessToken)
 router.route("/create-fcm-token").post(userController.createFCMToken)
 

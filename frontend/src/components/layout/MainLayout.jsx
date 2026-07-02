@@ -118,7 +118,7 @@ const MainLayout = () => {
             <div className={`flex-1 ${activeBranch ? 'ml-72' : ''} flex flex-col h-full overflow-hidden relative`}>
                 {activeBranch && <Header />}
                 
-                <main className="flex-1 overflow-y-auto p-4 sm:p-8">
+                <main className={`flex-1 ${location.pathname === '/notes' ? 'overflow-hidden p-0' : 'overflow-y-auto p-4 sm:p-8'}`}>
                     <Outlet />
                 </main>
 

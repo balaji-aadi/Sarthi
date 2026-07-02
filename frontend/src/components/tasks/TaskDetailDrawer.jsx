@@ -21,6 +21,13 @@ import {
     IoTimeOutline
 } from 'react-icons/io5';
 
+const getYoutubeId = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+};
+
 const TaskDetailDrawer = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -300,6 +307,27 @@ const TaskDetailDrawer = () => {
                             }}
                         />
                     </div>
+
+                    {task?.youtubeUrl && getYoutubeId(task.youtubeUrl) && (
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                                <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
+                                    YouTube Video
+                                </label>
+                                <div className="h-px flex-1 bg-gradient-to-r from-red-500/30 to-transparent ml-4" />
+                            </div>
+                            <div className="relative w-full aspect-video rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${getYoutubeId(task.youtubeUrl)}`}
+                                    title="YouTube video player"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowFullScreen
+                                    className="absolute inset-0 w-full h-full"
+                                ></iframe>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Subtasks Section */}
                     <div className="space-y-2">

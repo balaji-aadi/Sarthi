@@ -24,7 +24,8 @@ import {
   IoPause,
   IoSparklesOutline,
   IoOpenOutline,
-  IoRefreshOutline
+  IoRefreshOutline,
+  IoLogoYoutube
 } from 'react-icons/io5';
 import toast from 'react-hot-toast';
 import InputField from '../../components/InputField';
@@ -39,6 +40,13 @@ const hasAdditionalNotes = (notes) => {
         .replace(/&amp;/gi, '')
         .trim();
     return decoded.length > 0;
+};
+
+const getYoutubeId = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
 };
 
 const NoteCell = ({ text, onReadMore }) => {
@@ -105,6 +113,8 @@ const Revision = () => {
     const [revisionNote, setRevisionNote] = useState('');
     const [showNotesModal, setShowNotesModal] = useState(false);
     const [notesModalTask, setNotesModalTask] = useState(null);
+    const [showYtModal, setShowYtModal] = useState(false);
+    const [ytModalTask, setYtModalTask] = useState(null);
 
     const [activeTimer, setActiveTimer] = useState(null);
 
@@ -507,14 +517,45 @@ const Revision = () => {
                 taskPriority: "medium",
                 taskType: "AI Challenge",
                 parentTask: generatedChallenge.parentTaskId,
-                status: "todo",
+                status: "inprogress",
                 taskDescription: generatedChallenge.description,
                 additionalNotes: `<h3>AI Solution Approach Hint</h3><p>${generatedChallenge.hint}</p><br/>Platform: <b>${generatedChallenge.platform}</b><br/>Asked in Companies: <b>${generatedChallenge.companies?.join(", ") || "N/A"}</b><br/>Link to Problem: <a href="${generatedChallenge.problemUrl}" target="_blank" rel="noopener noreferrer">${generatedChallenge.problemTitle}</a>`
             };
-            await TaskApi.createTask(payload);
-            toast.success("AI Challenge accepted and added to tasks!");
+            const res = await TaskApi.createTask(payload);
+            const createdTask = res.data?.data;
+
+            if (createdTask) {
+                const focusTimerBinding = {
+                    taskId: createdTask._id,
+                    taskName: createdTask.taskName,
+                    taskIdString: createdTask.taskId || 'DSA-X',
+                    estimatedHours: 40 / 60,
+                    dueDate: createdTask.taskDueDate,
+                    isBacklog: false,
+                    taskType: "AI Challenge"
+                };
+                localStorage.setItem("focus_timer_task_binding", JSON.stringify(focusTimerBinding));
+
+                const timerState = {
+                    timeLeft: 40 * 60,
+                    isActive: true,
+                    startTime: new Date().toISOString(),
+                    accumulatedTime: 0,
+                    selectedDuration: 40,
+                    currentTheme: { name: 'Vermilion', color: '#E34234', bg: 'rgba(227, 66, 52, 0.05)', shadow: 'rgba(227, 66, 52, 0.4)' },
+                    customHeading: createdTask.taskName,
+                    isCustomSessionActive: false
+                };
+                localStorage.setItem("focus_timer_state", JSON.stringify(timerState));
+
+                toast.success("AI Challenge accepted, added to tasks, and 40-minute timer started!");
+            } else {
+                toast.success("AI Challenge accepted and added to tasks!");
+            }
+
             setShowAiModal(false);
             loadInitialData(); // Refresh revision page tasks
+            updateActiveTimer(); // Sync timer display
         } catch (error) {
             console.error("Failed to accept challenge", error);
             toast.error(error.response?.data?.message || "Failed to accept challenge");
@@ -855,11 +896,42 @@ const Revision = () => {
                                             <td className="px-4 py-4">
                                                 <div className="flex flex-col">
                                                     <span className="text-[13px] font-black text-slate-700 group-hover:text-primary transition-colors leading-tight mb-0.5 flex items-center gap-1.5">
-                                                        {task.taskName}
+                                                        {task.projectName?.key === 'DSA' || (task.taskId && task.taskId.startsWith('DSA-')) ? (
+                                                            <a
+                                                                href={`https://leetcode.com/problems/${task.taskName
+                                                                    .toLowerCase()
+                                                                    .trim()
+                                                                    .replace(/[^\w\s-]/g, '')
+                                                                    .replace(/[\s_-]+/g, '-')
+                                                                    .replace(/^-+|-+$/g, '')}/description/`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="hover:underline hover:text-orange-500 transition-colors flex items-center gap-1 cursor-pointer"
+                                                                title="Open on LeetCode"
+                                                            >
+                                                                {task.taskName}
+                                                                <IoOpenOutline size={12} className="text-orange-400 shrink-0" />
+                                                            </a>
+                                                        ) : (
+                                                            task.taskName
+                                                        )}
                                                         {task.taskType === "AI Challenge" && (
                                                             <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-extrabold bg-violet-100 text-violet-700 border border-violet-200 uppercase tracking-widest leading-none scale-90 origin-left">
                                                                 AI
                                                             </span>
+                                                        )}
+                                                        {task.youtubeUrl && (
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setYtModalTask(task);
+                                                                    setShowYtModal(true);
+                                                                }}
+                                                                className="text-red-500 hover:text-red-600 hover:scale-110 transition-all shrink-0 inline-flex items-center p-1 rounded-md hover:bg-red-50"
+                                                                title="Watch YouTube Video"
+                                                            >
+                                                                <IoLogoYoutube size={16} />
+                                                            </button>
                                                         )}
                                                     </span>
                                                     <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest">{task.taskId || 'DSA-X'}</span>
@@ -1136,6 +1208,66 @@ const Revision = () => {
                             <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end shrink-0">
                                 <button 
                                     onClick={() => { setShowNotesModal(false); setNotesModalTask(null); }}
+                                    className="px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-[10px] font-black transition-all active:scale-95 shadow-lg shadow-primary/20"
+                                >
+                                    CLOSE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* YouTube Video Player Modal */}
+            {showYtModal && ytModalTask && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    <div 
+                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-500" 
+                        onClick={() => { setShowYtModal(false); setYtModalTask(null); }}
+                    ></div>
+                    <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-3xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/20">
+                        <div className="bg-slate-900 px-8 py-8 flex items-center justify-between text-white relative overflow-hidden">
+                            <div className="relative z-10 flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10">
+                                    <IoLogoYoutube size={24} className="text-red-500 animate-pulse" />
+                                </div>
+                                <div>
+                                    <h3 className="font-black text-xl tracking-tight leading-none truncate max-w-[450px]">
+                                        {ytModalTask.taskName}
+                                    </h3>
+                                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1.5">
+                                        Distraction-Free Video
+                                    </p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => { setShowYtModal(false); setYtModalTask(null); }} 
+                                className="relative z-10 w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/5 text-white"
+                            >
+                                <IoCloseOutline size={24} />
+                            </button>
+                        </div>
+
+                        <div className="p-8 bg-white flex flex-col">
+                            <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-black">
+                                {getYoutubeId(ytModalTask.youtubeUrl) ? (
+                                    <iframe
+                                        src={`https://www.youtube.com/embed/${getYoutubeId(ytModalTask.youtubeUrl)}?autoplay=1`}
+                                        title="YouTube video player"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowFullScreen
+                                        className="absolute inset-0 w-full h-full"
+                                    ></iframe>
+                                ) : (
+                                    <div className="absolute inset-0 flex items-center justify-center text-slate-400">
+                                        Invalid YouTube URL
+                                    </div>
+                                )}
+                            </div>
+                            <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end shrink-0">
+                                <button 
+                                    onClick={() => { setShowYtModal(false); setYtModalTask(null); }}
                                     className="px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-[10px] font-black transition-all active:scale-95 shadow-lg shadow-primary/20"
                                 >
                                     CLOSE
