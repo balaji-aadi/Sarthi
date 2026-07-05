@@ -1,14 +1,13 @@
 // Bug task page
 
-import { FiActivity } from "react-icons/fi";
-import Activity from "../task-childrens/Activity";
+
 import { IoFlagSharp } from "react-icons/io5";
 import { Draggable } from "@hello-pangea/dnd";
 import { useEffect, useRef, useState } from "react";
 
 const BugTasks = ({ key, task, index, handleClick }) => {
   const [, setMenuOpen] = useState(false);
-  const [openActivity, setOpenActivity] = useState(false);
+
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -132,31 +131,13 @@ const BugTasks = ({ key, task, index, handleClick }) => {
                 </div>}
               </main>
 
-              <div className="mt-4 flex justify-end">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setOpenActivity(true);
-                  }}
-                  className="p-1.5 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                  title="View activity"
-                >
-                  <FiActivity size={14} />
-                </button>
-              </div>
+
             </div>
           </div>
         )}
       </Draggable>
 
-      {openActivity && (
-        <Activity
-          isOpen={openActivity}
-          onClose={() => setOpenActivity(false)}
-          task={task}
-          type={"Bug"}
-        />
-      )}
+
     </>
   );
 };

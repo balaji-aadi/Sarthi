@@ -1008,7 +1008,7 @@ const CreateTask = ({
                 <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 mt-6">
                   {id && (
                     <button
-                      type="submit"
+                      type="button"
                       className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primaryHover focus:outline-none"
                       onClick={handleClose}
                     >
@@ -1016,6 +1016,15 @@ const CreateTask = ({
                     </button>
                   )}
                   <div className="flex items-center space-x-2">
+                    {!id && (
+                      <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 focus:outline-none font-medium"
+                      >
+                        Close
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => formik.resetForm()}
@@ -1102,14 +1111,25 @@ const CreateTask = ({
       {/* Mobile fixed action bar */}
       {!modalMode && (
         <div className="fixed bottom-0 left-0 right-0 p-3 bg-white border-t shadow md:hidden">
-          <div className="max-w-7xl mx-auto w-full flex justify-between">
-            <button
-              type="button"
-              onClick={() => formik.resetForm()}
-              className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
-            >
-              Cancel
-            </button>
+          <div className="max-w-7xl mx-auto w-full flex justify-between gap-2">
+            <div className="flex gap-2">
+              {!id && (
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 font-medium"
+                >
+                  Close
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => formik.resetForm()}
+                className="bg-gray-200 text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+            </div>
             <button
               type="button"
               onClick={() => document.getElementById('create-task-form')?.requestSubmit()}

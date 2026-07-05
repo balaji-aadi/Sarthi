@@ -7,26 +7,26 @@ import { FocusApi } from '../../services/api/Focus.api';
 import { NoteApi } from '../../services/api/Note.api';
 import { useLoading } from '../../components/loader/LoaderContext';
 import moment from 'moment';
-import { 
-  IoSearchOutline, 
-  IoFilterOutline, 
-  IoSyncOutline, 
-  IoCalendarOutline,
-  IoCheckmarkCircleOutline,
-  IoListOutline,
-  IoChevronForward,
-  IoChevronDown,
-  IoCloseOutline,
-  IoChevronUpOutline,
-  IoEyeOutline,
-  IoEyeOffOutline,
-  IoTimerOutline,
-  IoPlay,
-  IoPause,
-  IoSparklesOutline,
-  IoOpenOutline,
-  IoRefreshOutline,
-  IoLogoYoutube
+import {
+    IoSearchOutline,
+    IoFilterOutline,
+    IoSyncOutline,
+    IoCalendarOutline,
+    IoCheckmarkCircleOutline,
+    IoListOutline,
+    IoChevronForward,
+    IoChevronDown,
+    IoCloseOutline,
+    IoChevronUpOutline,
+    IoEyeOutline,
+    IoEyeOffOutline,
+    IoTimerOutline,
+    IoPlay,
+    IoPause,
+    IoSparklesOutline,
+    IoOpenOutline,
+    IoRefreshOutline,
+    IoLogoYoutube
 } from 'react-icons/io5';
 import toast from 'react-hot-toast';
 import InputField from '../../components/InputField';
@@ -72,13 +72,13 @@ const NoteCell = ({ text, onReadMore }) => {
 
     return (
         <div className="min-w-[200px] max-w-[320px] py-1">
-            <div 
+            <div
                 ref={textRef}
                 className="text-[11px] font-semibold text-slate-500 leading-[1.6] transition-all duration-300 rich-text-preview break-words whitespace-pre-wrap line-clamp-2"
                 dangerouslySetInnerHTML={{ __html: text }}
             />
             {isLong && (
-                <button 
+                <button
                     onClick={(e) => {
                         e.stopPropagation();
                         onReadMore();
@@ -120,7 +120,7 @@ const Revision = () => {
     const [filteredTasks, setFilteredTasks] = useState([]);
     const [stats, setStats] = useState({ currentStreak: 0, longestStreak: 0, revisionsByDate: {}, completedByDate: {} });
     const [notes, setNotes] = useState([]);
-    
+
     // Filters
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedProject, setSelectedProject] = useState('all');
@@ -128,7 +128,7 @@ const Revision = () => {
     const [selectedParent, setSelectedParent] = useState('all');
     const [selectedDate, setSelectedDate] = useState('');
     const [showFilters, setShowFilters] = useState(true);
-    
+
     // UI State
     const [expandedTaskId, setExpandedTaskId] = useState(null);
     const [showRevisionModal, setShowRevisionModal] = useState(false);
@@ -182,7 +182,7 @@ const Revision = () => {
                     }
                     return;
                 }
-            } catch(e) { console.error("Error reading revision timer state", e); }
+            } catch (e) { console.error("Error reading revision timer state", e); }
         }
         setActiveTimer(null);
     };
@@ -219,7 +219,7 @@ const Revision = () => {
                 localStorage.setItem("focus_timer_state", JSON.stringify(timerState));
                 toast.success(timerState.isActive ? "Timer resumed" : "Timer paused");
                 updateActiveTimer();
-            } catch(e) { console.error("Error toggling timer state", e); }
+            } catch (e) { console.error("Error toggling timer state", e); }
         }
     };
 
@@ -259,15 +259,15 @@ const Revision = () => {
                 TaskApi.getRevisionStats(timezoneOffset),
                 NoteApi.getNotes()
             ]);
-            
+
             const allTasks = tasksRes.data?.data || [];
-            
+
             const completedChildTasks = allTasks.filter(t => {
                 const isSubtask = t.parentTask;
                 const isDone = t.status === 'done';
                 return isSubtask && isDone;
             });
-            
+
             setTasks(completedChildTasks);
             setFilteredTasks(completedChildTasks);
             setProjects(projectsRes.data?.data || []);
@@ -352,10 +352,10 @@ const Revision = () => {
     const getBestRevisionInfo = () => {
         const dates = Object.keys(stats.revisionsByDate || {});
         if (dates.length === 0) return { date: 'None', count: 0 };
-        
+
         let bestDate = dates[0];
         let maxCount = stats.revisionsByDate[bestDate]?.length || 0;
-        
+
         for (let i = 1; i < dates.length; i++) {
             const date = dates[i];
             const count = stats.revisionsByDate[date]?.length || 0;
@@ -364,7 +364,7 @@ const Revision = () => {
                 bestDate = date;
             }
         }
-        
+
         return {
             date: moment(bestDate).format('DD MMM, YYYY'),
             count: maxCount
@@ -405,7 +405,7 @@ const Revision = () => {
         localStorage.setItem("focus_timer_state", JSON.stringify(timerState));
 
         toast.success(`Starting 30-minute revision timer for: ${task.taskName}`);
-        
+
         // Update local state immediately
         updateActiveTimer();
     };
@@ -420,7 +420,7 @@ const Revision = () => {
         try {
             await TaskApi.addRevision(selectedTask._id, { notes: revisionNote });
             toast.success("Revision logged successfully");
-            
+
             // Check if there is an active focus timer for this exact task
             const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
             if (bindingObjStr) {
@@ -435,12 +435,12 @@ const Revision = () => {
                             const nowMs = Date.now();
                             const sessionSeconds = Math.floor((nowMs - startTimeMs) / 1000);
                             const totalSpent = (timerState.accumulatedTime || 0) + (timerState.isActive ? sessionSeconds : 0);
-                            
+
                             const actualDuration = Math.max(Math.round(totalSpent / 60), 1);
-                            
+
                             const start = timerState.startTime ? moment(timerState.startTime) : moment();
                             const end = moment(nowMs);
-                            
+
                             const sessionData = {
                                 date: start.format("YYYY-MM-DD"),
                                 startTime: start.toISOString(),
@@ -454,21 +454,21 @@ const Revision = () => {
                                 completionState: "completed",
                                 estimatedTimeAtStart: timerState.selectedDuration
                             };
-                            
+
                             await FocusApi.createSession(sessionData);
                             toast.success("Focus timer session saved!");
                         }
-                        
+
                         // Clear/reset the focus timer state
                         localStorage.removeItem("focus_timer_task_binding");
                         localStorage.removeItem("focus_timer_state");
                         localStorage.removeItem("focus_timer_retrievable");
                     }
-                } catch(timerErr) {
+                } catch (timerErr) {
                     console.error("Failed to auto-log focus timer from revision page", timerErr);
                 }
             }
-            
+
             setShowRevisionModal(false);
             setRevisionNote('');
             loadInitialData();
@@ -509,7 +509,7 @@ const Revision = () => {
             const payload = {
                 parentTaskId: selectedParentId === "random" ? "random" : selectedParentId
             };
-            
+
             // If random, select a random one from our filtered completedParents
             if (selectedParentId === "random") {
                 if (completedParents.length > 0) {
@@ -643,7 +643,7 @@ const Revision = () => {
                             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Mastery Count</span>
                             <span className="text-base font-black text-slate-800 leading-none">{filteredTasks.length}</span>
                         </div>
-                        <button 
+                        <button
                             onClick={() => {
                                 if (selectedProject === 'all') {
                                     toast.error("Please select a specific Arena (e.g., DSA) in the filters to use the AI Challenge.");
@@ -655,12 +655,12 @@ const Revision = () => {
                                 }
                                 handleOpenAiChallengeModal();
                             }}
-                             className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all bg-primary hover:bg-primaryHover text-white shadow-md shadow-primary/20 active:scale-95 shrink-0"
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all bg-primary hover:bg-primaryHover text-white shadow-md shadow-primary/20 active:scale-95 shrink-0"
                         >
                             <IoSparklesOutline size={14} />
                             AI Challenge
                         </button>
-                        <button 
+                        <button
                             onClick={() => setShowFilters(!showFilters)}
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all border ${showFilters ? 'bg-slate-50 text-slate-600 border-slate-200' : 'bg-primary text-white border-primary shadow-lg shadow-primary/20'}`}
                         >
@@ -711,7 +711,7 @@ const Revision = () => {
                         <h3 className="text-xl font-black text-slate-800 mt-1 leading-none">
                             {stats.longestStreak} {stats.longestStreak === 1 ? 'Day' : 'Days'}
                         </h3>
-                         <p className="text-[10px] font-medium text-slate-400 mt-1.5">Your personal best streak</p>
+                        <p className="text-[10px] font-medium text-slate-400 mt-1.5">Your personal best streak</p>
                     </div>
                 </div>
 
@@ -741,11 +741,11 @@ const Revision = () => {
                             <IoTimerOutline size={24} className="text-white animate-pulse" />
                         </div>
                         <div>
-                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Revision Session</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Revision Session</p>
                             <h4 className="text-base font-black tracking-tight mt-0.5">{activeTimer.taskName}</h4>
                         </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-6">
                         {/* Live Timer Counter */}
                         <div className="font-mono text-3xl font-black tracking-wider flex items-center gap-1 bg-black/15 px-4 py-1.5 rounded-2xl border border-white/5 shadow-inner">
@@ -754,10 +754,10 @@ const Revision = () => {
                             <span className="animate-pulse">:</span>
                             <span>{Math.abs(activeTimer.timeLeft % 60).toString().padStart(2, '0')}</span>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                             {/* Pause/Resume Button */}
-                            <button 
+                            <button
                                 onClick={handleTogglePlayPause}
                                 className="p-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl transition-all font-bold text-xs active:scale-95 flex items-center gap-1.5"
                                 title={activeTimer.isActive ? "Pause Timer" : "Resume Timer"}
@@ -765,18 +765,18 @@ const Revision = () => {
                                 {activeTimer.isActive ? <IoPause size={16} /> : <IoPlay size={16} />}
                                 {activeTimer.isActive ? "PAUSE" : "RESUME"}
                             </button>
-                            
+
                             {/* Complete & Log Button */}
-                            <button 
+                            <button
                                 onClick={handleOpenRevisionLogForActiveTimer}
                                 className="px-5 py-3 bg-emerald-500 hover:bg-emerald-600 border border-emerald-400 text-white rounded-xl transition-all font-black text-xs active:scale-95 shadow-md flex items-center gap-1.5"
                             >
                                 <IoSyncOutline size={16} />
                                 LOG REVISION
                             </button>
-                            
+
                             {/* Discard Button */}
-                            <button 
+                            <button
                                 onClick={handleCancelActiveTimer}
                                 className="p-3 hover:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-white font-bold text-xs"
                                 title="Cancel and Discard Timer"
@@ -795,8 +795,8 @@ const Revision = () => {
                         {/* Search Bar */}
                         <div className="w-64 relative">
                             <IoSearchOutline className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 placeholder="Find a task..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -806,7 +806,7 @@ const Revision = () => {
 
                         {/* Dropdowns */}
                         <div className="">
-                            <InputField 
+                            <InputField
                                 type="select"
                                 options={projectOptions}
                                 value={selectedProject}
@@ -818,7 +818,7 @@ const Revision = () => {
                         </div>
 
                         <div className="">
-                            <InputField 
+                            <InputField
                                 type="select"
                                 options={parentOptions}
                                 value={selectedParent}
@@ -830,7 +830,7 @@ const Revision = () => {
                         </div>
 
                         <div className="">
-                            <InputField 
+                            <InputField
                                 type="select"
                                 options={sortOptions}
                                 value={sortBy}
@@ -844,7 +844,7 @@ const Revision = () => {
                         {/* Date Picker */}
                         <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 rounded-xl px-3 py-1.5 mb-2 hover:border-slate-200 transition-all">
                             <IoCalendarOutline className="text-slate-400 shrink-0" size={14} />
-                            <input 
+                            <input
                                 type="date"
                                 value={selectedDate}
                                 onChange={(e) => setSelectedDate(e.target.value)}
@@ -852,7 +852,7 @@ const Revision = () => {
                             />
                         </div>
 
-                        <button 
+                        <button
                             onClick={() => { setSearchTerm(''); setSelectedProject('all'); setSelectedParent('all'); setSortBy('newest'); setSelectedDate(''); }}
                             className="p-2 mb-2 rounded-xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-rose-500 hover:bg-rose-50 hover:border-rose-100 transition-all shadow-sm"
                             title="Reset"
@@ -879,7 +879,7 @@ const Revision = () => {
                             </p>
                         </div>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setSelectedDate('')}
                         className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
                         title="Clear Date Filter"
@@ -911,7 +911,7 @@ const Revision = () => {
                                     <React.Fragment key={task._id}>
                                         <tr className={`hover:bg-slate-50/80 transition-all group ${expandedTaskId === task._id ? 'bg-slate-50' : ''}`}>
                                             <td className="pl-8 pr-4 py-4">
-                                                <button 
+                                                <button
                                                     onClick={() => setExpandedTaskId(expandedTaskId === task._id ? null : task._id)}
                                                     className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${expandedTaskId === task._id ? 'bg-primary text-white rotate-90 shadow-lg shadow-primary/20' : 'bg-slate-50 text-slate-400 group-hover:bg-white group-hover:text-primary group-hover:shadow-sm'}`}
                                                 >
@@ -921,7 +921,7 @@ const Revision = () => {
                                             <td className="px-4 py-4">
                                                 <div className="flex flex-col">
                                                     <span className="text-[13px] font-black text-slate-700 leading-tight mb-0.5 flex items-center gap-1.5 flex-wrap">
-                                                        <span 
+                                                        <span
                                                             onClick={() => handleOpenDrawer(task)}
                                                             className="cursor-pointer hover:underline hover:text-primary transition-colors"
                                                         >
@@ -966,7 +966,7 @@ const Revision = () => {
 
                                                         {/* Attachment Indicator Badge */}
                                                         {task.attachments && task.attachments.length > 0 && (
-                                                            <span 
+                                                            <span
                                                                 className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-extrabold bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-widest leading-none scale-90"
                                                                 title="Task has attachments"
                                                             >
@@ -984,13 +984,13 @@ const Revision = () => {
                                                             }
                                                             return false;
                                                         }) && (
-                                                            <span 
-                                                                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-extrabold bg-yellow-50 text-yellow-600 border border-yellow-100 uppercase tracking-widest leading-none scale-90"
-                                                                title="Task has linked sticky notes"
-                                                            >
-                                                                📝 Notes
-                                                            </span>
-                                                        )}
+                                                                <span
+                                                                    className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-extrabold bg-yellow-50 text-yellow-600 border border-yellow-100 uppercase tracking-widest leading-none scale-90"
+                                                                    title="Task has linked sticky notes"
+                                                                >
+                                                                    📝 Notes
+                                                                </span>
+                                                            )}
                                                     </span>
                                                     <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest">{task.taskId || 'DSA-X'}</span>
                                                 </div>
@@ -1004,8 +1004,8 @@ const Revision = () => {
                                                 </div>
                                             </td>
                                             <td className="px-4 py-4">
-                                                <NoteCell 
-                                                    text={task.additionalNotes} 
+                                                <NoteCell
+                                                    text={task.additionalNotes}
                                                     onReadMore={() => {
                                                         setNotesModalTask(task);
                                                         setShowNotesModal(true);
@@ -1031,7 +1031,7 @@ const Revision = () => {
                                             <td className="pl-4 pr-8 py-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     {activeTimer && activeTimer.taskId === task._id ? (
-                                                        <button 
+                                                        <button
                                                             onClick={handleTogglePlayPause}
                                                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary border border-primary text-[10px] font-black text-white hover:bg-primaryHover transition-all active:scale-95 group/revise-btn shadow-md animate-pulse"
                                                             title={activeTimer.isActive ? "Pause Active Revision Timer" : "Resume Active Revision Timer"}
@@ -1042,7 +1042,7 @@ const Revision = () => {
                                                             {Math.abs(activeTimer.timeLeft % 60).toString().padStart(2, '0')}
                                                         </button>
                                                     ) : (
-                                                        <button 
+                                                        <button
                                                             onClick={() => handleReviseWithTimer(task)}
                                                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-vermilion-50 border border-vermilion-100 text-[10px] font-black text-primary hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95 group/revise-btn shadow-sm"
                                                             title="Start 30-minute Focus Revision Session"
@@ -1051,7 +1051,7 @@ const Revision = () => {
                                                             TIMER
                                                         </button>
                                                     )}
-                                                    <button 
+                                                    <button
                                                         onClick={() => { setSelectedTask(task); setShowRevisionModal(true); }}
                                                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-[10px] font-black text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95 group/btn"
                                                     >
@@ -1079,7 +1079,7 @@ const Revision = () => {
                                                                 Revision History
                                                             </h5>
                                                         </div>
-                                                        
+
                                                         {task.revisionLogs && task.revisionLogs.length > 0 ? (
                                                             <div className="space-y-2">
                                                                 {task.revisionLogs.map((log, lIdx) => (
@@ -1163,7 +1163,7 @@ const Revision = () => {
                             <div className="space-y-5">
                                 <div>
                                     <label className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-3 block">Insights</label>
-                                    <textarea 
+                                    <textarea
                                         rows="4"
                                         placeholder="Record key findings..."
                                         value={revisionNote}
@@ -1173,13 +1173,13 @@ const Revision = () => {
                                 </div>
 
                                 <div className="flex items-center gap-4 pt-2">
-                                    <button 
+                                    <button
                                         onClick={() => setShowRevisionModal(false)}
                                         className="px-6 py-4 rounded-xl text-[10px] font-black text-slate-400 hover:text-slate-600 transition-all"
                                     >
                                         CANCEL
                                     </button>
-                                    <button 
+                                    <button
                                         onClick={handleAddRevision}
                                         className="flex-1 px-6 py-4 rounded-xl text-[10px] font-black text-white bg-primary hover:bg-primary-dark transition-all active:scale-95 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
                                     >
@@ -1226,7 +1226,7 @@ const Revision = () => {
                                             <p className="text-[9px] font-black text-primary uppercase tracking-widest mt-0.5">{notesModalTask?.projectName?.key || 'MOM'}</p>
                                         </div>
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             if (notesModalTask?.additionalNotes) {
                                                 const tempEl = document.createElement("div");
@@ -1246,7 +1246,7 @@ const Revision = () => {
                             <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                                 <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-3 block">Content</span>
                                 <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100/50 min-h-[150px]">
-                                    <div 
+                                    <div
                                         className="text-[13px] font-medium text-slate-600 leading-relaxed rich-text-content break-words whitespace-pre-wrap"
                                         dangerouslySetInnerHTML={{ __html: notesModalTask?.additionalNotes }}
                                     />
@@ -1254,7 +1254,7 @@ const Revision = () => {
                             </div>
 
                             <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end shrink-0">
-                                <button 
+                                <button
                                     onClick={() => { setShowNotesModal(false); setNotesModalTask(null); }}
                                     className="px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-[10px] font-black transition-all active:scale-95 shadow-lg shadow-primary/20"
                                 >
@@ -1269,8 +1269,8 @@ const Revision = () => {
             {/* YouTube Video Player Modal */}
             {showYtModal && ytModalTask && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-                    <div 
-                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-500" 
+                    <div
+                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-500"
                         onClick={() => { setShowYtModal(false); setYtModalTask(null); }}
                     ></div>
                     <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-3xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/20">
@@ -1288,8 +1288,8 @@ const Revision = () => {
                                     </p>
                                 </div>
                             </div>
-                            <button 
-                                onClick={() => { setShowYtModal(false); setYtModalTask(null); }} 
+                            <button
+                                onClick={() => { setShowYtModal(false); setYtModalTask(null); }}
                                 className="relative z-10 w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/5 text-white"
                             >
                                 <IoCloseOutline size={24} />
@@ -1314,7 +1314,7 @@ const Revision = () => {
                                 )}
                             </div>
                             <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end shrink-0">
-                                <button 
+                                <button
                                     onClick={() => { setShowYtModal(false); setYtModalTask(null); }}
                                     className="px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-[10px] font-black transition-all active:scale-95 shadow-lg shadow-primary/20"
                                 >
@@ -1329,8 +1329,8 @@ const Revision = () => {
             {/* AI Challenge Modal */}
             {showAiModal && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-                    <div 
-                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-500" 
+                    <div
+                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-500"
                         onClick={() => { if (!isGeneratingChallenge) setShowAiModal(false); }}
                     ></div>
                     <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100 flex flex-col max-h-[90vh]">
@@ -1338,7 +1338,7 @@ const Revision = () => {
                         <div className="bg-slate-800 px-8 py-10 flex items-center justify-between text-white relative overflow-hidden shrink-0">
                             {/* Decorative background glow */}
                             <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-                            
+
                             <div className="relative z-10 flex items-center gap-4">
                                 <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10 shrink-0">
                                     <IoSparklesOutline size={24} className="text-white animate-pulse" />
@@ -1348,8 +1348,8 @@ const Revision = () => {
                                     <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1.5">Reinforce Your Patterns</p>
                                 </div>
                             </div>
-                            <button 
-                                onClick={() => { if (!isGeneratingChallenge) setShowAiModal(false); }} 
+                            <button
+                                onClick={() => { if (!isGeneratingChallenge) setShowAiModal(false); }}
                                 disabled={isGeneratingChallenge}
                                 className="relative z-10 w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/5 active:scale-95 disabled:opacity-50"
                             >
@@ -1363,7 +1363,7 @@ const Revision = () => {
                                 <div className="space-y-6">
                                     <div>
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Select Completed Pattern</label>
-                                        <select 
+                                        <select
                                             value={selectedParentId}
                                             onChange={(e) => setSelectedParentId(e.target.value)}
                                             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all cursor-pointer"
@@ -1376,7 +1376,7 @@ const Revision = () => {
                                             ))}
                                         </select>
                                     </div>
-                                    
+
                                     <div className="p-4 bg-vermilion-50 rounded-2xl border border-vermilion-100 flex gap-3 text-primary">
                                         <span className="text-lg">💡</span>
                                         <p className="text-xs font-semibold leading-relaxed">
@@ -1384,7 +1384,7 @@ const Revision = () => {
                                         </p>
                                     </div>
 
-                                    <button 
+                                    <button
                                         onClick={handleGenerateChallenge}
                                         className="w-full px-6 py-4 rounded-xl text-[11px] font-black text-white bg-primary hover:bg-primaryHover shadow-md shadow-primary/20 transition-all active:scale-95 flex items-center justify-center gap-2 mt-4"
                                     >
@@ -1419,9 +1419,9 @@ const Revision = () => {
                                             </span>
                                             <h4 className="text-base font-black text-slate-800 tracking-tight mt-2 flex items-center gap-1.5">
                                                 {generatedChallenge.problemTitle}
-                                                <a 
-                                                    href={generatedChallenge.problemUrl} 
-                                                    target="_blank" 
+                                                <a
+                                                    href={generatedChallenge.problemUrl}
+                                                    target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="text-slate-400 hover:text-primary transition-colors p-1"
                                                     title="Open Problem Link"
@@ -1456,7 +1456,7 @@ const Revision = () => {
 
                                     {/* Collapsible Hint */}
                                     <div>
-                                        <button 
+                                        <button
                                             onClick={() => setShowHint(!showHint)}
                                             className="w-full flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-slate-100/50 transition-colors"
                                         >
@@ -1476,7 +1476,7 @@ const Revision = () => {
 
                                     {/* Action Buttons */}
                                     <div className="flex gap-3 pt-2 shrink-0">
-                                        <button 
+                                        <button
                                             onClick={handleGenerateChallenge}
                                             className="px-4 py-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-[10px] font-black text-slate-500 hover:text-slate-700 transition-all flex items-center gap-1.5"
                                             title="Get a different challenge"
@@ -1484,7 +1484,7 @@ const Revision = () => {
                                             <IoRefreshOutline size={16} />
                                             TRY ANOTHER
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={handleAcceptChallenge}
                                             className="flex-1 px-6 py-4 rounded-xl text-[10px] font-black text-white bg-primary hover:bg-primary-dark shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center justify-center gap-2"
                                         >
@@ -1499,10 +1499,10 @@ const Revision = () => {
                 </div>
             )}
 
-            <TaskDetailDrawer 
-                isOpen={isDrawerOpen} 
-                onClose={() => setIsDrawerOpen(false)} 
-                task={selectedTaskForDrawer} 
+            <TaskDetailDrawer
+                isOpen={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+                task={selectedTaskForDrawer}
                 canEdit={canEdit}
                 onTaskUpdate={handleEditFromDrawer}
             />
@@ -1510,7 +1510,7 @@ const Revision = () => {
             {editTaskId && editTaskData && (
                 <div className="fixed inset-0 z-[100] flex items-start justify-center p-6">
                     <div className="absolute inset-0 bg-black/50" onClick={() => { setEditTaskId(null); setEditTaskData(null); }} />
-                    <div className="relative w-full max-w-4xl h-[90vh] overflow-auto bg-white dark:bg-themeBG rounded-2xl shadow-2xl z-10">
+                    <div className="relative w-full h-full overflow-auto bg-white dark:bg-themeBG rounded-2xl shadow-2xl z-10">
                         <div className="flex items-center justify-between p-4 border-b">
                             <h4 className="text-lg font-bold">Update Task</h4>
                             <button
@@ -1521,15 +1521,15 @@ const Revision = () => {
                             </button>
                         </div>
                         <div className="p-4">
-                            <CreateTask 
-                                modalMode={true} 
-                                task={editTaskData} 
-                                id={editTaskId} 
-                                setId={setEditTaskId} 
-                                setTask={setEditTaskData} 
+                            <CreateTask
+                                modalMode={true}
+                                task={editTaskData}
+                                id={editTaskId}
+                                setId={setEditTaskId}
+                                setTask={setEditTaskData}
                                 setProjectTasks={() => {
                                     loadInitialData();
-                                }} 
+                                }}
                             />
                         </div>
                     </div>

@@ -202,7 +202,6 @@ import { SiLeetcode } from "react-icons/si";
 import { IoMdTime } from "react-icons/io";
 import { FaCalendar } from "react-icons/fa";
 import { FiActivity, FiChevronDown, FiChevronUp } from "react-icons/fi";
-import Activity from "./Activity";
 import { IoFileTrayFull } from "react-icons/io5";
 import { CommonApi } from "../../services/api/Common.api";
 import { server } from "../../services/config";
@@ -231,7 +230,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
   const canCreateSubtask = currentUser?.userRole?.name === "projectmanager" || currentUser?.userRole?.name === "admin";
 
   const [, setMenuOpen] = useState(false);
-  const [openActivity, setOpenActivity] = useState(false);
+
   const [files, setFiles] = useState([]); // Support multiple files
   const [showMilestone, setShowMilestone] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -503,16 +502,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
                       <IoGitNetworkSharp size={14} />
                     </button>
                   )}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOpenActivity(true);
-                    }}
-                    className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 transition-all border border-slate-200 dark:border-slate-600 shadow-sm"
-                    title="View Activity"
-                  >
-                    <FiActivity size={14} />
-                  </button>
+
                 </div>
               </div>
 
@@ -585,14 +575,7 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
         )}
       </Draggable>
 
-      {openActivity && (
-        <Activity
-          isOpen={openActivity}
-          onClose={() => setOpenActivity(false)}
-          task={task}
-          type={"Task"}
-        />
-      )}
+
     </>
   );
 };

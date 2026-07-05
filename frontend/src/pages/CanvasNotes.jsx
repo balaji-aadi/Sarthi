@@ -7,8 +7,6 @@ import Api from "../services/axiosConfig";
 import { serverUrl } from "../services/config";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import ReactQuill from "react-quill";
-import "./note-editor.css";
 import {
   IoAddOutline,
   IoTrashOutline,
@@ -26,49 +24,6 @@ import {
   IoEyeOutline,
   IoCreateOutline
 } from "react-icons/io5";
-
-// Custom Quill Toolbar Component
-const QuillToolbar = ({ className = "", style = {} }) => (
-  <div id="quill-toolbar" className={`flex items-center gap-2 border-y border-slate-100 bg-white py-2.5 px-6 select-none shrink-0 ${className}`} style={style}>
-
-    <span className="ql-formats">
-      <button className="ql-bold" />
-      <button className="ql-italic" />
-      <button className="ql-link" />
-    </span>
-    <span className="h-6 w-[1px] bg-slate-200 mx-1"></span>
-    <span className="ql-formats">
-      <button className="ql-list" value="bullet" />
-      <button className="ql-list" value="ordered" />
-    </span>
-    <span className="h-6 w-[1px] bg-slate-200 mx-1"></span>
-    <span className="ql-formats">
-      <button className="ql-align" value="" />
-      <button className="ql-align" value="center" />
-      <button className="ql-align" value="right" />
-      <button className="ql-align" value="justify" />
-    </span>
-    <span className="h-6 w-[1px] bg-slate-200 mx-1"></span>
-    <span className="ql-formats">
-      <button className="ql-image" />
-      <button className="ql-video" />
-      <button className="ql-clean" />
-    </span>
-  </div>
-);
-
-const editorModules = {
-  toolbar: {
-    container: "#quill-toolbar"
-  }
-};
-
-const editorFormats = [
-  "font", "size",
-  "bold", "italic", "underline", "strike",
-  "list", "bullet",
-  "link", "image", "video", "align"
-];
 
 // Helper to strip HTML tags for note snippet text previews preserving block structures
 const stripHtml = (html) => {
@@ -144,13 +99,14 @@ const CanvasNotes = () => {
   const [isTaskDropdownOpen, setIsTaskDropdownOpen] = useState(false);
   const [taskDropdownSearch, setTaskDropdownSearch] = useState("");
   const modalFileInputRef = useRef(null);
-  const quillRef = useRef(null);
 
   useEffect(() => {
     if (editingFullNote) {
       setNoteTitle(editingFullNote.title || "");
       setNoteTags(editingFullNote.tags || []);
-      setEditorContent(editingFullNote.content || "");
+      const isHtml = /<[a-z][\s\S]*>/i.test(editingFullNote.content || "");
+      const cleanContent = isHtml ? stripHtml(editingFullNote.content) : (editingFullNote.content || "");
+      setEditorContent(cleanContent);
       setIsAddingTag(false);
       setNewTagVal("");
       setEditorMode("view"); // Default to view mode when opening
@@ -158,28 +114,6 @@ const CanvasNotes = () => {
       setTaskDropdownSearch("");
     }
   }, [editingFullNote]);
-
-  useEffect(() => {
-    if (editorMode === "edit" && quillRef.current) {
-      const quill = quillRef.current.getEditor();
-      if (quill) {
-        const handlePaste = (e) => {
-          e.preventDefault();
-          const text = e.clipboardData.getData('text/plain');
-          const range = quill.getSelection();
-          if (range) {
-            quill.insertText(range.index, text);
-          } else {
-            quill.insertText(quill.getLength(), text);
-          }
-        };
-        quill.root.addEventListener('paste', handlePaste);
-        return () => {
-          quill.root.removeEventListener('paste', handlePaste);
-        };
-      }
-    }
-  }, [editorMode]);
 
 
   // Note Custom Dragging State
@@ -798,7 +732,7 @@ const CanvasNotes = () => {
                       return (
                         <div className="flex-1 flex flex-col justify-between min-h-0">
                           <div
-                            className={`w-full bg-transparent text-[11px] font-mono leading-relaxed p-0 whitespace-pre-wrap select-none overflow-hidden ${isDark ? "text-slate-200" : "text-slate-700"
+                            className={`w-full bg-transparent text-[11px] font-sans leading-relaxed p-0 whitespace-pre-wrap select-none overflow-hidden ${isDark ? "text-slate-200" : "text-slate-700"
                               }`}
                             style={{
                               display: "-webkit-box",
@@ -845,7 +779,7 @@ const CanvasNotes = () => {
                             }
                           }}
                           placeholder="Write a note... double-click canvas to spawn more."
-                          className={`w-full bg-transparent resize-none focus:outline-none border-none text-[11px] font-medium leading-relaxed p-0 custom-scrollbar ${isDark ? "text-white placeholder:text-slate-500" : "text-slate-800 placeholder:text-slate-400"
+                          className={`w-full bg-transparent resize-none focus:outline-none border-none text-[11px] font-sans font-medium leading-relaxed p-0 custom-scrollbar ${isDark ? "text-white placeholder:text-slate-500" : "text-slate-800 placeholder:text-slate-400"
                             }`}
                           style={{ height: "auto" }}
                         />
@@ -1271,158 +1205,213 @@ const CanvasNotes = () => {
 
       {/* Full Note Editor Modal */}
       <AnimatePresence>
-        {editingFullNote && (
-          <>
-            {/* Backdrop Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.4 }}
-              exit={{ opacity: 0 }}
-              onClick={closeFullEditor}
-              className="fixed inset-0 bg-slate-900 z-[999] backdrop-blur-sm"
-            />
+        {editingFullNote && (() => {
+          const isDark = editingFullNote.color === "#4b5563";
+          const getWordCount = (text) => {
+            if (!text) return 0;
+            return text.trim().split(/\s+/).filter(Boolean).length;
+          };
+          const getCharCount = (text) => {
+            return text ? text.length : 0;
+          };
 
-            {/* Modal Container */}
-            <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 pointer-events-none">
+          return (
+            <>
+              {/* Backdrop Overlay */}
               <motion.div
-                initial={{ scale: 0.95, y: 15, opacity: 0 }}
-                animate={{ scale: 1, y: 0, opacity: 1 }}
-                exit={{ scale: 0.95, y: 15, opacity: 0 }}
-                transition={{ type: "spring", damping: 28, stiffness: 240 }}
-                className="relative bg-white rounded-[2.5rem] shadow-2xl w-full h-[92%] overflow-hidden border border-slate-100 flex flex-col pointer-events-auto"
-              >
-                {/* Header Metadata Panel */}
-                <div className="px-10 pt-8 pb-6 bg-white shrink-0 flex flex-col relative select-none">
-                  {/* Header Controls (Toggle & Close) */}
-                  <div className="absolute top-6 right-8 flex items-center gap-3">
-                    {/* Mode Toggle Switch */}
-                    <div className="flex bg-slate-100 p-0.5 rounded-xl items-center border border-slate-200/40">
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.4 }}
+                exit={{ opacity: 0 }}
+                onClick={closeFullEditor}
+                className="fixed inset-0 bg-slate-900 z-[999] backdrop-blur-sm"
+              />
+
+              {/* Modal Container */}
+              <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 pointer-events-none">
+                <motion.div
+                  initial={{ scale: 0.95, y: 15, opacity: 0 }}
+                  animate={{ scale: 1, y: 0, opacity: 1 }}
+                  exit={{ scale: 0.95, y: 15, opacity: 0 }}
+                  transition={{ type: "spring", damping: 28, stiffness: 240 }}
+                  className="relative rounded-[2.5rem] shadow-2xl w-full h-[92%] overflow-hidden flex flex-col pointer-events-auto border"
+                  style={{
+                    backgroundColor: editingFullNote.color,
+                    borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)"
+                  }}
+                >
+                  {/* Header Metadata Panel */}
+                  <div className="px-10 pt-8 pb-6 shrink-0 flex flex-col relative select-none bg-transparent">
+                    {/* Header Controls (Toggle & Close) */}
+                    <div className="absolute top-6 right-8 flex items-center gap-3">
+                      {/* Copy Note Button */}
                       <button
-                        onClick={() => setEditorMode("view")}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider transition-all ${editorMode === "view"
-                            ? "bg-white text-slate-900 shadow-sm"
-                            : "text-slate-500 hover:text-slate-800"
-                          }`}
+                        onClick={() => {
+                          navigator.clipboard.writeText(editorContent || "");
+                          toast.success("Note copied to clipboard!");
+                        }}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] uppercase font-black tracking-wider transition-all border ${
+                          isDark
+                            ? "bg-white/10 hover:bg-white/20 text-white border-white/10"
+                            : "bg-black/5 hover:bg-black/10 text-slate-700 border-black/5"
+                        }`}
+                        title="Copy Note Content"
                       >
-                        <IoEyeOutline size={12} />
-                        View
+                        Copy Note
                       </button>
-                      <button
-                        onClick={() => setEditorMode("edit")}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider transition-all ${editorMode === "edit"
-                            ? "bg-white text-slate-900 shadow-sm"
-                            : "text-slate-500 hover:text-slate-800"
+
+                      {/* Mode Toggle Switch */}
+                      <div className={`flex p-0.5 rounded-xl items-center border ${
+                        isDark ? "bg-slate-800/60 border-white/10" : "bg-black/5 border-black/5"
+                      }`}>
+                        <button
+                          onClick={() => setEditorMode("view")}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider transition-all ${
+                            editorMode === "view"
+                              ? isDark ? "bg-slate-700 text-white shadow-sm" : "bg-white text-slate-900 shadow-sm"
+                              : isDark ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-800"
                           }`}
+                        >
+                          <IoEyeOutline size={12} />
+                          View
+                        </button>
+                        <button
+                          onClick={() => setEditorMode("edit")}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider transition-all ${
+                            editorMode === "edit"
+                              ? isDark ? "bg-slate-700 text-white shadow-sm" : "bg-white text-slate-900 shadow-sm"
+                              : isDark ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-800"
+                          }`}
+                        >
+                          <IoCreateOutline size={12} />
+                          Edit
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={closeFullEditor}
+                        className={`w-9 h-9 flex items-center justify-center rounded-full transition-all border ${
+                          isDark
+                            ? "bg-slate-800 hover:bg-slate-700 border-white/10 text-slate-350 hover:text-white"
+                            : "bg-slate-50 hover:bg-slate-100 border-slate-200/50 text-slate-500 hover:text-red-500"
+                        }`}
                       >
-                        <IoCreateOutline size={12} />
-                        Edit
+                        <IoCloseOutline size={20} />
                       </button>
                     </div>
 
-                    <button
-                      onClick={closeFullEditor}
-                      className="w-9 h-9 flex items-center justify-center bg-slate-50 hover:bg-slate-100 rounded-full transition-all border border-slate-200/50 text-slate-500 hover:text-red-500"
-                    >
-                      <IoCloseOutline size={20} />
-                    </button>
-                  </div>
+                    {/* Title Input Field */}
+                    <input
+                      type="text"
+                      value={noteTitle}
+                      onChange={(e) => {
+                        setNoteTitle(e.target.value);
+                        handleUpdateNoteTitle(editingFullNote._id, e.target.value);
+                      }}
+                      readOnly={editorMode === "view"}
+                      placeholder="Untitled Note"
+                      className={`text-4xl font-extrabold focus:outline-none border-none bg-transparent w-full mb-6 placeholder:text-slate-400 tracking-tight ${
+                        isDark ? "text-white" : "text-slate-800"
+                      } ${editorMode === "view" ? "cursor-default" : ""}`}
+                    />
 
-                  {/* Title Input Field */}
-                  <input
-                    type="text"
-                    value={noteTitle}
-                    onChange={(e) => {
-                      setNoteTitle(e.target.value);
-                      handleUpdateNoteTitle(editingFullNote._id, e.target.value);
-                    }}
-                    readOnly={editorMode === "view"}
-                    placeholder="Untitled Note"
-                    className={`text-4xl font-extrabold text-slate-800 focus:outline-none border-none bg-transparent w-full mb-6 placeholder:text-slate-200 tracking-tight ${editorMode === "view" ? "cursor-default" : ""
-                      }`}
-                  />
-
-                  {/* Metadata rows */}
-                  <div className="space-y-3.5 border-b border-slate-100 pb-6">
-                    {/* Created By Row */}
-                    <div className="flex items-center gap-3">
-                      <span className="text-slate-400 text-xs font-bold w-28 select-none uppercase tracking-wider">Created by</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs font-black text-slate-600 uppercase tracking-wide overflow-hidden border border-slate-300/40">
-                          {currentUser?.avatar ? (
-                            <img src={currentUser.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                          ) : (
-                            currentUser?.firstName?.[0] || "F"
-                          )}
+                    {/* Metadata rows */}
+                    <div className={`space-y-3.5 border-b pb-6 ${isDark ? "border-white/10" : "border-slate-200/50"}`}>
+                      {/* Created By Row */}
+                      <div className="flex items-center gap-3">
+                        <span className={`text-xs font-bold w-28 select-none uppercase tracking-wider ${isDark ? "text-slate-400" : "text-slate-500"}`}>Created by</span>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black uppercase tracking-wide overflow-hidden border ${
+                            isDark ? "bg-slate-700 border-white/10 text-white" : "bg-slate-200 border-slate-300/40 text-slate-650"
+                          }`}>
+                            {currentUser?.avatar ? (
+                              <img src={currentUser.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                            ) : (
+                              currentUser?.firstName?.[0] || "F"
+                            )}
+                          </div>
+                          <span className={`text-xs font-bold ${isDark ? "text-slate-200" : "text-slate-750"}`}>
+                            {currentUser ? `${currentUser.firstName} ${currentUser.lastName || ""}`.trim() : "Floyd Lawton"}
+                          </span>
                         </div>
-                        <span className="text-xs font-bold text-slate-750">
-                          {currentUser ? `${currentUser.firstName} ${currentUser.lastName || ""}`.trim() : "Floyd Lawton"}
+                      </div>
+
+                      {/* Last Modified Row */}
+                      <div className="flex items-center gap-3">
+                        <span className={`text-xs font-bold w-28 select-none uppercase tracking-wider ${isDark ? "text-slate-400" : "text-slate-500"}`}>Last Modified</span>
+                        <span className={`text-xs font-bold ${isDark ? "text-slate-200" : "text-slate-650"}`}>
+                          {editingFullNote.updatedAt ? new Date(editingFullNote.updatedAt).toLocaleString("en-US", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true
+                          }) : "Just now"}
                         </span>
                       </div>
                     </div>
-
-                    {/* Last Modified Row */}
-                    <div className="flex items-center gap-3">
-                      <span className="text-slate-400 text-xs font-bold w-28 select-none uppercase tracking-wider">Last Modified</span>
-                      <span className="text-xs font-bold text-slate-650">
-                        {editingFullNote.updatedAt ? new Date(editingFullNote.updatedAt).toLocaleString("en-US", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                          hour: "numeric",
-                          minute: "2-digit",
-                          hour12: true
-                        }) : "Just now"}
-                      </span>
-                    </div>
                   </div>
-                </div>
 
-                {/* Editor Container with Custom Toolbar and Quill */}
-                <div className="flex-1 bg-white flex flex-col overflow-hidden relative note-editor-wrapper">
-                  {/* Custom Toolbar */}
-                  <QuillToolbar style={{ display: editorMode === "edit" ? "flex" : "none" }} />
-
-                  {/* React Quill Editor */}
-                  <ReactQuill
-                    ref={quillRef}
-                    key={editorMode}
-                    theme="snow"
-                    value={editorContent}
-                    onChange={handleModalContentChange}
-                    modules={editorModules}
-                    formats={editorFormats}
-                    readOnly={editorMode === "view"}
-                    placeholder={editorMode === "edit" ? "Start typing your note..." : ""}
-                    className="flex-1 overflow-hidden"
-                  />
-                </div>
-
-                {/* Footer Panel */}
-                <div className="px-10 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0 select-none">
-                  <div className="flex items-center gap-2 text-emerald-600">
-                    {editorMode === "edit" ? (
-                      <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                        <span className="text-[10px] font-black uppercase tracking-wider">Changes Autosaved</span>
-                      </>
+                  {/* Editor/Viewer Body Container */}
+                  <div className="flex-1 flex flex-col overflow-hidden relative bg-transparent">
+                    {editorMode === "view" ? (
+                      <div className={`flex-1 overflow-y-auto px-10 py-6 whitespace-pre-wrap font-sans text-base leading-relaxed select-text custom-scrollbar ${
+                        isDark ? "text-slate-100" : "text-slate-800"
+                      }`}>
+                        {editorContent || <span className="italic opacity-50">No content. Click Edit to write.</span>}
+                      </div>
                     ) : (
-                      <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">View Mode (Read Only)</span>
-                      </>
+                      <textarea
+                        value={editorContent}
+                        onChange={(e) => handleModalContentChange(e.target.value)}
+                        placeholder="Start typing your note..."
+                        autoFocus
+                        className={`flex-1 w-full h-full bg-transparent resize-none focus:outline-none border-none px-10 py-6 text-base leading-relaxed custom-scrollbar select-text ${
+                          isDark ? "text-white placeholder:text-slate-500" : "text-slate-900 placeholder:text-slate-400"
+                        }`}
+                      />
                     )}
                   </div>
-                  <button
-                    onClick={closeFullEditor}
-                    className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-[10px] font-black transition-all active:scale-95 shadow-md uppercase tracking-wider"
-                  >
-                    Done
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          </>
-        )}
+
+                  {/* Footer Panel */}
+                  <div className={`px-10 py-4 border-t flex items-center justify-between shrink-0 select-none ${
+                    isDark ? "bg-slate-900/40 border-white/10" : "bg-black/5 border-slate-200/50"
+                  }`}>
+                    <div className="flex items-center gap-4">
+                      {editorMode === "edit" ? (
+                        <div className="flex items-center gap-2 text-emerald-600">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                          <span className="text-[10px] font-black uppercase tracking-wider">Changes Autosaved</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-slate-500">
+                          <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                          <span className="text-[10px] font-black uppercase tracking-wider">View Mode (Read Only)</span>
+                        </div>
+                      )}
+                      {editorContent && (
+                        <div className={`text-[10px] font-bold uppercase tracking-wide flex gap-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          <span>•</span>
+                          <span>{getWordCount(editorContent)} words</span>
+                          <span>•</span>
+                          <span>{getCharCount(editorContent)} characters</span>
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={closeFullEditor}
+                      className={`px-6 py-2.5 rounded-xl text-[10px] font-black transition-all active:scale-95 shadow-md uppercase tracking-wider ${
+                        isDark ? "bg-white hover:bg-slate-100 text-slate-900" : "bg-slate-900 hover:bg-slate-800 text-white"
+                      }`}
+                    >
+                      Done
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            </>
+          );
+        })()}
       </AnimatePresence>
 
       {/* Custom Clear Board Confirmation Modal */}

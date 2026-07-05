@@ -1,6 +1,5 @@
 // TestingTask.jsx
-import { FiActivity, FiChevronDown, FiChevronUp } from "react-icons/fi";
-import Activity from "../task-childrens/Activity";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { IoFlagSharp } from "react-icons/io5";
 import { Draggable } from "@hello-pangea/dnd";
 import { useEffect, useRef, useState } from "react";
@@ -11,7 +10,7 @@ import moment from "moment";
 
 const TestingTask = ({ key, task, index, handleClick }) => {
   const [, setMenuOpen] = useState(false);
-  const [openActivity, setOpenActivity] = useState(false);
+
   const menuRef = useRef(null);
   const [openAssigne, setOpenAssigne] = useState(false);
   const [showMilestone, setShowMilestone] = useState(false);
@@ -196,30 +195,14 @@ const TestingTask = ({ key, task, index, handleClick }) => {
                   </h4>
                   {showMilestone ? <FiChevronUp /> : <FiChevronDown />}
                 </button>}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setOpenActivity(true);
-                  }}
-                  className="p-1.5 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                  title="View activity"
-                >
-                  <FiActivity size={14} />
-                </button>
+
               </div>
             </div>
           </div>
         )}
       </Draggable>
 
-      {openActivity && (
-        <Activity
-          isOpen={openActivity}
-          onClose={() => setOpenActivity(false)}
-          task={task}
-          type={"Testcase"}
-        />
-      )}
+
       {openAssigne && (
         <AssigneModal
           isOpen={openAssigne}
