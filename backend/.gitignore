@@ -1,3 +1,4 @@
 node_modules
 logs/access.log
 .env
+scratch/db_backup/

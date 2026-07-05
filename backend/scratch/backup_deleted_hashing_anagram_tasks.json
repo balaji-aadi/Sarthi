@@ -1,0 +1,82 @@
+[
+  {
+    "subtaskStats": {
+      "completed": 0,
+      "total": 0
+    },
+    "milestone": null,
+    "holdDate": null,
+    "_id": "69e75062c05bf5f0580b8111",
+    "projectName": "69d7788e6d3910f342f371d9",
+    "taskName": "Check permutation",
+    "taskId": "DSA-154",
+    "taskPriority": "medium",
+    "taskType": "preparation",
+    "taskStartDate": "2026-07-03T00:00:00.000Z",
+    "taskDueDate": "2026-07-03T00:00:00.000Z",
+    "estimatedHours": 1.5,
+    "storyPoints": 0,
+    "progress": 0,
+    "status": "backlog",
+    "assignee": "6993047f16e85ff3e4efd9a3",
+    "createdBy": "6993047f16e85ff3e4efd9a3",
+    "parentTask": "69e75061c05bf5f0580b8109",
+    "createdAt": "2026-04-21T10:24:34.234Z",
+    "updatedAt": "2026-07-04T01:30:00.313Z",
+    "branchId": "6a081b6e111c99b633b00d76",
+    "activityLogs": [
+      {
+        "oldStatus": "todo",
+        "currentStatus": "backlog",
+        "user": null,
+        "date": "2026-07-04T01:30:00.309Z",
+        "message": "Task automatically moved to Backlog due to expired due date (7/3/2026)",
+        "_id": "6a4862188227e2d08f79baa5"
+      }
+    ],
+    "attachments": [],
+    "backlogEstimatedHours": 0,
+    "dependentTasks": [],
+    "revisionLogs": []
+  },
+  {
+    "subtaskStats": {
+      "completed": 0,
+      "total": 0
+    },
+    "milestone": null,
+    "holdDate": null,
+    "_id": "69e75062c05bf5f0580b811b",
+    "projectName": "69d7788e6d3910f342f371d9",
+    "taskName": "Frequency sort",
+    "taskId": "DSA-159",
+    "taskPriority": "medium",
+    "taskType": "preparation",
+    "taskStartDate": "2026-07-04T00:00:00.000Z",
+    "taskDueDate": "2026-07-04T00:00:00.000Z",
+    "estimatedHours": 1.5,
+    "storyPoints": 0,
+    "progress": 0,
+    "status": "backlog",
+    "assignee": "6993047f16e85ff3e4efd9a3",
+    "createdBy": "6993047f16e85ff3e4efd9a3",
+    "parentTask": "69e75061c05bf5f0580b8109",
+    "createdAt": "2026-04-21T10:24:34.520Z",
+    "updatedAt": "2026-07-04T18:30:43.046Z",
+    "branchId": "6a081b6e111c99b633b00d76",
+    "activityLogs": [
+      {
+        "oldStatus": "todo",
+        "currentStatus": "backlog",
+        "user": null,
+        "date": "2026-07-04T18:30:43.044Z",
+        "message": "Task automatically moved to Backlog due to expired due date (7/4/2026)",
+        "_id": "6a4951536208a77e5d0fc2e8"
+      }
+    ],
+    "attachments": [],
+    "backlogEstimatedHours": 0,
+    "dependentTasks": [],
+    "revisionLogs": []
+  }
+]

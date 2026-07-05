@@ -116,9 +116,9 @@ const tiers = [
   {
     name: 'Hashing & Anagram (STRINGS)',
     children: [
-      'Valid anagram', 'Group anagrams', 'Find all anagrams', 'Check permutation',
+      'Valid anagram', 'Group anagrams', 'Find all anagrams',
       'Minimum steps to make anagram', 'Ransom note', 'Isomorphic string', 'Word pattern',
-      'Frequency sort', 'First unique character'
+      'First unique character'
     ]
   }
 ];

@@ -1,10 +1,14 @@
 import mongoose from "mongoose";
 import fs from "fs";
 import path from "path";
+import dotenv from "dotenv";
 
-const uri = "mongodb://balajiaadi2000_db_user:India%40123@ac-2ezrvfl-shard-00-00.31n62rt.mongodb.net:27017,ac-2ezrvfl-shard-00-01.31n62rt.mongodb.net:27017,ac-2ezrvfl-shard-00-02.31n62rt.mongodb.net:27017/task-management?ssl=true&authSource=admin&retryWrites=true&w=majority&appName=Cluster0";
+// Load environment variables
+dotenv.config();
 
-// Default backup directory path from the run we just did
+const uri = process.env.MONGODB_URI || "mongodb://balajiaadi2000_db_user:India%40123@ac-2ezrvfl-shard-00-00.31n62rt.mongodb.net:27017,ac-2ezrvfl-shard-00-01.31n62rt.mongodb.net:27017,ac-2ezrvfl-shard-00-02.31n62rt.mongodb.net:27017/task-management?ssl=true&authSource=admin&retryWrites=true&w=majority&appName=Cluster0";
+
+// Default backup directory path
 const defaultBackupDir = "/Users/balajiaadesh/Desktop/Sarthi/backend/scratch/db_backup/2026-07-05T13-27-11-162Z";
 
 async function run() {
@@ -19,11 +23,16 @@ async function run() {
   console.log("Connected successfully.");
 
   const db = mongoose.connection.db;
+  const EJSON = mongoose.mongo.BSON.EJSON;
 
   const metadataPath = path.join(backupDir, "metadata.json");
   let metadata = {};
   if (fs.existsSync(metadataPath)) {
-    metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+    try {
+      metadata = EJSON.parse(fs.readFileSync(metadataPath, "utf8"));
+    } catch (e) {
+      metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+    }
     console.log(`Restoring database backup from: ${metadata.timestamp}`);
   }
 
@@ -33,7 +42,16 @@ async function run() {
 
     const collName = path.basename(file, ".json");
     const filePath = path.join(backupDir, file);
-    const documents = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const content = fs.readFileSync(filePath, "utf8");
+    
+    let documents;
+    try {
+      // First try to parse with EJSON to preserve high fidelity types
+      documents = EJSON.parse(content);
+    } catch (e) {
+      // Fallback to normal JSON
+      documents = JSON.parse(content);
+    }
 
     console.log(`Restoring collection: ${collName} (${documents.length} docs)...`);
     const collection = db.collection(collName);
@@ -42,27 +60,29 @@ async function run() {
     await collection.deleteMany({});
 
     if (documents.length > 0) {
-      // Map string _id (if serialized as string) back to ObjectId if needed,
-      // but mongo driver can insert them. Standard JSON stringify converts ObjectId to string.
-      // MongoDB node driver insertMany handles string _id as string unless we convert them back to ObjectId.
-      // Wait, Mongoose schema defines _id as ObjectId, so if we insert string _ids it might cause type issues
-      // for future queries or references. Let's convert string _id and any object ID fields back to ObjectId!
-      const docsToInsert = documents.map(doc => {
-        return convertObjectIds(doc);
-      });
+      // Ensure all ObjectIds and Dates are restored correctly, supporting both EJSON and old JSON backups
+      const docsToInsert = documents.map(doc => convertObjectIds(doc));
       await collection.insertMany(docsToInsert);
     }
     console.log(`  - Restored ${documents.length} documents into ${collName}`);
   }
 
-  console.log("\nWhole database restore completed successfully!");
-  process.exit();
+  console.log("\n=======================================================");
+  console.log("Whole database restore completed successfully!");
+  console.log("=======================================================\n");
+  process.exit(0);
 }
 
 function convertObjectIds(obj) {
   if (obj === null || obj === undefined) {
     return obj;
   }
+  
+  // If it's already an ObjectId or Date instance, return it as is
+  if (obj instanceof mongoose.Types.ObjectId || obj instanceof Date) {
+    return obj;
+  }
+
   if (typeof obj === 'string') {
     // If it looks like a 24-character hexadecimal ObjectId
     if (/^[0-9a-fA-F]{24}$/.test(obj)) {
