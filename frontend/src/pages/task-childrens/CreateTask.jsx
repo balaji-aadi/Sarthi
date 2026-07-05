@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import Logs from "./Logs";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { CommonApi } from "../../services/api/Common.api";
+import { server } from "../../services/config";
 import { useNavigate, useLocation } from "react-router-dom";
 import ConfirmationModal from "../../components/ConfirmationModal";
 
@@ -53,7 +54,8 @@ const CreateTask = ({
   }, [userRole]);
 
 
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [existingAttachments, setExistingAttachments] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = location.state || {}; // { parentTask: { _id, name, projectId ... }, project: ... }
@@ -309,43 +311,30 @@ const CreateTask = ({
 
       try {
         // Handle File Upload First
-        if (selectedFile) {
+        let uploadedUrls = [];
+        if (selectedFiles.length > 0) {
           const fileFormData = new FormData();
-          fileFormData.append("file", selectedFile);
+          selectedFiles.forEach((file) => {
+            fileFormData.append("file", file);
+          });
           try {
             const fileRes = await CommonApi.uploadFile(fileFormData);
-            console.log("File Upload Res:", fileRes.data);
+            console.log("Files Upload Res:", fileRes.data);
 
-            // Backend returns { filenames: ["file.png"] }
-            const filename = fileRes.data?.data?.filenames?.[0];
-
-            if (filename) {
-              // Construct full URL. 
-              // Assuming API base is logic from axiosConfig which usually proxies or is absolute.
-              // IMPORTANT: The backend `getFile` route expects just the filename if served via API.
-              // But if we want to store a full URL for the frontend to use in `href`, we need the full path.
-              // Let's assume relative path for now if the frontend appends base, OR full URL.
-              // Given the error 404 on `.../get-file/`, it seems the previous code wasn't appending filename.
-
-              // We need the BASE_URL from axios config or env. 
-              // unique approach: store the relative path and let frontend component handle domain?
-              // Or store full URL. Let's try to construct a relative API path that the frontend can use.
-              // The previous error was `http://192.168.1.14:5003/api/v1/file/get-file/` (missing filename).
-
-              // Let's hardcode the base for now based on the error screenshot domain, or better, use a relative path if possible.
-              // Actually, looking at the error `http://192.168.1.14:5003/api/v1/file/get-file/`, it seems `axios` might have been used with a full URL?
-              // No, the `href` in the anchor tag likely caused the browser to navigate there.
-
-              // Let's store the full API URL.
-              const apiBase = "http://localhost:5003/api/v1"; // TODO: Should be from env
-              const fileUrl = `${apiBase}/file/get-file/${filename}`;
-              payload.attachments = fileUrl;
+            // Backend returns { filenames: [...] }
+            const filenames = fileRes.data?.data?.filenames || [];
+            if (filenames.length > 0) {
+              const apiBase = server || "http://localhost:5003/api/v1";
+              const newUrls = filenames.map(name => `${apiBase}/file/get-file/${name}`);
+              uploadedUrls = [...uploadedUrls, ...newUrls];
             }
           } catch (fileErr) {
-            console.error("File upload failed", fileErr);
-            toast.error("File upload failed, saving task without attachment.");
+            console.error("Files upload failed", fileErr);
+            toast.error("Files upload failed, saving task without new attachments.");
           }
         }
+
+        payload.attachments = [...existingAttachments, ...uploadedUrls];
 
         const res = id
           ? await TaskApi.updateTask(id, payload)
@@ -359,7 +348,8 @@ const CreateTask = ({
           navigate(`/`);
         }
         formik.resetForm();
-        setSelectedFile(null);
+        setSelectedFiles([]);
+        setExistingAttachments([]);
 
         if (id) {
           fetchTasks(); // Refresh tasks
@@ -404,6 +394,12 @@ const CreateTask = ({
       if (typeof setTaskProject === "function") {
         setTaskProject(pId)
       }
+
+      const initialAttachments = task.attachments
+        ? (Array.isArray(task.attachments) ? task.attachments : [task.attachments])
+        : [];
+      setExistingAttachments(initialAttachments.filter(f => f));
+      setSelectedFiles([]);
 
       formik.setValues({
         projectName: pId,
@@ -633,10 +629,9 @@ const CreateTask = ({
 
 
   const handleFileChange = (event) => {
-    const file = event.currentTarget.files[0];
-    if (file) {
-      formik.setFieldValue("attachments", file.name);
-      setSelectedFile(file);
+    const files = Array.from(event.currentTarget.files);
+    if (files.length > 0) {
+      setSelectedFiles(prev => [...prev, ...files]);
     }
   };
 
@@ -737,50 +732,87 @@ const CreateTask = ({
                       )}
 
                       <div className="mb-4">
-                        <label className="block text-gray-700  dark:text-themeText font-medium mb-2">
+                        <label className="block text-gray-700 dark:text-themeText font-medium mb-2">
                           Attachments
                         </label>
                         <input
                           type="file"
                           name="attachments"
                           onChange={handleFileChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                          multiple
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer hover:bg-slate-50 transition-colors"
                         />
-                        {/* Show Existing Attachment */}
-                        {task?.attachments && Array.isArray(task.attachments) ? (
-                          <div className="mt-2 text-sm flex flex-col gap-1">
-                            {task.attachments.filter(f => f).map((fileUrl, i) => (
-                              <div key={i} className="flex items-center gap-2">
-                                <span className="font-semibold text-gray-600 dark:text-gray-400">Current {i + 1}: </span>
-                                <a
-                                  href={fileUrl.startsWith('http') ? fileUrl : `${server}file/get-file/${fileUrl}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-primary hover:underline break-all"
-                                >
-                                  {fileUrl.split('/').pop() || `Attachment ${i + 1}`}
-                                </a>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          task?.attachments && typeof task.attachments === 'string' && !selectedFile && (
-                            <div className="mt-2 text-sm">
-                              <span className="font-semibold text-gray-600 dark:text-gray-400">Current: </span>
-                              <a
-                                href={task.attachments}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-primary hover:underline break-all"
-                              >
-                                {task.attachments.split('/').pop() || "View Attachment"}
-                              </a>
+
+                        {/* Combined Preview Tray */}
+                        {(existingAttachments.length > 0 || selectedFiles.length > 0) && (
+                          <div className="mt-4 border border-dashed border-slate-200 rounded-2xl p-4 bg-slate-50/50 space-y-3">
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Selected & Current Attachments</h4>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              {/* Render Existing Attachments */}
+                              {existingAttachments.map((fileUrl, index) => {
+                                const filename = fileUrl.split('/').pop() || `Attachment ${index + 1}`;
+                                const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(fileUrl);
+                                const fullUrl = fileUrl.startsWith('http') ? fileUrl : `${server}file/get-file/${fileUrl}`;
+                                
+                                return (
+                                  <div key={`existing-${index}`} className="flex items-center gap-3 p-2 bg-white border border-slate-100 rounded-xl shadow-2xs group relative">
+                                    <div className="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden border border-slate-150 shrink-0 flex items-center justify-center">
+                                      {isImage ? (
+                                        <img src={fullUrl} className="w-full h-full object-cover" alt={filename} />
+                                      ) : (
+                                        <span className="text-slate-400 text-xs font-black">FILE</span>
+                                      )}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-xs font-bold text-slate-700 truncate" title={filename}>{filename}</p>
+                                      <span className="text-[9px] font-black text-emerald-600 uppercase tracking-wide">Saved attachment</span>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => setExistingAttachments(prev => prev.filter(url => url !== fileUrl))}
+                                      className="p-1.5 rounded-full hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors mr-1 cursor-pointer"
+                                      title="Remove attachment"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                );
+                              })}
+
+                              {/* Render Newly Selected Files */}
+                              {selectedFiles.map((file, index) => {
+                                const filename = file.name;
+                                const isImage = file.type.startsWith('image/');
+                                const sizeStr = file.size > 1024 * 1024 
+                                  ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` 
+                                  : `${Math.round(file.size / 1024)} KB`;
+                                
+                                return (
+                                  <div key={`new-${index}`} className="flex items-center gap-3 p-2 bg-white border border-slate-100 rounded-xl shadow-2xs group relative">
+                                    <div className="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden border border-slate-150 shrink-0 flex items-center justify-center">
+                                      {isImage ? (
+                                        <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" alt={filename} />
+                                      ) : (
+                                        <span className="text-slate-400 text-xs font-black">FILE</span>
+                                      )}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-xs font-bold text-slate-700 truncate" title={filename}>{filename}</p>
+                                      <span className="text-[9px] font-black text-primary uppercase tracking-wide">Ready to upload • {sizeStr}</span>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))}
+                                      className="p-1.5 rounded-full hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors mr-1 cursor-pointer"
+                                      title="Cancel attachment"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                );
+                              })}
                             </div>
-                          )
-                        )}
-                        {selectedFile && (
-                          <div className="mt-2 text-sm text-green-600">
-                            Selected: {selectedFile.name}
                           </div>
                         )}
                       </div>
@@ -1037,10 +1069,16 @@ const CreateTask = ({
 
                 <div>
                   <div className="text-[11px] text-slate-500 font-bold">Attachments</div>
-                  <div className="mt-1 break-words">{selectedFile ? selectedFile.name : (
-                    Array.isArray(task?.attachments)
-                      ? `${task.attachments.length} attachment(s)`
-                      : (task?.attachments && typeof task.attachments === 'string' ? task.attachments.split('/').pop() : 'No attachments')
+                  <div className="mt-1 break-words">{selectedFiles.length > 0 ? (
+                    selectedFiles.length === 1 ? selectedFiles[0].name : `${selectedFiles.length} files selected`
+                  ) : (
+                    existingAttachments.length > 0 ? (
+                      existingAttachments.length === 1 ? existingAttachments[0].split('/').pop() : `${existingAttachments.length} attachments`
+                    ) : (
+                      Array.isArray(task?.attachments)
+                        ? (task.attachments.length === 1 ? task.attachments[0].split('/').pop() : `${task.attachments.length} attachments`)
+                        : (task?.attachments && typeof task.attachments === 'string' ? task.attachments.split('/').pop() : 'No attachments')
+                    )
                   )}</div>
                 </div>
               </div>

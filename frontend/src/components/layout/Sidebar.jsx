@@ -21,7 +21,7 @@ import { ProjectApi } from '../../services/api/Project.api';
 import { useSelector } from 'react-redux';
 import GlobalTimerWidget from './GlobalTimerWidget';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [projects, setProjects] = useState([]);
@@ -93,7 +93,7 @@ const Sidebar = () => {
     const pricingItem = menuItems.find(item => item.label === 'Pricing');
 
     return (
-        <aside className="w-72 bg-surface border-r border-borderLight h-full flex flex-col absolute left-0 top-0 overflow-y-auto z-20">
+        <aside className={`w-72 bg-surface border-r border-borderLight h-full flex flex-col fixed lg:absolute left-0 top-0 overflow-y-auto z-[150] lg:z-20 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
             {/* Logo Area */}
             <div className="p-6 flex items-center gap-3 pb-2">
                 <img src="/momentum_logo.svg" alt="Sarathi Logo" className="w-8 h-8 object-contain drop-shadow-md" />
@@ -118,6 +118,7 @@ const Sidebar = () => {
                         <NavLink
                             key={`top-${idx}`}
                             to={item.path}
+                            onClick={() => setIsOpen && setIsOpen(false)}
                             className={({ isActive }) => `flex items-center gap-3 px-4 py-2.5 transition-all duration-200 group relative ${isActive ? 'active text-primary' : 'text-textSub hover:text-textMain'}`}
                         >
                             <div className="flex items-center gap-2.5">
@@ -143,6 +144,7 @@ const Sidebar = () => {
                                 if (item.label === 'Dashboard') {
                                     navigate('/');
                                 }
+                                if (setIsOpen) setIsOpen(false);
                             }}
                             className={({ isActive }) => `flex items-center gap-3 px-4 py-2 transition-all duration-200 group relative ${isActive ? 'active text-primary' : 'text-textSub hover:text-textMain'}`}
                         >
@@ -160,6 +162,7 @@ const Sidebar = () => {
                     {pricingItem && (
                         <NavLink
                             to={pricingItem.path}
+                            onClick={() => setIsOpen && setIsOpen(false)}
                             className={({ isActive }) => `flex items-center gap-3 px-4 py-2 transition-all duration-200 group relative ${isActive ? 'active text-primary' : 'text-textSub hover:text-textMain'}`}
                         >
                             <span className={`w-1 h-1 rounded-full transition-all group-[.active]:bg-primary bg-transparent`}></span>
@@ -174,14 +177,16 @@ const Sidebar = () => {
                 </div>
 
                 {/* Favorites/Projects Section */}
-                {/* Favorites/Projects Section */}
                 <div className="mt-8">
                     <div className="flex items-center justify-between px-4 mb-2">
                         <p className="text-xs font-semibold text-textSub uppercase tracking-wider">Arenas</p>
                         {!hiddenRoles.includes(currentUser?.userRole?.name?.toLowerCase()) && (
                             <button
                                 className="text-textSub hover:text-primary transition-colors"
-                                onClick={() => navigate('/arenas/create-project')}
+                                onClick={() => {
+                                    navigate('/arenas/create-project');
+                                    if (setIsOpen) setIsOpen(false);
+                                }}
                                 title="Create Arena"
                             >
                                 <IoAdd size={16} />
@@ -198,7 +203,10 @@ const Sidebar = () => {
                                 return (
                                     <div
                                         key={project._id || idx}
-                                        onClick={() => navigate(`/arena/${projectSlug}`)}
+                                        onClick={() => {
+                                            navigate(`/arena/${projectSlug}`);
+                                            if (setIsOpen) setIsOpen(false);
+                                        }}
                                         className={`w-full flex items-center gap-3 px-4 py-1.5 cursor-pointer transition-all group ${isActive ? 'text-primary' : 'text-textSub/80 hover:text-textMain'}`}
                                     >
                                         <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all ${isActive ? 'bg-primary shadow-[0_0_8px_rgba(79,70,229,0.5)]' : 'bg-slate-300'}`}></span>
@@ -213,7 +221,10 @@ const Sidebar = () => {
                         )}
                         {projects.length > 5 && (
                             <button
-                                onClick={() => navigate('/arenas')}
+                                onClick={() => {
+                                    navigate('/arenas');
+                                    if (setIsOpen) setIsOpen(false);
+                                }}
                                 className="w-full px-4 py-1 text-xs text-primary hover:underline text-left"
                             >
                                 View all
@@ -225,7 +236,13 @@ const Sidebar = () => {
 
             {/* Bottom Actions */}
             <div className="px-4 py-6 mt-auto space-y-4 border-t border-slate-100/50">
-                <MenuItem icon={<IoSettingsOutline />} label="Settings" path="/settings" isActive={window.location.pathname === '/settings'} />
+                <MenuItem 
+                    icon={<IoSettingsOutline />} 
+                    label="Settings" 
+                    path="/settings" 
+                    isActive={window.location.pathname === '/settings'} 
+                    onClick={() => setIsOpen && setIsOpen(false)}
+                />
 
                 {/* User Profile Section - Premium Light */}
                 <div className="p-4 bg-white border border-slate-200 rounded-[1.5rem] shadow-sm hover:shadow-md transition-all duration-500 group relative overflow-hidden">
@@ -273,11 +290,14 @@ const Sidebar = () => {
     );
 };
 
-const MenuItem = ({ icon, label, path, isActive }) => {
+const MenuItem = ({ icon, label, path, isActive, onClick }) => {
     const navigate = useNavigate();
     return (
         <button
-            onClick={() => navigate(path)}
+            onClick={() => {
+                navigate(path);
+                if (onClick) onClick();
+            }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative group overflow-hidden ${isActive
                     ? 'text-primary font-black'
                     : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'

@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "6a081b6e111c99b633b00d76",
+    "name": "Software Development",
+    "slug": "software-development",
+    "description": "Primary branch for software engineering and development tasks.",
+    "isActive": true,
+    "createdAt": "2026-05-16T07:23:26.328Z",
+    "updatedAt": "2026-05-16T07:23:26.328Z",
+    "__v": 0,
+    "createdBy": "6993047f16e85ff3e4efd9a3",
+    "visibility": "public"
+  },
+  {
+    "_id": "6a083a77f7e66b83659e7174",
+    "name": "test 2",
+    "slug": "test-2",
+    "description": "",
+    "isActive": true,
+    "createdBy": "6a07fe669a0d94f268897c92",
+    "createdAt": "2026-05-16T09:35:51.707Z",
+    "updatedAt": "2026-05-16T09:35:51.707Z",
+    "__v": 0,
+    "visibility": "private"
+  }
+]

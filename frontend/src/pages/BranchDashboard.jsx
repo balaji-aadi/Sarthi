@@ -135,7 +135,7 @@ const BranchDashboard = () => {
     return (
         <div className="flex-1 flex flex-col h-full bg-[#f8fafc] overflow-y-auto custom-scrollbar">
             {/* Header Section */}
-            <div className=" pb-6">
+            <div className="px-4 sm:px-10 py-6">
                 <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-end justify-between gap-8">
                     <div>
                         <div className="flex items-center gap-3 mb-2">
@@ -179,7 +179,7 @@ const BranchDashboard = () => {
             </div>
 
             {/* Grid Section */}
-            <div className="p-10 pt-0">
+            <div className="px-4 sm:px-10 pb-10">
                 <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {filteredBranches.map((branch, idx) => (
                         <motion.div

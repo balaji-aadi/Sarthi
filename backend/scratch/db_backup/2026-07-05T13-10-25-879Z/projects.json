@@ -1,0 +1,109 @@
+[
+  {
+    "_id": "69d7788e6d3910f342f371d9",
+    "name": "Data Structure and Algorithm",
+    "access": "private",
+    "key": "DSA",
+    "description": "",
+    "startDate": "2026-04-09T00:00:00.000Z",
+    "endDate": "2026-05-09T00:00:00.000Z",
+    "priority": "high",
+    "clientName": "",
+    "githubRepository": "",
+    "budget": null,
+    "progress": 75,
+    "projectManager": "6993047f16e85ff3e4efd9a3",
+    "teamMembers": [
+      "6993047f16e85ff3e4efd9a3"
+    ],
+    "rolesAndResponsibilities": [
+      {
+        "teamMember": "6993047f16e85ff3e4efd9a3",
+        "role": "Lead",
+        "responsibility": "Everything ",
+        "_id": "69d7788e6d3910f342f371da"
+      }
+    ],
+    "status": "active",
+    "settings": {
+      "enableLeetCodeSearch": true,
+      "enableYoutubeSearch": true,
+      "sprintDuration": 2,
+      "enableSprints": false
+    },
+    "createdBy": "6993047f16e85ff3e4efd9a3",
+    "createdAt": "2026-04-09T09:59:42.125Z",
+    "updatedAt": "2026-07-04T18:30:59.549Z",
+    "updatedBy": "6993047f16e85ff3e4efd9a3",
+    "branchId": "6a081b6e111c99b633b00d76"
+  },
+  {
+    "_id": "69d77b7c6d3910f342f3762e",
+    "name": "English Speaking Practice",
+    "access": "private",
+    "key": "ESP",
+    "description": "",
+    "startDate": "2026-04-09T00:00:00.000Z",
+    "endDate": "2026-06-09T00:00:00.000Z",
+    "priority": "medium",
+    "clientName": "",
+    "githubRepository": "",
+    "budget": null,
+    "progress": 34,
+    "projectManager": "6993047f16e85ff3e4efd9a3",
+    "teamMembers": [
+      "6993047f16e85ff3e4efd9a3"
+    ],
+    "rolesAndResponsibilities": [
+      {
+        "teamMember": "6993047f16e85ff3e4efd9a3",
+        "role": "Lead",
+        "responsibility": "Everything ",
+        "_id": "69d77b7c6d3910f342f3762f"
+      }
+    ],
+    "status": "active",
+    "settings": {
+      "enableYoutubeSearch": false,
+      "enableLeetCodeSearch": false,
+      "sprintDuration": 2,
+      "enableSprints": false
+    },
+    "createdBy": "6993047f16e85ff3e4efd9a3",
+    "createdAt": "2026-04-09T10:12:12.088Z",
+    "updatedAt": "2026-06-27T08:46:54.248Z",
+    "updatedBy": "6993047f16e85ff3e4efd9a3",
+    "branchId": "6a081b6e111c99b633b00d76"
+  },
+  {
+    "_id": "6a30c5bcf7cfd43d78e67bf8",
+    "name": "Resume Grinding Phase 1 (Basics)",
+    "access": "private",
+    "key": "RGB",
+    "description": "Resume grinding phase 1 focusing on high-yield interview preparation for SDE-2",
+    "startDate": "2026-06-16T00:00:00.000Z",
+    "endDate": "2026-07-21T18:29:59.999Z",
+    "priority": "high",
+    "clientName": "",
+    "budget": 0,
+    "progress": 21,
+    "projectManager": "6993047f16e85ff3e4efd9a3",
+    "teamMembers": [
+      "6993047f16e85ff3e4efd9a3"
+    ],
+    "rolesAndResponsibilities": [],
+    "status": "active",
+    "settings": {
+      "sprintDuration": 2,
+      "enableSprints": false,
+      "enableYoutubeSearch": true,
+      "enableLeetCodeSearch": false
+    },
+    "createdBy": "6993047f16e85ff3e4efd9a3",
+    "updatedBy": "6993047f16e85ff3e4efd9a3",
+    "branchId": "6a081b6e111c99b633b00d76",
+    "createdAt": "2026-06-16T03:40:44.478Z",
+    "updatedAt": "2026-07-04T18:31:06.665Z",
+    "githubRepository": ""
+  }
+]

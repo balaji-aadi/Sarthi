@@ -1174,6 +1174,31 @@ const Board = ({
           </div>
         </div>
       )}
+      {/* Mobile portrait orientation warning */}
+      <div className="hidden max-md:portrait:flex fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[9999] flex-col items-center justify-center p-6 text-center text-white font-sans animate-in fade-in duration-300">
+          <style>{`
+              @keyframes rotatePhone {
+                  0%, 100% { transform: rotate(0deg); }
+                  50% { transform: rotate(90deg); }
+              }
+              .animate-rotate-phone {
+                  animation: rotatePhone 3s infinite ease-in-out;
+              }
+          `}</style>
+          <div className="w-24 h-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 animate-pulse">
+              <svg className="w-12 h-12 text-primary animate-rotate-phone" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  {/* Phone rotation icon */}
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+          </div>
+          <h2 className="text-xl font-bold tracking-tight mb-2">Rotate Your Device</h2>
+          <p className="text-sm text-slate-400 max-w-[280px] leading-relaxed mb-6">
+              To get a professional, friendly and interactive view of the Kanban board, please rotate your device to landscape mode.
+          </p>
+          <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-400">
+              Landscape Mode Recommended
+          </span>
+      </div>
     </div>
   );
 };

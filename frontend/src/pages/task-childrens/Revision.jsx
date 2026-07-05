@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { TaskApi } from '../../services/api/Task.api';
 import { ProjectApi } from '../../services/api/Project.api';
 import { FocusApi } from '../../services/api/Focus.api';
+import { NoteApi } from '../../services/api/Note.api';
 import { useLoading } from '../../components/loader/LoaderContext';
 import moment from 'moment';
 import { 
@@ -30,6 +31,8 @@ import {
 import toast from 'react-hot-toast';
 import InputField from '../../components/InputField';
 import { IoEllipsisHorizontalOutline } from 'react-icons/io5';
+import TaskDetailDrawer from './TaskDetailDrawer';
+import CreateTask from './CreateTask';
 
 const hasAdditionalNotes = (notes) => {
     if (!notes) return false;
@@ -90,13 +93,33 @@ const NoteCell = ({ text, onReadMore }) => {
 };
 
 const Revision = () => {
-    const { activeBranch } = useSelector((state) => state.store);
+    const { activeBranch, currentUser } = useSelector((state) => state.store);
+    const isManager = currentUser?.userRole?.name === "projectmanager";
+    const isAdmin = currentUser?.userRole?.name === "admin";
+    const canEdit = isManager || isAdmin;
+
     const { handleLoading } = useLoading();
     const navigate = useNavigate();
     const [tasks, setTasks] = useState([]);
+    const [selectedTaskForDrawer, setSelectedTaskForDrawer] = useState(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [editTaskId, setEditTaskId] = useState(null);
+    const [editTaskData, setEditTaskData] = useState(null);
+
+    const handleOpenDrawer = (task) => {
+        setSelectedTaskForDrawer(task);
+        setIsDrawerOpen(true);
+    };
+
+    const handleEditFromDrawer = (task) => {
+        setIsDrawerOpen(false);
+        setEditTaskId(task._id);
+        setEditTaskData(task);
+    };
     const [projects, setProjects] = useState([]);
     const [filteredTasks, setFilteredTasks] = useState([]);
     const [stats, setStats] = useState({ currentStreak: 0, longestStreak: 0, revisionsByDate: {}, completedByDate: {} });
+    const [notes, setNotes] = useState([]);
     
     // Filters
     const [searchTerm, setSearchTerm] = useState('');
@@ -230,10 +253,11 @@ const Revision = () => {
         handleLoading(true);
         try {
             const timezoneOffset = new Date().getTimezoneOffset();
-            const [tasksRes, projectsRes, statsRes] = await Promise.all([
+            const [tasksRes, projectsRes, statsRes, notesRes] = await Promise.all([
                 TaskApi.getAllTasks({ filter: { status: 'done' } }),
                 ProjectApi.getAllProjects(),
-                TaskApi.getRevisionStats(timezoneOffset)
+                TaskApi.getRevisionStats(timezoneOffset),
+                NoteApi.getNotes()
             ]);
             
             const allTasks = tasksRes.data?.data || [];
@@ -248,6 +272,7 @@ const Revision = () => {
             setFilteredTasks(completedChildTasks);
             setProjects(projectsRes.data?.data || []);
             setStats(statsRes.data?.data || { currentStreak: 0, longestStreak: 0, revisionsByDate: {}, completedByDate: {} });
+            setNotes(notesRes.data?.data || []);
         } catch (error) {
             console.error("Failed to load revision data", error);
             toast.error("Failed to load tasks");
@@ -895,25 +920,30 @@ const Revision = () => {
                                             </td>
                                             <td className="px-4 py-4">
                                                 <div className="flex flex-col">
-                                                    <span className="text-[13px] font-black text-slate-700 group-hover:text-primary transition-colors leading-tight mb-0.5 flex items-center gap-1.5">
-                                                        {task.projectName?.key === 'DSA' || (task.taskId && task.taskId.startsWith('DSA-')) ? (
-                                                            <a
-                                                                href={`https://leetcode.com/problems/${task.taskName
-                                                                    .toLowerCase()
-                                                                    .trim()
-                                                                    .replace(/[^\w\s-]/g, '')
-                                                                    .replace(/[\s_-]+/g, '-')
-                                                                    .replace(/^-+|-+$/g, '')}/description/`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="hover:underline hover:text-orange-500 transition-colors flex items-center gap-1 cursor-pointer"
+                                                    <span className="text-[13px] font-black text-slate-700 leading-tight mb-0.5 flex items-center gap-1.5 flex-wrap">
+                                                        <span 
+                                                            onClick={() => handleOpenDrawer(task)}
+                                                            className="cursor-pointer hover:underline hover:text-primary transition-colors"
+                                                        >
+                                                            {task.taskName}
+                                                        </span>
+                                                        {(task.projectName?.key === 'DSA' || (task.taskId && task.taskId.startsWith('DSA-'))) && (
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    const slug = task.taskName
+                                                                        .toLowerCase()
+                                                                        .trim()
+                                                                        .replace(/[^\w\s-]/g, '')
+                                                                        .replace(/[\s_-]+/g, '-')
+                                                                        .replace(/^-+|-+$/g, '');
+                                                                    window.open(`https://leetcode.com/problems/${slug}/description/`, '_blank');
+                                                                }}
+                                                                className="hover:scale-115 transition-all shrink-0 inline-flex items-center p-0.5 rounded hover:bg-orange-50"
                                                                 title="Open on LeetCode"
                                                             >
-                                                                {task.taskName}
-                                                                <IoOpenOutline size={12} className="text-orange-400 shrink-0" />
-                                                            </a>
-                                                        ) : (
-                                                            task.taskName
+                                                                <img src="/leetcode.png" alt="LeetCode" className="w-3.5 h-3.5 object-contain" />
+                                                            </button>
                                                         )}
                                                         {task.taskType === "AI Challenge" && (
                                                             <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-extrabold bg-violet-100 text-violet-700 border border-violet-200 uppercase tracking-widest leading-none scale-90 origin-left">
@@ -932,6 +962,34 @@ const Revision = () => {
                                                             >
                                                                 <IoLogoYoutube size={16} />
                                                             </button>
+                                                        )}
+
+                                                        {/* Attachment Indicator Badge */}
+                                                        {task.attachments && task.attachments.length > 0 && (
+                                                            <span 
+                                                                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-extrabold bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-widest leading-none scale-90"
+                                                                title="Task has attachments"
+                                                            >
+                                                                📎 Attachments
+                                                            </span>
+                                                        )}
+
+                                                        {/* Sticky Note Indicator Badge */}
+                                                        {notes.some(n => {
+                                                            if (!n.taskId) return false;
+                                                            if (n.taskId === task._id) return true;
+                                                            if (task.parentTask) {
+                                                                const parentId = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
+                                                                if (n.taskId === parentId) return true;
+                                                            }
+                                                            return false;
+                                                        }) && (
+                                                            <span 
+                                                                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-extrabold bg-yellow-50 text-yellow-600 border border-yellow-100 uppercase tracking-widest leading-none scale-90"
+                                                                title="Task has linked sticky notes"
+                                                            >
+                                                                📝 Notes
+                                                            </span>
                                                         )}
                                                     </span>
                                                     <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest">{task.taskId || 'DSA-X'}</span>
@@ -1015,16 +1073,6 @@ const Revision = () => {
                                                             </h4>
                                                         </div>
 
-                                                        {hasAdditionalNotes(task.additionalNotes) && (
-                                                            <div className="mb-6 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
-                                                               <h5 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Original Reference Notes</h5>
-                                                               <div 
-                                                                    className="text-[12px] font-medium text-slate-600 leading-relaxed rich-text-content"
-                                                                    dangerouslySetInnerHTML={{ __html: task.additionalNotes }}
-                                                                />
-                                                            </div>
-                                                        )}
-                                                        
                                                         <div className="flex items-center justify-between mb-4">
                                                             <h5 className="text-[9px] font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
                                                                 <IoSyncOutline size={14} className="text-primary" />
@@ -1446,6 +1494,43 @@ const Revision = () => {
                                     </div>
                                 </div>
                             )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <TaskDetailDrawer 
+                isOpen={isDrawerOpen} 
+                onClose={() => setIsDrawerOpen(false)} 
+                task={selectedTaskForDrawer} 
+                canEdit={canEdit}
+                onTaskUpdate={handleEditFromDrawer}
+            />
+
+            {editTaskId && editTaskData && (
+                <div className="fixed inset-0 z-[100] flex items-start justify-center p-6">
+                    <div className="absolute inset-0 bg-black/50" onClick={() => { setEditTaskId(null); setEditTaskData(null); }} />
+                    <div className="relative w-full max-w-4xl h-[90vh] overflow-auto bg-white dark:bg-themeBG rounded-2xl shadow-2xl z-10">
+                        <div className="flex items-center justify-between p-4 border-b">
+                            <h4 className="text-lg font-bold">Update Task</h4>
+                            <button
+                                className="text-gray-500 hover:text-gray-800 font-bold"
+                                onClick={() => { setEditTaskId(null); setEditTaskData(null); }}
+                            >
+                                Close
+                            </button>
+                        </div>
+                        <div className="p-4">
+                            <CreateTask 
+                                modalMode={true} 
+                                task={editTaskData} 
+                                id={editTaskId} 
+                                setId={setEditTaskId} 
+                                setTask={setEditTaskData} 
+                                setProjectTasks={() => {
+                                    loadInitialData();
+                                }} 
+                            />
                         </div>
                     </div>
                 </div>

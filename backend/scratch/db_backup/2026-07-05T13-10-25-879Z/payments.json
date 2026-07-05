@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "6a0841b2e16d93eba1fd2857",
+    "user": "6993047f16e85ff3e4efd9a3",
+    "amount": 1199,
+    "currency": "INR",
+    "status": "completed",
+    "plan": "half-yearly",
+    "transactionId": "TXN_DD48GDKIH",
+    "createdAt": "2026-05-16T10:06:42.802Z",
+    "updatedAt": "2026-05-16T10:06:43.115Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a085ece373f8ec337c8779b",
+    "user": "6a07fe669a0d94f268897c92",
+    "amount": 1199,
+    "currency": "INR",
+    "status": "completed",
+    "plan": "half-yearly",
+    "transactionId": "TXN_J73ZNO59V",
+    "createdAt": "2026-05-16T12:10:54.893Z",
+    "updatedAt": "2026-05-16T12:10:57.732Z",
+    "__v": 0
+  }
+]

@@ -1,0 +1,85 @@
+[
+  {
+    "_id": "69d777804b5ba11b8da9c128",
+    "name": "admin",
+    "active": true,
+    "createdAt": "2026-04-09T09:55:12.605Z",
+    "permissions": [
+      "69d7777e4b5ba11b8da9c112",
+      "69d7777e4b5ba11b8da9c113",
+      "69d7777e4b5ba11b8da9c114",
+      "69d7777e4b5ba11b8da9c115",
+      "69d7777e4b5ba11b8da9c116",
+      "69d7777e4b5ba11b8da9c117",
+      "69d7777e4b5ba11b8da9c118",
+      "69d7777e4b5ba11b8da9c119",
+      "69d7777f4b5ba11b8da9c11a",
+      "69d7777f4b5ba11b8da9c11b",
+      "69d777804b5ba11b8da9c11c",
+      "69d777804b5ba11b8da9c11d",
+      "69d777804b5ba11b8da9c11e",
+      "69d777804b5ba11b8da9c11f",
+      "69d777804b5ba11b8da9c120",
+      "69d777804b5ba11b8da9c121",
+      "69d777804b5ba11b8da9c122",
+      "69d777804b5ba11b8da9c123",
+      "69d777804b5ba11b8da9c124",
+      "69d777804b5ba11b8da9c125",
+      "69d777804b5ba11b8da9c126",
+      "69d777804b5ba11b8da9c127"
+    ],
+    "updatedAt": "2026-04-09T09:55:12.605Z"
+  },
+  {
+    "_id": "69d777804b5ba11b8da9c129",
+    "name": "projectmanager",
+    "active": true,
+    "createdAt": "2026-04-09T09:55:12.660Z",
+    "permissions": [
+      "69d7777e4b5ba11b8da9c112",
+      "69d7777e4b5ba11b8da9c113",
+      "69d7777e4b5ba11b8da9c116",
+      "69d7777e4b5ba11b8da9c115",
+      "69d7777e4b5ba11b8da9c117",
+      "69d7777e4b5ba11b8da9c118",
+      "69d7777e4b5ba11b8da9c119",
+      "69d777804b5ba11b8da9c122",
+      "69d777804b5ba11b8da9c123",
+      "69d777804b5ba11b8da9c124",
+      "69d7777f4b5ba11b8da9c11a",
+      "69d777804b5ba11b8da9c11d",
+      "69d777804b5ba11b8da9c11e",
+      "69d777804b5ba11b8da9c11f",
+      "69d7777f4b5ba11b8da9c11b",
+      "69d777804b5ba11b8da9c11c"
+    ],
+    "updatedAt": "2026-04-09T09:55:12.660Z"
+  },
+  {
+    "_id": "69d777804b5ba11b8da9c12a",
+    "name": "hr",
+    "active": true,
+    "createdAt": "2026-04-09T09:55:12.729Z",
+    "permissions": [
+      "69d7777e4b5ba11b8da9c115",
+      "69d777804b5ba11b8da9c11f",
+      "69d777804b5ba11b8da9c125",
+      "69d777804b5ba11b8da9c126",
+      "69d777804b5ba11b8da9c127"
+    ],
+    "updatedAt": "2026-04-09T09:55:12.729Z"
+  },
+  {
+    "_id": "69d777804b5ba11b8da9c12b",
+    "name": "employee",
+    "active": true,
+    "createdAt": "2026-04-09T09:55:12.784Z",
+    "permissions": [
+      "69d7777e4b5ba11b8da9c115",
+      "69d777804b5ba11b8da9c120",
+      "69d777804b5ba11b8da9c121",
+      "69d777804b5ba11b8da9c11e"
+    ],
+    "updatedAt": "2026-04-09T09:55:12.784Z"
+  }
+]

@@ -160,12 +160,12 @@ const DashboardHeader = ({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 
                 {/* Navigation View Tabs */}
-                <div className="flex items-center gap-1 bg-slate-100/60 p-1 rounded-2xl border border-slate-200/30 w-fit">
+                <div className="flex items-center gap-1 bg-slate-100/60 p-1 rounded-2xl border border-slate-200/30 w-full overflow-x-auto sm:w-fit scrollbar-none flex-nowrap shrink-0">
                     {tabs.map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setViewMode(tab.id)}
-                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 relative ${
+                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 relative shrink-0 ${
                                 viewMode === tab.id 
                                     ? 'text-slate-900 font-black' 
                                     : 'text-slate-500 hover:text-slate-700 font-bold'

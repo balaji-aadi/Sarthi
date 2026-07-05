@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { IoNotificationsOutline, IoSearchOutline, IoCalendarOutline, IoTimeOutline, IoCloseCircleOutline, IoLinkOutline } from 'react-icons/io5';
+import { IoNotificationsOutline, IoSearchOutline, IoCalendarOutline, IoTimeOutline, IoCloseCircleOutline, IoLinkOutline, IoMenuOutline } from 'react-icons/io5';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { ProjectApi } from '../../services/api/Project.api';
 import { useSocket } from '../../SocketProvider';
@@ -14,7 +14,7 @@ import { setShowConsistencyModal, setGlobalSearch } from '../../store/slices/sto
 import moment from 'moment';
 import toast from 'react-hot-toast';
 
-const Header = () => {
+const Header = ({ toggleSidebar }) => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get("projectId");
   const [projectName, setProjectName] = useState("");
@@ -296,25 +296,34 @@ const Header = () => {
   const notificationIconClass = isNotification ? "shake" : "";
 
   return (
-    <header className="h-16 bg-surface border-b border-borderLight px-8 flex items-center justify-between sticky top-0 z-[100]">
+    <header className="h-16 bg-surface border-b border-borderLight px-4 lg:px-8 flex items-center justify-between sticky top-0 z-[100]">
         {/* Breadcrumbs / Page Title */}
-        <div className="flex items-center gap-2 sm:gap-4 overflow-hidden">
+        <div className="flex items-center gap-1 sm:gap-4 overflow-hidden">
+             {/* Hamburger Menu Toggler */}
+             <button 
+                 onClick={toggleSidebar}
+                 className="lg:hidden p-2 text-textSub hover:text-textMain hover:bg-slate-100/80 rounded-xl transition-all shrink-0"
+                 aria-label="Toggle Sidebar"
+             >
+                 <IoMenuOutline size={22} />
+             </button>
+
              <div className="flex items-center text-xs sm:text-sm text-textSub whitespace-nowrap overflow-hidden">
-                 <span className="hover:text-textMain cursor-pointer shrink-0">{getPageTitle()}</span>
-                 {projectName && (
-                     <div className="flex items-center min-w-0 ml-1 sm:ml-2">
-                        <span className="mx-1 sm:mx-2 shrink-0">/</span>
-                        <span className="font-semibold text-textMain flex items-center gap-1 sm:gap-2 truncate">
-                            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary shrink-0"></span>
-                            <span className="truncate">{projectName}</span>
-                        </span>
-                     </div>
-                 )}
+                  <span className="hover:text-textMain cursor-pointer shrink-0">{getPageTitle()}</span>
+                  {projectName && (
+                      <div className="flex items-center min-w-0 ml-1 sm:ml-2">
+                         <span className="mx-1 sm:mx-2 shrink-0">/</span>
+                         <span className="font-semibold text-textMain flex items-center gap-1 sm:gap-2 truncate max-w-[100px] sm:max-w-none">
+                             <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary shrink-0"></span>
+                             <span className="truncate">{projectName}</span>
+                         </span>
+                      </div>
+                  )}
              </div>
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 shrink-0">
             <div className="relative hidden md:block" ref={searchRef}>
                 <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-textSub z-10" />
                  <form onSubmit={handleSearchSubmit}>
@@ -330,7 +339,7 @@ const Header = () => {
 
                  {/* Search Dropdown */}
                  {showSearchDropdown && (globalSearch || recentSearches.length > 0) && (
-                     <div className="absolute top-[calc(100%+8px)] left-0 w-[30rem] bg-surface border border-borderLight rounded-xl shadow-2xl z-50 overflow-hidden py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="absolute top-[calc(100%+8px)] left-0 w-[30rem] bg-surface border border-borderLight rounded-xl shadow-2xl z-50 overflow-hidden py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                         {globalSearch && globalSearch.length > 0 && globalSearch.length < 4 && (
                             <div className="px-4 py-3 text-center text-[10px] font-medium text-textSub bg-bgLight/50 border-b border-borderLight animate-pulse">
                                 Type 4+ characters for results...
@@ -400,19 +409,19 @@ const Header = () => {
                                 <span>Clear Search</span>
                              </div>
                         )}
-                     </div>
+                      </div>
                  )}
             </div>
             
             <button 
                 onClick={() => dispatch(setShowConsistencyModal(true))}
-                className="w-10 h-10 rounded-full border border-borderLight flex items-center justify-center text-textSub hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all"
+                className="w-10 h-10 rounded-full border border-borderLight flex items-center justify-center text-textSub hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all shrink-0"
                 title="Performance View"
             >
                 <IoCalendarOutline size={20} />
             </button>
             
-            <div className="relative" ref={notificationRef}>
+            <div className="relative shrink-0" ref={notificationRef}>
                 <button 
                     onClick={() => {
                         setShowDropdown(!showDropdown);
@@ -471,7 +480,7 @@ const Header = () => {
                                                             />
                                                         ) : (
                                                             <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold border border-primary/20">
-                                                                {data.senderId?.firstName?.charAt(0) || 'U'}
+                                                                 {data.senderId?.firstName?.charAt(0) || 'U'}
                                                             </div>
                                                         )}
                                                         {!data.notificationStatus && (
@@ -514,10 +523,11 @@ const Header = () => {
             
             <button 
                 onClick={handleShare}
-                className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primaryHover transition-all shadow-lg shadow-primary/20 flex items-center gap-2 active:scale-95"
+                className="p-2 sm:px-4 sm:py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primaryHover transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 active:scale-95 shrink-0"
+                title="Share Link"
             >
                 <IoLinkOutline size={18} />
-                Share
+                <span className="hidden sm:inline">Share</span>
             </button>
         </div>
     </header>

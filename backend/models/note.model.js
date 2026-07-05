@@ -39,6 +39,16 @@ const noteSchema = new mongoose.Schema(
     tags: {
       type: [String],
       default: []
+    },
+    taskId: {
+      type: Schema.Types.ObjectId,
+      ref: "Task",
+      default: null
+    },
+    taskIds: {
+      type: [Schema.Types.ObjectId],
+      ref: "Task",
+      default: []
     }
   },
   { timestamps: true, versionKey: false }

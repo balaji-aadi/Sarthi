@@ -3,6 +3,7 @@ import { ApiResponse } from "../../utils/ApiResponse.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { Note } from "../../models/note.model.js";
 import axios from "axios";
+import mongoose from "mongoose";
 
 const noteController = {};
 
@@ -11,7 +12,31 @@ const noteController = {};
  */
 noteController.getNotes = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-  const notes = await Note.find({ userId }).sort({ updatedAt: -1 });
+  const { taskId, taskIds, excludeTaskNotes } = req.query;
+
+  const query = { userId };
+
+  if (taskId || taskIds) {
+    const ids = [];
+    if (taskId) ids.push(taskId);
+    if (taskIds) {
+      taskIds.split(',').forEach(id => ids.push(id.trim()));
+    }
+    const objectIds = ids.map(id => mongoose.Types.ObjectId.isValid(id) ? new mongoose.Types.ObjectId(id) : id);
+    query.$or = [
+      { taskId: { $in: objectIds } },
+      { taskIds: { $in: objectIds } }
+    ];
+  } else if (excludeTaskNotes === "true") {
+    // Standalone sticky notes only
+    query.taskId = null;
+    query.$or = [
+      { taskIds: { $size: 0 } },
+      { taskIds: { $exists: false } }
+    ];
+  }
+
+  const notes = await Note.find(query).sort({ updatedAt: -1 });
 
   return res.status(200).json(
     new ApiResponse(200, notes, "Notes retrieved successfully")
@@ -23,7 +48,7 @@ noteController.getNotes = asyncHandler(async (req, res) => {
  */
 noteController.createNote = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-  const { content, imageUrl, color, position, size, isPinned, title, tags } = req.body;
+  const { content, imageUrl, color, position, size, isPinned, title, tags, taskId, taskIds } = req.body;
 
   const newNote = await Note.create({
     userId,
@@ -34,7 +59,9 @@ noteController.createNote = asyncHandler(async (req, res) => {
     size: size || { width: 250, height: 180 },
     isPinned: isPinned || false,
     title: title || "",
-    tags: tags || []
+    tags: tags || [],
+    taskId: taskId || null,
+    taskIds: taskIds || []
   });
 
   return res.status(201).json(
@@ -55,7 +82,7 @@ noteController.updateNote = asyncHandler(async (req, res) => {
   }
 
   // Update properties if provided in body
-  const fields = ["content", "imageUrl", "color", "position", "size", "isPinned", "title", "tags"];
+  const fields = ["content", "imageUrl", "color", "position", "size", "isPinned", "title", "tags", "taskId", "taskIds"];
   fields.forEach(field => {
     if (req.body[field] !== undefined) {
       note[field] = req.body[field];
@@ -109,8 +136,9 @@ Requirements:
 - If action is "summarize", write a punchy, ultra-concise summary (maximum 20 words).
 - If action is "checklist", format it as a clean markdown todo list (e.g., "- [ ] Task item").
 - If action is "clarify", improve grammar, styling, and professionalism.
+- If action is "translate-hi", translate the English text into natural, accurate Hindi. Keep all HTML tags and structures (like <h3>, <p>, <ul>, <li>, <pre>, etc.) EXACTLY unchanged, only translating the human text content inside the tags.
 
-Return ONLY the plain text of the updated note content. Do not write any introduction, explanation, markdown headers, or JSON wrapping. Just return the raw text.
+Return ONLY the plain text of the updated note content. Do not write any introduction, explanation, markdown headers, or JSON wrapping. Just return the raw text/HTML.
 `;
 
   try {

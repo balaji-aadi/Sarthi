@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-07-05T13-27-11-162Z",
+  "summary": {
+    "globalsettings": 1,
+    "bugs": 0,
+    "focussessions": 127,
+    "activities": 0,
+    "tasks": 258,
+    "milestones": 0,
+    "notifications": 143,
+    "testcases": 0,
+    "sprints": 0,
+    "payments": 2,
+    "performancestats": 177,
+    "users": 2,
+    "epics": 0,
+    "fcmdevices": 0,
+    "notes": 19,
+    "projects": 3,
+    "userroles": 4,
+    "dailyaccountabilities": 1,
+    "permissions": 22,
+    "branches": 2
+  },
+  "database": "task-management"
+}

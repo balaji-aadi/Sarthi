@@ -1,0 +1,71 @@
+[
+  {
+    "_id": "6993047f16e85ff3e4efd9a3",
+    "email": "balajiaadi2000@gmail.com",
+    "address": "",
+    "createdAt": "2026-02-16T11:50:23.162Z",
+    "firstName": "Balaji",
+    "isActive": true,
+    "lastName": "Aadi",
+    "otp": null,
+    "otpTime": null,
+    "password": "$2b$10$ZB1YuGY8Rz04gkuiXbhb6eoMzCdZfeCDGKM6BuAZu2V2X/chaobSq",
+    "phoneNumber": "7804946631",
+    "profileImage": "http://localhost:5003/api/v1/file/get-file/IMG_20221204_224327.jpg",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTkzMDQ3ZjE2ZTg1ZmYzZTRlZmQ5YTMiLCJpYXQiOjE3ODMwNzY4MzksImV4cCI6MTc4NDM3MjgzOX0.zeIT-nRUsjtIyHgxzAnfvR-V8TvBnPnk4fXLZi_fef0",
+    "updatedAt": "2026-07-03T11:07:19.992Z",
+    "userRole": "69d777804b5ba11b8da9c128",
+    "userRoles": [
+      "69d777804b5ba11b8da9c128",
+      "69d777804b5ba11b8da9c129",
+      "69d777804b5ba11b8da9c12b"
+    ],
+    "branchAccess": [
+      {
+        "branchId": "6a081b6e111c99b633b00d76",
+        "role": "admin",
+        "_id": "6a081b73111c99b633b00d7c"
+      }
+    ],
+    "invitationTimeRemaining": 300,
+    "subscriptionPlan": "half-yearly",
+    "subscriptionType": "paid",
+    "subscriptionExpiresAt": "2026-11-16T10:06:43.205Z"
+  },
+  {
+    "_id": "6a07fe669a0d94f268897c92",
+    "email": "test@gmail.com",
+    "userRole": "69d777804b5ba11b8da9c12b",
+    "userRoles": [
+      "69d777804b5ba11b8da9c12b"
+    ],
+    "firstName": "test",
+    "lastName": "one",
+    "phoneNumber": "7898889898",
+    "address": "",
+    "profileImage": "",
+    "otp": null,
+    "otpTime": null,
+    "isActive": true,
+    "password": "$2b$10$6quIH.CoBPg/KgOOuaM./uS2Z1l/mqKEMU1HfO9voEGtZyCXW8YY6",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTA3ZmU2NjlhMGQ5NGYyNjg4OTdjOTIiLCJpYXQiOjE3Nzg5NTA5NzcsImV4cCI6MTc4MDI0Njk3N30.OC00-0yRNenGOEdB6lA6j666Mp0aY5ilZn2lbdb4zbE",
+    "createdAt": "2026-05-16T05:19:34.230Z",
+    "updatedAt": "2026-05-16T17:02:57.771Z",
+    "branchAccess": [
+      {
+        "branchId": "6a081b6e111c99b633b00d76",
+        "role": "admin",
+        "_id": "6a081b74111c99b633b00d81"
+      },
+      {
+        "branchId": "6a083a77f7e66b83659e7174",
+        "role": "admin",
+        "_id": "6a083a77f7e66b83659e7176"
+      }
+    ],
+    "invitationTimeRemaining": 300,
+    "subscriptionPlan": "half-yearly",
+    "subscriptionType": "paid",
+    "subscriptionExpiresAt": "2026-11-16T12:10:57.854Z"
+  }
+]

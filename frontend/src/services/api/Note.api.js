@@ -1,7 +1,7 @@
 import Api from "../axiosConfig";
 
 export const NoteApi = {
-  getNotes: () => Api.get("note"),
+  getNotes: (params = {}) => Api.get("note", { params }),
   createNote: (data) => Api.post("note", data),
   updateNote: (id, data) => Api.put(`note/${id}`, data),
   deleteNote: (id) => Api.delete(`note/${id}`),

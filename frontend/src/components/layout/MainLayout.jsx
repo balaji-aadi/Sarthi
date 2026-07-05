@@ -19,12 +19,14 @@ const MainLayout = () => {
     const dispatch = useDispatch();
     
     const [timeRemaining, setTimeRemaining] = useState(currentUser?.invitationTimeRemaining || 0);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const timerRef = useRef(null);
     const syncRef = useRef(null);
 
-    // Auto-clear loader on page transitions to prevent "stuck" states
+    // Auto-clear loader and close sidebar on page transitions to prevent "stuck" states
     useEffect(() => {
         handleLoading(false);
+        setSidebarOpen(false);
     }, [location.pathname]);
 
     // Subscription Gate & Redirect Logic
@@ -113,10 +115,18 @@ const MainLayout = () => {
 
     return (
         <div className="flex h-full w-full bg-bgLight font-sans text-textMain overflow-hidden">
-            {activeBranch && <Sidebar />}
+            {activeBranch && <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />}
             
-            <div className={`flex-1 ${activeBranch ? 'ml-72' : ''} flex flex-col h-full overflow-hidden relative`}>
-                {activeBranch && <Header />}
+            {/* Backdrop overlay for mobile */}
+            {activeBranch && sidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[140] lg:hidden transition-opacity duration-300"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+            
+            <div className={`flex-1 ${activeBranch ? 'lg:ml-72' : ''} flex flex-col h-full overflow-hidden relative transition-all duration-300`}>
+                {activeBranch && <Header toggleSidebar={() => setSidebarOpen(prev => !prev)} />}
                 
                 <main className={`flex-1 ${location.pathname === '/notes' ? 'overflow-hidden p-0' : 'overflow-y-auto p-4 sm:p-8'}`}>
                     <Outlet />

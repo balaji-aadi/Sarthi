@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NoteApi } from "../services/api/Note.api";
+import { TaskApi } from "../services/api/Task.api";
 import { useLoading } from "../components/loader/LoaderContext";
 import Api from "../services/axiosConfig";
 import { serverUrl } from "../services/config";
@@ -119,6 +120,7 @@ const CanvasNotes = () => {
   const [activeColorPopover, setActiveColorPopover] = useState(null);
   const [activeAiPopover, setActiveAiPopover] = useState(null);
   const [activeLightboxImage, setActiveLightboxImage] = useState(null);
+  const [showClearBoardConfirm, setShowClearBoardConfirm] = useState(false);
 
   // Panning State
   const [isPanning, setIsPanning] = useState(false);
@@ -138,8 +140,12 @@ const CanvasNotes = () => {
   const [newTagVal, setNewTagVal] = useState("");
   const [editorMode, setEditorMode] = useState("view"); // "view" or "edit"
   const [editorContent, setEditorContent] = useState(""); // isolated editor content state
+  const [allTasks, setAllTasks] = useState([]);
+  const [isTaskDropdownOpen, setIsTaskDropdownOpen] = useState(false);
+  const [taskDropdownSearch, setTaskDropdownSearch] = useState("");
+  const modalFileInputRef = useRef(null);
+  const quillRef = useRef(null);
 
-  // Sync state variables when a note is opened in the full editor modal
   useEffect(() => {
     if (editingFullNote) {
       setNoteTitle(editingFullNote.title || "");
@@ -148,8 +154,32 @@ const CanvasNotes = () => {
       setIsAddingTag(false);
       setNewTagVal("");
       setEditorMode("view"); // Default to view mode when opening
+      setIsTaskDropdownOpen(false);
+      setTaskDropdownSearch("");
     }
   }, [editingFullNote]);
+
+  useEffect(() => {
+    if (editorMode === "edit" && quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      if (quill) {
+        const handlePaste = (e) => {
+          e.preventDefault();
+          const text = e.clipboardData.getData('text/plain');
+          const range = quill.getSelection();
+          if (range) {
+            quill.insertText(range.index, text);
+          } else {
+            quill.insertText(quill.getLength(), text);
+          }
+        };
+        quill.root.addEventListener('paste', handlePaste);
+        return () => {
+          quill.root.removeEventListener('paste', handlePaste);
+        };
+      }
+    }
+  }, [editorMode]);
 
 
   // Note Custom Dragging State
@@ -164,6 +194,7 @@ const CanvasNotes = () => {
 
   useEffect(() => {
     loadNotes();
+    loadTasks();
     // Center the canvas on mount
     setTimeout(() => {
       if (containerRef.current) {
@@ -178,10 +209,19 @@ const CanvasNotes = () => {
     };
   }, []);
 
+  const loadTasks = async () => {
+    try {
+      const res = await TaskApi.getAllTasks({});
+      setAllTasks(res.data?.data || []);
+    } catch (err) {
+      console.error("Failed to load tasks for notes linking:", err);
+    }
+  };
+
   const loadNotes = async () => {
     handleLoading(true);
     try {
-      const res = await NoteApi.getNotes();
+      const res = await NoteApi.getNotes({ excludeTaskNotes: true });
       setNotes(res.data?.data || []);
     } catch (err) {
       console.error(err);
@@ -368,6 +408,29 @@ const CanvasNotes = () => {
     } catch (err) {
       console.error("Failed to update note tags:", err);
       toast.error("Failed to save tags");
+    }
+  };
+
+  const handleToggleTaskLink = async (targetTaskId) => {
+    if (!editingFullNote) return;
+    const currentIds = editingFullNote.taskIds || (editingFullNote.taskId ? [editingFullNote.taskId] : []);
+    let updatedIds;
+    if (currentIds.includes(targetTaskId)) {
+      updatedIds = currentIds.filter(id => id !== targetTaskId);
+    } else {
+      updatedIds = [...currentIds, targetTaskId];
+    }
+    const firstId = updatedIds.length > 0 ? updatedIds[0] : null;
+
+    setNotes(prev => prev.map(n => n._id === editingFullNote._id ? { ...n, taskId: firstId, taskIds: updatedIds } : n));
+    setEditingFullNote(prev => ({ ...prev, taskId: firstId, taskIds: updatedIds }));
+
+    try {
+      await NoteApi.updateNote(editingFullNote._id, { taskId: firstId, taskIds: updatedIds });
+      toast.success("Updated task links successfully");
+    } catch (err) {
+      console.error("Failed to update task links:", err);
+      toast.error("Failed to update task links");
     }
   };
 
@@ -565,8 +628,6 @@ const CanvasNotes = () => {
 
   const handleClearBoard = async () => {
     if (notes.length === 0) return;
-    if (!window.confirm("Are you sure you want to delete all notes on this board? This cannot be undone.")) return;
-
     handleLoading(true);
     try {
       await Promise.all(notes.map(n => NoteApi.deleteNote(n._id)));
@@ -725,28 +786,7 @@ const CanvasNotes = () => {
                   )}
                 </div>
 
-                {/* Optional Note Image attachment */}
-                {note.imageUrl && (
-                  <div className="w-full h-40 relative overflow-hidden bg-slate-950/20 shrink-0 border-b border-black/5">
-                    <img
-                      src={note.imageUrl.startsWith("http") ? note.imageUrl : `${serverUrl}${note.imageUrl}`}
-                      alt="Note Attachment"
-                      className="w-full h-full object-cover cursor-zoom-in hover:scale-[1.02] transition-transform duration-200"
-                      draggable={false}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveLightboxImage(note.imageUrl.startsWith("http") ? note.imageUrl : `${serverUrl}${note.imageUrl}`);
-                      }}
-                    />
-                    <button
-                      onClick={() => handleRemoveImage(note._id)}
-                      className="absolute top-1.5 right-1.5 w-5 h-5 bg-black/60 hover:bg-black text-white flex items-center justify-center rounded-full transition-colors"
-                      title="Remove image"
-                    >
-                      <IoCloseOutline size={12} />
-                    </button>
-                  </div>
-                )}
+
 
                 {/* Textarea editing area */}
                 <div className="flex-1 p-3 flex flex-col min-h-0 overflow-hidden">
@@ -770,20 +810,6 @@ const CanvasNotes = () => {
                             {note.title && <div className="font-extrabold text-[12px] mb-1 truncate text-slate-900 dark:text-white">{note.title}</div>}
                             {getPreviewText(note)}
                           </div>
-                          {note.tags && note.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-1.5 mb-1">
-                              {note.tags.slice(0, 3).map(t => (
-                                <span key={t} className="text-[8px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 font-black tracking-wide">
-                                  {t}
-                                </span>
-                              ))}
-                              {note.tags.length > 3 && (
-                                <span className="text-[8px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 font-black">
-                                  +{note.tags.length - 3}
-                                </span>
-                              )}
-                            </div>
-                          )}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -849,22 +875,7 @@ const CanvasNotes = () => {
                     <IoPinOutline size={12} />
                   </button>
 
-                  {/* Add Image Button */}
-                  <button
-                    onClick={() => handleTriggerFileInput(note._id)}
-                    className={`p-1 rounded transition-colors ${isDark ? "text-slate-400 hover:text-white hover:bg-white/10" : "text-slate-500 hover:text-black hover:bg-black/5"
-                      }`}
-                    title="Attach Image"
-                  >
-                    <IoImageOutline size={12} />
-                  </button>
-                  <input
-                    type="file"
-                    ref={(el) => (fileInputRefs.current[note._id] = el)}
-                    onChange={(e) => handleFileChange(note._id, e)}
-                    accept="image/*"
-                    className="hidden"
-                  />
+
 
                   {/* Color Palette trigger */}
                   <div className="relative">
@@ -994,7 +1005,7 @@ const CanvasNotes = () => {
         </button>
 
         <button
-          onClick={handleClearBoard}
+          onClick={() => setShowClearBoardConfirm(true)}
           className="p-1.5 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
           title="Clear Entire Board"
         >
@@ -1036,7 +1047,7 @@ const CanvasNotes = () => {
           {noteSearch && (
             <button
               onClick={() => setNoteSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-650"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
             >
               <IoCloseOutline size={12} />
             </button>
@@ -1363,64 +1374,6 @@ const CanvasNotes = () => {
                         }) : "Just now"}
                       </span>
                     </div>
-
-                    {/* Tags Row */}
-                    <div className="flex items-center gap-3">
-                      <span className="text-slate-400 text-xs font-bold w-28 select-none uppercase tracking-wider">Tags</span>
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        {(noteTags || []).map((tag, idx) => (
-                          <span
-                            key={tag + idx}
-                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-600 transition-colors ${editorMode === "edit" ? "hover:border-slate-350" : ""
-                              }`}
-                          >
-                            {tag}
-                            {editorMode === "edit" && (
-                              <button
-                                onClick={() => {
-                                  const newTags = noteTags.filter(t => t !== tag);
-                                  setNoteTags(newTags);
-                                  handleUpdateNoteTags(editingFullNote._id, newTags);
-                                }}
-                                className="text-slate-400 hover:text-red-500 font-bold ml-1 text-[10px]"
-                              >
-                                ✕
-                              </button>
-                            )}
-                          </span>
-                        ))}
-                        {editorMode === "edit" && (
-                          <>
-                            {isAddingTag ? (
-                              <input
-                                type="text"
-                                value={newTagVal}
-                                onChange={(e) => setNewTagVal(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    addTag();
-                                  } else if (e.key === "Escape") {
-                                    setIsAddingTag(false);
-                                    setNewTagVal("");
-                                  }
-                                }}
-                                onBlur={addTag}
-                                autoFocus
-                                placeholder="Tag name..."
-                                className="px-3 py-1 rounded-xl border border-primary text-xs font-bold text-slate-700 bg-white focus:outline-none shadow-sm"
-                              />
-                            ) : (
-                              <button
-                                onClick={() => setIsAddingTag(true)}
-                                className="inline-flex items-center gap-1 px-3 py-1 rounded-xl border border-dashed border-slate-300 hover:border-slate-400 text-xs font-bold text-slate-500 hover:text-slate-700 transition-colors"
-                              >
-                                + Add new tag
-                              </button>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </div>
                   </div>
                 </div>
 
@@ -1431,6 +1384,7 @@ const CanvasNotes = () => {
 
                   {/* React Quill Editor */}
                   <ReactQuill
+                    ref={quillRef}
                     key={editorMode}
                     theme="snow"
                     value={editorContent}
@@ -1453,7 +1407,7 @@ const CanvasNotes = () => {
                       </>
                     ) : (
                       <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-450"></span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                         <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">View Mode (Read Only)</span>
                       </>
                     )}
@@ -1470,6 +1424,40 @@ const CanvasNotes = () => {
           </>
         )}
       </AnimatePresence>
+
+      {/* Custom Clear Board Confirmation Modal */}
+      {showClearBoardConfirm && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-md p-6 overflow-hidden flex flex-col items-center text-center animate-in zoom-in-95 duration-200">
+            <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/20 flex items-center justify-center mb-4">
+              <IoTrashOutline className="text-red-500 text-xl" />
+            </div>
+            
+            <h3 className="text-base font-black text-slate-850 dark:text-white uppercase tracking-wider mb-2">Clear Board</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6 max-w-xs leading-relaxed font-semibold">
+              Are you sure you want to delete all notes on this board? This cannot be undone.
+            </p>
+            
+            <div className="flex gap-3 w-full">
+              <button
+                onClick={() => {
+                  handleClearBoard();
+                  setShowClearBoardConfirm(false);
+                }}
+                className="flex-1 py-2.5 bg-red-500 hover:bg-red-650 text-white text-xs font-black rounded-xl uppercase tracking-wider transition-all cursor-pointer shadow-md select-none animate-in duration-200"
+              >
+                Clear Board
+              </button>
+              <button
+                onClick={() => setShowClearBoardConfirm(false)}
+                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black rounded-xl uppercase tracking-wider transition-all cursor-pointer select-none"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
