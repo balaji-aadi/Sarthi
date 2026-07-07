@@ -1,0 +1,1660 @@
+{
+  "timestamp": "2026-07-05T17:36:53.883Z",
+  "project": {
+    "_id": "69d77b7c6d3910f342f3762e",
+    "name": "English Speaking Practice",
+    "access": "private",
+    "key": "ESP",
+    "description": "",
+    "startDate": "2026-04-09T00:00:00.000Z",
+    "endDate": "2026-06-09T00:00:00.000Z",
+    "priority": "medium",
+    "clientName": "",
+    "githubRepository": "",
+    "budget": null,
+    "progress": 34,
+    "projectManager": "6993047f16e85ff3e4efd9a3",
+    "teamMembers": [
+      "6993047f16e85ff3e4efd9a3"
+    ],
+    "rolesAndResponsibilities": [
+      {
+        "teamMember": "6993047f16e85ff3e4efd9a3",
+        "role": "Lead",
+        "responsibility": "Everything ",
+        "_id": "69d77b7c6d3910f342f3762f"
+      }
+    ],
+    "status": "active",
+    "settings": {
+      "enableYoutubeSearch": false,
+      "enableLeetCodeSearch": false,
+      "sprintDuration": 2,
+      "enableSprints": false
+    },
+    "createdBy": "6993047f16e85ff3e4efd9a3",
+    "createdAt": "2026-04-09T10:12:12.088Z",
+    "updatedAt": "2026-07-05T17:12:02.609Z",
+    "updatedBy": "6993047f16e85ff3e4efd9a3",
+    "branchId": "6a081b6e111c99b633b00d76"
+  },
+  "tasks": [
+    {
+      "_id": "69d8c3a17edea77694ff5657",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Future Tense",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-28T18:30:00.000Z",
+      "taskDueDate": "2026-05-01T18:29:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 5:01:35 - 5:37:48</p><p>Daily English practice focus: Future Tense. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.498Z",
+      "updatedAt": "2026-06-27T08:46:32.750Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-11",
+      "progress": 0,
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:32.745Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/1/2026)",
+          "_id": "6a3f8de8a80cb23ee9172930"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:51.772Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c50f80f504c6d1c794ab"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-05-02T01:30:00.964Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/1/2026)",
+          "_id": "69f5539870d7501ed9d6bcbb"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "branchId": "6a081b6e111c99b633b00d76",
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c3a17edea77694ff5659",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: 3 Common Mistakes",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-05-01T18:30:00.000Z",
+      "taskDueDate": "2026-05-04T18:29:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 5:37:48 - 6:02:50</p><p>Daily English practice focus: 3 Common Mistakes. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.626Z",
+      "updatedAt": "2026-06-27T08:46:34.358Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-12",
+      "progress": 0,
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:34.357Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/4/2026)",
+          "_id": "6a3f8deaa80cb23ee9172978"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:51.819Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c50f80f504c6d1c79555"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-05-06T02:30:01.307Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/4/2026)",
+          "_id": "69faa7a970d7501ed9d6cf3e"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "branchId": "6a081b6e111c99b633b00d76",
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c3a17edea77694ff565b",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Pronunciation",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-05-12T00:00:00.000Z",
+      "taskDueDate": "2026-05-14T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 6:02:50 - 7:15:27</p><p>Daily English practice focus: Pronunciation. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.686Z",
+      "updatedAt": "2026-06-27T08:46:35.549Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-13",
+      "progress": 0,
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:35.548Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/14/2026)",
+          "_id": "6a3f8deba80cb23ee91729be"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:51.868Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c50f80f504c6d1c7955d"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-05-16T02:30:00.423Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/15/2026)",
+          "_id": "6a07d6a8708f559d5bb881e4"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "branchId": "6a081b6e111c99b633b00d76",
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c3a17edea77694ff565d",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Mindset",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-05-15T00:00:00.000Z",
+      "taskDueDate": "2026-05-17T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 7:15:27 - 7:37:56</p><p>Daily English practice focus: Mindset. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.740Z",
+      "updatedAt": "2026-06-27T08:46:36.735Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-14",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:36.734Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/17/2026)",
+          "_id": "6a3f8deca80cb23ee91729ff"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:51.926Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c50f80f504c6d1c79561"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-05-20T13:30:08.417Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/18/2026)",
+          "_id": "6a0db760ae25a2551c19b8a6"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c3a17edea77694ff565f",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Attraction is relative",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-05-18T00:00:00.000Z",
+      "taskDueDate": "2026-05-20T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 7:37:56 - 7:49:20</p><p>Daily English practice focus: Attraction is relative. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.897Z",
+      "updatedAt": "2026-06-27T08:46:37.990Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-15",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:37.989Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/20/2026)",
+          "_id": "6a3f8deda80cb23ee9172a41"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:51.969Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c50f80f504c6d1c79567"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-05-21T21:30:00.406Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/21/2026)",
+          "_id": "6a0f7958ae25a2551c19b9b8"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d9189876b",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Modal Auxiliary Verbs",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-05-21T00:00:00.000Z",
+      "taskDueDate": "2026-05-23T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 7:49:20 - 8:00:00</p><p>Daily English practice focus: Modal Auxiliary Verbs. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.020Z",
+      "updatedAt": "2026-06-27T08:46:39.450Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-16",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:39.449Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/23/2026)",
+          "_id": "6a3f8defa80cb23ee9172a84"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:52.056Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c51080f504c6d1c7956d"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-05-28T06:30:18.015Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/24/2026)",
+          "_id": "6a17e0fa63456b34f3759b10"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d9189876d",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Idioms",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-05-24T00:00:00.000Z",
+      "taskDueDate": "2026-05-26T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 8:00:00 - 8:10:00</p><p>Daily English practice focus: Idioms. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.086Z",
+      "updatedAt": "2026-06-27T08:46:40.636Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-17",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:40.635Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/26/2026)",
+          "_id": "6a3f8df0a80cb23ee9172ac8"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:52.104Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c51080f504c6d1c79572"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-05-28T06:30:18.496Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/27/2026)",
+          "_id": "6a17e0fa63456b34f3759b3f"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d9189876f",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Confident speaker",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-05-27T00:00:00.000Z",
+      "taskDueDate": "2026-05-29T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 8:10:00 - 8:21:12</p><p>Daily English practice focus: Confident speaker. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.138Z",
+      "updatedAt": "2026-06-27T08:46:41.822Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-18",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:41.821Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/29/2026)",
+          "_id": "6a3f8df1a80cb23ee9172b0d"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:52.175Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c51080f504c6d1c79579"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-05-31T07:30:00.231Z",
+          "message": "Task automatically moved to Backlog due to expired due date (5/30/2026)",
+          "_id": "6a1be37899e61c1c3760c1c8"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d91898771",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Tone",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-05-30T00:00:00.000Z",
+      "taskDueDate": "2026-06-01T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 8:21:12 - 8:38:00</p><p>Daily English practice focus: Tone. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.184Z",
+      "updatedAt": "2026-06-27T08:46:43.009Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-19",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:43.008Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/1/2026)",
+          "_id": "6a3f8df3a80cb23ee9172b53"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:52.226Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c51080f504c6d1c79580"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-03T15:30:00.436Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/2/2026)",
+          "_id": "6a204878860a8b333e08debe"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d91898773",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Business phrases for Work place",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-06-02T00:00:00.000Z",
+      "taskDueDate": "2026-06-04T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 8:38:00 - 9:00:00</p><p>Daily English practice focus: Business phrases for Work place. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.224Z",
+      "updatedAt": "2026-06-27T08:46:44.194Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-20",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:44.193Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/4/2026)",
+          "_id": "6a3f8df4a80cb23ee9172b9a"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:52.271Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c51080f504c6d1c79583"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-06T02:30:00.234Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/5/2026)",
+          "_id": "6a23862877dde69e294030e4"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d91898775",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Phrase",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-06-05T00:00:00.000Z",
+      "taskDueDate": "2026-06-07T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 9:00:00 - 9:09:00</p><p>Daily English practice focus: Phrase. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.283Z",
+      "updatedAt": "2026-06-27T08:46:45.379Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-21",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:45.378Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/7/2026)",
+          "_id": "6a3f8df5a80cb23ee9172be2"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:52.329Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c51080f504c6d1c79585"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-09T06:30:00.158Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/8/2026)",
+          "_id": "6a27b2e877dde69e29404d70"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d91898777",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Negotiation",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-06-08T00:00:00.000Z",
+      "taskDueDate": "2026-06-10T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 9:09:00 - 9:17:00</p><p>Daily English practice focus: Negotiation. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.332Z",
+      "updatedAt": "2026-06-27T08:46:46.563Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-22",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:46.562Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/10/2026)",
+          "_id": "6a3f8df6a80cb23ee9172c2b"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:52.391Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c51080f504c6d1c79587"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-12T07:30:00.591Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/11/2026)",
+          "_id": "6a2bb57877dde69e29407067"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d91898779",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Smart Phrases",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-06-11T00:00:00.000Z",
+      "taskDueDate": "2026-06-13T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 9:17:00 - 9:25:16</p><p>Daily English practice focus: Smart Phrases. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.538Z",
+      "updatedAt": "2026-06-27T08:46:47.744Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-23",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:47.743Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/13/2026)",
+          "_id": "6a3f8df7a80cb23ee9172c75"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:52.459Z",
+          "message": "Status had been changed from backlog >>> hold (inherited from parent task hold)",
+          "_id": "6a30c51080f504c6d1c7958d"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-15T05:30:00.123Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/14/2026)",
+          "_id": "6a2f8dd803cb6d06a7ed1620"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d9189877b",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Advanced Phrases",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-06-14T00:00:00.000Z",
+      "taskDueDate": "2026-06-16T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 9:25:16 - 10:06:41</p><p>Daily English practice focus: Advanced Phrases. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.606Z",
+      "updatedAt": "2026-06-27T08:46:48.935Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-24",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:48.934Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/16/2026)",
+          "_id": "6a3f8df8a80cb23ee9172cc0"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:24.233Z",
+          "message": "Status had been changed from todo >>> hold",
+          "_id": "6a30c4f480f504c6d1c7936b"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d9189877d",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Basic VS Advanced",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-06-17T00:00:00.000Z",
+      "taskDueDate": "2026-06-19T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 10:06:41 - 10:19:41</p><p>Daily English practice focus: Basic VS Advanced. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.644Z",
+      "updatedAt": "2026-06-27T08:46:50.117Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-25",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:50.116Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/19/2026)",
+          "_id": "6a3f8dfaa80cb23ee9172d0c"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:51.628Z",
+          "message": "Status had been changed from todo >>> hold",
+          "_id": "6a30c50f80f504c6d1c7947b"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d9189877f",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Boring Vocabulary",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-06-20T00:00:00.000Z",
+      "taskDueDate": "2026-06-22T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 10:19:41 - 10:34:00</p><p>Daily English practice focus: Boring Vocabulary. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.684Z",
+      "updatedAt": "2026-06-27T08:46:51.411Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-26",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:51.410Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/22/2026)",
+          "_id": "6a3f8dfba80cb23ee9172d59"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:51.627Z",
+          "message": "Status had been changed from todo >>> hold",
+          "_id": "6a30c50f80f504c6d1c79479"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d91898781",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Daily use phrases",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-06-23T00:00:00.000Z",
+      "taskDueDate": "2026-06-25T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 10:34:00 - 11:00:00</p><p>Daily English practice focus: Daily use phrases. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.741Z",
+      "updatedAt": "2026-06-27T08:46:52.595Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-27",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:52.594Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/25/2026)",
+          "_id": "6a3f8dfca80cb23ee9172da7"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:51.622Z",
+          "message": "Status had been changed from todo >>> hold",
+          "_id": "6a30c50f80f504c6d1c79477"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d91898783",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Common Phrases",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-06-26T00:00:00.000Z",
+      "taskDueDate": "2026-06-28T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 11:00:00 - 11:20:00</p><p>Daily English practice focus: Common Phrases. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.787Z",
+      "updatedAt": "2026-07-05T14:04:21.146Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-28",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-07-05T14:04:21.141Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/28/2026)",
+          "_id": "6a4a6465bd5a23053941335a"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:51.618Z",
+          "message": "Status had been changed from todo >>> hold",
+          "_id": "6a30c50f80f504c6d1c79473"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69d8c52fa94c130d91898785",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Important",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-06-29T00:00:00.000Z",
+      "taskDueDate": "2026-07-01T23:59:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 11:20:00 - 11:38:07</p><p>Daily English practice focus: Important. Watch the relevant video section and practice speaking.</p>",
+      "estimatedHours": 1,
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "backlog",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:38:55.826Z",
+      "updatedAt": "2026-07-05T14:04:23.408Z",
+      "__v": 0,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-29",
+      "progress": 0,
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-07-05T14:04:23.406Z",
+          "message": "Task automatically moved to Backlog due to expired due date (7/1/2026)",
+          "_id": "6a4a6467bd5a2305394133b9"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:33.188Z",
+          "message": "Status had been changed from todo >>> hold",
+          "_id": "6a30c4fd80f504c6d1c7940f"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3"
+    },
+    {
+      "_id": "69df0a1ec39b40e541387430",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English By Udisha Ma'am",
+      "taskPriority": "medium",
+      "taskType": "Preparation",
+      "status": "backlog",
+      "createdAt": "2026-05-05T00:00:00.000Z",
+      "updatedAt": "2026-07-05T17:12:02.083Z",
+      "subtaskStats": {
+        "total": 29,
+        "completed": 10
+      },
+      "taskId": "ENG-30",
+      "additionalNotes": "",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "attachments": [],
+      "dependentTasks": [],
+      "estimatedHours": 20,
+      "milestone": null,
+      "parentTask": null,
+      "progress": 34,
+      "taskDescription": "<p><a href=\"https://www.youtube.com/watch?v=DnWOFf1WxTs&amp;pp=ygUnZW5nbGlzaCBzcGVha2luZyBwcmFjdGljZSBieSB1ZGlzaGEgbWFt\" rel=\"noopener noreferrer\" target=\"_blank\">https://www.youtube.com/watch?v=DnWOFf1WxTs&amp;pp=ygUnZW5nbGlzaCBzcGVha2luZyBwcmFjdGljZSBieSB1ZGlzaGEgbWFt</a></p>",
+      "taskDueDate": "2026-06-24T00:00:00.000Z",
+      "taskStartDate": "2026-04-20T00:00:00.000Z",
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "branchId": "6a081b6e111c99b633b00d76",
+      "activityLogs": [
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-06-27T08:46:53.777Z",
+          "message": "Task automatically moved to Backlog due to expired due date (6/24/2026)",
+          "_id": "6a3f8dfda80cb23ee9172df6"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-06-16T03:37:51.620Z",
+          "message": "Status had been changed from todo >>> hold",
+          "_id": "6a30c50f80f504c6d1c79475"
+        }
+      ],
+      "backlogEstimatedHours": 0,
+      "holdDate": "2026-06-16T03:37:51.620Z",
+      "revisionLogs": [],
+      "storyPoints": 0
+    },
+    {
+      "_id": "69d8c39e7edea77694ff5643",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Introduction",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-19T18:30:00.000Z",
+      "taskDueDate": "2026-04-23T00:30:00.000Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 00:00 - 05:13</p><p>Daily English practice focus: Introduction. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "done",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:14.031Z",
+      "updatedAt": "2026-05-16T07:23:32.489Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "activityLogs": [
+        {
+          "oldStatus": "todo",
+          "currentStatus": "done",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-10T18:34:18.898Z",
+          "message": "Status had been changed from todo >>> done",
+          "_id": "69d942aafaaf4f1fd14b5b68"
+        }
+      ],
+      "attachments": [],
+      "dependentTasks": [],
+      "progress": 100,
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-1",
+      "branchId": "6a081b6e111c99b633b00d76"
+    },
+    {
+      "_id": "69d8c3a07edea77694ff5645",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Objectives",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-19T18:30:00.000Z",
+      "taskDueDate": "2026-04-23T00:30:00.000Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 05:13 - 17:00</p><p>Daily English practice focus: Objectives. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "done",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:16.859Z",
+      "updatedAt": "2026-05-16T07:23:32.489Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "activityLogs": [
+        {
+          "oldStatus": "todo",
+          "currentStatus": "done",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-10T18:34:22.632Z",
+          "message": "Status had been changed from todo >>> done",
+          "_id": "69d942aefaaf4f1fd14b5b7e"
+        }
+      ],
+      "attachments": [],
+      "dependentTasks": [],
+      "progress": 100,
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-2",
+      "branchId": "6a081b6e111c99b633b00d76"
+    },
+    {
+      "_id": "69d8c3a07edea77694ff5647",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Self Assessment",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-19T18:30:00.000Z",
+      "taskDueDate": "2026-04-23T00:30:00.000Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 17:00 - 22:14</p><p>Daily English practice focus: Self Assessment. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "done",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:16.910Z",
+      "updatedAt": "2026-05-16T07:23:32.489Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "activityLogs": [
+        {
+          "oldStatus": "todo",
+          "currentStatus": "done",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-10T18:34:27.613Z",
+          "message": "Status had been changed from todo >>> done",
+          "_id": "69d942b3faaf4f1fd14b5b94"
+        }
+      ],
+      "attachments": [],
+      "dependentTasks": [],
+      "progress": 100,
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-3",
+      "branchId": "6a081b6e111c99b633b00d76"
+    },
+    {
+      "_id": "69d8c3a07edea77694ff5649",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Improve your communication",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-19T18:30:00.000Z",
+      "taskDueDate": "2026-04-23T00:30:00.000Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 22:14 - 38:00</p><p>Daily English practice focus: Improve your communication. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "done",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:16.967Z",
+      "updatedAt": "2026-05-16T07:23:32.489Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "activityLogs": [
+        {
+          "oldStatus": "todo",
+          "currentStatus": "done",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-10T18:34:32.816Z",
+          "message": "Status had been changed from todo >>> done",
+          "_id": "69d942b8faaf4f1fd14b5baa"
+        }
+      ],
+      "attachments": [],
+      "dependentTasks": [],
+      "progress": 100,
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-4",
+      "branchId": "6a081b6e111c99b633b00d76"
+    },
+    {
+      "_id": "69d8c3a17edea77694ff564b",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Vocabulary",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-19T18:30:00.000Z",
+      "taskDueDate": "2026-04-23T00:30:00.000Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 38:00 - 1:04:12</p><p>Daily English practice focus: Vocabulary. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "done",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.082Z",
+      "updatedAt": "2026-05-16T07:23:32.489Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "activityLogs": [
+        {
+          "oldStatus": "todo",
+          "currentStatus": "done",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-10T18:34:38.803Z",
+          "message": "Status had been changed from todo >>> done",
+          "_id": "69d942befaaf4f1fd14b5bc0"
+        }
+      ],
+      "attachments": [],
+      "dependentTasks": [],
+      "progress": 100,
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-5",
+      "branchId": "6a081b6e111c99b633b00d76"
+    },
+    {
+      "_id": "69d8c3a17edea77694ff564d",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Grammar",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-19T18:30:00.000Z",
+      "taskDueDate": "2026-04-23T00:30:00.000Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 1:04:12 - 1:57:34</p><p>Daily English practice focus: Grammar. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "done",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.129Z",
+      "updatedAt": "2026-05-16T07:23:32.489Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "activityLogs": [
+        {
+          "oldStatus": "inprogress",
+          "currentStatus": "done",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-10T18:26:53.807Z",
+          "message": "Status had been changed from inprogress >>> done",
+          "_id": "69d940edfaaf4f1fd14b59e2"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "inprogress",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-10T18:09:14.668Z",
+          "message": "Status had been changed from todo >>> inprogress",
+          "_id": "69d93ccafaaf4f1fd14b59cb"
+        }
+      ],
+      "attachments": [],
+      "dependentTasks": [],
+      "progress": 100,
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-6",
+      "branchId": "6a081b6e111c99b633b00d76"
+    },
+    {
+      "_id": "69d8c3a17edea77694ff564f",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Sentence Making",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-19T18:30:00.000Z",
+      "taskDueDate": "2026-04-23T00:30:00.000Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 1:57:34 - 2:40:33</p><p>Daily English practice focus: Sentence Making. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "done",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.202Z",
+      "updatedAt": "2026-05-16T07:23:32.489Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "activityLogs": [
+        {
+          "oldStatus": "todo",
+          "currentStatus": "done",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-10T18:34:43.281Z",
+          "message": "Status had been changed from todo >>> done",
+          "_id": "69d942c3faaf4f1fd14b5bd6"
+        }
+      ],
+      "attachments": [],
+      "dependentTasks": [],
+      "progress": 100,
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-7",
+      "branchId": "6a081b6e111c99b633b00d76"
+    },
+    {
+      "_id": "69d8c3a17edea77694ff5651",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Tenses",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-20T00:00:00.000Z",
+      "taskDueDate": "2026-04-22T00:00:00.000Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 2:40:34 - 3:48:05</p><p>Daily English practice focus: Tenses. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "done",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.354Z",
+      "updatedAt": "2026-05-16T07:23:32.489Z",
+      "__v": 0,
+      "estimatedHours": 8,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-8",
+      "progress": 100,
+      "activityLogs": [
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "done",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-24T18:33:08.170Z",
+          "message": "Status had been changed from backlog >>> done",
+          "_id": "69ebb764cc5861b7a0e301da"
+        },
+        {
+          "oldStatus": "hold",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-04-23T05:59:52.248Z",
+          "message": "Task automatically moved to Backlog due to expired due date (4/22/2026)",
+          "_id": "69e9b5589dc50a48d94f1db9"
+        },
+        {
+          "oldStatus": "inprogress",
+          "currentStatus": "hold",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-21T17:27:55.387Z",
+          "message": "Status had been changed from inprogress >>> hold",
+          "_id": "69e7b39b2699af81cb91da7f"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "inprogress",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-21T15:44:42.089Z",
+          "message": "Status had been changed from todo >>> inprogress",
+          "_id": "69e79b6a2699af81cb91d3ae"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-04-18T01:35:21.141Z",
+          "message": "Task automatically moved to Backlog due to expired due date (4/17/2026)",
+          "_id": "69e2dfd95ff8d3302ac16af0"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "additionalNotes": "",
+      "branchId": "6a081b6e111c99b633b00d76"
+    },
+    {
+      "_id": "69d8c3a17edea77694ff5653",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Present Tense",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-22T18:30:00.000Z",
+      "taskDueDate": "2026-04-25T18:29:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 3:48:05 - 4:28:52</p><p>Daily English practice focus: Present Tense. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "done",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.393Z",
+      "updatedAt": "2026-05-16T07:23:32.489Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-9",
+      "progress": 100,
+      "activityLogs": [
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "done",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-29T17:37:00.557Z",
+          "message": "Status had been changed from backlog >>> done",
+          "_id": "69f241bce9e3813f37a10d0f"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-04-26T09:30:01.453Z",
+          "message": "Task automatically moved to Backlog due to expired due date (4/25/2026)",
+          "_id": "69eddb19cc5861b7a0e3112e"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "todo",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-19T17:42:52.729Z",
+          "message": "Status had been changed from backlog >>> todo",
+          "_id": "69e5141c7803acf20dd5ef51"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-19T17:41:37.938Z",
+          "message": "Status had been changed from todo >>> backlog",
+          "_id": "69e513d17803acf20dd5ed6b"
+        },
+        {
+          "oldStatus": "inprogress",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-04-19T16:13:34.480Z",
+          "message": "Task automatically moved to Backlog due to expired due date (4/18/2026)",
+          "_id": "69e4ff2ee81ca6ab393cc2f5"
+        },
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "inprogress",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-19T15:41:38.741Z",
+          "message": "Status had been changed from backlog >>> inprogress",
+          "_id": "69e4f7b22d2d1eb2fe881d34"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-04-19T15:25:35.931Z",
+          "message": "Task automatically moved to Backlog due to expired due date (4/18/2026)",
+          "_id": "69e4f3ef2d2d1eb2fe881a3e"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "revisionLogs": [],
+      "branchId": "6a081b6e111c99b633b00d76"
+    },
+    {
+      "_id": "69d8c3a17edea77694ff5655",
+      "projectName": "69d77b7c6d3910f342f3762e",
+      "taskName": "English: Past Tense",
+      "taskPriority": "medium",
+      "taskType": "Learning",
+      "taskStartDate": "2026-04-25T18:30:00.000Z",
+      "taskDueDate": "2026-04-28T18:29:59.999Z",
+      "taskDescription": "<p><strong>Chapter:</strong> 4:28:52 - 5:01:35</p><p>Daily English practice focus: Past Tense. Watch the relevant video section and practice speaking.</p>",
+      "assignee": "6993047f16e85ff3e4efd9a3",
+      "status": "done",
+      "createdBy": "6993047f16e85ff3e4efd9a3",
+      "createdAt": "2026-04-10T09:32:17.448Z",
+      "updatedAt": "2026-05-16T07:23:32.489Z",
+      "__v": 0,
+      "estimatedHours": 1,
+      "parentTask": "69df0a1ec39b40e541387430",
+      "taskId": "ENG-10",
+      "progress": 100,
+      "activityLogs": [
+        {
+          "oldStatus": "backlog",
+          "currentStatus": "done",
+          "user": "6993047f16e85ff3e4efd9a3",
+          "date": "2026-04-29T17:37:04.198Z",
+          "message": "Status had been changed from backlog >>> done",
+          "_id": "69f241c0e9e3813f37a10d43"
+        },
+        {
+          "oldStatus": "todo",
+          "currentStatus": "backlog",
+          "user": null,
+          "date": "2026-04-29T05:29:34.726Z",
+          "message": "Task automatically moved to Backlog due to expired due date (4/28/2026)",
+          "_id": "69f1973ec809675b1c3ec3ff"
+        }
+      ],
+      "attachments": [],
+      "backlogEstimatedHours": 0,
+      "dependentTasks": [],
+      "revisionLogs": [],
+      "storyPoints": 0,
+      "subtaskStats": {
+        "completed": 0,
+        "total": 0
+      },
+      "updatedBy": "6993047f16e85ff3e4efd9a3",
+      "branchId": "6a081b6e111c99b633b00d76"
+    }
+  ],
+  "focusSessions": [
+    {
+      "_id": "69e513d17803acf20dd5ed60",
+      "user": "6993047f16e85ff3e4efd9a3",
+      "startTime": "2026-04-19T15:41:38.291Z",
+      "endTime": "2026-04-19T17:41:37.352Z",
+      "duration": 60,
+      "type": "Focus",
+      "date": "2026-04-19T00:00:00.000Z",
+      "task": "69d8c3a17edea77694ff5653",
+      "taskName": "English: Present Tense",
+      "taskIdString": "ENG-9",
+      "statusAtCompletion": "backlog",
+      "completionState": "incompleted",
+      "estimatedTimeAtStart": 60,
+      "createdAt": "2026-04-19T17:41:37.642Z",
+      "updatedAt": "2026-05-16T07:23:32.602Z",
+      "__v": 0,
+      "branchId": "6a081b6e111c99b633b00d76"
+    },
+    {
+      "_id": "69e7b3c22699af81cb91db9a",
+      "user": "6993047f16e85ff3e4efd9a3",
+      "startTime": "2026-04-21T17:28:27.655Z",
+      "endTime": "2026-04-21T17:28:30.285Z",
+      "duration": 32,
+      "type": "Focus",
+      "date": "2026-04-21T00:00:00.000Z",
+      "task": "69d8c3a17edea77694ff5651",
+      "taskName": "English: Tenses",
+      "taskIdString": "ENG-8",
+      "statusAtCompletion": "done",
+      "completionState": "completed",
+      "estimatedTimeAtStart": 60,
+      "createdAt": "2026-04-21T17:28:34.878Z",
+      "updatedAt": "2026-05-16T07:23:32.602Z",
+      "__v": 0,
+      "branchId": "6a081b6e111c99b633b00d76"
+    }
+  ]
+}
