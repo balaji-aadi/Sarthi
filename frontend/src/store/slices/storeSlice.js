@@ -136,9 +136,28 @@ const storeSlice = createSlice({
         state.currentUser = null;
         state.token = false;
         state.isAuthenticated = false;
+
+        // Preserve timer state and UI configuration keys
+        const keysToPreserve = [
+          "focus_timer_state",
+          "focus_timer_task_binding",
+          "focus_timer_retrievable",
+          "sarathi_show_topbar",
+          "projectTabsOrder",
+          "dontShowInProgressToast"
+        ];
+        const preserved = {};
+        keysToPreserve.forEach(key => {
+          const val = localStorage.getItem(key);
+          if (val !== null) preserved[key] = val;
+        });
+
         localStorage.clear();
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+
+        Object.entries(preserved).forEach(([key, val]) => {
+          localStorage.setItem(key, val);
+        });
+
         toast.success("Logout successfully");
       })
       .addCase(logout.rejected, (state) => {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { TaskApi } from '../../services/api/Task.api';
-import { SprintApi } from '../../services/api/Sprint.api';
 import moment from 'moment';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as ChartTooltip } from 'recharts';
 
@@ -9,7 +8,6 @@ const ProjectOverview = () => {
     const { projectId } = useParams();
     const { project } = useOutletContext(); // Get project from Layout
     const [taskStats, setTaskStats] = useState({ total: 0, completed: 0, pending: 0, inProgress: 0, review: 0 });
-    const [activeSprint, setActiveSprint] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -32,11 +30,6 @@ const ProjectOverview = () => {
                     return acc;
                 }, { total: 0, completed: 0, pending: 0, inProgress: 0, review: 0 });
                 setTaskStats(stats);
-
-                // 3. Fetch Active Sprint
-                const sRes = await SprintApi.getSprintsByProject(projectId);
-                const active = sRes.data?.data?.find(s => s.status === 'active');
-                setActiveSprint(active);
 
             } catch (error) {
                 console.error("Failed to fetch project overview data", error);
@@ -63,10 +56,36 @@ const ProjectOverview = () => {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-textMain">{project.name} Overview</h1>
-            <p className="text-textSub">{project.description}</p>
+            <div>
+                <h1 className="text-2xl font-bold text-textMain">{project.name} Overview</h1>
+                <div className="flex flex-wrap items-center gap-4 text-xs mt-3">
+                    <span className="font-semibold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">
+                        Timeline: {moment(project.startDate).format("DD MMM YYYY")} - {moment(project.endDate).format("DD MMM YYYY")}
+                    </span>
+                    {project.status === 'completed' && project.completedAt && (() => {
+                        const completed = moment(project.completedAt);
+                        const due = moment(project.endDate);
+                        const completedStr = completed.format("DD MMM YYYY");
+                        if (completed.isAfter(due)) {
+                            const diffMonths = completed.diff(due, 'months', true);
+                            const delayText = diffMonths >= 0.1 ? `+${diffMonths.toFixed(1)} months` : `+${completed.diff(due, 'days')} days`;
+                            return (
+                                <span className="font-bold text-rose-600 bg-rose-50 border border-rose-100 px-3 py-1 rounded-lg">
+                                    Completed: {completedStr} ({delayText} late)
+                                </span>
+                            );
+                        } else {
+                            return (
+                                <span className="font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-lg">
+                                    Completed: {completedStr} (On Time)
+                                </span>
+                            );
+                        }
+                    })()}
+                </div>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Progress Card */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-borderLight relative overflow-hidden">
                     <h3 className="text-lg font-semibold text-textMain mb-2 z-10 relative">Project Progress</h3>
@@ -92,28 +111,6 @@ const ProjectOverview = () => {
                     </div>
                 </div>
 
-                {/* Active Sprint Card */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-borderLight">
-                    <h3 className="text-lg font-semibold text-textMain mb-2">Active Sprint</h3>
-                    {activeSprint ? (
-                        <>
-                            <p className="text-2xl font-bold text-textMain truncate">{activeSprint.name}</p>
-                            <p className="text-sm text-textSub mt-1">
-                                Ends {moment(activeSprint.endDate).fromNow()}
-                            </p>
-                            <div className="mt-4 flex items-center gap-2">
-                                <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold uppercase">Active</span>
-                                <span className="text-xs text-textSub">{moment(activeSprint.endDate).diff(moment(), 'days')} days left</span>
-                            </div>
-                        </>
-                    ) : (
-                        <div className="h-full flex flex-col justify-center">
-                            <p className="text-textSub">No active sprint</p>
-                            <button className="text-primary text-sm font-medium mt-2 text-left hover:underline">Start a sprint</button>
-                        </div>
-                    )}
-                </div>
-
                 {/* Task Stats Card */}
                  <div className="bg-white p-6 rounded-xl shadow-sm border border-borderLight">
                     <h3 className="text-lg font-semibold text-textMain mb-4">Task Status</h3>
@@ -137,6 +134,25 @@ const ProjectOverview = () => {
                     </div>
                 </div>
             </div>
+
+            {project.description && (
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-borderLight mt-6">
+                    <h3 className="text-lg font-semibold text-textMain mb-4">Description</h3>
+                    <style dangerouslySetInnerHTML={{__html: `
+                        .parsed-description h3 { font-size: 1.1rem; font-weight: 700; margin-top: 1.2rem; margin-bottom: 0.6rem; color: #1E293B; }
+                        .parsed-description h3:first-child { margin-top: 0; }
+                        .parsed-description p { margin-bottom: 0.75rem; color: #475569; }
+                        .parsed-description ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.75rem; color: #475569; }
+                        .parsed-description ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.75rem; color: #475569; }
+                        .parsed-description li { margin-bottom: 0.35rem; }
+                        .parsed-description strong { font-weight: 700; color: #0F172A; }
+                    `}} />
+                    <div 
+                        className="parsed-description text-sm leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: project.description }}
+                    />
+                </div>
+            )}
         </div>
     );
 };

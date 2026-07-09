@@ -97,7 +97,68 @@ export const ProgressService = {
 
       const projectProgress = result.length > 0 ? Math.round(result[0].avgProgress) : 0;
       
-      await Project.findByIdAndUpdate(projectId, { progress: projectProgress });
+      const project = await Project.findById(projectId);
+      if (project) {
+          const updateData = { progress: projectProgress };
+          if (projectProgress === 100) {
+              updateData.status = "completed";
+              updateData.completedAt = await this.getActualProjectCompletionDate(projectId);
+          } else {
+              if (project.status === "completed") {
+                  updateData.status = "active";
+              }
+              updateData.completedAt = null;
+          }
+          await Project.findByIdAndUpdate(projectId, updateData);
+      }
+  },
+  /**
+   * Finds the actual completion date of a project by looking at the last status transition to "done"
+   * in its tasks' activity logs, with robust fallbacks.
+   * @param {string} projectId
+   */
+  async getActualProjectCompletionDate(projectId) {
+      const { Task } = await import("../../models/task.model.js");
+      const tasks = await Task.find({ projectName: projectId, status: "done" });
+      
+      let latestCompletionDate = null;
+      
+      for (const task of tasks) {
+          // 1. Try to find the latest "done" log entry in activityLogs
+          if (task.activityLogs && Array.isArray(task.activityLogs)) {
+              for (const log of task.activityLogs) {
+                  if (log.currentStatus === "done" && log.date) {
+                      const logDate = new Date(log.date);
+                      if (!latestCompletionDate || logDate > latestCompletionDate) {
+                          latestCompletionDate = logDate;
+                      }
+                  }
+              }
+          }
+      }
+      
+      // 2. If no done logs found, fallback to the latest leaf task updatedAt
+      if (!latestCompletionDate) {
+          const leafTasks = tasks.filter(t => !t.subtaskStats || !t.subtaskStats.total);
+          if (leafTasks.length > 0) {
+              const latestLeaf = leafTasks.reduce((latest, current) => {
+                  return (!latest || current.updatedAt > latest.updatedAt) ? current : latest;
+              }, null);
+              if (latestLeaf) {
+                  latestCompletionDate = latestLeaf.updatedAt;
+              }
+          }
+      }
+      
+      // 3. Absolute fallback
+      if (!latestCompletionDate && tasks.length > 0) {
+          const latestTask = tasks.reduce((latest, current) => {
+              return (!latest || current.updatedAt > latest.updatedAt) ? current : latest;
+          }, null);
+          latestCompletionDate = latestTask ? latestTask.updatedAt : null;
+      }
+      
+      return latestCompletionDate || new Date();
   },
   /**
    * Recalculates Sprint progress based on TOP-LEVEL tasks.

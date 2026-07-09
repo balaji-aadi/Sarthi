@@ -81,6 +81,10 @@ const projectSchema = new mongoose.Schema({
       required: true,
       default: "active",
     },
+    completedAt: {
+      type: Date,
+      default: null
+    },
     settings: {
       sprintDuration: { type: Number, default: 2 }, // weeks
       enableSprints: { type: Boolean, default: false },

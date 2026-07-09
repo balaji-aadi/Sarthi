@@ -108,6 +108,33 @@ const ProjectList = () => {
             field: "endDate",
             valueFormatter: (params) => moment(params.value).format("MMM D, YYYY")
         },
+        { 
+            headerName: "Completed Date", 
+            field: "completedAt",
+            cellRenderer: (params) => {
+                if (!params.data.completedAt) return <span className="text-slate-400 font-medium">-</span>;
+                const completed = moment(params.data.completedAt);
+                const due = moment(params.data.endDate);
+                const completedStr = completed.format("MMM D, YYYY");
+                if (completed.isAfter(due)) {
+                    const diffMonths = completed.diff(due, 'months', true);
+                    const delayText = diffMonths >= 0.1 ? `+${diffMonths.toFixed(1)} mo` : `+${completed.diff(due, 'days')} d`;
+                    return (
+                        <div className="flex flex-col py-1">
+                            <span className="font-semibold text-slate-700">{completedStr}</span>
+                            <span className="text-[10px] text-rose-500 font-bold">({delayText} late)</span>
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div className="flex flex-col py-1">
+                            <span className="font-semibold text-slate-700">{completedStr}</span>
+                            <span className="text-[10px] text-emerald-500 font-bold">(On time)</span>
+                        </div>
+                    );
+                }
+            }
+        },
         {
             headerName: "Actions",
             field: "actions",
@@ -231,12 +258,36 @@ const ProjectList = () => {
                                                 <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary font-black text-sm border border-primary/10 tracking-tighter">
                                                     {project.key || project.name.substring(0, 3).toUpperCase()}
                                                 </div>
-                                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${project.status === 'completed' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'}`}>
-                                                    {project.status || 'Active'}
-                                                </span>
+                                                <div className="flex flex-col items-end gap-1">
+                                                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${project.status === 'completed' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'}`}>
+                                                        {project.status || 'Active'}
+                                                    </span>
+                                                    {project.status === 'completed' && project.completedAt && (() => {
+                                                        const completed = moment(project.completedAt);
+                                                        const due = moment(project.endDate);
+                                                        const completedStr = completed.format("DD MMM YYYY");
+                                                        if (completed.isAfter(due)) {
+                                                            const diffMonths = completed.diff(due, 'months', true);
+                                                            const delayText = diffMonths >= 0.1 ? `+${diffMonths.toFixed(1)} mo` : `+${completed.diff(due, 'days')} d`;
+                                                            return (
+                                                                <span className="text-[9px] font-bold text-rose-600 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-md" title={`Due: ${due.format("DD MMM YYYY")}`}>
+                                                                    Done: {completedStr} ({delayText})
+                                                                </span>
+                                                            );
+                                                        } else {
+                                                            return (
+                                                                <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-md" title={`Due: ${due.format("DD MMM YYYY")}`}>
+                                                                    Done: {completedStr} (On Time)
+                                                                </span>
+                                                            );
+                                                        }
+                                                    })()}
+                                                </div>
                                             </div>
                                             <h3 className="text-base font-black text-slate-800 mb-1.5 group-hover:text-primary transition-colors line-clamp-1 pr-10">{project.name}</h3>
-                                            <p className="text-xs font-medium text-slate-400 line-clamp-2 min-h-[3em] mb-4">{project.description || "No description provided for this protocol."}</p>
+                                            <p className="text-xs font-medium text-slate-400 line-clamp-2 min-h-[3em] mb-4">
+                                                {project.description ? project.description.replace(/<[^>]*>?/gm, '') : "No description provided for this protocol."}
+                                            </p>
                                             
                                             {/* Progress Section */}
                                             <div className="mb-4">

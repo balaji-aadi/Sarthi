@@ -276,7 +276,26 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
                     <button
                         onClick={() => {
+                            const keysToPreserve = [
+                                "focus_timer_state",
+                                "focus_timer_task_binding",
+                                "focus_timer_retrievable",
+                                "sarathi_show_topbar",
+                                "projectTabsOrder",
+                                "dontShowInProgressToast"
+                            ];
+                            const preserved = {};
+                            keysToPreserve.forEach(key => {
+                                const val = localStorage.getItem(key);
+                                if (val !== null) preserved[key] = val;
+                            });
+
                             localStorage.clear();
+
+                            Object.entries(preserved).forEach(([key, val]) => {
+                                localStorage.setItem(key, val);
+                            });
+
                             window.location.href = "/login";
                         }}
                         className="mt-4 w-full py-2.5 bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest border border-slate-200/50"

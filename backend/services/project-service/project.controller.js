@@ -25,6 +25,8 @@ pc.createProject = asyncHandler(async (req, res) => {
       return res.status(400).json(new ApiError(400, `Missing required field: ${missingFields.join(', ')}`));
     }
 
+    const completedAt = status === "completed" ? new Date() : null;
+
     const createdProject = await Project.create({
       name,
       access,
@@ -40,6 +42,7 @@ pc.createProject = asyncHandler(async (req, res) => {
       teamMembers,
       rolesAndResponsibilities,
       status,
+      completedAt,
       createdBy: req.user?._id,
       branchId: req.branchId ? new mongoose.Types.ObjectId(req.branchId) : undefined
     });
@@ -80,6 +83,21 @@ pc.updateProject = asyncHandler(async (req, res) => {
       teamMembers, rolesAndResponsibilities, milestones, status, githubRepository, settings
     } = req.body;
 
+    const project = await Project.findById(req.params.projectId);
+    if (!project) {
+      return res.status(404).json(new ApiError(404, "Project not found"));
+    }
+
+    let completedAt = project.completedAt;
+    if (status === "completed") {
+      if (!completedAt) {
+        const { ProgressService } = await import("../progress-service/progress.service.js");
+        completedAt = await ProgressService.getActualProjectCompletionDate(req.params.projectId);
+      }
+    } else {
+      completedAt = null;
+    }
+
     const updatedProject = await Project.findByIdAndUpdate(
       req.params.projectId,
       {
@@ -98,6 +116,7 @@ pc.updateProject = asyncHandler(async (req, res) => {
         rolesAndResponsibilities,
         milestones,
         status,
+        completedAt,
         settings,
         updatedBy: req.user?._id
         },

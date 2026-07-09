@@ -52,6 +52,7 @@ const FocusTimer = () => {
   const [showThemes, setShowThemes] = useState(false);
   const [retrievableObj, setRetrievableObj] = useState(null);
   const [currentTimeMs, setCurrentTimeMs] = useState(Date.now());
+  const [autoExtensions, setAutoExtensions] = useState(0);
   
   // Custom Task/Heading Selection
   const [availableTasks, setAvailableTasks] = useState([]);
@@ -74,6 +75,16 @@ const FocusTimer = () => {
   // Revision Modal
   const [showRevisionModal, setShowRevisionModal] = useState(false);
   const [revisionNote, setRevisionNote] = useState("");
+
+  const getBindingObj = () => {
+    try {
+      const val = localStorage.getItem("focus_timer_task_binding");
+      return val ? JSON.parse(val) : null;
+    } catch (e) {
+      return null;
+    }
+  };
+  const bindingObj = getBindingObj();
 
   const triggerConfirm = (msg, action) => {
       setConfirmMessage(msg);
@@ -114,9 +125,10 @@ const FocusTimer = () => {
     fetchAvailableTasks();
     const savedState = localStorage.getItem("focus_timer_state");
     if (savedState) {
-      const { timeLeft: sTime, isActive: sActive, startTime: sStart, selectedDuration: sDur, currentTheme: sTheme, accumulatedTime: sAccum } = JSON.parse(savedState);
+      const { timeLeft: sTime, isActive: sActive, startTime: sStart, selectedDuration: sDur, currentTheme: sTheme, accumulatedTime: sAccum, autoExtensions: sExt } = JSON.parse(savedState);
       
       setAccumulatedTime(sAccum || 0);
+      setAutoExtensions(sExt || 0);
 
       if (sActive && sStart) {
         const start = new Date(sStart).getTime();
@@ -172,10 +184,11 @@ const FocusTimer = () => {
       selectedDuration,
       currentTheme,
       customHeading,
-      isCustomSessionActive
+      isCustomSessionActive,
+      autoExtensions
     };
     localStorage.setItem("focus_timer_state", JSON.stringify(state));
-  }, [timeLeft, isActive, startTime, accumulatedTime, selectedDuration, currentTheme, customHeading, isCustomSessionActive]);
+  }, [timeLeft, isActive, startTime, accumulatedTime, selectedDuration, currentTheme, customHeading, isCustomSessionActive, autoExtensions]);
 
   const handleAiChallengeAutoExtend = React.useCallback(async () => {
       playSound();
@@ -250,18 +263,40 @@ const FocusTimer = () => {
                   return;
               }
               
-              // Overtime limit: 4 hours for revision (14400s), 1 hour for regular (3600s)
-              const limit = bindingObj?.isRevision ? 14400 : 3600;
-              const isOvertimeLimitReached = remaining <= -limit;
+              if (hasTask) {
+                  if (bindingObj.isRevision) {
+                      // Overtime limit: 4 hours for revision (14400s)
+                      const limit = 14400;
+                      const isOvertimeLimitReached = remaining <= -limit;
+                      if (isOvertimeLimitReached) {
+                          setTimeLeft(remaining);
+                          handleComplete(true);
+                          return;
+                      }
+                      setTimeLeft(remaining);
+                      return;
+                  }
 
-              if (!hasTask || isOvertimeLimitReached) {
-                  // Standalone session or overtime limit reached: auto-log
-                  setTimeLeft(remaining); 
-                  handleComplete(true);
-                  return;
+                  // Regular tasks automatic extension by 30 minutes up to 2 times
+                  if (autoExtensions < 2) {
+                      setAutoExtensions(prev => prev + 1);
+                      setSelectedDuration(prev => prev + 30);
+                      toast.success("Focus block ended. Automatically extended by 30 minutes!");
+                      playSound();
+                      showNotification();
+                      return;
+                  } else {
+                      // Overtime limit reached (total 1 hour overtime)
+                      setTimeLeft(remaining);
+                      handleComplete(true);
+                      return;
+                  }
               }
-              // Overtime mode: Count up from 0 (negative timeLeft)
-              setTimeLeft(remaining);
+
+              // Standalone session: auto-log
+              setTimeLeft(remaining); 
+              handleComplete(true);
+              return;
           } else {
               setTimeLeft(remaining);
           }
@@ -274,7 +309,7 @@ const FocusTimer = () => {
       clearInterval(timerRef.current);
     }
     return () => clearInterval(timerRef.current);
-  }, [isActive, startTime, accumulatedTime, selectedDuration, handleAiChallengeAutoExtend]);
+  }, [isActive, startTime, accumulatedTime, selectedDuration, autoExtensions, handleAiChallengeAutoExtend]);
 
   const handleStart = () => {
     if (selectedTask && !isBindingActive) {
@@ -327,6 +362,7 @@ const FocusTimer = () => {
     setAccumulatedTime(0);
     setTimeLeft(25 * 60);
     setSelectedDuration(25);
+    setAutoExtensions(0);
     setIsBindingActive(false);
     setIsCustomSessionActive(false);
     setSelectedTask("");
@@ -343,6 +379,7 @@ const FocusTimer = () => {
     setTimeLeft(mins * 60);
     setAccumulatedTime(0);
     setStartTime(null);
+    setAutoExtensions(0);
   };
 
   const playSound = () => {
@@ -369,32 +406,35 @@ const FocusTimer = () => {
     const actualDuration = Math.max(Math.round(actualElapsedSeconds / 60), 1); 
     
     let taskMeta = {};
-    let bindingObj = null;
+    let activeBinding = null;
     const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
     
     if (bindingObjStr) {
-       bindingObj = JSON.parse(bindingObjStr);
+       activeBinding = JSON.parse(bindingObjStr);
        taskMeta = {
-           task: bindingObj.taskId,
-           taskName: bindingObj.taskName,
-           taskIdString: bindingObj.taskIdString,
+           task: activeBinding.taskId,
+           taskName: activeBinding.taskName,
+           taskIdString: activeBinding.taskIdString,
            statusAtCompletion: isExpiration ? "backlog" : "done",
            completionState: isExpiration ? "incompleted" : "completed",
-           estimatedTimeAtStart: bindingObj.estimatedHours * 60 || selectedDuration
+           estimatedTimeAtStart: activeBinding.estimatedHours * 60 || selectedDuration
        };
 
        if (isExpiration) {
           // Check if due date has actually passed before relegating to backlog
-          const hasExpired = bindingObj.dueDate ? moment(bindingObj.dueDate).isBefore(moment(), 'day') : true;
+          const hasExpired = activeBinding.dueDate ? moment(activeBinding.dueDate).isBefore(moment(), 'day') : true;
 
           if (hasExpired) {
               try {
-                await TaskApi.taskLogs(bindingObj.taskId, { status: "backlog" });
-                setBacklogTaskData(bindingObj);
-                setShowBacklogModal(true);
+                await TaskApi.taskLogs(activeBinding.taskId, { status: "backlog" });
+                setBacklogTaskData(activeBinding);
+                // setShowBacklogModal(true); // Disabled to prevent user disturbance
                 taskMeta.statusAtCompletion = "backlog";
                 taskMeta.completionState = "incompleted";
-              } catch(e) { console.error("Failed to relegate task to backlog", e); }
+              } catch(e) { 
+                console.error("Failed to relegate task to backlog", e);
+                toast.error("Failed to update task status to backlog on server.");
+              }
           } else {
               // Due date still in future: just log as hold/inprogress as usual
               taskMeta.statusAtCompletion = isExpiration ? "inprogress" : "done";
@@ -405,8 +445,8 @@ const FocusTimer = () => {
     }
 
     try {
-      const isBacklogTask = bindingObj?.isBacklog || false;
-      const originalDueDate = bindingObj?.dueDate || null;
+      const isBacklogTask = activeBinding?.isBacklog || false;
+      const originalDueDate = activeBinding?.dueDate || null;
       
       const newSession = {
         date: moment().format("YYYY-MM-DD"),
@@ -414,9 +454,9 @@ const FocusTimer = () => {
         endTime: endTime,
         duration: actualDuration,
         type: "Focus",
-        task: bindingObj?.taskId || null,
-        taskName: bindingObj ? (isBacklogTask ? `${bindingObj.taskName} (Backlog)` : bindingObj.taskName) : (customHeading || "Standalone Session"),
-        taskIdString: bindingObj?.taskIdString || "N/A",
+        task: activeBinding?.taskId || null,
+        taskName: activeBinding ? (isBacklogTask ? `${activeBinding.taskName} (Backlog)` : activeBinding.taskName) : (customHeading || "Standalone Session"),
+        taskIdString: activeBinding?.taskIdString || "N/A",
         isBacklog: isBacklogTask,
         originalDueDate: originalDueDate,
         ...taskMeta
@@ -443,13 +483,15 @@ const FocusTimer = () => {
       setIsCustomSessionActive(false);
       setSelectedTask("");
       setCustomHeading("");
+      setStartTime(null);
+      setAccumulatedTime(0);
+      setTimeLeft(selectedDuration * 60);
+      setAutoExtensions(0);
+      toast.success("Focus session logged successfully!");
     } catch (error) {
       console.error("Failed to save focus session", error);
+      toast.error("Failed to save focus session to server. Please check your connection and try again.");
     }
-    
-    setStartTime(null);
-    setAccumulatedTime(0);
-    setTimeLeft(selectedDuration * 60);
   };
 
   const handleEndRevision = () => {
@@ -492,26 +534,27 @@ const FocusTimer = () => {
         await FocusApi.createSession(newSession);
         await TaskApi.addRevision(bindingObj.taskId, { notes: revisionNote || "Completed revision focus session" });
         toast.success("Revision and Focus session logged successfully!");
+
+        // Reset everything ONLY on success
+        localStorage.removeItem("focus_timer_state");
+        localStorage.removeItem("focus_timer_task_binding");
+        setIsBindingActive(false);
+        setIsCustomSessionActive(false);
+        setSelectedTask("");
+        setCustomHeading("");
+        setRevisionNote("");
+        setShowRevisionModal(false);
+        setStartTime(null);
+        setAccumulatedTime(0);
+        setTimeLeft(25 * 60);
+        setSelectedDuration(25);
+        setAutoExtensions(0);
+        fetchSessions();
       } catch (err) {
         console.error("Failed to complete revision focus log", err);
-        toast.error("Failed to log revision");
+        toast.error("Failed to log revision. Session data preserved.");
       }
     }
-
-    // Reset everything
-    localStorage.removeItem("focus_timer_state");
-    localStorage.removeItem("focus_timer_task_binding");
-    setIsBindingActive(false);
-    setIsCustomSessionActive(false);
-    setSelectedTask("");
-    setCustomHeading("");
-    setRevisionNote("");
-    setShowRevisionModal(false);
-    setStartTime(null);
-    setAccumulatedTime(0);
-    setTimeLeft(25 * 60);
-    setSelectedDuration(25);
-    fetchSessions();
   };
 
   const handleDeleteSession = async (sessionId) => {
@@ -609,11 +652,11 @@ const FocusTimer = () => {
              <div className="focus-title-group">
                  <h2>{isActive ? "Deep Session" : "Focus Studio"}</h2>
                  <p>{isActive ? "Work hard, stay silent." : "Set your goal and start."}</p>
-                 {localStorage.getItem("focus_timer_task_binding") && JSON.parse(localStorage.getItem("focus_timer_task_binding")).isBacklog && (
-                     <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-1 bg-red-100 text-red-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-red-200">
-                         <IoFlame /> Backlog Completion: Due {moment(JSON.parse(localStorage.getItem("focus_timer_task_binding")).dueDate).format("MMM DD")}
-                     </div>
-                 )}
+             {bindingObj && bindingObj.isBacklog && (
+                 <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-1 bg-red-100 text-red-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-red-200">
+                     <IoFlame /> Backlog Completion: Due {bindingObj.dueDate ? moment(bindingObj.dueDate).format("MMM DD") : "Overdue"}
+                 </div>
+             )}
              </div>
              <div className="header-actions relative">
                <button 
@@ -690,7 +733,7 @@ const FocusTimer = () => {
                 <div className="w-full flex items-center gap-2">
                     <div className="flex-1 px-4 py-3 bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl text-center shadow-sm">
                         <span className="text-sm font-bold text-slate-700">
-                            {isBindingActive ? JSON.parse(localStorage.getItem("focus_timer_task_binding")).taskName : (customHeading || "Standalone Session")}
+                            {isBindingActive && bindingObj ? bindingObj.taskName : (customHeading || "Standalone Session")}
                         </span>
                     </div>
                     {!isActive && (
@@ -765,12 +808,12 @@ const FocusTimer = () => {
                <span>{isActive ? "Pause" : "Start"}</span>
             </button>
 
-             {isBindingActive && localStorage.getItem("focus_timer_task_binding") && JSON.parse(localStorage.getItem("focus_timer_task_binding")).isRevision ? (
+             {isBindingActive && bindingObj && bindingObj.isRevision ? (
                  <button onClick={handleEndRevision} className="text-primary dark:text-vermilion-400 font-bold text-sm hover:underline mt-2 flex items-center gap-1 justify-center">
                      <IoSyncOutline className="animate-spin-slow" /> End & Log Revision
                  </button>
              ) : (
-                 isActive && (
+                 (isActive || isBindingActive) && (
                      <button onClick={handleReset} className="text-rose-500 font-bold text-sm hover:underline mt-2">
                          End & Save Session
                      </button>
@@ -874,7 +917,7 @@ const FocusTimer = () => {
                  <h3 className="text-xl font-bold text-slate-800">Log Revision</h3>
               </div>
               <p className="text-slate-600 text-sm font-medium">
-                 Ready to complete your revision for <strong>{localStorage.getItem("focus_timer_task_binding") && JSON.parse(localStorage.getItem("focus_timer_task_binding")).taskName}</strong>? Enter any insights or notes below.
+                 Ready to complete your revision for <strong>{bindingObj?.taskName}</strong>? Enter any insights or notes below.
               </p>
               
               <div className="mt-4">

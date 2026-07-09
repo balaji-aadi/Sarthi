@@ -149,38 +149,49 @@ function App() {
                         return;
                     }
 
-                    // Expiration Reached completely in the background
-                    const actualDuration = Math.max(Math.round(durationSetting / 60), 1);
-                    const start = moment(timerState.startTime);
-                    const end = moment(nowMs);
-                    
-                    const sessionData = {
-                        date: start.format("YYYY-MM-DD"),
-                        startTime: start.toISOString(),
-                        endTime: end.toISOString(),
-                        duration: actualDuration,
-                        type: "Focus",
-                        task: bindingObj.taskId,
-                        taskName: bindingObj.taskName,
-                        taskIdString: bindingObj.taskIdString,
-                        statusAtCompletion: "backlog",
-                        completionState: "incompleted",
-                        estimatedTimeAtStart: timerState.selectedDuration
-                    };
-                    
-                    await FocusApi.createSession(sessionData);
-                    await TaskApi.taskLogs(bindingObj.taskId, { status: "backlog" });
-                    
-                    localStorage.removeItem("focus_timer_task_binding");
-                    localStorage.removeItem("focus_timer_state");
-                    localStorage.removeItem("focus_timer_retrievable");
-                    
-                    // Launch Global Modal
-                    setExpiredTaskData(bindingObj);
-                    setShowGlobalBacklogModal(true);
-                }
-           }
-       } catch (e) { console.error("Global timer monitor err", e); }
+                     // Expiration Reached completely in the background: Check auto-extensions
+                     const extensions = timerState.autoExtensions || 0;
+                     if (extensions < 2) {
+                         const newTimerState = {
+                             ...timerState,
+                             selectedDuration: timerState.selectedDuration + 30,
+                             autoExtensions: extensions + 1
+                         };
+                         localStorage.setItem("focus_timer_state", JSON.stringify(newTimerState));
+                         toast.success("Background focus block ended. Automatically extended by 30 minutes.");
+                         return;
+                     }
+
+                     // Expiration Reached completely in the background after extensions
+                     const actualDuration = Math.max(Math.round(durationSetting / 60), 1);
+                     const start = moment(timerState.startTime);
+                     const end = moment(nowMs);
+                     
+                     const sessionData = {
+                         date: start.format("YYYY-MM-DD"),
+                         startTime: start.toISOString(),
+                         endTime: end.toISOString(),
+                         duration: actualDuration,
+                         type: "Focus",
+                         task: bindingObj.taskId,
+                         taskName: bindingObj.taskName,
+                         taskIdString: bindingObj.taskIdString,
+                         statusAtCompletion: "backlog",
+                         completionState: "incompleted",
+                         estimatedTimeAtStart: timerState.selectedDuration
+                     };
+                     
+                     await FocusApi.createSession(sessionData);
+                     await TaskApi.taskLogs(bindingObj.taskId, { status: "backlog" });
+                     
+                     localStorage.removeItem("focus_timer_task_binding");
+                     localStorage.removeItem("focus_timer_state");
+                     localStorage.removeItem("focus_timer_retrievable");
+                     
+                     // setShowGlobalBacklogModal(true); // Disabled to prevent user disturbance
+                 }
+            }
+        } catch (e) { console.error("Global timer monitor err", e); }
     };
     
     const interval = setInterval(handleBackgroundFocusCheck, 15000); // Check every 15s to be accurate

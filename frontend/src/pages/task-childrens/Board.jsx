@@ -527,11 +527,11 @@ const Board = ({
          // Automatically start the timer context
           const isAiChallenge = taskToMove.taskType === "AI Challenge";
           const durationMins = isAiChallenge ? 40 : (taskToMove.backlogEstimatedHours ? taskToMove.backlogEstimatedHours * 60 : (taskToMove.estimatedHours ? taskToMove.estimatedHours * 60 : 25));
-          const spentMins = taskToMove.duration?.inprogress || 0;
+          const isTaskBacklog = taskToMove.status === 'backlog' || (taskToMove.taskDueDate && moment(taskToMove.taskDueDate).isBefore(moment(), 'day') && taskToMove.status !== 'done' && taskToMove.status !== 'inprogress' && taskToMove.status !== 'hold');
+          const spentMins = isTaskBacklog ? 0 : (taskToMove.duration?.inprogress || 0);
           const accumulatedSecs = spentMins * 60;
-         
-         const isTaskBacklog = taskToMove.status === 'backlog' || (taskToMove.taskDueDate && moment(taskToMove.taskDueDate).isBefore(moment(), 'day') && taskToMove.status !== 'done' && taskToMove.status !== 'inprogress' && taskToMove.status !== 'hold');
-         const focusTimerBinding = {
+          
+          const focusTimerBinding = {
               taskId: taskToMove._id,
               taskName: taskToMove.taskName,
               taskIdString: taskToMove.taskId,
@@ -741,12 +741,11 @@ const Board = ({
     }
 
     // Start timer for newTask automatically
+    const isTaskBacklog = newTask.status === 'backlog' || (newTask.taskDueDate && moment(newTask.taskDueDate).isBefore(moment(), 'day') && newTask.status !== 'done' && newTask.status !== 'inprogress' && newTask.status !== 'hold');
     const durationMins = (newTask.backlogEstimatedHours ? newTask.backlogEstimatedHours * 60 : (newTask.estimatedHours ? newTask.estimatedHours * 60 : 25));
-    const spentMins = newTask.duration?.inprogress || 0;
+    const spentMins = isTaskBacklog ? 0 : (newTask.duration?.inprogress || 0);
     const accumulatedSecs = spentMins * 60;
     
-    const isTaskBacklog = newTask.status === 'backlog' || (newTask.taskDueDate && moment(newTask.taskDueDate).isBefore(moment(), 'day') && newTask.status !== 'done' && newTask.status !== 'inprogress' && newTask.status !== 'hold');
-
     const focusTimerBinding = {
        taskId: newTask._id,
        taskName: newTask.taskName,
