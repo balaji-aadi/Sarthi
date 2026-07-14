@@ -72,7 +72,7 @@ export const taskValidationSchema = Yup.object({
   taskName: Yup.string()
     .max(100, "Must be 100 characters or less")
     .required("Task name is required"),
-  taskDescription: Yup.string().max(500, "Must be 500 characters or less"),
+  taskDescription: Yup.string().max(5000, "Must be 500 characters or less"),
   taskPriority: Yup.string().required("Priority is required"),
   estimatedHours: Yup.number()
     .positive("Estimated time must be positive")
@@ -106,21 +106,21 @@ export const userValidationSchema = (isUpdating) =>
     password: isUpdating
       ? Yup.string()
       : Yup.string()
-          .min(8, "Password must be at least 8 characters")
-          .matches(
-            /[A-Z]/,
-            "Password must contain at least one uppercase letter"
-          )
-          .matches(/[0-9]/, "Password must contain at least one number")
-          .matches(
-            /[^A-Za-z0-9]/,
-            "Password must contain at least one special character"
-          )
-          .required("Password is required"),
+        .min(8, "Password must be at least 8 characters")
+        .matches(
+          /[A-Z]/,
+          "Password must contain at least one uppercase letter"
+        )
+        .matches(/[0-9]/, "Password must contain at least one number")
+        .matches(
+          /[^A-Za-z0-9]/,
+          "Password must contain at least one special character"
+        )
+        .required("Password is required"),
     confirmPassword: isUpdating
       ? Yup.string()
       : Yup.string()
-          .oneOf([Yup.ref("password"), null], "Passwords must match")
-          .required("Confirm Password is required"),
+        .oneOf([Yup.ref("password"), null], "Passwords must match")
+        .required("Confirm Password is required"),
     // userType: Yup.object().required("User Type is required"),
   });

@@ -14,4 +14,9 @@ export const TaskApi = {
    getRevisionStats: (timezoneOffset) => Api.get(`task/revision-stats?timezoneOffset=${timezoneOffset}`),
    getCompletedParents: () => Api.get("task/completed-parents"),
    suggestRevisionChallenge: (payload) => Api.post("task/suggest-challenge", payload),
+   getDailyRevision: (timezoneOffset) => Api.get(`task/daily-revision?timezoneOffset=${timezoneOffset}`),
+   startDailyRevision: (timezoneOffset) => Api.post(`task/daily-revision/start`, { timezoneOffset }),
+   toggleDailyRevisionTimer: (timezoneOffset) => Api.post(`task/daily-revision/toggle-timer`, { timezoneOffset }),
+   syncDailyRevisionTimer: (payload) => Api.post(`task/daily-revision/sync-timer`, payload),
+   toggleReviseTomorrow: (payload) => Api.post(`task/daily-revision/toggle-revise-tomorrow`, payload),
 };

@@ -8,13 +8,18 @@ import { useLoading } from '../loader/LoaderContext';
 import React, { useEffect, useState, useRef } from 'react';
 import { BranchApi } from '../../services/api/Branch.api';
 import { SubscriptionApi } from '../../services/api/Subscription.api';
-import { setActiveBranch, updateCurrentUser } from '../../store/slices/storeSlice';
+import { setActiveBranch, updateCurrentUser, setDailyRevision } from '../../store/slices/storeSlice';
+import { TaskApi } from '../../services/api/Task.api';
 import { IoTimerOutline } from 'react-icons/io5';
+import toast from 'react-hot-toast';
 
 const MainLayout = () => {
-    const { activeBranch, currentUser, globalSettings } = useSelector((state) => state.store);
-    const { handleLoading } = useLoading();
+    const { activeBranch, currentUser, globalSettings, dailyRevision } = useSelector((state) => state.store);
     const location = useLocation();
+    const isLocked = dailyRevision && !dailyRevision.isCompleted;
+    const allowedPaths = ['/revision', '/login', '/branch', '/pricing'];
+    const isPathAllowed = allowedPaths.includes(location.pathname);
+    const { handleLoading } = useLoading();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     
@@ -22,6 +27,34 @@ const MainLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const timerRef = useRef(null);
     const syncRef = useRef(null);
+
+    // Fetch Daily Revision Status
+    useEffect(() => {
+        if (!currentUser || !activeBranch) return;
+        const fetchDailyRevision = async () => {
+            try {
+                const tzOffset = new Date().getTimezoneOffset();
+                const res = await TaskApi.getDailyRevision(tzOffset);
+                dispatch(setDailyRevision(res.data?.data));
+            } catch (err) {
+                console.error("Failed to fetch daily revision in MainLayout:", err);
+            }
+        };
+        fetchDailyRevision();
+    }, [currentUser, activeBranch, dispatch]);
+
+    // Daily Revision Lock Enforcement
+    useEffect(() => {
+        if (!currentUser || !activeBranch || !dailyRevision) return;
+
+        const isLocked = !dailyRevision.isCompleted;
+        const allowedPaths = ['/revision', '/login', '/branch', '/pricing'];
+
+        if (isLocked && !allowedPaths.includes(location.pathname)) {
+            toast.error("Complete your Daily Revision to unlock the application!");
+            navigate('/revision', { replace: true });
+        }
+    }, [dailyRevision, location.pathname, navigate, currentUser, activeBranch]);
 
     // Auto-clear loader and close sidebar on page transitions to prevent "stuck" states
     useEffect(() => {
@@ -129,7 +162,25 @@ const MainLayout = () => {
                 {activeBranch && <Header toggleSidebar={() => setSidebarOpen(prev => !prev)} />}
                 
                 <main className={`flex-1 ${location.pathname === '/notes' ? 'overflow-hidden p-0' : 'overflow-y-auto p-4 sm:p-8'}`}>
-                    <Outlet />
+                    {isLocked && !isPathAllowed ? (
+                        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6 animate-in fade-in duration-300">
+                            <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-primary mb-4 border border-rose-100 shadow-sm animate-bounce">
+                                <span className="text-3xl">🔒</span>
+                            </div>
+                            <h2 className="text-xl font-black text-slate-800 tracking-tight">Access Locked</h2>
+                            <p className="text-xs text-slate-500 max-w-sm mt-2 leading-relaxed">
+                                Complete your Daily Revision Protocol to unlock this page and all other features of Sarthi.
+                            </p>
+                            <button
+                                onClick={() => navigate('/revision')}
+                                className="mt-6 px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-95 shadow-md shadow-primary/20"
+                            >
+                                Go to Revision
+                            </button>
+                        </div>
+                    ) : (
+                        <Outlet />
+                    )}
                 </main>
 
                 {/* Invitation Timer Sticky UI */}

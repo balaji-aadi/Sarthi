@@ -29,7 +29,8 @@ const Header = ({ toggleSidebar }) => {
   const [recentSearches, setRecentSearches] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-  const { globalSearch, activeBranch } = useSelector((state) => state.store);
+  const { globalSearch, activeBranch, currentUser, dailyRevision } = useSelector((state) => state.store);
+  const isLocked = dailyRevision && dailyRevision.isStarted && !dailyRevision.isCompleted;
   
   const {
     isNotification,
@@ -38,7 +39,6 @@ const Header = ({ toggleSidebar }) => {
     getAllNotification,
   } = useSocket();
   
-  const { currentUser } = useSelector((state) => state.store);
   const { handleLoading } = useLoading();
 
   useEffect(() => {
@@ -326,14 +326,15 @@ const Header = ({ toggleSidebar }) => {
         <div className="flex items-center gap-4 shrink-0">
             <div className="relative hidden md:block" ref={searchRef}>
                 <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-textSub z-10" />
-                 <form onSubmit={handleSearchSubmit}>
+                 <form onSubmit={(e) => { if (isLocked) { e.preventDefault(); return; } handleSearchSubmit(e); }}>
                     <input 
                         type="text" 
-                        placeholder="Search tasks..." 
+                        placeholder={isLocked ? "Complete Revision to Search... 🔒" : "Search tasks..."} 
                         value={globalSearch}
                         onChange={(e) => handleSearchChange(e.target.value)}
-                        onFocus={() => setShowSearchDropdown(true)}
-                        className="pl-9 pr-4 py-2 rounded-lg border border-borderLight bg-bgLight text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 w-[30rem] transition-all"
+                        onFocus={() => { if (!isLocked) setShowSearchDropdown(true); }}
+                        disabled={isLocked}
+                        className={`pl-9 pr-4 py-2 rounded-lg border border-borderLight bg-bgLight text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 w-[30rem] transition-all ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
                     />
                  </form>
 
@@ -414,9 +415,10 @@ const Header = ({ toggleSidebar }) => {
             </div>
             
             <button 
-                onClick={() => dispatch(setShowConsistencyModal(true))}
-                className="w-10 h-10 rounded-full border border-borderLight flex items-center justify-center text-textSub hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all shrink-0"
-                title="Performance View"
+                onClick={() => { if (!isLocked) dispatch(setShowConsistencyModal(true)); }}
+                disabled={isLocked}
+                className={`w-10 h-10 rounded-full border border-borderLight flex items-center justify-center text-textSub hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all shrink-0 ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
+                title={isLocked ? "Complete Revision to Unlock 🔒" : "Performance View"}
             >
                 <IoCalendarOutline size={20} />
             </button>
@@ -424,13 +426,16 @@ const Header = ({ toggleSidebar }) => {
             <div className="relative shrink-0" ref={notificationRef}>
                 <button 
                     onClick={() => {
+                        if (isLocked) return;
                         setShowDropdown(!showDropdown);
                         if(isNotification) setIsNotification(false);
                     }}
-                    className={`w-10 h-10 rounded-full border border-borderLight flex items-center justify-center text-textSub hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all relative ${notificationIconClass}`}
+                    disabled={isLocked}
+                    className={`w-10 h-10 rounded-full border border-borderLight flex items-center justify-center text-textSub hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all relative ${notificationIconClass} ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
+                    title={isLocked ? "Complete Revision to Unlock 🔒" : "Notifications"}
                 >
                     <IoNotificationsOutline size={20} />
-                    {notificationData?.length > 0 && (
+                    {notificationData?.length > 0 && !isLocked && (
                         <span className="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
                     )}
                 </button>
@@ -522,9 +527,10 @@ const Header = ({ toggleSidebar }) => {
             </div>
             
             <button 
-                onClick={handleShare}
-                className="p-2 sm:px-4 sm:py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primaryHover transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 active:scale-95 shrink-0"
-                title="Share Link"
+                onClick={() => { if (!isLocked) handleShare(); }}
+                disabled={isLocked}
+                className={`p-2 sm:px-4 sm:py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primaryHover transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 active:scale-95 shrink-0 ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
+                title={isLocked ? "Complete Revision to Unlock 🔒" : "Share Link"}
             >
                 <IoLinkOutline size={18} />
                 <span className="hidden sm:inline">Share</span>

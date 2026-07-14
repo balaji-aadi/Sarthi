@@ -54,9 +54,13 @@ const storeSlice = createSlice({
     branches: [],
     globalSettings: {
         subscriptionType: "free"
-    }
+    },
+    dailyRevision: null
   },
   reducers: {
+    setDailyRevision: (state, action) => {
+      state.dailyRevision = action.payload;
+    },
     setGlobalSettings: (state, action) => {
       state.globalSettings = action.payload;
     },
@@ -168,5 +172,5 @@ const storeSlice = createSlice({
   },
 });
 
-export const { setGlobalSettings, setShowConsistencyModal, setGlobalSearch, setActiveBranch, setBranches, updateCurrentUser } = storeSlice.actions;
+export const { setDailyRevision, setGlobalSettings, setShowConsistencyModal, setGlobalSearch, setActiveBranch, setBranches, updateCurrentUser } = storeSlice.actions;
 export default storeSlice.reducer;

@@ -4,6 +4,8 @@ import { ApiResponse } from "../../utils/ApiResponse.js";
 import { Task } from "../../models/task.model.js";
 import { Project } from "../../models/project.model.js";
 import { Sprint } from "../../models/sprint.model.js";
+import { DailyRevision } from "../../models/dailyRevision.model.js";
+import { FocusSession } from "../../models/focusSession.model.js";
 import mongoose from "mongoose";
 import { calculateStatusDuration } from "../../utils/calculateStatusDuration.js";
 import { Notification } from "../../models/notification.model.js";
@@ -901,7 +903,7 @@ tc.getallTasksfree = asyncHandler(async (req, res) => {
 // Add Revision
 tc.addRevision = asyncHandler(async (req, res) => {
     const { taskId } = req.params;
-    const { notes, revisionDate } = req.body;
+    const { notes, revisionDate, timezoneOffset } = req.body;
 
     if (!taskId) {
         return res.status(400).json(new ApiError(400, "Task ID is required"));
@@ -923,13 +925,111 @@ tc.addRevision = asyncHandler(async (req, res) => {
     
     await task.save();
 
+    // Check if this task is part of today's DailyRevision and mark it completed
+    try {
+        const offset = timezoneOffset !== undefined ? parseInt(timezoneOffset) : new Date().getTimezoneOffset();
+        const localDateStr = getLocalDateString(new Date(), offset);
+        const dailyRev = await DailyRevision.findOne({
+            userId: req.user._id,
+            isStarted: true,
+            isCompleted: false
+        });
+
+        if (dailyRev && dailyRev.questions.some(qId => qId.toString() === task._id.toString())) {
+            const completedStrList = dailyRev.completedQuestions.map(q => q.toString());
+            if (!completedStrList.includes(task._id.toString())) {
+                // 1. Enforce sequence: must be the active question
+                const activeIdx = dailyRev.completedQuestions.length;
+                const activeTaskId = dailyRev.questions[activeIdx];
+                if (!activeTaskId || activeTaskId.toString() !== task._id.toString()) {
+                    return res.status(400).json(new ApiError(400, "You must complete the daily revision questions in the exact order shown!"));
+                }
+
+                // 2. Sync remaining time to get accurate current timeLeft
+                if (dailyRev.timerIsActive && dailyRev.timerLastUpdated) {
+                    const now = Date.now();
+                    const lastUpdate = new Date(dailyRev.timerLastUpdated).getTime();
+                    const elapsedSeconds = Math.floor((now - lastUpdate) / 1000);
+                    if (elapsedSeconds > 0) {
+                        dailyRev.timeLeft = Math.max(0, dailyRev.timeLeft - elapsedSeconds);
+                        dailyRev.timerLastUpdated = new Date(now);
+                    }
+                }
+
+                // 3. Enforce 15-minute rule (900 seconds)
+                const timeSpent = dailyRev.currentQuestionStartTimeLeft - dailyRev.timeLeft;
+                if (timeSpent < 900) {
+                    const remainingSeconds = 900 - timeSpent;
+                    const remMins = Math.floor(remainingSeconds / 60);
+                    const remSecs = remainingSeconds % 60;
+                    return res.status(400).json(new ApiError(400, `You must revise this question for at least 15 minutes! Please wait another ${remMins}m ${remSecs}s.`));
+                }
+
+                // 4. Log progress and completion
+                dailyRev.completedQuestions.push(task._id);
+                
+                if (!dailyRev.questionLogs) dailyRev.questionLogs = [];
+                dailyRev.questionLogs.push({
+                    taskId: task._id,
+                    completedAtTimeLeft: dailyRev.timeLeft,
+                    timeSpent: timeSpent,
+                    notes: notes || ""
+                });
+
+                dailyRev.currentQuestionStartTimeLeft = dailyRev.timeLeft;
+                
+                // Create a persistent FocusSession for the completed revision
+                const sessionDurationMins = Math.max(1, Math.round(timeSpent / 60));
+                const focusSession = new FocusSession({
+                    user: req.user._id,
+                    startTime: new Date(Date.now() - timeSpent * 1000),
+                    endTime: new Date(),
+                    duration: sessionDurationMins,
+                    type: "Revision",
+                    date: new Date(),
+                    task: task._id,
+                    taskName: task.taskName,
+                    taskIdString: task.taskId,
+                    statusAtCompletion: "done",
+                    completionState: "completed",
+                    branchId: dailyRev.branchId || task.branchId || null
+                });
+                await focusSession.save();
+
+                // Record analytics
+                await AnalyticsService.recordFocusTime(
+                    req.user._id, 
+                    sessionDurationMins, 
+                    focusSession.date, 
+                    dailyRev.branchId || task.branchId || null, 
+                    task._id
+                );
+
+                // Check if all questions are completed now
+                if (dailyRev.completedQuestions.length === dailyRev.questions.length) {
+                    dailyRev.isCompleted = true;
+                    dailyRev.timerIsActive = false;
+                    dailyRev.timerLastUpdated = null;
+                }
+                
+                await dailyRev.save();
+            }
+        }
+    } catch (err) {
+        console.error("Error updating DailyRevision on addRevision:", err);
+        if (err.statusCode || err.message?.includes("must revise") || err.message?.includes("order")) {
+            return res.status(err.statusCode || 400).json(new ApiError(err.statusCode || 400, err.message));
+        }
+    }
+
     return res.status(200).json(new ApiResponse(200, task, "Revision logged successfully"));
 });
 
 const getLocalDateString = (date, offsetMinutes = 0) => {
   const d = new Date(date);
   if (isNaN(d.getTime())) return null;
-  const adjusted = new Date(d.getTime() - (offsetMinutes * 60 * 1000));
+  // Subtract timezone offset to get local time, then subtract 4 hours (240 minutes) to push day boundary to 4:00 AM
+  const adjusted = new Date(d.getTime() - (offsetMinutes * 60 * 1000) - (4 * 60 * 60 * 1000));
   return adjusted.toISOString().split('T')[0];
 };
 
@@ -1248,6 +1348,370 @@ JSON Schema:
     } catch (error) {
         console.error("Groq Revision Challenge Suggestion Error:", error.response?.data || error.message);
         throw new ApiError(500, `AI challenge generation failed: ${error.message}`);
+    }
+});
+
+// Get Daily Revision
+tc.getDailyRevision = asyncHandler(async (req, res) => {
+    try {
+        const timezoneOffset = req.query.timezoneOffset ? parseInt(req.query.timezoneOffset) : 0;
+        const localDateStr = getLocalDateString(new Date(), timezoneOffset);
+        
+        let dailyRev = await DailyRevision.findOne({
+            userId: req.user._id,
+            isCompleted: false
+        }).populate("questions").populate("completedQuestions").populate("reviseTomorrowQuestions");
+
+        if (!dailyRev) {
+            dailyRev = await DailyRevision.findOne({
+                userId: req.user._id,
+                dateStr: localDateStr
+            }).populate("questions").populate("completedQuestions").populate("reviseTomorrowQuestions");
+        }
+
+        // Dynamic database fix: Truncate any active revision with > 4 questions to exactly 4
+        if (dailyRev && dailyRev.questions && dailyRev.questions.length > 4) {
+            const completedSet = new Set((dailyRev.completedQuestions || []).map(q => (q._id || q).toString()));
+            
+            // Keep completed questions
+            const finalQuestions = dailyRev.questions.filter(q => completedSet.has((q._id || q).toString()));
+            
+            // Keep pending questions in original order
+            const pendingQuestions = dailyRev.questions.filter(q => !completedSet.has((q._id || q).toString()));
+            
+            // Fill up remaining slots to make exactly 4 questions
+            const neededCount = Math.max(0, 4 - finalQuestions.length);
+            finalQuestions.push(...pendingQuestions.slice(0, neededCount));
+            
+            dailyRev.questions = finalQuestions.map(q => q._id || q);
+            await dailyRev.save();
+
+            // Refetch to ensure populated state is updated
+            dailyRev = await DailyRevision.findById(dailyRev._id)
+                .populate("questions")
+                .populate("completedQuestions")
+                .populate("reviseTomorrowQuestions");
+        }
+
+        if (!dailyRev) {
+            // Find projects with key DSA and DSAP2
+            const projects = await Project.find({ key: { $in: ["DSA", "DSAP2"] } }).select("_id");
+            const projectIds = projects.map(p => p._id);
+
+            // Fetch completed subtasks
+            const filter = {
+                projectName: { $in: projectIds },
+                parentTask: { $ne: null },
+                status: "done"
+            };
+            if (req.branchId) {
+                filter.branchId = new mongoose.Types.ObjectId(req.branchId);
+            }
+            if (req.user?.email !== "balajiaadi2000@gmail.com") {
+                filter.createdBy = req.user._id;
+            }
+
+            const allEligibleTasks = await Task.find(filter).select("_id taskName").lean();
+
+            // Fetch past 5 days of selections to prevent duplicates
+            const pastRevisions = await DailyRevision.find({ userId: req.user._id })
+                .sort({ dateStr: -1 })
+                .limit(5)
+                .lean();
+
+            const recentlySelectedIds = new Set();
+            pastRevisions.forEach(rev => {
+                if (rev.questions) {
+                    rev.questions.forEach(q => recentlySelectedIds.add(q.toString()));
+                }
+            });
+
+            // Check for revise tomorrow questions from the last revision session
+            const lastRev = await DailyRevision.findOne({ userId: req.user._id })
+                .sort({ dateStr: -1 })
+                .lean();
+            const reviseTomorrowIds = lastRev ? (lastRev.reviseTomorrowQuestions || []) : [];
+            const reviseTomorrowStrSet = new Set(reviseTomorrowIds.map(id => id.toString()));
+
+            // Filter out recently selected tasks AND any already pinned reviseTomorrow tasks
+            let availableTasks = allEligibleTasks.filter(t => 
+                !recentlySelectedIds.has(t._id.toString()) &&
+                !reviseTomorrowStrSet.has(t._id.toString())
+            );
+
+            // Fallbacks if not enough tasks are available after filtering
+            if (availableTasks.length < 4) {
+                const yesterdayRev = pastRevisions[0];
+                const yesterdayIds = new Set(yesterdayRev ? yesterdayRev.questions.map(q => q.toString()) : []);
+                availableTasks = allEligibleTasks.filter(t => 
+                    !yesterdayIds.has(t._id.toString()) &&
+                    !reviseTomorrowStrSet.has(t._id.toString())
+                );
+            }
+
+            if (availableTasks.length < 4) {
+                availableTasks = allEligibleTasks.filter(t => !reviseTomorrowStrSet.has(t._id.toString()));
+            }
+
+            // Pin limit: maximum of 4
+            const activePins = reviseTomorrowIds.slice(0, 4);
+            const randomCountNeeded = Math.max(0, 4 - activePins.length);
+
+            // Pick remaining tasks from availableTasks
+            const selectedTasks = [];
+            if (randomCountNeeded > 0) {
+                if (availableTasks.length <= randomCountNeeded) {
+                    selectedTasks.push(...availableTasks);
+                } else {
+                    const shuffled = [...availableTasks].sort(() => 0.5 - Math.random());
+                    selectedTasks.push(...shuffled.slice(0, randomCountNeeded));
+                }
+            }
+
+            // Combine pinned and new random questions to make exactly 4 total
+            const finalQuestions = [...activePins, ...selectedTasks.map(t => t._id)];
+
+            // Create new record
+            dailyRev = await DailyRevision.create({
+                userId: req.user._id,
+                dateStr: localDateStr,
+                questions: finalQuestions,
+                completedQuestions: [],
+                reviseTomorrowQuestions: [],
+                isStarted: false,
+                isCompleted: false,
+                timeLeft: 10800, // 3 hours
+                timerIsActive: false,
+                timerLastUpdated: null,
+                branchId: req.branchId ? new mongoose.Types.ObjectId(req.branchId) : null
+            });
+
+            dailyRev = await DailyRevision.findById(dailyRev._id)
+                .populate("questions")
+                .populate("completedQuestions")
+                .populate("reviseTomorrowQuestions");
+        } else {
+            // Recalculate remaining time if timer is active
+            if (dailyRev.timerIsActive && dailyRev.timerLastUpdated && !dailyRev.isCompleted) {
+                const now = Date.now();
+                const lastUpdate = new Date(dailyRev.timerLastUpdated).getTime();
+                const elapsedSeconds = Math.floor((now - lastUpdate) / 1000);
+                if (elapsedSeconds > 0) {
+                    dailyRev.timeLeft = Math.max(0, dailyRev.timeLeft - elapsedSeconds);
+                    dailyRev.timerLastUpdated = new Date(now);
+                    await dailyRev.save();
+                }
+            }
+        }
+        return res.status(200).json(
+            new ApiResponse(200, dailyRev, "Daily revision status retrieved successfully")
+        );
+    } catch (error) {
+        console.error("Error retrieving daily revision:", error);
+        return res.status(500).json(new ApiError(500, error.message || "Error retrieving daily revision"));
+    }
+});
+
+// Start Daily Revision
+tc.startDailyRevision = asyncHandler(async (req, res) => {
+    try {
+        const timezoneOffset = req.body.timezoneOffset ? parseInt(req.body.timezoneOffset) : 0;
+        const localDateStr = getLocalDateString(new Date(), timezoneOffset);
+
+        let dailyRev = await DailyRevision.findOne({
+            userId: req.user._id,
+            isCompleted: false
+        });
+
+        if (!dailyRev) {
+            dailyRev = await DailyRevision.findOne({
+                userId: req.user._id,
+                dateStr: localDateStr
+            });
+        }
+
+        if (!dailyRev) {
+            throw new ApiError(404, "Today's daily revision is not generated yet");
+        }
+
+        dailyRev.isStarted = true;
+        dailyRev.timerIsActive = true;
+        dailyRev.timerLastUpdated = new Date();
+        dailyRev.currentQuestionStartTimeLeft = 10800;
+        await dailyRev.save();
+
+        dailyRev = await DailyRevision.findById(dailyRev._id)
+            .populate("questions")
+            .populate("completedQuestions")
+            .populate("reviseTomorrowQuestions");
+
+        return res.status(200).json(
+            new ApiResponse(200, dailyRev, "Daily revision timer started successfully")
+        );
+    } catch (error) {
+        console.error("Error starting daily revision:", error);
+        return res.status(500).json(new ApiError(500, error.message || "Error starting daily revision"));
+    }
+});
+
+// Toggle Daily Revision Timer
+tc.toggleDailyRevisionTimer = asyncHandler(async (req, res) => {
+    try {
+        const timezoneOffset = req.body.timezoneOffset ? parseInt(req.body.timezoneOffset) : 0;
+        const localDateStr = getLocalDateString(new Date(), timezoneOffset);
+
+        let dailyRev = await DailyRevision.findOne({
+            userId: req.user._id,
+            isCompleted: false
+        });
+
+        if (!dailyRev) {
+            dailyRev = await DailyRevision.findOne({
+                userId: req.user._id,
+                dateStr: localDateStr
+            });
+        }
+
+        if (!dailyRev) {
+            throw new ApiError(404, "Today's daily revision is not generated yet");
+        }
+
+        if (!dailyRev.isStarted) {
+            throw new ApiError(400, "Daily revision has not been started yet");
+        }
+
+        if (dailyRev.isCompleted) {
+            return res.status(200).json(
+                new ApiResponse(200, dailyRev, "Daily revision is already completed")
+            );
+        }
+
+        if (dailyRev.timerIsActive) {
+            // Pause: Calculate elapsed time and update timeLeft
+            const now = Date.now();
+            const lastUpdate = dailyRev.timerLastUpdated ? new Date(dailyRev.timerLastUpdated).getTime() : now;
+            const elapsed = Math.floor((now - lastUpdate) / 1000);
+            
+            dailyRev.timeLeft = Math.max(0, dailyRev.timeLeft - elapsed);
+            dailyRev.timerIsActive = false;
+            dailyRev.timerLastUpdated = null;
+        } else {
+            // Resume
+            dailyRev.timerIsActive = true;
+            dailyRev.timerLastUpdated = new Date();
+        }
+
+        await dailyRev.save();
+
+        dailyRev = await DailyRevision.findById(dailyRev._id)
+            .populate("questions")
+            .populate("completedQuestions")
+            .populate("reviseTomorrowQuestions");
+
+        return res.status(200).json(
+            new ApiResponse(200, dailyRev, "Daily revision timer state toggled successfully")
+        );
+    } catch (error) {
+        console.error("Error toggling daily revision timer:", error);
+        return res.status(500).json(new ApiError(500, error.message || "Error toggling daily revision timer"));
+    }
+});
+
+// Sync Daily Revision Timer
+tc.syncDailyRevisionTimer = asyncHandler(async (req, res) => {
+    try {
+        const { timeLeft, timerIsActive, timezoneOffset } = req.body;
+        const offset = timezoneOffset !== undefined ? parseInt(timezoneOffset) : 0;
+        const localDateStr = getLocalDateString(new Date(), offset);
+
+        let dailyRev = await DailyRevision.findOne({
+            userId: req.user._id,
+            isCompleted: false
+        });
+
+        if (!dailyRev) {
+            dailyRev = await DailyRevision.findOne({
+                userId: req.user._id,
+                dateStr: localDateStr
+            });
+        }
+
+        if (!dailyRev) {
+            throw new ApiError(404, "Today's daily revision is not generated yet");
+        }
+
+        if (timeLeft !== undefined) {
+            dailyRev.timeLeft = Math.max(0, parseInt(timeLeft));
+        }
+
+        if (timerIsActive !== undefined) {
+            dailyRev.timerIsActive = !!timerIsActive;
+            dailyRev.timerLastUpdated = dailyRev.timerIsActive ? new Date() : null;
+        }
+
+        await dailyRev.save();
+
+        return res.status(200).json(
+            new ApiResponse(200, dailyRev, "Daily revision timer synced successfully")
+        );
+    } catch (error) {
+        console.error("Error syncing daily revision timer:", error);
+        return res.status(500).json(new ApiError(500, error.message || "Error syncing daily revision timer"));
+    }
+});
+
+// Toggle Revise Tomorrow
+tc.toggleReviseTomorrow = asyncHandler(async (req, res) => {
+    try {
+        const { taskId, reviseTomorrow, timezoneOffset } = req.body;
+        const offset = timezoneOffset !== undefined ? parseInt(timezoneOffset) : 0;
+        const localDateStr = getLocalDateString(new Date(), offset);
+
+        let dailyRev = await DailyRevision.findOne({
+            userId: req.user._id,
+            isCompleted: false
+        });
+
+        if (!dailyRev) {
+            dailyRev = await DailyRevision.findOne({
+                userId: req.user._id,
+                dateStr: localDateStr
+            });
+        }
+
+        if (!dailyRev) {
+            throw new ApiError(404, "Today's daily revision is not generated yet");
+        }
+
+        if (!dailyRev.reviseTomorrowQuestions) {
+            dailyRev.reviseTomorrowQuestions = [];
+        }
+
+        const taskObjectId = new mongoose.Types.ObjectId(taskId);
+        if (reviseTomorrow) {
+            const alreadyExists = dailyRev.reviseTomorrowQuestions.some(id => id.toString() === taskId.toString());
+            if (!alreadyExists) {
+                dailyRev.reviseTomorrowQuestions.push(taskObjectId);
+            }
+        } else {
+            dailyRev.reviseTomorrowQuestions = dailyRev.reviseTomorrowQuestions.filter(
+                id => id.toString() !== taskId.toString()
+            );
+        }
+
+        await dailyRev.save();
+
+        dailyRev = await DailyRevision.findById(dailyRev._id)
+            .populate("questions")
+            .populate("completedQuestions")
+            .populate("reviseTomorrowQuestions");
+
+        return res.status(200).json(
+            new ApiResponse(200, dailyRev, "Revise tomorrow preference updated successfully")
+        );
+    } catch (error) {
+        console.error("Error toggling revise tomorrow:", error);
+        return res.status(500).json(new ApiError(500, error.message || "Error toggling revise tomorrow"));
     }
 });
 

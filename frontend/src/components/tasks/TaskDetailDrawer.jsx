@@ -31,6 +31,26 @@ const getYoutubeId = (url) => {
     return (match && match[2].length === 11) ? match[2] : null;
 };
 
+const decodeHtmlEntities = (str) => {
+    if (!str) return "";
+    const txt = document.createElement("textarea");
+    txt.innerHTML = str;
+    return txt.value;
+};
+
+const isHtmlNote = (content) => {
+    if (!content) return false;
+    const lower = content.toLowerCase();
+    return lower.includes("<!doctype html>") || 
+           lower.includes("&lt;!doctype html&gt;") ||
+           lower.includes("<html") || 
+           lower.includes("&lt;html") ||
+           lower.includes("<style") || 
+           lower.includes("&lt;style") ||
+           lower.includes("<body") || 
+           lower.includes("&lt;body");
+};
+
 const TaskDetailDrawer = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -62,8 +82,9 @@ const TaskDetailDrawer = () => {
 
     const getCleanSnippet = (content, limit = 100) => {
         if (!content) return "No content";
-        let clean = content;
+        let clean = decodeHtmlEntities(content);
         clean = clean.replace(/<style[\s\S]*?<\/style>/gi, '');
+        clean = clean.replace(/<script[\s\S]*?<\/script>/gi, '');
         clean = clean.replace(/<div[^>]*class="note-root"[\s\S]*?<div[^>]*class="lang-en-[^"]*"[^>]*>/gi, '');
         clean = clean.replace(/<[^>]*>?/gm, '');
         clean = clean.replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim();
@@ -111,6 +132,8 @@ const TaskDetailDrawer = () => {
     const [editedEnContent, setEditedEnContent] = useState("");
     const [editedHiContent, setEditedHiContent] = useState("");
     const [isTranslating, setIsTranslating] = useState(false);
+    const [editorMode, setEditorMode] = useState("rich"); // "rich" or "code"
+    const activeNote = notes.find(n => n._id === activeReaderNoteId);
 
     const handleTranslateToHindi = async (englishText) => {
         if (!englishText || englishText.trim() === "" || englishText === "<p><br></p>") {
@@ -1041,7 +1064,10 @@ const TaskDetailDrawer = () => {
                                                                                 setEditedHiContent(info.hi);
                                                                             } else {
                                                                                 setIsBilingual(false);
-                                                                                setEditedContent(activeNote.content || "");
+                                                                                const isHtml = isHtmlNote(activeNote.content);
+                                                                                const rawContent = isHtml ? decodeHtmlEntities(activeNote.content) : (activeNote.content || "");
+                                                                                setEditedContent(rawContent);
+                                                                                setEditorMode(isHtml ? "code" : "rich");
                                                                             }
                                                                             setIsEditingNote(true);
                                                                         }}
@@ -1173,8 +1199,28 @@ const TaskDetailDrawer = () => {
                                                             </div>
                                                         ) : (
                                                             <div className="space-y-2">
-                                                                <div className="flex justify-between items-center mb-1">
-                                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Note HTML / Text Content</label>
+                                                                <div className="flex justify-between items-center mb-1 gap-2 flex-wrap">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Note HTML / Text Content</label>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => {
+                                                                                if (editorMode === "rich") {
+                                                                                    setEditedContent(decodeHtmlEntities(editedContent));
+                                                                                    setEditorMode("code");
+                                                                                } else {
+                                                                                    setEditorMode("rich");
+                                                                                }
+                                                                            }}
+                                                                            className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md border transition-all ${
+                                                                                editorMode === "code"
+                                                                                    ? "bg-blue-500 text-white border-blue-500 hover:bg-blue-600"
+                                                                                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200"
+                                                                            }`}
+                                                                        >
+                                                                            {editorMode === "code" ? "📝 Use Rich Text" : "💻 Use HTML/CSS Code"}
+                                                                        </button>
+                                                                    </div>
                                                                     <button
                                                                         type="button"
                                                                         disabled={isTranslating}
@@ -1192,19 +1238,28 @@ const TaskDetailDrawer = () => {
                                                                         {isTranslating ? "⏳ Translating..." : "🌐 Auto-Translate note to Hindi"}
                                                                     </button>
                                                                 </div>
-                                                                <ReactQuill
-                                                                    value={editedContent}
-                                                                    onChange={setEditedContent}
-                                                                    placeholder="Type notes here..."
-                                                                    modules={{
-                                                                        toolbar: [
-                                                                            [{ 'header': [1, 2, 3, false] }],
-                                                                            ['bold', 'italic', 'underline', 'strike'],
-                                                                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                                            ['link', 'clean']
-                                                                        ]
-                                                                    }}
-                                                                />
+                                                                {editorMode === "code" ? (
+                                                                    <textarea
+                                                                        value={editedContent}
+                                                                        onChange={(e) => setEditedContent(e.target.value)}
+                                                                        placeholder="Paste or write HTML/CSS code directly here..."
+                                                                        className="w-full min-h-[300px] max-h-[600px] font-mono text-[11px] p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-slate-100 leading-normal"
+                                                                    />
+                                                                ) : (
+                                                                    <ReactQuill
+                                                                        value={editedContent}
+                                                                        onChange={setEditedContent}
+                                                                        placeholder="Type notes here..."
+                                                                        modules={{
+                                                                            toolbar: [
+                                                                                [{ 'header': [1, 2, 3, false] }],
+                                                                                ['bold', 'italic', 'underline', 'strike'],
+                                                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                                                                ['link', 'clean']
+                                                                            ]
+                                                                        }}
+                                                                    />
+                                                                )}
                                                             </div>
                                                         )}
                                                     </div>
@@ -1228,10 +1283,18 @@ const TaskDetailDrawer = () => {
                                                               .ql-snow .ql-editor > .note-root > div > *:first-child {
                                                                 margin-top: 0 !important;
                                                               }
-                                                              .ql-snow .ql-editor .note-root {
+                                                              .ql-snow .ql-editor {
                                                                 white-space: normal !important;
                                                               }
-                                                              .ql-snow .ql-editor .note-root [class*="lang-"] {
+                                                              .ql-snow .ql-editor * {
+                                                                white-space: normal !important;
+                                                              }
+                                                              .ql-snow .ql-editor pre,
+                                                              .ql-snow .ql-editor pre *,
+                                                              .ql-snow .ql-editor code,
+                                                              .ql-snow .ql-editor code *,
+                                                              .ql-snow .ql-editor [class*="lang-"],
+                                                              .ql-snow .ql-editor [class*="lang-"] * {
                                                                 white-space: pre-wrap !important;
                                                               }
                                                               .ql-snow .ql-editor h1,
@@ -1252,10 +1315,19 @@ const TaskDetailDrawer = () => {
                                                                 margin-bottom: 8px !important;
                                                               }
                                                           `}</style>
-                                                        <div
-                                                            className="max-w-none text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium ql-editor"
-                                                            dangerouslySetInnerHTML={{ __html: activeNote.content }}
-                                                        />
+                                                        {isHtmlNote(activeNote.content) ? (
+                                                            <iframe
+                                                                title={activeNote.title || "Note HTML Preview"}
+                                                                srcDoc={decodeHtmlEntities(activeNote.content)}
+                                                                className="w-full min-h-[600px] border border-slate-200 dark:border-slate-800 rounded-2xl bg-white"
+                                                                sandbox="allow-scripts allow-same-origin"
+                                                            />
+                                                        ) : (
+                                                            <div
+                                                                className="max-w-none text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium ql-editor"
+                                                                dangerouslySetInnerHTML={{ __html: activeNote.content }}
+                                                            />
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>

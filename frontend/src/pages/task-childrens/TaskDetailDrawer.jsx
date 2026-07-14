@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { IoClose, IoFlagSharp, IoCalendarOutline, IoTimeOutline, IoPersonOutline, IoAttachOutline, IoGitNetworkSharp, IoCheckmarkCircleOutline, IoTrashOutline } from 'react-icons/io5';
+import React, { useEffect, useState, useRef } from 'react';
+import { IoClose, IoFlagSharp, IoCalendarOutline, IoTimeOutline, IoPersonOutline, IoAttachOutline, IoGitNetworkSharp, IoCheckmarkCircleOutline, IoTrashOutline, IoArrowDown, IoArrowUp } from 'react-icons/io5';
 import { MdEdit } from 'react-icons/md';
 import moment from 'moment';
 window.moment = moment;
@@ -8,7 +8,6 @@ import { NoteApi } from '../../services/api/Note.api';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { server } from '../../services/config';
-import ReactQuill from 'react-quill';
 
 const hasAdditionalNotes = (notes) => {
     if (!notes) return false;
@@ -26,6 +25,26 @@ const getYoutubeId = (url) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
     return (match && match[2].length === 11) ? match[2] : null;
+};
+
+const decodeHtmlEntities = (str) => {
+    if (!str) return "";
+    const txt = document.createElement("textarea");
+    txt.innerHTML = str;
+    return txt.value;
+};
+
+const isHtmlNote = (content) => {
+    if (!content) return false;
+    const lower = content.toLowerCase();
+    return lower.includes("<!doctype html>") ||
+        lower.includes("&lt;!doctype html&gt;") ||
+        lower.includes("<html") ||
+        lower.includes("&lt;html") ||
+        lower.includes("<style") ||
+        lower.includes("&lt;style") ||
+        lower.includes("<body") ||
+        lower.includes("&lt;body");
 };
 
 const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, canEdit }) => {
@@ -48,7 +67,158 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
     const [editedEnContent, setEditedEnContent] = useState("");
     const [editedHiContent, setEditedHiContent] = useState("");
     const [isTranslating, setIsTranslating] = useState(false);
+    const activeNote = notes.find(n => n._id === activeReaderNoteId);
+    // Zen Reading Mode State
+    const [isReadingModeActive, setIsReadingModeActive] = useState(false);
+    const lastScrollTopRef = useRef(0);
+    const accumulatedScrollRef = useRef(0);
+    const transitionLockRef = useRef(false);
+    const [iframeScrollInfo, setIframeScrollInfo] = useState({ isAtBottom: false, canScroll: false });
+    const iframeRef = useRef(null);
 
+    useEffect(() => {
+        setIsReadingModeActive(false);
+        transitionLockRef.current = false;
+        lastScrollTopRef.current = 0;
+        accumulatedScrollRef.current = 0;
+    }, [activeReaderNoteId]);
+
+    useEffect(() => {
+        const handleMessage = (e) => {
+            if (e.data?.type === 'iframeScroll') {
+                const { scrollTop, scrollHeight, clientHeight } = e.data;
+                const parentHeight = window.innerHeight;
+
+                // Track scroll state for FAB
+                setIframeScrollInfo({
+                    isAtBottom: Math.ceil(scrollTop + clientHeight) >= scrollHeight - 50,
+                    canScroll: scrollHeight > clientHeight + 100
+                });
+
+                if (scrollHeight < parentHeight) {
+                    setIsReadingModeActive(false);
+                    return;
+                }
+
+                const delta = scrollTop - lastScrollTopRef.current;
+                lastScrollTopRef.current = scrollTop;
+
+                if (delta > 0) {
+                    if (accumulatedScrollRef.current < 0) accumulatedScrollRef.current = 0;
+                    accumulatedScrollRef.current += delta;
+                } else if (delta < 0) {
+                    if (accumulatedScrollRef.current > 0) accumulatedScrollRef.current = 0;
+                    accumulatedScrollRef.current += delta;
+                }
+
+                if (transitionLockRef.current) return;
+
+                const isAtTop = scrollTop < 20;
+                const isScrollingDown = accumulatedScrollRef.current > 50;
+                const isScrollingUp = accumulatedScrollRef.current < -50;
+
+                if (isAtTop) {
+                    setIsReadingModeActive(false);
+                    accumulatedScrollRef.current = 0;
+                } else if (isScrollingDown && scrollTop > 100) {
+                    setIsReadingModeActive((prev) => {
+                        if (!prev) {
+                            transitionLockRef.current = true;
+                            accumulatedScrollRef.current = 0;
+                            setTimeout(() => { transitionLockRef.current = false; }, 600);
+                        }
+                        return true;
+                    });
+                } else if (isScrollingUp) {
+                    setIsReadingModeActive((prev) => {
+                        if (prev) {
+                            transitionLockRef.current = true;
+                            accumulatedScrollRef.current = 0;
+                            setTimeout(() => { transitionLockRef.current = false; }, 600);
+                        }
+                        return false;
+                    });
+                }
+            }
+        };
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+    }, []);
+
+    const handleReaderScroll = (e) => {
+        const { scrollTop, scrollHeight, clientHeight } = e.target;
+        const parentHeight = window.innerHeight;
+
+        setIframeScrollInfo({
+            isAtBottom: Math.ceil(scrollTop + clientHeight) >= scrollHeight - 50,
+            canScroll: scrollHeight > clientHeight + 100
+        });
+
+        if (scrollHeight < parentHeight) {
+            setIsReadingModeActive(false);
+            return;
+        }
+
+        const delta = scrollTop - lastScrollTopRef.current;
+        lastScrollTopRef.current = scrollTop;
+
+        if (delta > 0) {
+            if (accumulatedScrollRef.current < 0) accumulatedScrollRef.current = 0;
+            accumulatedScrollRef.current += delta;
+        } else if (delta < 0) {
+            if (accumulatedScrollRef.current > 0) accumulatedScrollRef.current = 0;
+            accumulatedScrollRef.current += delta;
+        }
+
+        if (transitionLockRef.current) return;
+
+        const isAtTop = scrollTop < 20;
+        const isScrollingDown = accumulatedScrollRef.current > 50;
+        const isScrollingUp = accumulatedScrollRef.current < -50;
+
+        if (isAtTop) {
+            setIsReadingModeActive(false);
+            accumulatedScrollRef.current = 0;
+        } else if (isScrollingDown && scrollTop > 100) {
+            setIsReadingModeActive((prev) => {
+                if (!prev) {
+                    transitionLockRef.current = true;
+                    accumulatedScrollRef.current = 0;
+                    setTimeout(() => { transitionLockRef.current = false; }, 600);
+                }
+                return true;
+            });
+        } else if (isScrollingUp) {
+            setIsReadingModeActive((prev) => {
+                if (prev) {
+                    transitionLockRef.current = true;
+                    accumulatedScrollRef.current = 0;
+                    setTimeout(() => { transitionLockRef.current = false; }, 600);
+                }
+                return false;
+            });
+        }
+    };
+
+    const handleFloatingScroll = () => {
+        if (iframeScrollInfo.isAtBottom) {
+            // Scroll to top
+            if (iframeRef.current) {
+                iframeRef.current.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                document.querySelector('.note-reader-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        } else {
+            // Scroll to bottom
+            if (iframeRef.current) {
+                const height = iframeRef.current.contentDocument?.documentElement?.scrollHeight || 9999;
+                iframeRef.current.contentWindow.scrollTo({ top: height, behavior: 'smooth' });
+            } else {
+                const container = document.querySelector('.note-reader-container');
+                if (container) container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+            }
+        }
+    };
     const handleTranslateToHindi = async (englishText) => {
         if (!englishText || englishText.trim() === "" || englishText === "<p><br></p>") {
             toast.error("Please enter some English content first");
@@ -78,8 +248,9 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
 
     const getCleanSnippet = (content, limit = 100) => {
         if (!content) return "No content";
-        let clean = content;
+        let clean = decodeHtmlEntities(content);
         clean = clean.replace(/<style[\s\S]*?<\/style>/gi, '');
+        clean = clean.replace(/<script[\s\S]*?<\/script>/gi, '');
         clean = clean.replace(/<div[^>]*class="note-root"[\s\S]*?<div[^>]*class="lang-en-[^"]*"[^>]*>/gi, '');
         clean = clean.replace(/<[^>]*>?/gm, '');
         clean = clean.replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim();
@@ -735,10 +906,10 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                 });
 
                 return (
-                    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-                        <div className="bg-white dark:bg-themeBG text-themeText rounded-3xl shadow-2xl w-full h-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-300">
+                    <div className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-xs transition-all duration-500 ${isReadingModeActive ? 'p-0' : 'p-4 md:p-8'}`}>
+                        <div className={`bg-white dark:bg-themeBG text-themeText shadow-2xl w-full h-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-300 transition-all ${isReadingModeActive ? 'rounded-none' : 'rounded-3xl'}`}>
                             {/* Header */}
-                            <div className="px-8 py-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50">
+                            <div className={`px-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 transition-all duration-500 ease-in-out origin-top ${isReadingModeActive ? 'max-h-0 py-0 opacity-0 overflow-hidden border-none' : 'max-h-[100px] py-5 opacity-100'}`}>
                                 <div className="min-w-0">
                                     <h2 className="text-lg font-black text-slate-800 dark:text-white truncate">
                                         Document Center: {task?.taskName}
@@ -770,7 +941,7 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                             {/* Split Body */}
                             <div className="flex-1 flex overflow-hidden min-h-0">
                                 {/* Left Column: Notes List Sidebar */}
-                                <div className="w-80 border-r border-slate-100 dark:border-slate-800 flex flex-col bg-slate-50/20 shrink-0">
+                                <div className={`border-r border-slate-100 dark:border-slate-800 flex flex-col bg-slate-50/20 shrink-0 transition-all duration-500 ease-in-out origin-left ${isReadingModeActive ? 'w-0 opacity-0 overflow-hidden border-none' : 'w-80 opacity-100'}`}>
                                     <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
                                         {linkedNotes
                                             .filter(n => {
@@ -818,7 +989,10 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                 </div>
 
                                 {/* Right Column: Reading Area */}
-                                <div className="flex-1 flex flex-col bg-white dark:bg-themeBG overflow-y-auto custom-scrollbar p-5 min-w-0">
+                                <div
+                                    className="flex-1 flex flex-col bg-white dark:bg-themeBG overflow-y-auto custom-scrollbar min-w-0"
+                                    onScroll={handleReaderScroll}
+                                >
                                     {(() => {
                                         const activeNote = linkedNotes.find(n => n._id === activeReaderNoteId);
                                         if (!activeNote) {
@@ -832,7 +1006,7 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                         return (
                                             <div className="w-full space-y-6">
                                                 {/* Note Header */}
-                                                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-5">
+                                                <div className={`flex items-center justify-between border-slate-100 dark:border-slate-800 sticky top-0 bg-white z-[99999] transition-all duration-500 ease-in-out overflow-hidden ${isReadingModeActive ? 'max-h-0 p-0 opacity-0 border-none' : 'max-h-[200px] p-5 border-b opacity-100'}`}>
                                                     <div className="min-w-0 flex-1">
                                                         <div className="flex items-center gap-2 mb-2">
                                                             <span
@@ -915,7 +1089,9 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                                                 setEditedHiContent(info.hi);
                                                                             } else {
                                                                                 setIsBilingual(false);
-                                                                                setEditedContent(activeNote.content || "");
+                                                                                const isHtml = isHtmlNote(activeNote.content);
+                                                                                const rawContent = isHtml ? decodeHtmlEntities(activeNote.content) : (activeNote.content || "");
+                                                                                setEditedContent(rawContent);
                                                                             }
                                                                             setIsEditingNote(true);
                                                                         }}
@@ -997,18 +1173,11 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                                                                         🇬🇧 English Content
                                                                     </label>
-                                                                    <ReactQuill
+                                                                    <textarea
                                                                         value={editedEnContent}
-                                                                        onChange={setEditedEnContent}
-                                                                        placeholder="Type English notes here..."
-                                                                        modules={{
-                                                                            toolbar: [
-                                                                                [{ 'header': [1, 2, 3, false] }],
-                                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                                                ['link', 'clean']
-                                                                            ]
-                                                                        }}
+                                                                        onChange={(e) => setEditedEnContent(e.target.value)}
+                                                                        placeholder="Paste or write HTML/CSS code directly here..."
+                                                                        className="w-full min-h-[200px] max-h-[600px] font-mono text-[11px] p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-slate-100 leading-normal"
                                                                     />
                                                                 </div>
                                                                 <div className="space-y-2">
@@ -1030,24 +1199,17 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                                             {isTranslating ? "⏳ Translating..." : "⚡ Translate from English"}
                                                                         </button>
                                                                     </div>
-                                                                    <ReactQuill
+                                                                    <textarea
                                                                         value={editedHiContent}
-                                                                        onChange={setEditedHiContent}
-                                                                        placeholder="Type Hindi notes here..."
-                                                                        modules={{
-                                                                            toolbar: [
-                                                                                [{ 'header': [1, 2, 3, false] }],
-                                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                                                ['link', 'clean']
-                                                                            ]
-                                                                        }}
+                                                                        onChange={(e) => setEditedHiContent(e.target.value)}
+                                                                        placeholder="Paste or write HTML/CSS code directly here..."
+                                                                        className="w-full min-h-[200px] max-h-[600px] font-mono text-[11px] p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-slate-100 leading-normal"
                                                                     />
                                                                 </div>
                                                             </div>
                                                         ) : (
                                                             <div className="space-y-2">
-                                                                <div className="flex justify-between items-center mb-1">
+                                                                <div className="flex justify-between items-center mb-1 gap-2 flex-wrap">
                                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Note HTML / Text Content</label>
                                                                     <button
                                                                         type="button"
@@ -1066,18 +1228,11 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                                         {isTranslating ? "⏳ Translating..." : "🌐 Auto-Translate note to Hindi"}
                                                                     </button>
                                                                 </div>
-                                                                <ReactQuill
+                                                                <textarea
                                                                     value={editedContent}
-                                                                    onChange={setEditedContent}
-                                                                    placeholder="Type notes here..."
-                                                                    modules={{
-                                                                        toolbar: [
-                                                                            [{ 'header': [1, 2, 3, false] }],
-                                                                            ['bold', 'italic', 'underline', 'strike'],
-                                                                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                                            ['link', 'clean']
-                                                                        ]
-                                                                    }}
+                                                                    onChange={(e) => setEditedContent(e.target.value)}
+                                                                    placeholder="Paste or write HTML/CSS code directly here..."
+                                                                    className="w-full min-h-[300px] max-h-[600px] font-mono text-[11px] p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-slate-100 leading-normal"
                                                                 />
                                                             </div>
                                                         )}
@@ -1102,10 +1257,18 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                               .ql-snow .ql-editor > .note-root > div > *:first-child {
                                                                 margin-top: 0 !important;
                                                               }
-                                                              .ql-snow .ql-editor .note-root {
+                                                              .ql-snow .ql-editor {
                                                                 white-space: normal !important;
                                                               }
-                                                              .ql-snow .ql-editor .note-root [class*="lang-"] {
+                                                              .ql-snow .ql-editor * {
+                                                                white-space: normal !important;
+                                                              }
+                                                              .ql-snow .ql-editor pre,
+                                                              .ql-snow .ql-editor pre *,
+                                                              .ql-snow .ql-editor code,
+                                                              .ql-snow .ql-editor code *,
+                                                              .ql-snow .ql-editor [class*="lang-"],
+                                                              .ql-snow .ql-editor [class*="lang-"] * {
                                                                 white-space: pre-wrap !important;
                                                               }
                                                               .ql-snow .ql-editor h1,
@@ -1117,7 +1280,7 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                               }
                                                               .ql-snow .ql-editor p {
                                                                 margin-top: 0 !important;
-                                                                margin-bottom: 8px !important;
+                                                                                margin-bottom: 8px !important;
                                                               }
                                                               .ql-snow .ql-editor ul,
                                                               .ql-snow .ql-editor ol {
@@ -1125,10 +1288,50 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                                 margin-bottom: 8px !important;
                                                               }
                                                           `}</style>
-                                                        <div
-                                                            className="max-w-none text-sm text-slate-700 dark:text-slate-355 leading-relaxed font-medium ql-editor"
-                                                            dangerouslySetInnerHTML={{ __html: activeNote.content }}
-                                                        />
+                                                        {isHtmlNote(activeNote.content) ? (
+                                                            <iframe
+                                                                ref={iframeRef}
+                                                                title={activeNote.title || "Note HTML Preview"}
+                                                                srcDoc={decodeHtmlEntities(activeNote.content) + `
+                                                                 <script>
+                                                                    window.addEventListener('scroll', () => {
+                                                                        window.parent.postMessage({ type: 'iframeScroll', scrollTop: window.scrollY || document.documentElement.scrollTop, scrollHeight: document.documentElement.scrollHeight, clientHeight: window.innerHeight || document.documentElement.clientHeight }, '*');
+                                                                    });
+                                                                    window.addEventListener('load', () => {
+                                                                        window.parent.postMessage({ type: 'iframeScroll', scrollTop: window.scrollY || document.documentElement.scrollTop, scrollHeight: document.documentElement.scrollHeight, clientHeight: window.innerHeight || document.documentElement.clientHeight }, '*');
+                                                                    });
+                                                                    window.addEventListener('resize', () => {
+                                                                        window.parent.postMessage({ type: 'iframeScroll', scrollTop: window.scrollY || document.documentElement.scrollTop, scrollHeight: document.documentElement.scrollHeight, clientHeight: window.innerHeight || document.documentElement.clientHeight }, '*');
+                                                                    });
+                                                                 </script>
+                                                                 `}
+                                                                className={`w-full bg-white transition-all duration-500 border-none ${isReadingModeActive ? 'min-h-[100vh] rounded-none' : 'min-h-[600px] rounded-b-2xl md:rounded-b-3xl'}`}
+                                                                sandbox="allow-scripts allow-same-origin"
+                                                            />
+                                                        ) : (
+                                                            <div
+                                                                className="note-reader-container max-w-none text-sm text-slate-700 dark:text-slate-355 leading-relaxed font-medium ql-editor overflow-y-auto"
+                                                                style={{ maxHeight: isReadingModeActive ? '100vh' : '600px' }}
+                                                                onScroll={handleReaderScroll}
+                                                                dangerouslySetInnerHTML={{ __html: activeNote.content }}
+                                                            />
+                                                        )}
+
+                                                        {/* Floating Scroll Button (Only visible in Full Screen/Reading Mode) */}
+                                                        {isReadingModeActive && iframeScrollInfo.canScroll && (
+                                                            <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[9999] pointer-events-auto">
+                                                                <button
+                                                                    onClick={handleFloatingScroll}
+                                                                    className="group flex items-center justify-center w-12 h-12 rounded-full bg-white/20 dark:bg-slate-900/40 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-lg text-slate-700 dark:text-white transition-all duration-300 hover:bg-white/40 dark:hover:bg-slate-800/60 hover:scale-110 active:scale-95 animate-in slide-in-from-bottom-5 fade-in zoom-in"
+                                                                >
+                                                                    {iframeScrollInfo.isAtBottom ? (
+                                                                        <IoArrowUp className="text-xl opacity-80 group-hover:opacity-100 transition-opacity" />
+                                                                    ) : (
+                                                                        <IoArrowDown className="text-xl opacity-80 group-hover:opacity-100 transition-opacity" />
+                                                                    )}
+                                                                </button>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>

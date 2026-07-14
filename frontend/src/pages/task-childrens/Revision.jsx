@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { setDailyRevision } from '../../store/slices/storeSlice';
 import { TaskApi } from '../../services/api/Task.api';
 import { ProjectApi } from '../../services/api/Project.api';
 import { FocusApi } from '../../services/api/Focus.api';
@@ -26,7 +27,8 @@ import {
     IoSparklesOutline,
     IoOpenOutline,
     IoRefreshOutline,
-    IoLogoYoutube
+    IoLogoYoutube,
+    IoDocumentTextOutline
 } from 'react-icons/io5';
 import toast from 'react-hot-toast';
 import InputField from '../../components/InputField';
@@ -92,8 +94,21 @@ const NoteCell = ({ text, onReadMore }) => {
     );
 };
 
+const getRemainingSeconds = (rev) => {
+    if (!rev) return 10800;
+    if (rev.isCompleted) return 0;
+    if (!rev.isStarted) return 10800;
+    if (!rev.timerIsActive || !rev.timerLastUpdated) return rev.timeLeft;
+    const elapsed = Math.floor((Date.now() - new Date(rev.timerLastUpdated).getTime()) / 1000);
+    return Math.max(0, rev.timeLeft - elapsed);
+};
+
 const Revision = () => {
+    const dispatch = useDispatch();
     const { activeBranch, currentUser } = useSelector((state) => state.store);
+    const [dailyRevisionState, setDailyRevisionState] = useState(null);
+    const [timerTimeLeft, setTimerTimeLeft] = useState(10800);
+    const [timerIsActive, setTimerIsActive] = useState(false);
     const isManager = currentUser?.userRole?.name === "projectmanager";
     const isAdmin = currentUser?.userRole?.name === "admin";
     const canEdit = isManager || isAdmin;
@@ -253,11 +268,12 @@ const Revision = () => {
         handleLoading(true);
         try {
             const timezoneOffset = new Date().getTimezoneOffset();
-            const [tasksRes, projectsRes, statsRes, notesRes] = await Promise.all([
+            const [tasksRes, projectsRes, statsRes, notesRes, dailyRevisionRes] = await Promise.all([
                 TaskApi.getAllTasks({ filter: { status: 'done' } }),
                 ProjectApi.getAllProjects(),
                 TaskApi.getRevisionStats(timezoneOffset),
-                NoteApi.getNotes()
+                NoteApi.getNotes(),
+                TaskApi.getDailyRevision(timezoneOffset)
             ]);
 
             const allTasks = tasksRes.data?.data || [];
@@ -273,6 +289,14 @@ const Revision = () => {
             setProjects(projectsRes.data?.data || []);
             setStats(statsRes.data?.data || { currentStreak: 0, longestStreak: 0, revisionsByDate: {}, completedByDate: {} });
             setNotes(notesRes.data?.data || []);
+
+            const dailyRev = dailyRevisionRes.data?.data;
+            setDailyRevisionState(dailyRev);
+            if (dailyRev) {
+                setTimerTimeLeft(getRemainingSeconds(dailyRev));
+                setTimerIsActive(dailyRev.timerIsActive);
+                dispatch(setDailyRevision(dailyRev)); // Sync with global store
+            }
         } catch (error) {
             console.error("Failed to load revision data", error);
             toast.error("Failed to load tasks");
@@ -280,6 +304,113 @@ const Revision = () => {
             handleLoading(false);
         }
     };
+
+    // Start Daily Revision session
+    const handleStartDailyRevision = async () => {
+        handleLoading(true);
+        try {
+            const tzOffset = new Date().getTimezoneOffset();
+            const res = await TaskApi.startDailyRevision(tzOffset);
+            const dailyRev = res.data?.data;
+            setDailyRevisionState(dailyRev);
+            setTimerTimeLeft(getRemainingSeconds(dailyRev));
+            setTimerIsActive(dailyRev.timerIsActive);
+            dispatch(setDailyRevision(dailyRev));
+            toast.success("3-Hour Revision Timer started!");
+        } catch (err) {
+            console.error("Failed to start daily revision:", err);
+            toast.error("Failed to start revision protocol");
+        } finally {
+            handleLoading(false);
+        }
+    };
+
+    // Toggle timer pause/resume
+    const handleToggleDailyTimer = async () => {
+        try {
+            const tzOffset = new Date().getTimezoneOffset();
+            const res = await TaskApi.toggleDailyRevisionTimer(tzOffset);
+            const dailyRev = res.data?.data;
+            setDailyRevisionState(dailyRev);
+            setTimerTimeLeft(getRemainingSeconds(dailyRev));
+            setTimerIsActive(dailyRev.timerIsActive);
+            dispatch(setDailyRevision(dailyRev));
+        } catch (err) {
+            console.error("Failed to toggle timer:", err);
+            toast.error("Failed to update timer");
+        }
+    };
+
+    // 1. Tick effect for active timer countdown (resilient to browser background tab throttling)
+    useEffect(() => {
+        let interval = null;
+        if (dailyRevisionState?.isStarted && !dailyRevisionState?.isCompleted && timerIsActive && dailyRevisionState?.timerLastUpdated) {
+            const lastUpdatedMs = new Date(dailyRevisionState.timerLastUpdated).getTime();
+            const startVal = dailyRevisionState.timeLeft;
+
+            const tick = () => {
+                const elapsed = Math.floor((Date.now() - lastUpdatedMs) / 1000);
+                const currentVal = Math.max(0, startVal - elapsed);
+                setTimerTimeLeft(currentVal);
+                if (currentVal <= 0) {
+                    setTimerIsActive(false);
+                    if (interval) clearInterval(interval);
+                }
+            };
+
+            tick();
+            interval = setInterval(tick, 1000);
+        }
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [dailyRevisionState?.isStarted, dailyRevisionState?.isCompleted, timerIsActive, dailyRevisionState?.timerLastUpdated, dailyRevisionState?.timeLeft]);
+
+    // 2. Periodically sync timer to backend (every 30 seconds) using accurately calculated remaining time
+    useEffect(() => {
+        if (!dailyRevisionState?.isStarted || dailyRevisionState?.isCompleted || !timerIsActive || !dailyRevisionState?.timerLastUpdated) return;
+        const syncInterval = setInterval(async () => {
+            try {
+                const tzOffset = new Date().getTimezoneOffset();
+                const lastUpdatedMs = new Date(dailyRevisionState.timerLastUpdated).getTime();
+                const elapsed = Math.floor((Date.now() - lastUpdatedMs) / 1000);
+                const currentVal = Math.max(0, dailyRevisionState.timeLeft - elapsed);
+
+                await TaskApi.syncDailyRevisionTimer({
+                    timeLeft: currentVal,
+                    timerIsActive: timerIsActive,
+                    timezoneOffset: tzOffset
+                });
+            } catch (err) {
+                console.error("Timer sync failed:", err);
+            }
+        }, 30000);
+        return () => clearInterval(syncInterval);
+    }, [timerIsActive, dailyRevisionState]);
+
+    // 3. Document visibility change listener to immediately refetch and sync upon tab focus
+    useEffect(() => {
+        const handleVisibilityChange = async () => {
+            if (document.visibilityState === 'visible' && dailyRevisionState?.isStarted && !dailyRevisionState?.isCompleted) {
+                try {
+                    const tzOffset = new Date().getTimezoneOffset();
+                    const res = await TaskApi.getDailyRevision(tzOffset);
+                    const dailyRev = res.data?.data;
+                    setDailyRevisionState(dailyRev);
+                    if (dailyRev) {
+                        setTimerTimeLeft(getRemainingSeconds(dailyRev));
+                        setTimerIsActive(dailyRev.timerIsActive);
+                        dispatch(setDailyRevision(dailyRev));
+                    }
+                } catch (err) {
+                    console.error("Visibility sync failed:", err);
+                }
+            }
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    }, [dailyRevisionState, dispatch]);
 
     useEffect(() => {
         applyFilters();
@@ -418,8 +549,22 @@ const Revision = () => {
 
         handleLoading(true);
         try {
-            await TaskApi.addRevision(selectedTask._id, { notes: revisionNote });
+            const tzOffset = new Date().getTimezoneOffset();
+            await TaskApi.addRevision(selectedTask._id, { notes: revisionNote, timezoneOffset: tzOffset });
             toast.success("Revision logged successfully");
+
+            // Refresh daily revision status
+            const dailyRevisionRes = await TaskApi.getDailyRevision(tzOffset);
+            const dailyRev = dailyRevisionRes.data?.data;
+            setDailyRevisionState(dailyRev);
+            if (dailyRev) {
+                setTimerTimeLeft(dailyRev.timeLeft);
+                setTimerIsActive(dailyRev.timerIsActive);
+                dispatch(setDailyRevision(dailyRev));
+                if (dailyRev.isCompleted) {
+                    toast.success("🎉 Daily revision complete! Sarthi is fully unlocked!");
+                }
+            }
 
             // Check if there is an active focus timer for this exact task
             const bindingObjStr = localStorage.getItem("focus_timer_task_binding");
@@ -474,7 +619,7 @@ const Revision = () => {
             loadInitialData();
         } catch (error) {
             console.error("Failed to add revision", error);
-            toast.error("Failed to log revision");
+            toast.error(error.response?.data?.message || "Failed to log revision");
         } finally {
             handleLoading(false);
         }
@@ -620,6 +765,519 @@ const Revision = () => {
     const selectedProjObj = projects.find(p => p._id === selectedProject);
     const isAiEligible = selectedProject !== 'all' && selectedProjObj && selectedProjObj.key !== 'ESP';
 
+    const isLockedMode = dailyRevisionState && dailyRevisionState.isStarted && !dailyRevisionState.isCompleted;
+
+    if (dailyRevisionState && !dailyRevisionState.isStarted) {
+        return (
+            <div className="flex items-center justify-center min-h-[75vh] bg-[#F8FAFC] p-6 animate-in fade-in duration-500">
+                <div className="bg-white border border-slate-200 shadow-xl rounded-[2.5rem] p-8 max-w-lg w-full text-center relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-primary via-vermilion-500 to-accent"></div>
+                    <div className="w-20 h-20 bg-rose-50 rounded-3xl flex items-center justify-center text-primary mx-auto mb-6 border border-rose-100 shadow-sm relative animate-pulse">
+                        <span className="text-4xl">🔒</span>
+                    </div>
+
+                    <h2 className="text-2xl font-black text-slate-800 tracking-tight">Daily Revision Protocol</h2>
+                    <p className="text-[11px] font-bold text-primary uppercase tracking-widest mt-1">Consistency Gate Active</p>
+
+                    <p className="text-sm text-slate-500 leading-relaxed mt-4">
+                        To access Sarthi today, you must launch and complete today's revision session. You will be given exactly <strong>4 randomized questions</strong> from your completed <strong>DSA & DSAP2</strong> arenas.
+                    </p>
+
+                    <div className="bg-slate-50 rounded-2xl border border-slate-100 p-5 text-left my-6 space-y-3.5">
+                        <div className="flex items-start gap-3">
+                            <span className="text-base shrink-0 mt-0.5">⏱️</span>
+                            <div>
+                                <h4 className="text-xs font-black text-slate-700">3-Hour Focus Timer</h4>
+                                <p className="text-[11px] text-slate-400 font-medium">A 3-hour timer will start automatically. You can pause and resume it as needed.</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <span className="text-base shrink-0 mt-0.5">🚫</span>
+                            <div>
+                                <h4 className="text-xs font-black text-slate-700">Application Lockout</h4>
+                                <p className="text-[11px] text-slate-400 font-medium">All other features and navigation tabs are locked until you successfully log all 4 revisions.</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <span className="text-base shrink-0 mt-0.5">🔥</span>
+                            <div>
+                                <h4 className="text-xs font-black text-slate-700">Streak Shield</h4>
+                                <p className="text-[11px] text-slate-400 font-medium">Complete revision daily to grow your streak of {stats.currentStreak} {stats.currentStreak === 1 ? 'day' : 'days'}!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={handleStartDailyRevision}
+                        className="w-full py-4 bg-gradient-to-r from-primary to-vermilion-500 hover:from-primary-dark hover:to-vermilion-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-98 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                    >
+                        <span>Launch Session & Start Timer</span>
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (isLockedMode) {
+        const completedQuestionsCount = dailyRevisionState.completedQuestions?.length || 0;
+        const totalQuestionsCount = dailyRevisionState.questions?.length || 0;
+        const progressPercentage = totalQuestionsCount > 0 ? (completedQuestionsCount / totalQuestionsCount) * 100 : 0;
+
+        const formatTimer = (seconds) => {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        };
+
+        return (
+            <div className="flex flex-col h-full bg-[#F8FAFC] animate-in fade-in duration-500 overflow-y-auto p-6">
+                {/* Header Lock Section */}
+                <div className="max-w-5xl mx-auto w-full mb-8 text-center shrink-0">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-rose-50 border border-rose-100 rounded-full text-primary text-[10px] font-black uppercase tracking-wider mb-3">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                        Revision Lock Protocol Active
+                    </div>
+                    <h1 className="text-3xl font-black text-slate-800 tracking-tight">Today's Focus Revision</h1>
+                    <p className="text-xs font-semibold text-slate-400 mt-1">Complete and log all 4 questions to restore full app access.</p>
+                </div>
+
+                {/* Main Timer and Stats Dashboard */}
+                <div className="max-w-5xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 shrink-0">
+                    {/* Timer Box */}
+                    <div className="bg-slate-800 text-white rounded-3xl p-6 border border-slate-700 shadow-xl flex flex-col items-center justify-center relative overflow-hidden md:col-span-2">
+                        <div className="absolute top-0 right-0 p-4 opacity-5">
+                            <IoTimerOutline size={120} />
+                        </div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Revision Time Remaining</p>
+                        <div className="font-mono text-5xl font-black tracking-wider flex items-center gap-1 bg-black/20 px-6 py-2.5 rounded-2xl border border-white/5 shadow-inner">
+                            {timerTimeLeft <= 0 && <span className="text-rose-500">-</span>}
+                            <span>{formatTimer(timerTimeLeft)}</span>
+                        </div>
+                        <div className="flex gap-3 mt-4">
+                            <button
+                                onClick={handleToggleDailyTimer}
+                                className="px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl transition-all font-bold text-xs active:scale-95 flex items-center gap-2"
+                            >
+                                {timerIsActive ? <IoPause size={14} /> : <IoPlay size={14} />}
+                                {timerIsActive ? "PAUSE COUNTER" : "RESUME TIMER"}
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Progress Box */}
+                    <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Protocol Progress</p>
+                            <h3 className="text-3xl font-black text-slate-800 mt-1 leading-none">
+                                {completedQuestionsCount} <span className="text-slate-300 text-2xl font-light">/</span> {totalQuestionsCount}
+                            </h3>
+                            <p className="text-[10px] font-medium text-slate-400 mt-1.5">Questions successfully revised</p>
+                        </div>
+                        <div className="mt-4">
+                            <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-100/50">
+                                <div
+                                    className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500"
+                                    style={{ width: `${progressPercentage}%` }}
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Milestone Stepper */}
+                <div className="flex justify-center items-center gap-3 mb-8 bg-white border border-slate-200/80 p-5 rounded-3xl max-w-lg mx-auto w-full shadow-sm">
+                    {dailyRevisionState.questions?.map((q, idx) => {
+                        const isDone = idx < completedQuestionsCount;
+                        const isActive = idx === completedQuestionsCount;
+                        return (
+                            <React.Fragment key={q._id}>
+                                <div className="flex items-center gap-2">
+                                    <div className={`w-8 h-8 rounded-2xl flex items-center justify-center font-black text-xs border ${isDone ? 'bg-green-500 border-green-500 text-white shadow-sm' :
+                                            isActive ? 'bg-primary border-primary text-white shadow-md animate-pulse' :
+                                                'bg-slate-50 border-slate-200 text-slate-400'
+                                        }`} title={q.taskName}>
+                                        {isDone ? '✓' : idx + 1}
+                                    </div>
+                                    <span className={`text-[10px] font-black uppercase tracking-wider hidden sm:inline ${isActive ? 'text-primary' : isDone ? 'text-green-600' : 'text-slate-400'
+                                        }`}>
+                                        Q{idx + 1}
+                                    </span>
+                                </div>
+                                {idx < totalQuestionsCount - 1 && (
+                                    <div className={`flex-1 h-0.5 max-w-[40px] rounded-full ${idx < completedQuestionsCount ? 'bg-green-500' : 'bg-slate-200'}`} />
+                                )}
+                            </React.Fragment>
+                        );
+                    })}
+                </div>
+
+                {/* Single Active Question Card */}
+                {dailyRevisionState.questions?.[completedQuestionsCount] ? (() => {
+                    const task = dailyRevisionState.questions[completedQuestionsCount];
+                    const elapsedSecondsOnActive = Math.max(0, (dailyRevisionState.currentQuestionStartTimeLeft || 10800) - timerTimeLeft);
+                    const remainingSecondsToLog = Math.max(0, 900 - elapsedSecondsOnActive);
+                    const isTimeRequirementMet = remainingSecondsToLog === 0;
+
+                    const formatMinsSecs = (seconds) => {
+                        const m = Math.floor(seconds / 60);
+                        const s = seconds % 60;
+                        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                    };
+
+                    return (
+                        <div className="max-w-5xl mx-auto w-full bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-md relative overflow-hidden flex flex-col justify-between min-h-[400px] mb-12">
+                            <div>
+                                <div className="flex items-center gap-2 flex-wrap mb-4">
+                                    <span className="text-[10px] font-black text-primary bg-primary/5 px-3 py-1 rounded-full border border-primary/10 uppercase tracking-widest">
+                                        {task.projectName?.key || 'DSA'}
+                                    </span>
+                                    <span className="text-[10px] font-extrabold text-slate-400 bg-slate-50 px-3 py-1 rounded-full border border-slate-200/50 uppercase tracking-widest">
+                                        {task.parentTask?.taskName || 'Topic'}
+                                    </span>
+                                </div>
+
+                                <h2 className="text-2xl font-black text-slate-800 tracking-tight leading-snug">
+                                    {completedQuestionsCount + 1}. {task.taskName}
+                                </h2>
+                                <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">{task.taskId || 'DSA-X'}</p>
+
+                                {/* Time restriction warning banner */}
+                                <div className={`mt-6 p-4.5 rounded-2xl border flex items-start gap-3 transition-all duration-300 ${isTimeRequirementMet
+                                        ? 'bg-green-50 border-green-200/60 text-green-800'
+                                        : 'bg-amber-50 border-amber-200/60 text-amber-800'
+                                    }`}>
+                                    <span className="text-lg shrink-0 mt-0.5">{isTimeRequirementMet ? '🔓' : '⏳'}</span>
+                                    <div>
+                                        <h4 className="text-xs font-black uppercase tracking-wider">{isTimeRequirementMet ? 'Ready to Complete' : 'Revision Focus Period'}</h4>
+                                        <p className="text-[11px] font-semibold mt-0.5 opacity-90 leading-relaxed">
+                                            {isTimeRequirementMet
+                                                ? "You have studied this question for over 15 minutes! You are now allowed to log your revision notes and mark it complete."
+                                                : `Spend a minimum of 15 minutes revising this question. Time remaining: ${formatMinsSecs(remainingSecondsToLog)}.`
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Action Links */}
+                                <div className="flex items-center gap-3 mt-6">
+                                    {(task.projectName?.key === 'DSA' || (task.taskId && task.taskId.startsWith('DSA-'))) && (
+                                        <button
+                                            onClick={() => {
+                                                const slug = task.taskName
+                                                    .toLowerCase()
+                                                    .trim()
+                                                    .replace(/[^\w\s-]/g, '')
+                                                    .replace(/[\s_-]+/g, '-')
+                                                    .replace(/^-+|-+$/g, '');
+                                                window.open(`https://leetcode.com/problems/${slug}/description/`, '_blank');
+                                            }}
+                                            className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-600 rounded-xl border border-slate-100 transition-all shrink-0"
+                                        >
+                                            <img src="/leetcode.png" alt="LeetCode" className="w-4 h-4 object-contain" />
+                                            LEETCODE DESCRIPTION
+                                        </button>
+                                    )}
+                                    {task.youtubeUrl && (
+                                        <button
+                                            onClick={() => {
+                                                setYtModalTask(task);
+                                                setShowYtModal(true);
+                                            }}
+                                            className="flex items-center gap-2 px-4 py-2.5 bg-red-50 hover:bg-red-100 text-xs font-bold text-red-600 rounded-xl border border-red-100 transition-all shrink-0"
+                                        >
+                                            <IoLogoYoutube size={16} />
+                                            VIDEO RESOURCE
+                                        </button>
+                                    )}
+                                    {hasAdditionalNotes(task.additionalNotes) && (
+                                        <button
+                                            onClick={() => {
+                                                setNotesModalTask(task);
+                                                setShowNotesModal(true);
+                                            }}
+                                            className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-600 rounded-xl border border-slate-100 transition-all shrink-0"
+                                        >
+                                            <IoDocumentTextOutline size={16} className="text-slate-400" />
+                                            REFERENCE NOTES
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                                <button
+                                    onClick={() => {
+                                        if (!isTimeRequirementMet) {
+                                            toast.error(`Please revise for at least 15 minutes. Wait another ${formatMinsSecs(remainingSecondsToLog)}.`);
+                                            return;
+                                        }
+                                        setSelectedTask(task);
+                                        setShowRevisionModal(true);
+                                    }}
+                                    className={`px-6 py-3.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-md flex items-center gap-2 ${isTimeRequirementMet
+                                            ? 'bg-gradient-to-r from-primary to-vermilion-500 hover:from-primary-dark hover:to-vermilion-600 text-white active:scale-95'
+                                            : 'bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed opacity-75'
+                                        }`}
+                                >
+                                    <IoSyncOutline size={14} className={isTimeRequirementMet ? 'animate-spin-slow' : ''} />
+                                    {isTimeRequirementMet ? 'LOG REVISION' : `REVISE (${formatMinsSecs(remainingSecondsToLog)})`}
+                                </button>
+                            </div>
+                        </div>
+                    );
+                })() : null}
+
+                {/* Completed Today list inside Locked Mode */}
+                {completedQuestionsCount > 0 && (
+                    <div className="max-w-2xl mx-auto w-full bg-white border border-slate-200 rounded-[2.5rem] p-6 shadow-sm mb-12 animate-in slide-in-from-bottom-4 duration-300">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Completed Questions (Revise Tomorrow Queue)</p>
+                        <div className="space-y-2.5">
+                            {dailyRevisionState.questions?.slice(0, completedQuestionsCount).map((q, idx) => {
+                                const isPinned = dailyRevisionState.reviseTomorrowQuestions?.some(pq => pq._id === q._id || pq === q._id);
+                                return (
+                                    <div key={q._id} className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-2xl p-3 hover:bg-slate-100/50 transition-colors">
+                                        <div className="truncate pr-4 flex items-center gap-2">
+                                            <span className="text-green-500 font-bold">✓</span>
+                                            <span className="text-xs font-bold text-slate-700 truncate">{idx + 1}. {q.taskName}</span>
+                                        </div>
+                                        <button
+                                            onClick={async () => {
+                                                try {
+                                                    const tzOffset = new Date().getTimezoneOffset();
+                                                    const res = await TaskApi.toggleReviseTomorrow({
+                                                        taskId: q._id,
+                                                        reviseTomorrow: !isPinned,
+                                                        timezoneOffset: tzOffset
+                                                    });
+                                                    setDailyRevisionState(res.data?.data);
+                                                    dispatch(setDailyRevision(res.data?.data));
+                                                    if (!isPinned) {
+                                                        toast.success("Pinned to revise again tomorrow! 📌");
+                                                    } else {
+                                                        toast.success("Removed from tomorrow's list.");
+                                                    }
+                                                } catch (err) {
+                                                    console.error("Failed to pin task:", err);
+                                                    toast.error("Failed to update preference");
+                                                }
+                                            }}
+                                            className={`px-3 py-1.5 rounded-xl text-[9px] font-black tracking-wider uppercase transition-all shrink-0 active:scale-95 border ${
+                                                isPinned 
+                                                ? 'bg-primary border-primary text-white shadow-sm' 
+                                                : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                                            }`}
+                                        >
+                                            {isPinned ? '📌 PINNED' : '🔄 REVISE TOMORROW'}
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
+                {/* Sub Modals */}
+                {showRevisionModal && (
+                    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-500" onClick={() => setShowRevisionModal(false)}></div>
+                        <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-300 border border-white/20">
+                            <div className="bg-slate-900 px-8 py-10 flex items-center justify-between text-white relative overflow-hidden">
+                                <div className="relative z-10 flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10">
+                                        <IoSyncOutline size={24} className="text-primary" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-black text-xl tracking-tight leading-none">Log Review</h3>
+                                        <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1.5">Cycle Submission</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setShowRevisionModal(false)} className="relative z-10 w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/5">
+                                    <IoCloseOutline size={24} />
+                                </button>
+                            </div>
+
+                            <div className="p-8 bg-white">
+                                <div className="mb-8">
+                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-3 block">Task</span>
+                                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-primary font-black shadow-sm border border-slate-100">
+                                            {selectedTask?.taskName?.[0] || 'T'}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-black text-slate-800 tracking-tight">{selectedTask?.taskName}</p>
+                                            <p className="text-[9px] font-black text-primary uppercase tracking-widest mt-0.5">{selectedTask?.projectName?.key || 'MOM'}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-5">
+                                    <div>
+                                        <label className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-3 block">Insights</label>
+                                        <textarea
+                                            rows="4"
+                                            placeholder="Record key findings..."
+                                            value={revisionNote}
+                                            onChange={(e) => setRevisionNote(e.target.value)}
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-[13px] font-bold text-slate-700 placeholder:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary focus:bg-white transition-all resize-none shadow-inner"
+                                        ></textarea>
+                                    </div>
+
+                                    <div className="flex items-center gap-4 pt-2">
+                                        <button
+                                            onClick={() => setShowRevisionModal(false)}
+                                            className="px-6 py-4 rounded-xl text-[10px] font-black text-slate-400 hover:text-slate-600 transition-all"
+                                        >
+                                            CANCEL
+                                        </button>
+                                        <button
+                                            onClick={handleAddRevision}
+                                            className="flex-1 px-6 py-4 rounded-xl text-[10px] font-black text-white bg-primary hover:bg-primary-dark transition-all active:scale-95 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                                        >
+                                            <IoSyncOutline size={16} />
+                                            SUBMIT LOG
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {showNotesModal && (
+                    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-500" onClick={() => { setShowNotesModal(false); setNotesModalTask(null); }}></div>
+                        <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/20">
+                            <div className="bg-slate-900 px-8 py-10 flex items-center justify-between text-white relative overflow-hidden">
+                                <div className="relative z-10 flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10">
+                                        <IoListOutline size={24} className="text-primary" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-black text-xl tracking-tight leading-none">Reference Notes</h3>
+                                        <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1.5">Study Material</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => { setShowNotesModal(false); setNotesModalTask(null); }} className="relative z-10 w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/5">
+                                    <IoCloseOutline size={24} />
+                                </button>
+                            </div>
+
+                            <div className="p-8 bg-white flex flex-col max-h-[75vh]">
+                                <div className="mb-6 shrink-0">
+                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-3 block">Task Reference</span>
+                                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-primary font-black shadow-sm border border-slate-100">
+                                                {notesModalTask?.taskName?.[0] || 'T'}
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-black text-slate-800 tracking-tight">{notesModalTask?.taskName}</p>
+                                                <p className="text-[9px] font-black text-primary uppercase tracking-widest mt-0.5">{notesModalTask?.projectName?.key || 'MOM'}</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => {
+                                                if (notesModalTask?.additionalNotes) {
+                                                    const tempEl = document.createElement("div");
+                                                    tempEl.innerHTML = notesModalTask.additionalNotes;
+                                                    const textToCopy = tempEl.textContent || tempEl.innerText || "";
+                                                    navigator.clipboard.writeText(textToCopy);
+                                                    toast.success("Notes copied to clipboard!");
+                                                }
+                                            }}
+                                            className="px-3 py-1.5 rounded-xl border border-slate-200 text-[9px] font-black text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition-all active:scale-95"
+                                        >
+                                            COPY TEXT
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-3 block">Content</span>
+                                    <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100/50 min-h-[150px]">
+                                        <div
+                                            className="text-[13px] font-medium text-slate-600 leading-relaxed rich-text-content break-words whitespace-pre-wrap"
+                                            dangerouslySetInnerHTML={{ __html: notesModalTask?.additionalNotes }}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end shrink-0">
+                                    <button
+                                        onClick={() => { setShowNotesModal(false); setNotesModalTask(null); }}
+                                        className="px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-[10px] font-black transition-all active:scale-95 shadow-lg shadow-primary/20"
+                                    >
+                                        CLOSE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {showYtModal && ytModalTask && (
+                    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                        <div
+                            className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-500"
+                            onClick={() => { setShowYtModal(false); setYtModalTask(null); }}
+                        ></div>
+                        <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-3xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/20">
+                            <div className="bg-slate-900 px-8 py-8 flex items-center justify-between text-white relative overflow-hidden">
+                                <div className="relative z-10 flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10">
+                                        <IoLogoYoutube size={24} className="text-red-500 animate-pulse" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-black text-xl tracking-tight leading-none truncate max-w-[450px]">
+                                            {ytModalTask.taskName}
+                                        </h3>
+                                        <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1.5">
+                                            Distraction-Free Video
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => { setShowYtModal(false); setYtModalTask(null); }}
+                                    className="relative z-10 w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/5 text-white"
+                                >
+                                    <IoCloseOutline size={24} />
+                                </button>
+                            </div>
+
+                            <div className="p-8 bg-white flex flex-col">
+                                <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-black">
+                                    {getYoutubeId(ytModalTask.youtubeUrl) ? (
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${getYoutubeId(ytModalTask.youtubeUrl)}?autoplay=1`}
+                                            title="YouTube video player"
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowFullScreen
+                                            className="absolute inset-0 w-full h-full"
+                                        ></iframe>
+                                    ) : (
+                                        <div className="absolute inset-0 flex items-center justify-center text-slate-400">
+                                            Invalid YouTube URL
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end shrink-0">
+                                    <button
+                                        onClick={() => { setShowYtModal(false); setYtModalTask(null); }}
+                                        className="px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-[10px] font-black transition-all active:scale-95 shadow-lg shadow-primary/20"
+                                    >
+                                        CLOSE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col h-full bg-[#F8FAFC] animate-in fade-in duration-500 overflow-visible">
             {/* Header Area */}
@@ -671,7 +1329,7 @@ const Revision = () => {
                 </div>
             </div>
 
-            {/* Stats Dashboard Grid */}
+{/* Stats Dashboard Grid */}
             <div className="px-6 pt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
                 <div className="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
                     <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 shrink-0">

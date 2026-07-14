@@ -24,4 +24,10 @@ router.route("/revision-stats").get(verifyJWT, verifyBranchAccess, taskControlle
 router.route("/completed-parents").get(verifyJWT, verifyBranchAccess, taskController.getCompletedParents);
 router.route("/suggest-challenge").post(verifyJWT, verifyBranchAccess, taskController.suggestRevisionChallenge);
 
+router.route("/daily-revision").get(verifyJWT, verifyBranchAccess, taskController.getDailyRevision);
+router.route("/daily-revision/start").post(verifyJWT, verifyBranchAccess, taskController.startDailyRevision);
+router.route("/daily-revision/toggle-timer").post(verifyJWT, verifyBranchAccess, taskController.toggleDailyRevisionTimer);
+router.route("/daily-revision/sync-timer").post(verifyJWT, verifyBranchAccess, taskController.syncDailyRevisionTimer);
+router.route("/daily-revision/toggle-revise-tomorrow").post(verifyJWT, verifyBranchAccess, taskController.toggleReviseTomorrow);
+
 export default router;

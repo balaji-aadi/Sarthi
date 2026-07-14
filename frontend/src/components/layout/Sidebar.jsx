@@ -20,13 +20,15 @@ import {
 import { ProjectApi } from '../../services/api/Project.api';
 import { useSelector } from 'react-redux';
 import GlobalTimerWidget from './GlobalTimerWidget';
+import toast from 'react-hot-toast';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(false);
-    const { currentUser, activeBranch, globalSettings } = useSelector((state) => state.store);
+    const { currentUser, activeBranch, globalSettings, dailyRevision } = useSelector((state) => state.store);
+    const isLocked = dailyRevision && dailyRevision.isStarted && !dailyRevision.isCompleted;
 
     const { slug } = useParams();
     const currentProjectId = searchParams.get('projectId');
@@ -117,15 +119,25 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     {topMenuItems.map((item, idx) => (
                         <NavLink
                             key={`top-${idx}`}
-                            to={item.path}
-                            onClick={() => setIsOpen && setIsOpen(false)}
-                            className={({ isActive }) => `flex items-center gap-3 px-4 py-2.5 transition-all duration-200 group relative ${isActive ? 'active text-primary' : 'text-textSub hover:text-textMain'}`}
+                            to={isLocked ? '#' : item.path}
+                            onClick={(e) => {
+                                if (isLocked) {
+                                    e.preventDefault();
+                                    toast.error("Complete your Daily Revision to unlock other tabs!");
+                                    return;
+                                }
+                                if (setIsOpen) setIsOpen(false);
+                            }}
+                            className={({ isActive }) => `flex items-center gap-3 px-4 py-2.5 transition-all duration-200 group relative ${isLocked ? 'opacity-40 cursor-not-allowed' : (isActive ? 'active text-primary' : 'text-textSub hover:text-textMain')}`}
                         >
-                            <div className="flex items-center gap-2.5">
-                                <span className="text-lg opacity-70 group-[.active]:opacity-100 group-[.active]:text-primary">{item.icon}</span>
-                                <span className={`text-[13px] font-bold group-[.active]:text-primary transition-all uppercase tracking-wider`}>
-                                    {item.label}
-                                </span>
+                            <div className="flex items-center justify-between w-full">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="text-lg opacity-70 group-[.active]:opacity-100 group-[.active]:text-primary">{item.icon}</span>
+                                    <span className={`text-[13px] font-bold group-[.active]:text-primary transition-all uppercase tracking-wider`}>
+                                        {item.label}
+                                    </span>
+                                </div>
+                                {isLocked && <span className="text-slate-400 text-xs shrink-0 ml-auto">🔒</span>}
                             </div>
                         </NavLink>
                     ))}
@@ -136,41 +148,63 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
                 {/* Main Section */}
                 <div className="space-y-1">
-                    {mainMenuItems.map((item, idx) => (
-                        <NavLink
-                            key={`main-${idx}`}
-                            to={item.path}
-                            onClick={() => {
-                                if (item.label === 'Dashboard') {
-                                    navigate('/');
-                                }
-                                if (setIsOpen) setIsOpen(false);
-                            }}
-                            className={({ isActive }) => `flex items-center gap-3 px-4 py-2 transition-all duration-200 group relative ${isActive ? 'active text-primary' : 'text-textSub hover:text-textMain'}`}
-                        >
-                            <span className={`w-1 h-1 rounded-full transition-all group-[.active]:bg-primary bg-transparent`}></span>
-                            <div className="flex items-center gap-2.5">
-                                <span className="text-base opacity-70 group-[.active]:opacity-100">{item.icon}</span>
-                                <span className={`text-[13px] font-semibold group-[.active]:underline underline-offset-4 decoration-primary/40 group-hover:underline transition-all`}>
-                                    {item.label}
-                                </span>
-                            </div>
-                        </NavLink>
-                    ))}
+                    {mainMenuItems.map((item, idx) => {
+                        const isRevisionTab = item.label === 'Revision';
+                        const itemLocked = isLocked && !isRevisionTab;
+                        return (
+                            <NavLink
+                                key={`main-${idx}`}
+                                to={itemLocked ? '#' : item.path}
+                                onClick={(e) => {
+                                    if (itemLocked) {
+                                        e.preventDefault();
+                                        toast.error("Complete your Daily Revision to unlock other tabs!");
+                                        return;
+                                    }
+                                    if (item.label === 'Dashboard') {
+                                        navigate('/');
+                                    }
+                                    if (setIsOpen) setIsOpen(false);
+                                }}
+                                className={({ isActive }) => `flex items-center gap-3 px-4 py-2 transition-all duration-200 group relative ${itemLocked ? 'opacity-40 cursor-not-allowed' : (isActive ? 'active text-primary' : 'text-textSub hover:text-textMain')}`}
+                            >
+                                <span className={`w-1 h-1 rounded-full transition-all group-[.active]:bg-primary bg-transparent`}></span>
+                                <div className="flex items-center justify-between w-full">
+                                    <div className="flex items-center gap-2.5">
+                                        <span className="text-base opacity-70 group-[.active]:opacity-100">{item.icon}</span>
+                                        <span className={`text-[13px] font-semibold group-[.active]:underline underline-offset-4 decoration-primary/40 group-hover:underline transition-all`}>
+                                            {item.label}
+                                        </span>
+                                    </div>
+                                    {itemLocked && <span className="text-slate-400 text-xs shrink-0 ml-auto">🔒</span>}
+                                </div>
+                            </NavLink>
+                        );
+                    })}
 
                     {/* Pricing (Conditional) */}
                     {pricingItem && (
                         <NavLink
-                            to={pricingItem.path}
-                            onClick={() => setIsOpen && setIsOpen(false)}
-                            className={({ isActive }) => `flex items-center gap-3 px-4 py-2 transition-all duration-200 group relative ${isActive ? 'active text-primary' : 'text-textSub hover:text-textMain'}`}
+                            to={isLocked ? '#' : pricingItem.path}
+                            onClick={(e) => {
+                                if (isLocked) {
+                                    e.preventDefault();
+                                    toast.error("Complete your Daily Revision to unlock other tabs!");
+                                    return;
+                                }
+                                if (setIsOpen) setIsOpen(false);
+                            }}
+                            className={({ isActive }) => `flex items-center gap-3 px-4 py-2 transition-all duration-200 group relative ${isLocked ? 'opacity-40 cursor-not-allowed' : (isActive ? 'active text-primary' : 'text-textSub hover:text-textMain')}`}
                         >
                             <span className={`w-1 h-1 rounded-full transition-all group-[.active]:bg-primary bg-transparent`}></span>
-                            <div className="flex items-center gap-2.5">
-                                <span className="text-base opacity-70 group-[.active]:opacity-100">{pricingItem.icon}</span>
-                                <span className={`text-[13px] font-semibold group-[.active]:underline underline-offset-4 decoration-primary/40 group-hover:underline transition-all`}>
-                                    {pricingItem.label}
-                                </span>
+                            <div className="flex items-center justify-between w-full">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="text-base opacity-70 group-[.active]:opacity-100">{pricingItem.icon}</span>
+                                    <span className={`text-[13px] font-semibold group-[.active]:underline underline-offset-4 decoration-primary/40 group-hover:underline transition-all`}>
+                                        {pricingItem.label}
+                                    </span>
+                                </div>
+                                {isLocked && <span className="text-slate-400 text-xs shrink-0 ml-auto">🔒</span>}
                             </div>
                         </NavLink>
                     )}
@@ -182,8 +216,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                         <p className="text-xs font-semibold text-textSub uppercase tracking-wider">Arenas</p>
                         {!hiddenRoles.includes(currentUser?.userRole?.name?.toLowerCase()) && (
                             <button
-                                className="text-textSub hover:text-primary transition-colors"
+                                className={`text-textSub hover:text-primary transition-colors ${isLocked ? 'opacity-40 pointer-events-none' : ''}`}
                                 onClick={() => {
+                                    if (isLocked) return;
                                     navigate('/arenas/create-project');
                                     if (setIsOpen) setIsOpen(false);
                                 }}
@@ -204,15 +239,22 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                                     <div
                                         key={project._id || idx}
                                         onClick={() => {
+                                            if (isLocked) {
+                                                toast.error("Complete your Daily Revision to unlock other arenas!");
+                                                return;
+                                            }
                                             navigate(`/arena/${projectSlug}`);
                                             if (setIsOpen) setIsOpen(false);
                                         }}
-                                        className={`w-full flex items-center gap-3 px-4 py-1.5 cursor-pointer transition-all group ${isActive ? 'text-primary' : 'text-textSub/80 hover:text-textMain'}`}
+                                        className={`w-full flex items-center justify-between px-4 py-1.5 cursor-pointer transition-all group ${isLocked ? 'opacity-40 cursor-not-allowed' : (isActive ? 'text-primary' : 'text-textSub/80 hover:text-textMain')}`}
                                     >
-                                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all ${isActive ? 'bg-primary shadow-[0_0_8px_rgba(79,70,229,0.5)]' : 'bg-slate-300'}`}></span>
-                                        <span className={`text-xs font-bold truncate ${isActive ? 'underline underline-offset-4 decoration-primary/30' : 'group-hover:underline underline-offset-4 decoration-slate-200'}`}>
-                                            {project.name}
-                                        </span>
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all ${isActive ? 'bg-primary shadow-[0_0_8px_rgba(79,70,229,0.5)]' : 'bg-slate-300'}`}></span>
+                                            <span className={`text-xs font-bold truncate ${isActive ? 'underline underline-offset-4 decoration-primary/30' : 'group-hover:underline underline-offset-4 decoration-slate-200'}`}>
+                                                {project.name}
+                                            </span>
+                                        </div>
+                                        {isLocked && <span className="text-slate-400 text-[10px] shrink-0">🔒</span>}
                                     </div>
                                 );
                             })
@@ -222,10 +264,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                         {projects.length > 5 && (
                             <button
                                 onClick={() => {
+                                    if (isLocked) {
+                                        toast.error("Complete your Daily Revision to unlock other arenas!");
+                                        return;
+                                    }
                                     navigate('/arenas');
                                     if (setIsOpen) setIsOpen(false);
                                 }}
-                                className="w-full px-4 py-1 text-xs text-primary hover:underline text-left"
+                                className={`w-full px-4 py-1 text-xs text-primary hover:underline text-left ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
                             >
                                 View all
                             </button>
@@ -242,6 +288,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     path="/settings" 
                     isActive={window.location.pathname === '/settings'} 
                     onClick={() => setIsOpen && setIsOpen(false)}
+                    isLocked={isLocked}
                 />
 
                 {/* User Profile Section - Premium Light */}
@@ -309,18 +356,22 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     );
 };
 
-const MenuItem = ({ icon, label, path, isActive, onClick }) => {
+const MenuItem = ({ icon, label, path, isActive, onClick, isLocked }) => {
     const navigate = useNavigate();
     return (
         <button
             onClick={() => {
+                if (isLocked) {
+                    toast.error("Complete your Daily Revision to unlock Settings!");
+                    return;
+                }
                 navigate(path);
                 if (onClick) onClick();
             }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative group overflow-hidden ${isActive
+            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 relative group overflow-hidden ${isActive
                     ? 'text-primary font-black'
                     : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-                }`}
+                } ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
         >
             {isActive && (
                 <motion.div
@@ -328,10 +379,13 @@ const MenuItem = ({ icon, label, path, isActive, onClick }) => {
                     className="absolute inset-0 bg-primary/5 border-l-4 border-primary"
                 />
             )}
-            <span className={`relative z-10 transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-primary' : 'text-slate-400 group-hover:text-primary'}`}>
-                {React.cloneElement(icon, { size: 18 })}
-            </span>
-            <span className="relative z-10 text-[13px] tracking-tight font-bold">{label}</span>
+            <div className="flex items-center gap-3 relative z-10">
+                <span className={`transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-primary' : 'text-slate-400 group-hover:text-primary'}`}>
+                    {React.cloneElement(icon, { size: 18 })}
+                </span>
+                <span className="text-[13px] tracking-tight font-bold">{label}</span>
+            </div>
+            {isLocked && <span className="text-slate-400 text-xs shrink-0 relative z-10">🔒</span>}
         </button>
     );
 };
