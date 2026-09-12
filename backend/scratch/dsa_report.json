@@ -1,0 +1,38 @@
+{
+  "totalDsaRecords": 392,
+  "topicParentsCount": 56,
+  "problemQuestionsCount": 336,
+  "stats": {
+    "withDescription": 16,
+    "withYoutube": 20,
+    "withAdditionalNotes": 68,
+    "withAttachments": 3,
+    "withLeetCodeUrlInContent": 1,
+    "withCurriculumMeta": 8,
+    "priorities": {
+      "high": 41,
+      "medium": 351
+    },
+    "statuses": {
+      "done": 203,
+      "backlog": 61,
+      "hold": 3,
+      "todo": 125
+    },
+    "workTypes": {
+      "Preparation": 12,
+      "preparation": 380
+    },
+    "phases": {
+      "DSA phase 1": 133,
+      "DSA Phase 2": 134,
+      "DSA Phase 3": 125
+    }
+  },
+  "inventorySummary": {
+    "totalProblemsWithVideo": 20,
+    "totalProblemsWithoutVideo": 372,
+    "totalProblemsWithExternalUrl": 1,
+    "totalProblemsWithoutExternalUrl": 391
+  }
+}

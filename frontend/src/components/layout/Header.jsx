@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { IoNotificationsOutline, IoSearchOutline, IoCalendarOutline, IoTimeOutline, IoCloseCircleOutline, IoLinkOutline, IoMenuOutline } from 'react-icons/io5';
+import React, { useEffect, useState, useRef, useContext } from 'react';
+import { IoNotificationsOutline, IoSearchOutline, IoCalendarOutline, IoTimeOutline, IoCloseCircleOutline, IoLinkOutline, IoMenuOutline, IoSunnyOutline, IoMoonOutline } from 'react-icons/io5';
 import { LuTrophy } from 'react-icons/lu';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { ProjectApi } from '../../services/api/Project.api';
@@ -13,10 +13,13 @@ import { getToken } from 'firebase/messaging';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLoading } from '../loader/LoaderContext';
 import { setShowConsistencyModal, setGlobalSearch } from '../../store/slices/storeSlice';
+import { isLldBranch, isDsaBranch } from '../../utils/curriculumHelper';
+import { ThemeContext } from '../../ThemeContext';
 import moment from 'moment';
 import toast from 'react-hot-toast';
 
 const Header = ({ toggleSidebar }) => {
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get("projectId");
   const [projectName, setProjectName] = useState("");
@@ -43,7 +46,8 @@ const Header = ({ toggleSidebar }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const { globalSearch, activeBranch, currentUser, dailyRevision } = useSelector((state) => state.store);
-  const isLocked = dailyRevision && dailyRevision.isEligible === true && dailyRevision.questions?.length > 0 && !dailyRevision.isCompleted;
+  // Phase 3: Daily revision lockout removed in favor of learner-driven spaced revision workspace
+  const isLocked = false;
 
   const {
     isNotification,
@@ -386,24 +390,29 @@ const Header = ({ toggleSidebar }) => {
   const notificationIconClass = isNotification ? "shake" : "";
 
   return (
-    <header className="h-16 bg-surface border-b border-borderLight px-4 lg:px-8 flex items-center justify-between sticky top-0 z-[100]">
+    <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 px-4 lg:px-8 flex items-center justify-between sticky top-0 z-[100] transition-colors duration-200">
       {/* Breadcrumbs / Page Title */}
       <div className="flex items-center gap-1 sm:gap-4 overflow-hidden">
         {/* Hamburger Menu Toggler */}
         <button
           onClick={toggleSidebar}
-          className="lg:hidden p-2 text-textSub hover:text-textMain hover:bg-slate-100/80 rounded-xl transition-all shrink-0"
+          className="lg:hidden p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800 rounded-xl transition-all shrink-0"
           aria-label="Toggle Sidebar"
         >
           <IoMenuOutline size={22} />
         </button>
 
-        <div className="flex items-center text-xs sm:text-sm text-textSub whitespace-nowrap overflow-hidden">
-          <span className="hover:text-textMain cursor-pointer shrink-0">{getPageTitle()}</span>
+        <div className="flex items-center text-xs sm:text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap overflow-hidden">
+          {activeBranch && (
+            <span className={`mr-2 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shrink-0 ${isLldBranch(activeBranch) ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800' : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'}`}>
+              {isLldBranch(activeBranch) ? 'LLD' : isDsaBranch(activeBranch) ? 'DSA' : 'TRACK'}
+            </span>
+          )}
+          <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0">{getPageTitle()}</span>
           {projectName && (
             <div className="flex items-center min-w-0 ml-1 sm:ml-2">
               <span className="mx-1 sm:mx-2 shrink-0">/</span>
-              <span className="font-semibold text-textMain flex items-center gap-1 sm:gap-2 truncate max-w-[100px] sm:max-w-none">
+              <span className="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1 sm:gap-2 truncate max-w-[100px] sm:max-w-none">
                 <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary shrink-0"></span>
                 <span className="truncate">{projectName}</span>
               </span>
@@ -413,136 +422,26 @@ const Header = ({ toggleSidebar }) => {
       </div>
 
       {/* Right Actions */}
-      <div className="flex items-center gap-4 shrink-0">
-        <div className="relative hidden md:block" ref={searchRef}>
-          <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-textSub z-10" />
-          <form onSubmit={(e) => { if (isLocked) { e.preventDefault(); return; } handleSearchSubmit(e); }}>
-            <input
-              type="text"
-              placeholder={isLocked ? "Complete Revision to Search... 🔒" : "Search tasks, studio problems, arenas..."}
-              value={globalSearch}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onFocus={() => { if (!isLocked) setShowSearchDropdown(true); }}
-              disabled={isLocked}
-              className={`pl-9 pr-4 py-2 rounded-lg border border-borderLight bg-bgLight text-sm text-textMain focus:outline-none focus:ring-2 focus:ring-primary/20 w-[30rem] transition-all ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
-            />
-          </form>
+      <div className="flex items-center gap-3 sm:gap-4 shrink-0">
 
-          {/* Search Dropdown */}
-          {showSearchDropdown && (globalSearch || recentSearches.length > 0) && (
-            <div className="absolute top-[calc(100%+8px)] left-0 w-[30rem] bg-surface border border-borderLight rounded-xl shadow-2xl z-50 overflow-hidden py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-              {globalSearch && globalSearch.length > 0 && globalSearch.length < 2 && (
-                <div className="px-4 py-3 text-center text-[11px] font-medium text-textSub bg-bgLight/50 border-b border-borderLight animate-pulse">
-                  Type 2+ characters to search tasks, studio problems & arenas...
-                </div>
-              )}
-
-              {recentSearches.length > 0 && !globalSearch && (
-                <div className="py-1">
-                  <div className="px-4 py-1 text-[10px] font-black text-textSub uppercase tracking-widest opacity-50">Recent Searches</div>
-                  {recentSearches.map((s, i) => (
-                    <div
-                      key={i}
-                      onClick={() => {
-                        dispatch(setGlobalSearch(s));
-                        saveToHistory(s);
-                        setShowSearchDropdown(false);
-                      }}
-                      className="group px-4 py-1.5 flex items-center justify-between cursor-pointer text-xs transition-all relative hover:bg-slate-50"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-primary"></span>
-                        <span className="text-textSub group-hover:text-textMain font-medium transition-all">
-                          {s}
-                        </span>
-                      </div>
-                      <span className="text-[10px] text-slate-400 opacity-60">Search</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {globalSearch && suggestions.length > 0 && (
-                <div className="py-1">
-                  <div className="px-4 py-1 text-[10px] font-black text-textSub uppercase tracking-widest opacity-50">Suggestions</div>
-                  {suggestions.map((s, i) => (
-                    <div
-                      key={i}
-                      onClick={() => {
-                        saveToHistory(s.label);
-                        dispatch(setGlobalSearch(s.label));
-                        setShowSearchDropdown(false);
-
-                        if (s.type === 'dsa_problem') {
-                          navigate('/dsa-management/problems');
-                        } else if (s.type === 'project') {
-                          navigate(`/arena/${s.slug}`);
-                        } else if (s.type === 'task') {
-                          if (s.projectSlug) {
-                            navigate(`/arena/${s.projectSlug}`);
-                          } else {
-                            navigate('/task/dashboard');
-                          }
-                        }
-                      }}
-                      className="group px-4 py-2 flex items-center justify-between cursor-pointer text-xs transition-all hover:bg-slate-50 border-b border-slate-100/50 last:border-0"
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${s.type === 'dsa_problem' ? 'bg-purple-500' : s.type === 'project' ? 'bg-emerald-500' : 'bg-blue-500'}`}></span>
-                        <span className="text-textMain font-semibold truncate group-hover:text-primary transition-colors">
-                          {s.label}
-                        </span>
-                      </div>
-                      {s.type === 'dsa_problem' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-100 shrink-0">
-                          Studio Problem
-                        </span>
-                      )}
-                      {s.type === 'task' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100 shrink-0">
-                          Task
-                        </span>
-                      )}
-                      {s.type === 'project' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 shrink-0">
-                          Arena
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {globalSearch && globalSearch.length >= 2 && suggestions.length === 0 && (
-                <div className="px-4 py-6 text-center text-[11px] font-medium text-textSub bg-bgLight/30">
-                  <div className="text-slate-600 font-bold">No exact matches found</div>
-                  <div className="mt-1 opacity-70 text-slate-400">Press Enter to search all items for "{globalSearch}"</div>
-                </div>
-              )}
-
-              {globalSearch && (
-                <div
-                  onClick={handleClearSearch}
-                  className="px-4 py-2 mt-1 border-t border-borderLight flex items-center gap-2 hover:bg-rose-50 cursor-pointer text-xs text-rose-500 font-medium transition-colors"
-                >
-                  <IoCloseCircleOutline size={14} />
-                  <span>Clear Search</span>
-                </div>
-              )}
-            </div>
+        {/* Theme Toggle Button (Light / Dark Mode) */}
+        <button
+          onClick={toggleTheme}
+          className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-amber-400 hover:text-primary dark:hover:text-amber-300 hover:border-primary/40 dark:hover:border-amber-400/40 transition-all shrink-0 shadow-2xs"
+          title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          aria-label="Toggle Theme"
+        >
+          {theme === 'dark' ? (
+            <IoSunnyOutline size={20} className="text-amber-400 hover:rotate-45 transition-transform duration-300" />
+          ) : (
+            <IoMoonOutline size={19} className="text-slate-600 hover:-rotate-12 transition-transform duration-300" />
           )}
-        </div>
-
-        {/* User Total XP Badge in Main Navbar (Image 5) */}
-        {/* <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 font-extrabold text-xs shrink-0 shadow-2xs" title="Total Accumulated DSA XP">
-          <LuTrophy size={15} className="text-amber-500" />
-          <span>{userXp} XP</span>
-        </div> */}
+        </button>
 
         <button
           onClick={() => { if (!isLocked) dispatch(setShowConsistencyModal(true)); }}
           disabled={isLocked}
-          className={`w-10 h-10 rounded-full border border-borderLight flex items-center justify-center text-textSub hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all shrink-0 ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
+          className={`w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all shrink-0 ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
           title={isLocked ? "Complete Revision to Unlock 🔒" : "Performance View"}
         >
           <IoCalendarOutline size={20} />
@@ -556,19 +455,19 @@ const Header = ({ toggleSidebar }) => {
               if (isNotification) setIsNotification(false);
             }}
             disabled={isLocked}
-            className={`w-10 h-10 rounded-full border border-borderLight flex items-center justify-center text-textSub hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all relative ${notificationIconClass} ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
+            className={`w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all relative ${notificationIconClass} ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}`}
             title={isLocked ? "Complete Revision to Unlock 🔒" : "Notifications"}
           >
             <IoNotificationsOutline size={20} />
             {notificationData?.length > 0 && !isLocked && (
-              <span className="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
+              <span className="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border border-white dark:border-slate-900"></span>
             )}
           </button>
 
           {showDropdown && (
-            <div className="absolute top-12 right-0 w-96 bg-surface border border-borderLight rounded-xl shadow-xl z-50 overflow-hidden">
-              <div className="flex justify-between items-center px-4 py-3 border-b border-borderLight bg-bgLight/50">
-                <div className="font-semibold text-textMain">Notifications</div>
+            <div className="absolute top-12 right-0 w-96 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl z-50 overflow-hidden">
+              <div className="flex justify-between items-center px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60">
+                <div className="font-semibold text-slate-900 dark:text-slate-100">Notifications</div>
                 <div className="flex space-x-2">
                   <button
                     onClick={handleMarkAllAsRead}
@@ -591,14 +490,14 @@ const Header = ({ toggleSidebar }) => {
                 {notificationData?.length > 0 ? (
                   groupNotificationsByDay(notificationData).map((group, groupIndex) => (
                     <div key={groupIndex}>
-                      <div className="sticky top-0 px-4 py-1.5 bg-bgLight text-xs font-semibold text-textSub uppercase tracking-wider backdrop-blur-sm border-y border-borderLight/50">
+                      <div className="sticky top-0 px-4 py-1.5 bg-slate-50 dark:bg-slate-800/80 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider backdrop-blur-sm border-y border-slate-200/60 dark:border-slate-800/60">
                         {group.dateLabel}
                       </div>
                       {group.notifications.map((data, index) => (
                         <div
                           key={index}
                           onClick={() => handleUpdateNotify(data)}
-                          className={`p-4 cursor-pointer border-b border-borderLight last:border-0 hover:bg-bgLight/50 transition-colors ${!data.notificationStatus ? 'bg-primary/5' : ''}`}
+                          className={`p-4 cursor-pointer border-b border-slate-100 dark:border-slate-800/60 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${!data.notificationStatus ? 'bg-primary/5 dark:bg-primary/10' : ''}`}
                         >
                           <div className="flex gap-3">
                             <div className="relative flex-shrink-0">
@@ -606,30 +505,30 @@ const Header = ({ toggleSidebar }) => {
                                 <img
                                   src={data.senderId.profileImage}
                                   alt="Avatar"
-                                  className="w-10 h-10 rounded-full object-cover border border-borderLight"
+                                  className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700"
                                 />
                               ) : (
-                                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold border border-primary/20">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/20 text-primary flex items-center justify-center font-semibold border border-primary/20 dark:border-primary/40">
                                   {data.senderId?.firstName?.charAt(0) || 'U'}
                                 </div>
                               )}
                               {!data.notificationStatus && (
-                                <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-primary rounded-full border-2 border-white"></span>
+                                <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-primary rounded-full border-2 border-white dark:border-slate-900"></span>
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex justify-between items-start mb-0.5">
-                                <p className="text-sm font-semibold text-textMain truncate">
+                                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
                                   {data.senderId?.firstName} {data.senderId?.lastName}
                                 </p>
-                                <span className="text-xs text-textSub ml-2 whitespace-nowrap">
+                                <span className="text-xs text-slate-400 dark:text-slate-500 ml-2 whitespace-nowrap">
                                   {moment(data.createdAt).fromNow(true)}
                                 </span>
                               </div>
-                              <p className="text-sm text-textMain leading-snug">
+                              <p className="text-sm text-slate-700 dark:text-slate-300 leading-snug">
                                 {data.title}
                                 {data.projectId?.name && (
-                                  <span className="text-textSub ml-1 block text-xs mt-0.5">
+                                  <span className="text-slate-400 dark:text-slate-500 ml-1 block text-xs mt-0.5">
                                     in {data.projectId.name}
                                   </span>
                                 )}
@@ -641,7 +540,7 @@ const Header = ({ toggleSidebar }) => {
                     </div>
                   ))
                 ) : (
-                  <div className="p-8 text-center flex flex-col items-center justify-center text-textSub">
+                  <div className="p-8 text-center flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
                     <IoNotificationsOutline size={48} className="mb-3 opacity-20" />
                     <p className="text-sm">No notifications yet</p>
                   </div>

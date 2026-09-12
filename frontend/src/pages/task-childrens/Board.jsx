@@ -10,6 +10,8 @@ import TaskDetailDrawer from "./TaskDetailDrawer";
 import CreateTask from "./CreateTask";
 import { IoClose, IoCalendarOutline } from "react-icons/io5";
 import { getScopedItem, setScopedItem, removeScopedItem } from "../../utils/userStorage";
+import MajorProblemWorkspace from "../../components/lld/MajorProblemWorkspace";
+import { isLldBranch, getCurriculumSortKey } from "../../utils/curriculumHelper";
 
 const Board = ({
   tasks,
@@ -30,6 +32,8 @@ const Board = ({
   
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedTaskForDrawer, setSelectedTaskForDrawer] = useState(null);
+  const [selectedMajorProblem, setSelectedMajorProblem] = useState(null);
+  const [workspaceMode, setWorkspaceMode] = useState('learning');
 
   const [editTaskId, setEditTaskId] = useState(null);
   const [editTaskData, setEditTaskData] = useState([]);
@@ -224,7 +228,8 @@ const Board = ({
       }
   };
 
-  const { currentUser } = useSelector((state) => state.store);
+  const { currentUser, activeBranch } = useSelector((state) => state.store);
+  const isLld = isLldBranch(activeBranch);
   const isManager = currentUser?.userRole?.name === "projectmanager";
   const isAdmin = currentUser?.userRole?.name === "admin";
   const canEdit = isManager || isAdmin;
@@ -260,6 +265,11 @@ const Board = ({
       // Natural Sequential Task Sorting (Ascending / First-in-First)
       // 1. If taskId exists on both (e.g. LLDP1-P1 vs LLDP1-P3, or LLDP1-001 vs LLDP1-029)
       if (a.taskId && b.taskId) {
+        if (isLld) {
+          const keyA = getCurriculumSortKey(a.taskId);
+          const keyB = getCurriculumSortKey(b.taskId);
+          return keyA.localeCompare(keyB, undefined, { numeric: true, sensitivity: 'base' });
+        }
         return a.taskId.localeCompare(b.taskId, undefined, { numeric: true, sensitivity: 'base' });
       }
 
@@ -288,14 +298,26 @@ const Board = ({
     }
   }, [tasks, selectedProject, selectedMember, milestoneId]);
 
-  const columns = [
-    { id: "todo-parent", name: "To Do - Parent" },
-    { id: "todo-subtask", name: "To Do - Child" },
-    { id: "inprogress", name: "In Progress" },
-    { id: "done", name: "Done" },
-    { id: "hold", name: "Hold" },
-    { id: "backlog", name: "Backlog" },
-  ];
+  const columns = useMemo(() => {
+    if (isLld) {
+      return [
+        { id: "todo-parent", name: "Modules & Major Problems" },
+        { id: "todo-subtask", name: "Units, Drills & Versions" },
+        { id: "inprogress", name: "In Progress" },
+        { id: "done", name: "Completed" },
+        { id: "hold", name: "On Hold" },
+        { id: "backlog", name: "Backlog" },
+      ];
+    }
+    return [
+      { id: "todo-parent", name: "To Do - Parent" },
+      { id: "todo-subtask", name: "To Do - Child" },
+      { id: "inprogress", name: "In Progress" },
+      { id: "done", name: "Done" },
+      { id: "hold", name: "Hold" },
+      { id: "backlog", name: "Backlog" },
+    ];
+  }, [isLld]);
 
   // backlogged tasks calculation
   const backlogTasks = useMemo(() => {
@@ -875,13 +897,15 @@ const Board = ({
       {/* Global Board Header Filter */}
       {uniqueParents.length > 0 && (
           <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-900 border-b border-borderLight flex-shrink-0">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Filter Subtasks:</span>
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                {isLld ? "Filter by Module / Problem:" : "Filter Subtasks:"}
+              </span>
               <select
                   value={selectedParentId}
                   onChange={(e) => setSelectedParentId(e.target.value)}
-                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg px-3 py-1.5 text-xs w-[200px] focus:outline-none focus:ring-1 focus:ring-primary shadow-sm"
+                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg px-3 py-1.5 text-xs w-[220px] focus:outline-none focus:ring-1 focus:ring-primary shadow-sm"
               >
-                  <option value="">All Parent Tasks</option>
+                  <option value="">{isLld ? "All Modules & Major Problems" : "All Parent Tasks"}</option>
                   {uniqueParents.map(parent => (
                       <option key={parent._id} value={parent._id}>
                           {parent.taskName}
@@ -893,11 +917,12 @@ const Board = ({
 
 
 
+
       {/* Unscheduled Arena Notification Banner */}
       {onOpenSchedule && sortedBoardTasks?.length > 0 && !sortedBoardTasks.some(t => t.taskStartDate || t.taskDueDate) && (
-        <div className="mx-4 my-2 px-4 py-2.5 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950/40 dark:via-purple-950/40 dark:to-pink-950/40 border border-indigo-200/70 dark:border-indigo-800/40 rounded-xl flex items-center justify-between shadow-xs shrink-0">
+        <div className="mx-4 my-2 px-4 py-2.5 bg-gradient-to-r from-vermilion-50/90 via-orange-50/40 to-white dark:from-vermilion-950/30 dark:via-slate-900 dark:to-slate-900 border border-vermilion-200/70 dark:border-vermilion-900/40 rounded-xl flex items-center justify-between shadow-xs shrink-0">
           <div className="flex items-center gap-3">
-            <span className="p-1.5 bg-indigo-600 text-white rounded-lg shadow-sm">
+            <span className="p-1.5 bg-primary text-white rounded-lg shadow-sm shadow-primary/25">
               <IoCalendarOutline size={16} />
             </span>
             <div>
@@ -911,7 +936,7 @@ const Board = ({
           </div>
           <button
             onClick={onOpenSchedule}
-            className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black uppercase tracking-wider rounded-lg shadow-sm transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
+            className="px-3.5 py-1.5 bg-primary hover:bg-primaryHover text-white text-xs font-black uppercase tracking-wider rounded-lg shadow-sm shadow-primary/25 transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
           >
             <IoCalendarOutline size={13} />
             <span>Schedule Arena</span>
@@ -938,6 +963,10 @@ const Board = ({
                   expandedParents={expandedParents}
                   setExpandedParents={setExpandedParents}
                   onReleaseHold={handleOpenReleaseModal}
+                  onStartMajorProblem={(problem, targetMode = 'learning') => {
+                    setSelectedMajorProblem(problem);
+                    setWorkspaceMode(targetMode);
+                  }}
                 />
                 </div>            ))}
             </div>
@@ -950,7 +979,19 @@ const Board = ({
         task={selectedTaskForDrawer} 
         canEdit={canEdit}
         onTaskUpdate={handleEditFromDrawer}
+        onStartMajorProblem={(problem, targetMode = 'learning') => {
+          setSelectedMajorProblem(problem);
+          setWorkspaceMode(targetMode);
+        }}
       />
+
+      <MajorProblemWorkspace
+        isOpen={!!selectedMajorProblem}
+        onClose={() => setSelectedMajorProblem(null)}
+        problem={selectedMajorProblem}
+        initialMode={workspaceMode}
+      />
+
 
       {showToast && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-yellow-100 text-black p-4 rounded-md shadow-lg flex items-center space-x-4 z-50">

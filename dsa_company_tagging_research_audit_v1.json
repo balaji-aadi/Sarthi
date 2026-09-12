@@ -1,0 +1,158 @@
+{
+  "auditDate": "2026-09-09T12:24:45.269Z",
+  "datasetFile": "dsa_company_tagging_researched_v1.json",
+  "validationSummary": {
+    "all336Present": true,
+    "zeroDuplicates": true,
+    "zeroExtraQuestions": true,
+    "zeroInvalidCompanies": true,
+    "zeroMetadataMismatches": false,
+    "totalQuestions": 336,
+    "taggedQuestions": 126,
+    "untaggedQuestions": 210,
+    "totalAssociations": 382
+  },
+  "phaseBreakdown": {
+    "phase1": {
+      "total": 121,
+      "tagged": 58,
+      "associations": 188
+    },
+    "phase2": {
+      "total": 105,
+      "tagged": 13,
+      "associations": 39
+    },
+    "phase3": {
+      "total": 110,
+      "tagged": 55,
+      "associations": 155
+    }
+  },
+  "companyAssociationCounts": {
+    "Google": 78,
+    "Amazon": 73,
+    "Meta": 66,
+    "Microsoft": 61,
+    "Apple": 45,
+    "Adobe": 44,
+    "Airbnb": 7,
+    "Uber": 2,
+    "Oracle": 2,
+    "Flipkart": 1,
+    "PayPal": 1,
+    "Bloomberg": 1,
+    "LinkedIn": 1
+  },
+  "zeroAssociationsCompanies": [
+    "Atlassian",
+    "ByteDance",
+    "Goldman Sachs",
+    "Morgan Stanley",
+    "Netflix",
+    "Salesforce",
+    "Samsung",
+    "Stripe",
+    "Swiggy",
+    "Walmart",
+    "Zomato"
+  ],
+  "issues": {
+    "missingTaskIds": [],
+    "duplicateTaskIds": [],
+    "extraTaskIds": [],
+    "invalidCompanyNames": [],
+    "metadataMismatches": [
+      {
+        "taskId": "DSA-2",
+        "mismatches": [
+          {
+            "field": "title",
+            "db": "Patterns Brief ",
+            "dataset": "Patterns Brief"
+          }
+        ]
+      },
+      {
+        "taskId": "DSA-3",
+        "mismatches": [
+          {
+            "field": "title",
+            "db": "Maximum Points you can obtain from cards ",
+            "dataset": "Maximum Points you can obtain from cards"
+          }
+        ]
+      },
+      {
+        "taskId": "DSA-7",
+        "mismatches": [
+          {
+            "field": "title",
+            "db": "Fruit into baskets ",
+            "dataset": "Fruit into baskets"
+          }
+        ]
+      },
+      {
+        "taskId": "DSA-12",
+        "mismatches": [
+          {
+            "field": "title",
+            "db": "Number of substrings containing all 3 characters ",
+            "dataset": "Number of substrings containing all 3 characters"
+          }
+        ]
+      },
+      {
+        "taskId": "DSA-13",
+        "mismatches": [
+          {
+            "field": "title",
+            "db": "Binary subarrays with some ",
+            "dataset": "Binary subarrays with some"
+          }
+        ]
+      },
+      {
+        "taskId": "DSA-14",
+        "mismatches": [
+          {
+            "field": "title",
+            "db": "Count number of nice subarrays ",
+            "dataset": "Count number of nice subarrays"
+          }
+        ]
+      },
+      {
+        "taskId": "DSA-77",
+        "mismatches": [
+          {
+            "field": "title",
+            "db": "Meeting rooms ",
+            "dataset": "Meeting rooms"
+          }
+        ]
+      },
+      {
+        "taskId": "DSA-149",
+        "mismatches": [
+          {
+            "field": "title",
+            "db": " Minimum Swaps to Move Zeros to End",
+            "dataset": "Minimum Swaps to Move Zeros to End"
+          }
+        ]
+      },
+      {
+        "taskId": "DSAP2-128",
+        "mismatches": [
+          {
+            "field": "title",
+            "db": "Reverse Linked List ",
+            "dataset": "Reverse Linked List"
+          }
+        ]
+      }
+    ]
+  }
+}

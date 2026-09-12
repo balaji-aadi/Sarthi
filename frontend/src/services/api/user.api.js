@@ -8,4 +8,5 @@ export const UserApi = {
     Api.put(`user/update-user/${userId}`, payload),
   saveFcmToken: (payload) => Api.post(`user/create-fcm-token`, payload),
   bulkUpdateStatus: (payload) => Api.post(`user/bulk-update-status`, payload),
+  updateAccount: (payload) => Api.patch("user/update-account", payload),
 };

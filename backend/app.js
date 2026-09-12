@@ -12,10 +12,7 @@ import { whiteListCors, corsOriginHandler } from "./config/cors.js";
 import fileUpload from "express-fileupload";
 import { socketService } from "./socket-instance.js";
 import "./models/permission.model.js";
-import { initSprintActivationJob } from "./services/sprint-service/sprintActivation.job.js";
-import { initTaskTransitionJob } from "./services/task-service/taskTransition.job.js";
-import { initPamphletSyncJob } from "./services/pamphlet-service/pamphletSync.job.js";
-import { repairAllProgress } from "./services/progress-service/repairProgress.js";
+
 
 const app = express();
 // export const socketService = new SocketService(); // Moved to socket-instance.js
@@ -43,14 +40,6 @@ app.use("/api/v1", router);
 
 const httpServer = http.createServer(app);
 
-// Initialize background cron jobs
-try {
-  initSprintActivationJob();
-  initTaskTransitionJob();
-  initPamphletSyncJob();
-} catch (cronErr) {
-  console.error('[App] Error starting background jobs:', cronErr);
-}
 
 socketService._io.attach(httpServer);
 

@@ -46,7 +46,7 @@ import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { MdChevronRight, MdExpandMore } from "react-icons/md";
 import Task from "./Task";
 
-const Column = ({ column, handleClick, isDoneColumn, expandedParents, setExpandedParents, onReleaseHold }) => {
+const Column = ({ column, handleClick, isDoneColumn, expandedParents, setExpandedParents, onReleaseHold, onStartMajorProblem }) => {
   const [sortOrder, setSortOrder] = useState('none'); // 'none', 'desc', 'asc'
 
   const toggleSort = () => {
@@ -143,7 +143,11 @@ const Column = ({ column, handleClick, isDoneColumn, expandedParents, setExpande
                           </div>
                           {task.nestedChildren?.length > 0 && (
                             <span className="text-[10px] font-bold text-emerald-500/60 italic">
-                              {task.nestedChildren.length} subtasks
+                              {task.nestedChildren.length} {
+                                task.curriculumMeta?.nodeType === 'module' ? 'units' :
+                                task.curriculumMeta?.nodeType === 'unit' ? 'drills' :
+                                task.curriculumMeta?.nodeType === 'problem' ? 'versions' : 'subtasks'
+                              }
                             </span>
                           )}
                         </div>
@@ -155,6 +159,7 @@ const Column = ({ column, handleClick, isDoneColumn, expandedParents, setExpande
                             index={index}
                             handleClick={handleClick}
                             onReleaseHold={onReleaseHold}
+                            onStartMajorProblem={onStartMajorProblem}
                           />
                         </div>
 
@@ -169,6 +174,7 @@ const Column = ({ column, handleClick, isDoneColumn, expandedParents, setExpande
                                 handleClick={handleClick}
                                 isNested={true}
                                 onReleaseHold={onReleaseHold}
+                                onStartMajorProblem={onStartMajorProblem}
                               />
                             ))}
                           </div>
@@ -184,6 +190,7 @@ const Column = ({ column, handleClick, isDoneColumn, expandedParents, setExpande
                       index={index}
                       handleClick={handleClick}
                       onReleaseHold={onReleaseHold}
+                      onStartMajorProblem={onStartMajorProblem}
                     />
                   );
                 })}

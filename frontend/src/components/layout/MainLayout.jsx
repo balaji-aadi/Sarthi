@@ -16,13 +16,9 @@ import toast from 'react-hot-toast';
 const MainLayout = () => {
     const { activeBranch, currentUser, globalSettings, dailyRevision, isSidebarCollapsed } = useSelector((state) => state.store);
     const location = useLocation();
-    const isLocked =
-        dailyRevision &&
-        dailyRevision.isEligible === true &&
-        dailyRevision.questions?.length > 0 &&
-        !dailyRevision.isCompleted;
-    const allowedPaths = ['/revision', '/login', '/pricing'];
-    const isPathAllowed = allowedPaths.includes(location.pathname);
+    // Phase 3: Daily revision lockout removed in favor of learner-driven spaced revision workspace
+    const isLocked = false;
+    const isPathAllowed = true;
     const { handleLoading } = useLoading();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -47,22 +43,7 @@ const MainLayout = () => {
         fetchDailyRevision();
     }, [currentUser, activeBranch, dispatch]);
 
-    // Daily Revision Lock Enforcement
-    useEffect(() => {
-        if (!currentUser || !activeBranch || !dailyRevision) return;
-
-        const isLocked =
-            dailyRevision &&
-            dailyRevision.isEligible === true &&
-            dailyRevision.questions?.length > 0 &&
-            !dailyRevision.isCompleted;
-        const allowedPaths = ['/revision', '/login', '/pricing'];
-
-        if (isLocked && !allowedPaths.includes(location.pathname)) {
-            toast.error("Complete your Daily Revision to unlock the application!");
-            navigate('/revision', { replace: true });
-        }
-    }, [dailyRevision, location.pathname, navigate, currentUser, activeBranch]);
+    // Phase 3: Daily revision lockout removed in favor of learner-driven spaced revision workspace
 
     // Auto-clear loader and close sidebar on page transitions to prevent "stuck" states
     useEffect(() => {
@@ -134,7 +115,7 @@ const MainLayout = () => {
     };
 
     return (
-        <div className="flex h-full w-full bg-bgLight font-sans text-textMain overflow-hidden">
+        <div className="flex h-full w-full bg-bgLight dark:bg-slate-950 font-sans text-textMain dark:text-slate-100 overflow-hidden transition-colors duration-200">
             {activeBranch && <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />}
             
             {/* Backdrop overlay for mobile */}

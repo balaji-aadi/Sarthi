@@ -1,0 +1,1682 @@
+[
+  {
+    "taskId": "DSA-2",
+    "title": "Patterns Brief",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-3",
+    "title": "Maximum Points you can obtain from cards",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-4",
+    "title": "Longest substring without repeating characters",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-6",
+    "title": "Maximum consecutive ones |||",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-7",
+    "title": "Fruit into baskets",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-11",
+    "title": "Longest substring with atmost k distinct character",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-12",
+    "title": "Number of substrings containing all 3 characters",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-13",
+    "title": "Binary subarrays with some",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-14",
+    "title": "Count number of nice subarrays",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-15",
+    "title": "Subarrays with k different integers",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-16",
+    "title": "Minimum window substring",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-19",
+    "title": "Two Sum II (sorted)",
+    "parentTopic": "DSA-18 - Two Pointers"
+  },
+  {
+    "taskId": "DSA-20",
+    "title": "Remove duplicates from sorted array",
+    "parentTopic": "DSA-18 - Two Pointers"
+  },
+  {
+    "taskId": "DSA-21",
+    "title": "Container with most water",
+    "parentTopic": "DSA-18 - Two Pointers"
+  },
+  {
+    "taskId": "DSA-22",
+    "title": "3Sum",
+    "parentTopic": "DSA-18 - Two Pointers"
+  },
+  {
+    "taskId": "DSAP2-2",
+    "title": "Reverse Linked List",
+    "parentTopic": "DSAP2-1 - Basic Operations - Linked List"
+  },
+  {
+    "taskId": "DSA-23",
+    "title": "4Sum",
+    "parentTopic": "DSA-18 - Two Pointers"
+  },
+  {
+    "taskId": "DSAP2-3",
+    "title": "Middle of the Linked List",
+    "parentTopic": "DSAP2-1 - Basic Operations - Linked List"
+  },
+  {
+    "taskId": "DSA-24",
+    "title": "Move zeroes",
+    "parentTopic": "DSA-18 - Two Pointers"
+  },
+  {
+    "taskId": "DSAP2-4",
+    "title": "Delete Node in a Linked List",
+    "parentTopic": "DSAP2-1 - Basic Operations - Linked List"
+  },
+  {
+    "taskId": "DSA-25",
+    "title": "Valid palindrome",
+    "parentTopic": "DSA-18 - Two Pointers"
+  },
+  {
+    "taskId": "DSAP2-5",
+    "title": "Remove Linked List Elements",
+    "parentTopic": "DSAP2-1 - Basic Operations - Linked List"
+  },
+  {
+    "taskId": "DSA-26",
+    "title": "Squares of sorted array",
+    "parentTopic": "DSA-18 - Two Pointers"
+  },
+  {
+    "taskId": "DSAP2-6",
+    "title": "Remove Duplicates from Sorted List",
+    "parentTopic": "DSAP2-1 - Basic Operations - Linked List"
+  },
+  {
+    "taskId": "DSA-27",
+    "title": "Partition array",
+    "parentTopic": "DSA-18 - Two Pointers"
+  },
+  {
+    "taskId": "DSA-28",
+    "title": "Trapping rain water",
+    "parentTopic": "DSA-18 - Two Pointers"
+  },
+  {
+    "taskId": "DSAP2-8",
+    "title": "Linked List Cycle",
+    "parentTopic": "DSAP2-7 - Fast & Slow Pointer - Linked List"
+  },
+  {
+    "taskId": "DSAP2-9",
+    "title": "Linked List Cycle II",
+    "parentTopic": "DSAP2-7 - Fast & Slow Pointer - Linked List"
+  },
+  {
+    "taskId": "DSA-30",
+    "title": "Two Sum",
+    "parentTopic": "DSA-29 - Hashing"
+  },
+  {
+    "taskId": "DSA-31",
+    "title": "Group Anagrams",
+    "parentTopic": "DSA-29 - Hashing"
+  },
+  {
+    "taskId": "DSA-32",
+    "title": "Top K frequent elements",
+    "parentTopic": "DSA-29 - Hashing"
+  },
+  {
+    "taskId": "DSAP3-2",
+    "title": "Binary Tree Level Order Traversal",
+    "parentTopic": "DSAP3-1 - Tree BFS / Level Order Traversal"
+  },
+  {
+    "taskId": "DSA-33",
+    "title": "Longest consecutive sequence",
+    "parentTopic": "DSA-29 - Hashing"
+  },
+  {
+    "taskId": "DSAP3-3",
+    "title": "Binary Tree Zigzag Level Order Traversal",
+    "parentTopic": "DSAP3-1 - Tree BFS / Level Order Traversal"
+  },
+  {
+    "taskId": "DSA-34",
+    "title": "Subarray sum equals K",
+    "parentTopic": "DSA-29 - Hashing"
+  },
+  {
+    "taskId": "DSAP3-4",
+    "title": "Binary Tree Right Side View",
+    "parentTopic": "DSAP3-1 - Tree BFS / Level Order Traversal"
+  },
+  {
+    "taskId": "DSA-35",
+    "title": "Happy number",
+    "parentTopic": "DSA-29 - Hashing"
+  },
+  {
+    "taskId": "DSAP3-5",
+    "title": "Minimum Depth of Binary Tree",
+    "parentTopic": "DSAP3-1 - Tree BFS / Level Order Traversal"
+  },
+  {
+    "taskId": "DSA-36",
+    "title": "Isomorphic strings",
+    "parentTopic": "DSA-29 - Hashing"
+  },
+  {
+    "taskId": "DSAP3-6",
+    "title": "Populating Next Right Pointers in Each Node",
+    "parentTopic": "DSAP3-1 - Tree BFS / Level Order Traversal"
+  },
+  {
+    "taskId": "DSA-37",
+    "title": "Find the Duplicate Number",
+    "parentTopic": "DSA-29 - Hashing"
+  },
+  {
+    "taskId": "DSAP3-7",
+    "title": "Average of Levels in Binary Tree",
+    "parentTopic": "DSAP3-1 - Tree BFS / Level Order Traversal"
+  },
+  {
+    "taskId": "DSA-38",
+    "title": "Majority element",
+    "parentTopic": "DSA-29 - Hashing"
+  },
+  {
+    "taskId": "DSA-39",
+    "title": "Contains duplicate II",
+    "parentTopic": "DSA-29 - Hashing"
+  },
+  {
+    "taskId": "DSAP3-9",
+    "title": "Binary Tree Inorder Traversal",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSA-41",
+    "title": "Range sum query",
+    "parentTopic": "DSA-40 - Prefix Sum"
+  },
+  {
+    "taskId": "DSA-42",
+    "title": "Subarray sum equals K",
+    "parentTopic": "DSA-40 - Prefix Sum"
+  },
+  {
+    "taskId": "DSA-43",
+    "title": "Continuous subarray sum",
+    "parentTopic": "DSA-40 - Prefix Sum"
+  },
+  {
+    "taskId": "DSA-44",
+    "title": "Subarrays divisible by K",
+    "parentTopic": "DSA-40 - Prefix Sum"
+  },
+  {
+    "taskId": "DSA-45",
+    "title": "Contiguous Array",
+    "parentTopic": "DSA-40 - Prefix Sum"
+  },
+  {
+    "taskId": "DSA-46",
+    "title": "Maximum size subarray sum = K",
+    "parentTopic": "DSA-40 - Prefix Sum"
+  },
+  {
+    "taskId": "DSA-47",
+    "title": "Difference array basics",
+    "parentTopic": "DSA-40 - Prefix Sum"
+  },
+  {
+    "taskId": "DSA-48",
+    "title": "Car pooling",
+    "parentTopic": "DSA-40 - Prefix Sum"
+  },
+  {
+    "taskId": "DSA-49",
+    "title": "Range addition",
+    "parentTopic": "DSA-40 - Prefix Sum"
+  },
+  {
+    "taskId": "DSA-50",
+    "title": "Product of array except self",
+    "parentTopic": "DSA-40 - Prefix Sum"
+  },
+  {
+    "taskId": "DSA-52",
+    "title": "Maximum subarray",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm"
+  },
+  {
+    "taskId": "DSA-53",
+    "title": "Maximum sum circular subarray",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm"
+  },
+  {
+    "taskId": "DSA-54",
+    "title": "Maximum product subarray",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm"
+  },
+  {
+    "taskId": "DSA-55",
+    "title": "Best time to buy and sell stock",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm"
+  },
+  {
+    "taskId": "DSA-56",
+    "title": "Maximum sum rectangle (2D Kadane)",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm"
+  },
+  {
+    "taskId": "DSA-57",
+    "title": "Maximum subarray sum with one deletion",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm"
+  },
+  {
+    "taskId": "DSA-58",
+    "title": "K concatenation maximum sum",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm"
+  },
+  {
+    "taskId": "DSA-59",
+    "title": "Maximum alternating subarray sum",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm"
+  },
+  {
+    "taskId": "DSA-60",
+    "title": "Largest sum of averages",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm"
+  },
+  {
+    "taskId": "DSA-61",
+    "title": "Maximum difference problem",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm"
+  },
+  {
+    "taskId": "DSA-74",
+    "title": "Merge intervals",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-75",
+    "title": "Insert interval",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-76",
+    "title": "Non-overlapping intervals",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-77",
+    "title": "Meeting rooms",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-78",
+    "title": "Meeting rooms II",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-79",
+    "title": "My calendar ||",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-80",
+    "title": "Employee free time",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-81",
+    "title": "Interval List Intersections",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-82",
+    "title": "Car pooling",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-83",
+    "title": "My calendar I",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-85",
+    "title": "Next greater element i",
+    "parentTopic": "DSA-84 - Monotonic Stack"
+  },
+  {
+    "taskId": "DSA-86",
+    "title": "Daily temperatures",
+    "parentTopic": "DSA-84 - Monotonic Stack"
+  },
+  {
+    "taskId": "DSA-87",
+    "title": "Stock span",
+    "parentTopic": "DSA-84 - Monotonic Stack"
+  },
+  {
+    "taskId": "DSA-88",
+    "title": "Largest rectangle in histogram",
+    "parentTopic": "DSA-84 - Monotonic Stack"
+  },
+  {
+    "taskId": "DSA-89",
+    "title": "Maximal rectangle",
+    "parentTopic": "DSA-84 - Monotonic Stack"
+  },
+  {
+    "taskId": "DSA-90",
+    "title": "Next smaller element",
+    "parentTopic": "DSA-84 - Monotonic Stack"
+  },
+  {
+    "taskId": "DSA-91",
+    "title": "Sum of subarray minimums",
+    "parentTopic": "DSA-84 - Monotonic Stack"
+  },
+  {
+    "taskId": "DSA-92",
+    "title": "Trapping rain water",
+    "parentTopic": "DSA-84 - Monotonic Stack"
+  },
+  {
+    "taskId": "DSA-93",
+    "title": "Remove K digits",
+    "parentTopic": "DSA-84 - Monotonic Stack"
+  },
+  {
+    "taskId": "DSA-94",
+    "title": "Car fleet",
+    "parentTopic": "DSA-84 - Monotonic Stack"
+  },
+  {
+    "taskId": "DSA-96",
+    "title": "Top K frequent elements",
+    "parentTopic": "DSA-95 - Top K Elements"
+  },
+  {
+    "taskId": "DSA-97",
+    "title": "Kth Largest Element in an Array",
+    "parentTopic": "DSA-95 - Top K Elements"
+  },
+  {
+    "taskId": "DSA-98",
+    "title": "K Closest Points to Origin",
+    "parentTopic": "DSA-95 - Top K Elements"
+  },
+  {
+    "taskId": "DSA-99",
+    "title": "Merge K sorted lists",
+    "parentTopic": "DSA-95 - Top K Elements"
+  },
+  {
+    "taskId": "DSA-100",
+    "title": "Kth Smallest Element in a Sorted Matrix",
+    "parentTopic": "DSA-95 - Top K Elements"
+  },
+  {
+    "taskId": "DSA-101",
+    "title": "Find median from data stream",
+    "parentTopic": "DSA-95 - Top K Elements"
+  },
+  {
+    "taskId": "DSA-102",
+    "title": "Reorganize string",
+    "parentTopic": "DSA-95 - Top K Elements"
+  },
+  {
+    "taskId": "DSA-103",
+    "title": "Task scheduler",
+    "parentTopic": "DSA-95 - Top K Elements"
+  },
+  {
+    "taskId": "DSA-104",
+    "title": "Sort characters by frequency",
+    "parentTopic": "DSA-95 - Top K Elements"
+  },
+  {
+    "taskId": "DSA-105",
+    "title": "Find K Closest Elements",
+    "parentTopic": "DSA-95 - Top K Elements"
+  },
+  {
+    "taskId": "DSA-107",
+    "title": "Valid palindrome",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)"
+  },
+  {
+    "taskId": "DSA-108",
+    "title": "Longest palindromic substring",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)"
+  },
+  {
+    "taskId": "DSA-109",
+    "title": "Palindromic Substrings",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)"
+  },
+  {
+    "taskId": "DSA-110",
+    "title": "Longest palindrome subsequence",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)"
+  },
+  {
+    "taskId": "DSA-111",
+    "title": "Palindrome partitioning",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)"
+  },
+  {
+    "taskId": "DSA-112",
+    "title": "Shortest palindrome",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)"
+  },
+  {
+    "taskId": "DSA-113",
+    "title": "Break a palindrome",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)"
+  },
+  {
+    "taskId": "DSA-114",
+    "title": "Palindrome pairs",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)"
+  },
+  {
+    "taskId": "DSA-115",
+    "title": "Minimum insertions to palindrome",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)"
+  },
+  {
+    "taskId": "DSA-116",
+    "title": "Partition labels",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)"
+  },
+  {
+    "taskId": "DSA-140",
+    "title": "Valid palindrome",
+    "parentTopic": "DSA-139 - Two Pointers (STRINGS)"
+  },
+  {
+    "taskId": "DSA-141",
+    "title": "Reverse string",
+    "parentTopic": "DSA-139 - Two Pointers (STRINGS)"
+  },
+  {
+    "taskId": "DSA-142",
+    "title": "Reverse Words in a String",
+    "parentTopic": "DSA-139 - Two Pointers (STRINGS)"
+  },
+  {
+    "taskId": "DSA-143",
+    "title": "Longest Palindromic Substring",
+    "parentTopic": "DSA-139 - Two Pointers (STRINGS)"
+  },
+  {
+    "taskId": "DSA-144",
+    "title": "String compression",
+    "parentTopic": "DSA-139 - Two Pointers (STRINGS)"
+  },
+  {
+    "taskId": "DSA-145",
+    "title": "Merge strings alternately",
+    "parentTopic": "DSA-139 - Two Pointers (STRINGS)"
+  },
+  {
+    "taskId": "DSA-146",
+    "title": "Backspace string compare",
+    "parentTopic": "DSA-139 - Two Pointers (STRINGS)"
+  },
+  {
+    "taskId": "DSA-147",
+    "title": "One edit distance",
+    "parentTopic": "DSA-139 - Two Pointers (STRINGS)"
+  },
+  {
+    "taskId": "DSA-148",
+    "title": "Remove Duplicates from Sorted Array",
+    "parentTopic": "DSA-139 - Two Pointers (STRINGS)"
+  },
+  {
+    "taskId": "DSA-149",
+    "title": "Minimum Swaps to Move Zeros to End",
+    "parentTopic": "DSA-139 - Two Pointers (STRINGS)"
+  },
+  {
+    "taskId": "DSA-151",
+    "title": "Valid anagram",
+    "parentTopic": "DSA-150 - Hashing & Anagram (STRINGS)"
+  },
+  {
+    "taskId": "DSA-152",
+    "title": "Group anagrams",
+    "parentTopic": "DSA-150 - Hashing & Anagram (STRINGS)"
+  },
+  {
+    "taskId": "DSA-153",
+    "title": "Find All Anagrams in a String",
+    "parentTopic": "DSA-150 - Hashing & Anagram (STRINGS)"
+  },
+  {
+    "taskId": "DSA-155",
+    "title": "Minimum Number of Steps to Make Two Strings Anagram",
+    "parentTopic": "DSA-150 - Hashing & Anagram (STRINGS)"
+  },
+  {
+    "taskId": "DSA-156",
+    "title": "Ransom note",
+    "parentTopic": "DSA-150 - Hashing & Anagram (STRINGS)"
+  },
+  {
+    "taskId": "DSA-157",
+    "title": "Isomorphic Strings",
+    "parentTopic": "DSA-150 - Hashing & Anagram (STRINGS)"
+  },
+  {
+    "taskId": "DSA-158",
+    "title": "Word pattern",
+    "parentTopic": "DSA-150 - Hashing & Anagram (STRINGS)"
+  },
+  {
+    "taskId": "DSA-160",
+    "title": "First Unique Character in a String",
+    "parentTopic": "DSA-150 - Hashing & Anagram (STRINGS)"
+  },
+  {
+    "taskId": "DSA-161",
+    "title": "Longest Repeating Character Replacement",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers"
+  },
+  {
+    "taskId": "DSA-162",
+    "title": "Maximum Population Year",
+    "parentTopic": "DSA-73 - Intervals"
+  },
+  {
+    "taskId": "DSA-164",
+    "title": "Find First and Last Position of Element in Sorted Array",
+    "parentTopic": "DSA-163 - Binary search"
+  },
+  {
+    "taskId": "DSA-165",
+    "title": "Search in Rotated Sorted Array",
+    "parentTopic": "DSA-163 - Binary search"
+  },
+  {
+    "taskId": "DSA-166",
+    "title": "Find Minimum in Rotated Sorted Array",
+    "parentTopic": "DSA-163 - Binary search"
+  },
+  {
+    "taskId": "DSA-167",
+    "title": "Koko Eating Bananas",
+    "parentTopic": "DSA-163 - Binary search"
+  },
+  {
+    "taskId": "DSA-168",
+    "title": "Capacity to Ship Packages Within D Days",
+    "parentTopic": "DSA-163 - Binary search"
+  },
+  {
+    "taskId": "DSA-169",
+    "title": "Minimum Number of Days to Make m Bouquets",
+    "parentTopic": "DSA-163 - Binary search"
+  },
+  {
+    "taskId": "DSA-170",
+    "title": "Aggressive Cows",
+    "parentTopic": "DSA-163 - Binary search"
+  },
+  {
+    "taskId": "DSA-171",
+    "title": "Split Array Largest Sum",
+    "parentTopic": "DSA-163 - Binary search"
+  },
+  {
+    "taskId": "DSA-172",
+    "title": "Magnetic Force Between Two Balls",
+    "parentTopic": "DSA-163 - Binary search"
+  },
+  {
+    "taskId": "DSA-173",
+    "title": "Median of Two Sorted Arrays",
+    "parentTopic": "DSA-163 - Binary search"
+  },
+  {
+    "taskId": "DSAP2-10",
+    "title": "Remove Nth Node From End of List",
+    "parentTopic": "DSAP2-7 - Fast & Slow Pointer - Linked List"
+  },
+  {
+    "taskId": "DSAP2-11",
+    "title": "Palindrome Linked List",
+    "parentTopic": "DSAP2-7 - Fast & Slow Pointer - Linked List"
+  },
+  {
+    "taskId": "DSAP2-12",
+    "title": "Reorder List",
+    "parentTopic": "DSAP2-7 - Fast & Slow Pointer - Linked List"
+  },
+  {
+    "taskId": "DSAP2-13",
+    "title": "Delete the Middle Node of a Linked List",
+    "parentTopic": "DSAP2-7 - Fast & Slow Pointer - Linked List"
+  },
+  {
+    "taskId": "DSAP2-15",
+    "title": "Reverse Linked List",
+    "parentTopic": "DSAP2-14 - Reverse Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-16",
+    "title": "Reverse Linked List II",
+    "parentTopic": "DSAP2-14 - Reverse Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-17",
+    "title": "Reverse Nodes in K Group",
+    "parentTopic": "DSAP2-14 - Reverse Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-18",
+    "title": "Swap Nodes in Pairs",
+    "parentTopic": "DSAP2-14 - Reverse Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-19",
+    "title": "Rotate List",
+    "parentTopic": "DSAP2-14 - Reverse Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-20",
+    "title": "Reverse Nodes in Even Length Groups",
+    "parentTopic": "DSAP2-14 - Reverse Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-21",
+    "title": "Reverse Linked List Recursive",
+    "parentTopic": "DSAP2-14 - Reverse Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-22",
+    "title": "Reverse first K elements of given linked list",
+    "parentTopic": "DSAP2-14 - Reverse Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-24",
+    "title": "Add Two Numbers",
+    "parentTopic": "DSAP2-23 - Dummy Node Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-25",
+    "title": "Partition List",
+    "parentTopic": "DSAP2-23 - Dummy Node Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-26",
+    "title": "Merge Two Sorted Lists",
+    "parentTopic": "DSAP2-23 - Dummy Node Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-27",
+    "title": "Remove Nth Node From End of List",
+    "parentTopic": "DSAP2-23 - Dummy Node Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-28",
+    "title": "Swap Nodes in Pairs",
+    "parentTopic": "DSAP2-23 - Dummy Node Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-30",
+    "title": "Merge Two Sorted Lists",
+    "parentTopic": "DSAP2-29 - Merge Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-31",
+    "title": "Merge K Sorted Lists",
+    "parentTopic": "DSAP2-29 - Merge Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-32",
+    "title": "Sort List",
+    "parentTopic": "DSAP2-29 - Merge Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-33",
+    "title": "Insertion Sort List",
+    "parentTopic": "DSAP2-29 - Merge Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-35",
+    "title": "Intersection of Two Linked Lists",
+    "parentTopic": "DSAP2-34 - Two Pointer Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-36",
+    "title": "Odd Even Linked List",
+    "parentTopic": "DSAP2-34 - Two Pointer Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-37",
+    "title": "Maximum Twin Sum of a Linked List",
+    "parentTopic": "DSAP2-34 - Two Pointer Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-39",
+    "title": "Add Two Numbers II",
+    "parentTopic": "DSAP2-38 - Arithmetic Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-40",
+    "title": "Double a Number Represented as a Linked List",
+    "parentTopic": "DSAP2-38 - Arithmetic Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-41",
+    "title": "Plus One Linked List",
+    "parentTopic": "DSAP2-38 - Arithmetic Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-43",
+    "title": "Copy List with Random Pointer",
+    "parentTopic": "DSAP2-42 - Random Pointer - Linked List"
+  },
+  {
+    "taskId": "DSAP2-44",
+    "title": "Clone Linked List with Random Pointer (alternate approach)",
+    "parentTopic": "DSAP2-42 - Random Pointer - Linked List"
+  },
+  {
+    "taskId": "DSAP2-46",
+    "title": "Flatten a Multilevel Doubly Linked List",
+    "parentTopic": "DSAP2-45 - Flatten Pattern - Linked List"
+  },
+  {
+    "taskId": "DSAP2-48",
+    "title": "LRU Cache",
+    "parentTopic": "DSAP2-47 - Design (LRU) - Linked List"
+  },
+  {
+    "taskId": "DSAP2-49",
+    "title": "LFU Cache",
+    "parentTopic": "DSAP2-47 - Design (LRU) - Linked List"
+  },
+  {
+    "taskId": "DSAP2-50",
+    "title": "Design Browser History",
+    "parentTopic": "DSAP2-47 - Design (LRU) - Linked List"
+  },
+  {
+    "taskId": "DSAP2-52",
+    "title": "Implement Stack",
+    "parentTopic": "DSAP2-51 - Basic Stack - Stack"
+  },
+  {
+    "taskId": "DSAP2-53",
+    "title": "Min Stack",
+    "parentTopic": "DSAP2-51 - Basic Stack - Stack"
+  },
+  {
+    "taskId": "DSAP2-54",
+    "title": "Baseball Game",
+    "parentTopic": "DSAP2-51 - Basic Stack - Stack"
+  },
+  {
+    "taskId": "DSAP2-55",
+    "title": "Backspace String Compare",
+    "parentTopic": "DSAP2-51 - Basic Stack - Stack"
+  },
+  {
+    "taskId": "DSAP2-57",
+    "title": "Evaluate Reverse Polish Notation",
+    "parentTopic": "DSAP2-56 - Expression Evaluation - Stack"
+  },
+  {
+    "taskId": "DSAP2-58",
+    "title": "Basic Calculator",
+    "parentTopic": "DSAP2-56 - Expression Evaluation - Stack"
+  },
+  {
+    "taskId": "DSAP2-59",
+    "title": "Basic Calculator II",
+    "parentTopic": "DSAP2-56 - Expression Evaluation - Stack"
+  },
+  {
+    "taskId": "DSAP2-60",
+    "title": "Decode String",
+    "parentTopic": "DSAP2-56 - Expression Evaluation - Stack"
+  },
+  {
+    "taskId": "DSAP2-62",
+    "title": "Valid Parentheses",
+    "parentTopic": "DSAP2-61 - Parentheses Pattern - Stack"
+  },
+  {
+    "taskId": "DSAP2-63",
+    "title": "Generate Parentheses",
+    "parentTopic": "DSAP2-61 - Parentheses Pattern - Stack"
+  },
+  {
+    "taskId": "DSAP2-64",
+    "title": "Longest Valid Parentheses",
+    "parentTopic": "DSAP2-61 - Parentheses Pattern - Stack"
+  },
+  {
+    "taskId": "DSAP2-65",
+    "title": "Minimum Remove to Make Valid Parentheses",
+    "parentTopic": "DSAP2-61 - Parentheses Pattern - Stack"
+  },
+  {
+    "taskId": "DSAP2-66",
+    "title": "Remove Invalid Parentheses",
+    "parentTopic": "DSAP2-61 - Parentheses Pattern - Stack"
+  },
+  {
+    "taskId": "DSAP2-68",
+    "title": "Asteroid Collision",
+    "parentTopic": "DSAP2-67 - Simulation Pattern - Stack"
+  },
+  {
+    "taskId": "DSAP2-69",
+    "title": "Daily Temperatures",
+    "parentTopic": "DSAP2-67 - Simulation Pattern - Stack"
+  },
+  {
+    "taskId": "DSAP2-70",
+    "title": "Remove K Digits",
+    "parentTopic": "DSAP2-67 - Simulation Pattern - Stack"
+  },
+  {
+    "taskId": "DSAP2-71",
+    "title": "Simplify Path",
+    "parentTopic": "DSAP2-67 - Simulation Pattern - Stack"
+  },
+  {
+    "taskId": "DSAP2-73",
+    "title": "Design Browser History",
+    "parentTopic": "DSAP2-72 - Design Stack - Stack"
+  },
+  {
+    "taskId": "DSAP2-74",
+    "title": "Max Stack",
+    "parentTopic": "DSAP2-72 - Design Stack - Stack"
+  },
+  {
+    "taskId": "DSAP2-75",
+    "title": "Maximum Frequency Stack",
+    "parentTopic": "DSAP2-72 - Design Stack - Stack"
+  },
+  {
+    "taskId": "DSAP2-77",
+    "title": "Implement Queue",
+    "parentTopic": "DSAP2-76 - Queue Basics - Queue"
+  },
+  {
+    "taskId": "DSAP2-78",
+    "title": "Number of Recent Calls",
+    "parentTopic": "DSAP2-76 - Queue Basics - Queue"
+  },
+  {
+    "taskId": "DSAP2-79",
+    "title": "Moving Average from Data Stream",
+    "parentTopic": "DSAP2-76 - Queue Basics - Queue"
+  },
+  {
+    "taskId": "DSAP2-81",
+    "title": "Sliding Window Maximum",
+    "parentTopic": "DSAP2-80 - Deque Pattern - Queue"
+  },
+  {
+    "taskId": "DSAP2-82",
+    "title": "Shortest Subarray with Sum at Least K",
+    "parentTopic": "DSAP2-80 - Deque Pattern - Queue"
+  },
+  {
+    "taskId": "DSAP2-83",
+    "title": "Design Circular Deque",
+    "parentTopic": "DSAP2-80 - Deque Pattern - Queue"
+  },
+  {
+    "taskId": "DSAP2-85",
+    "title": "Design Circular Queue",
+    "parentTopic": "DSAP2-84 - Circular Queue - Queue"
+  },
+  {
+    "taskId": "DSAP2-86",
+    "title": "First Unique Number",
+    "parentTopic": "DSAP2-84 - Circular Queue - Queue"
+  },
+  {
+    "taskId": "DSAP2-88",
+    "title": "Front Middle Back Queue",
+    "parentTopic": "DSAP2-87 - Design Queue - Queue"
+  },
+  {
+    "taskId": "DSAP2-89",
+    "title": "Hit Counter",
+    "parentTopic": "DSAP2-87 - Design Queue - Queue"
+  },
+  {
+    "taskId": "DSAP2-91",
+    "title": "Top K Frequent Elements",
+    "parentTopic": "DSAP2-90 - Top K Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-92",
+    "title": "K Closest Points to Origin",
+    "parentTopic": "DSAP2-90 - Top K Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-93",
+    "title": "Kth Largest Element in an Array",
+    "parentTopic": "DSAP2-90 - Top K Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-94",
+    "title": "Find K Pairs with Smallest Sums",
+    "parentTopic": "DSAP2-90 - Top K Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-96",
+    "title": "Merge K Sorted Lists",
+    "parentTopic": "DSAP2-95 - Merge Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-97",
+    "title": "Smallest Range Covering Elements from K Lists",
+    "parentTopic": "DSAP2-95 - Merge Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-98",
+    "title": "Ugly Number II",
+    "parentTopic": "DSAP2-95 - Merge Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP3-10",
+    "title": "Maximum Depth of Binary Tree",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-11",
+    "title": "Balanced Binary Tree",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-12",
+    "title": "Symmetric Tree",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-13",
+    "title": "Diameter of Binary Tree",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-14",
+    "title": "Path Sum",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-15",
+    "title": "Binary Tree Maximum Path Sum",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-16",
+    "title": "Lowest Common Ancestor of a Binary Tree",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-17",
+    "title": "Lowest Common Ancestor of a Binary Search Tree",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-18",
+    "title": "Validate Binary Search Tree",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-19",
+    "title": "Search in a Binary Search Tree",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-20",
+    "title": "Kth Smallest Element in a BST",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-21",
+    "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-22",
+    "title": "Serialize and Deserialize Binary Tree",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-23",
+    "title": "House Robber III",
+    "parentTopic": "DSAP3-8 - Tree DFS, Construction, LCA & BST Operations"
+  },
+  {
+    "taskId": "DSAP3-25",
+    "title": "Number of Islands",
+    "parentTopic": "DSAP3-24 - Graph BFS/DFS & Connected Components"
+  },
+  {
+    "taskId": "DSAP3-26",
+    "title": "Rotting Oranges",
+    "parentTopic": "DSAP3-24 - Graph BFS/DFS & Connected Components"
+  },
+  {
+    "taskId": "DSAP3-27",
+    "title": "Clone Graph",
+    "parentTopic": "DSAP3-24 - Graph BFS/DFS & Connected Components"
+  },
+  {
+    "taskId": "DSAP3-28",
+    "title": "Pacific Atlantic Water Flow",
+    "parentTopic": "DSAP3-24 - Graph BFS/DFS & Connected Components"
+  },
+  {
+    "taskId": "DSAP3-29",
+    "title": "Word Ladder",
+    "parentTopic": "DSAP3-24 - Graph BFS/DFS & Connected Components"
+  },
+  {
+    "taskId": "DSAP3-30",
+    "title": "Surrounded Regions",
+    "parentTopic": "DSAP3-24 - Graph BFS/DFS & Connected Components"
+  },
+  {
+    "taskId": "DSAP3-31",
+    "title": "Graph Valid Tree",
+    "parentTopic": "DSAP3-24 - Graph BFS/DFS & Connected Components"
+  },
+  {
+    "taskId": "DSAP3-33",
+    "title": "Course Schedule",
+    "parentTopic": "DSAP3-32 - Topological Sort (Kahn's Algorithm)"
+  },
+  {
+    "taskId": "DSAP3-34",
+    "title": "Course Schedule II",
+    "parentTopic": "DSAP3-32 - Topological Sort (Kahn's Algorithm)"
+  },
+  {
+    "taskId": "DSAP3-35",
+    "title": "Alien Dictionary",
+    "parentTopic": "DSAP3-32 - Topological Sort (Kahn's Algorithm)"
+  },
+  {
+    "taskId": "DSAP3-36",
+    "title": "Minimum Height Trees",
+    "parentTopic": "DSAP3-32 - Topological Sort (Kahn's Algorithm)"
+  },
+  {
+    "taskId": "DSAP3-37",
+    "title": "Sequence Reconstruction",
+    "parentTopic": "DSAP3-32 - Topological Sort (Kahn's Algorithm)"
+  },
+  {
+    "taskId": "DSAP3-39",
+    "title": "Network Delay Time",
+    "parentTopic": "DSAP3-38 - Shortest Path & Minimum Spanning Tree"
+  },
+  {
+    "taskId": "DSAP3-40",
+    "title": "Path with Maximum Probability",
+    "parentTopic": "DSAP3-38 - Shortest Path & Minimum Spanning Tree"
+  },
+  {
+    "taskId": "DSAP3-41",
+    "title": "Min Cost to Connect All Points",
+    "parentTopic": "DSAP3-38 - Shortest Path & Minimum Spanning Tree"
+  },
+  {
+    "taskId": "DSAP3-42",
+    "title": "Cheapest Flights Within K Stops",
+    "parentTopic": "DSAP3-38 - Shortest Path & Minimum Spanning Tree"
+  },
+  {
+    "taskId": "DSAP3-43",
+    "title": "Swim in Rising Water",
+    "parentTopic": "DSAP3-38 - Shortest Path & Minimum Spanning Tree"
+  },
+  {
+    "taskId": "DSAP3-45",
+    "title": "Redundant Connection",
+    "parentTopic": "DSAP3-44 - Union-Find (Disjoint Set Unit - DSU)"
+  },
+  {
+    "taskId": "DSAP3-46",
+    "title": "Number of Provinces",
+    "parentTopic": "DSAP3-44 - Union-Find (Disjoint Set Unit - DSU)"
+  },
+  {
+    "taskId": "DSAP3-47",
+    "title": "Accounts Merge",
+    "parentTopic": "DSAP3-44 - Union-Find (Disjoint Set Unit - DSU)"
+  },
+  {
+    "taskId": "DSAP3-48",
+    "title": "Most Stones Removed with Same Row or Column",
+    "parentTopic": "DSAP3-44 - Union-Find (Disjoint Set Unit - DSU)"
+  },
+  {
+    "taskId": "DSAP3-50",
+    "title": "Coin Change",
+    "parentTopic": "DSAP3-49 - 0/1 & Unbounded Knapsack DP"
+  },
+  {
+    "taskId": "DSAP3-51",
+    "title": "Partition Equal Subset Sum",
+    "parentTopic": "DSAP3-49 - 0/1 & Unbounded Knapsack DP"
+  },
+  {
+    "taskId": "DSAP3-52",
+    "title": "Target Sum",
+    "parentTopic": "DSAP3-49 - 0/1 & Unbounded Knapsack DP"
+  },
+  {
+    "taskId": "DSAP3-53",
+    "title": "Combination Sum IV",
+    "parentTopic": "DSAP3-49 - 0/1 & Unbounded Knapsack DP"
+  },
+  {
+    "taskId": "DSAP3-54",
+    "title": "Ones and Zeroes",
+    "parentTopic": "DSAP3-49 - 0/1 & Unbounded Knapsack DP"
+  },
+  {
+    "taskId": "DSAP3-55",
+    "title": "Last Stone Weight II",
+    "parentTopic": "DSAP3-49 - 0/1 & Unbounded Knapsack DP"
+  },
+  {
+    "taskId": "DSAP3-57",
+    "title": "Unique Paths",
+    "parentTopic": "DSAP3-56 - Grid Path & Matrix DP"
+  },
+  {
+    "taskId": "DSAP3-58",
+    "title": "Minimum Path Sum",
+    "parentTopic": "DSAP3-56 - Grid Path & Matrix DP"
+  },
+  {
+    "taskId": "DSAP3-59",
+    "title": "Maximal Square",
+    "parentTopic": "DSAP3-56 - Grid Path & Matrix DP"
+  },
+  {
+    "taskId": "DSAP3-60",
+    "title": "Dungeon Game",
+    "parentTopic": "DSAP3-56 - Grid Path & Matrix DP"
+  },
+  {
+    "taskId": "DSAP3-61",
+    "title": "Cherry Pickup",
+    "parentTopic": "DSAP3-56 - Grid Path & Matrix DP"
+  },
+  {
+    "taskId": "DSAP3-63",
+    "title": "Jump Game",
+    "parentTopic": "DSAP3-62 - Greedy Scheduling & Jump Game"
+  },
+  {
+    "taskId": "DSAP3-64",
+    "title": "Jump Game II",
+    "parentTopic": "DSAP3-62 - Greedy Scheduling & Jump Game"
+  },
+  {
+    "taskId": "DSAP3-65",
+    "title": "Gas Station",
+    "parentTopic": "DSAP3-62 - Greedy Scheduling & Jump Game"
+  },
+  {
+    "taskId": "DSAP3-66",
+    "title": "Minimum Number of Arrows to Burst Balloons",
+    "parentTopic": "DSAP3-62 - Greedy Scheduling & Jump Game"
+  },
+  {
+    "taskId": "DSAP3-67",
+    "title": "Task Scheduler",
+    "parentTopic": "DSAP3-62 - Greedy Scheduling & Jump Game"
+  },
+  {
+    "taskId": "DSAP3-69",
+    "title": "Subsets",
+    "parentTopic": "DSAP3-68 - Backtracking (Subsets/Combinations)"
+  },
+  {
+    "taskId": "DSAP3-70",
+    "title": "Subsets II",
+    "parentTopic": "DSAP3-68 - Backtracking (Subsets/Combinations)"
+  },
+  {
+    "taskId": "DSAP3-71",
+    "title": "Permutations",
+    "parentTopic": "DSAP3-68 - Backtracking (Subsets/Combinations)"
+  },
+  {
+    "taskId": "DSAP3-72",
+    "title": "Permutations II",
+    "parentTopic": "DSAP3-68 - Backtracking (Subsets/Combinations)"
+  },
+  {
+    "taskId": "DSAP3-73",
+    "title": "Combination Sum",
+    "parentTopic": "DSAP3-68 - Backtracking (Subsets/Combinations)"
+  },
+  {
+    "taskId": "DSAP3-74",
+    "title": "Combination Sum II",
+    "parentTopic": "DSAP3-68 - Backtracking (Subsets/Combinations)"
+  },
+  {
+    "taskId": "DSAP3-75",
+    "title": "Combination Sum III",
+    "parentTopic": "DSAP3-68 - Backtracking (Subsets/Combinations)"
+  },
+  {
+    "taskId": "DSAP3-76",
+    "title": "N-Queens",
+    "parentTopic": "DSAP3-68 - Backtracking (Subsets/Combinations)"
+  },
+  {
+    "taskId": "DSAP3-77",
+    "title": "Sudoku Solver",
+    "parentTopic": "DSAP3-68 - Backtracking (Subsets/Combinations)"
+  },
+  {
+    "taskId": "DSAP3-78",
+    "title": "Word Search",
+    "parentTopic": "DSAP3-68 - Backtracking (Subsets/Combinations)"
+  },
+  {
+    "taskId": "DSAP3-80",
+    "title": "Burst Balloons",
+    "parentTopic": "DSAP3-79 - Interval DP & State Machine DP"
+  },
+  {
+    "taskId": "DSAP3-81",
+    "title": "Guess Number Higher or Lower II",
+    "parentTopic": "DSAP3-79 - Interval DP & State Machine DP"
+  },
+  {
+    "taskId": "DSAP3-82",
+    "title": "Palindrome Partitioning II",
+    "parentTopic": "DSAP3-79 - Interval DP & State Machine DP"
+  },
+  {
+    "taskId": "DSAP3-83",
+    "title": "House Robber",
+    "parentTopic": "DSAP3-79 - Interval DP & State Machine DP"
+  },
+  {
+    "taskId": "DSAP3-84",
+    "title": "House Robber II",
+    "parentTopic": "DSAP3-79 - Interval DP & State Machine DP"
+  },
+  {
+    "taskId": "DSAP3-85",
+    "title": "Best Time to Buy and Sell Stock with Cooldown",
+    "parentTopic": "DSAP3-79 - Interval DP & State Machine DP"
+  },
+  {
+    "taskId": "DSAP3-86",
+    "title": "Best Time to Buy and Sell Stock with Transaction Fee",
+    "parentTopic": "DSAP3-79 - Interval DP & State Machine DP"
+  },
+  {
+    "taskId": "DSAP3-87",
+    "title": "Best Time to Buy and Sell Stock III",
+    "parentTopic": "DSAP3-79 - Interval DP & State Machine DP"
+  },
+  {
+    "taskId": "DSAP3-88",
+    "title": "Best Time to Buy and Sell Stock IV",
+    "parentTopic": "DSAP3-79 - Interval DP & State Machine DP"
+  },
+  {
+    "taskId": "DSAP3-89",
+    "title": "Paint Fence",
+    "parentTopic": "DSAP3-79 - Interval DP & State Machine DP"
+  },
+  {
+    "taskId": "DSAP3-91",
+    "title": "Longest Common Subsequence",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP3-92",
+    "title": "Longest Palindromic Subsequence",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP3-93",
+    "title": "Edit Distance",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP3-94",
+    "title": "Longest Increasing Subsequence",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP3-95",
+    "title": "Russian Doll Envelopes",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP3-96",
+    "title": "Number of Longest Increasing Subsequences",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP3-97",
+    "title": "Distinct Subsequences",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP3-98",
+    "title": "Delete Operation for Two Strings",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP3-99",
+    "title": "Shortest Common Supersequence",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP2-100",
+    "title": "Find Median from Data Stream",
+    "parentTopic": "DSAP2-99 - Two Heap Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-101",
+    "title": "Sliding Window Median",
+    "parentTopic": "DSAP2-99 - Two Heap Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-102",
+    "title": "IPO",
+    "parentTopic": "DSAP2-99 - Two Heap Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-104",
+    "title": "Meeting Rooms II",
+    "parentTopic": "DSAP2-103 - Scheduling Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-105",
+    "title": "Task Scheduler",
+    "parentTopic": "DSAP2-103 - Scheduling Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-106",
+    "title": "Maximum Number of Events That Can Be Attended",
+    "parentTopic": "DSAP2-103 - Scheduling Pattern - Heap"
+  },
+  {
+    "taskId": "DSAP2-108",
+    "title": "Design Twitter",
+    "parentTopic": "DSAP2-107 - Design - Heap"
+  },
+  {
+    "taskId": "DSAP2-109",
+    "title": "Seat Reservation Manager",
+    "parentTopic": "DSAP2-107 - Design - Heap"
+  },
+  {
+    "taskId": "DSAP2-111",
+    "title": "Factorial",
+    "parentTopic": "DSAP2-110 - Fundamentals - Recursion"
+  },
+  {
+    "taskId": "DSAP2-112",
+    "title": "Fibonacci",
+    "parentTopic": "DSAP2-110 - Fundamentals - Recursion"
+  },
+  {
+    "taskId": "DSAP2-113",
+    "title": "Power Function",
+    "parentTopic": "DSAP2-110 - Fundamentals - Recursion"
+  },
+  {
+    "taskId": "DSAP2-114",
+    "title": "Sum of Array",
+    "parentTopic": "DSAP2-110 - Fundamentals - Recursion"
+  },
+  {
+    "taskId": "DSAP2-115",
+    "title": "Reverse String",
+    "parentTopic": "DSAP2-110 - Fundamentals - Recursion"
+  },
+  {
+    "taskId": "DSAP2-117",
+    "title": "Generate Parentheses",
+    "parentTopic": "DSAP2-116 - Tree-style Recursion - Recursion"
+  },
+  {
+    "taskId": "DSAP2-118",
+    "title": "Letter Combinations of a Phone Number",
+    "parentTopic": "DSAP2-116 - Tree-style Recursion - Recursion"
+  },
+  {
+    "taskId": "DSAP2-119",
+    "title": "Permutations",
+    "parentTopic": "DSAP2-116 - Tree-style Recursion - Recursion"
+  },
+  {
+    "taskId": "DSAP2-120",
+    "title": "Subsets",
+    "parentTopic": "DSAP2-116 - Tree-style Recursion - Recursion"
+  },
+  {
+    "taskId": "DSAP2-121",
+    "title": "Combination Sum",
+    "parentTopic": "DSAP2-116 - Tree-style Recursion - Recursion"
+  },
+  {
+    "taskId": "DSAP2-123",
+    "title": "Merge Sort",
+    "parentTopic": "DSAP2-122 - Divide & Conquer - Recursion"
+  },
+  {
+    "taskId": "DSAP2-124",
+    "title": "Quick Sort",
+    "parentTopic": "DSAP2-122 - Divide & Conquer - Recursion"
+  },
+  {
+    "taskId": "DSAP2-125",
+    "title": "Pow(x, n)",
+    "parentTopic": "DSAP2-122 - Divide & Conquer - Recursion"
+  },
+  {
+    "taskId": "DSAP2-126",
+    "title": "Search in Rotated Sorted Array (recursive variant)",
+    "parentTopic": "DSAP2-122 - Divide & Conquer - Recursion"
+  },
+  {
+    "taskId": "DSAP2-128",
+    "title": "Reverse Linked List",
+    "parentTopic": "DSAP2-127 - Recursive Linked List - Recursion"
+  },
+  {
+    "taskId": "DSAP2-129",
+    "title": "Swap Nodes in Pairs",
+    "parentTopic": "DSAP2-127 - Recursive Linked List - Recursion"
+  },
+  {
+    "taskId": "DSAP2-130",
+    "title": "Merge Two Sorted Lists",
+    "parentTopic": "DSAP2-127 - Recursive Linked List - Recursion"
+  },
+  {
+    "taskId": "DSAP2-132",
+    "title": "Josephus Problem",
+    "parentTopic": "DSAP2-131 - Advanced Recursion - Recursion"
+  },
+  {
+    "taskId": "DSAP2-133",
+    "title": "Tower of Hanoi",
+    "parentTopic": "DSAP2-131 - Advanced Recursion - Recursion"
+  },
+  {
+    "taskId": "DSAP2-134",
+    "title": "Recursive Bubble Sort (conceptual exercise)",
+    "parentTopic": "DSAP2-131 - Advanced Recursion - Recursion"
+  },
+  {
+    "taskId": "DSAP3-100",
+    "title": "Interleaving String",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP3-101",
+    "title": "Minimum ASCII Delete Sum for Two Strings",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)"
+  },
+  {
+    "taskId": "DSAP3-103",
+    "title": "Implement Trie (Prefix Tree)",
+    "parentTopic": "DSAP3-102 - Trie (Prefix Tree) Design & Applications"
+  },
+  {
+    "taskId": "DSAP3-104",
+    "title": "Design Add and Search Words Data Structure",
+    "parentTopic": "DSAP3-102 - Trie (Prefix Tree) Design & Applications"
+  },
+  {
+    "taskId": "DSAP3-105",
+    "title": "Word Search II",
+    "parentTopic": "DSAP3-102 - Trie (Prefix Tree) Design & Applications"
+  },
+  {
+    "taskId": "DSAP3-106",
+    "title": "Replace Words",
+    "parentTopic": "DSAP3-102 - Trie (Prefix Tree) Design & Applications"
+  },
+  {
+    "taskId": "DSAP3-107",
+    "title": "Map Sum Pairs",
+    "parentTopic": "DSAP3-102 - Trie (Prefix Tree) Design & Applications"
+  },
+  {
+    "taskId": "DSAP3-108",
+    "title": "Prefix and Suffix Search",
+    "parentTopic": "DSAP3-102 - Trie (Prefix Tree) Design & Applications"
+  },
+  {
+    "taskId": "DSAP3-110",
+    "title": "Single Number",
+    "parentTopic": "DSAP3-109 - Bit Manipulation & Bitmasking"
+  },
+  {
+    "taskId": "DSAP3-111",
+    "title": "Single Number II",
+    "parentTopic": "DSAP3-109 - Bit Manipulation & Bitmasking"
+  },
+  {
+    "taskId": "DSAP3-112",
+    "title": "Single Number III",
+    "parentTopic": "DSAP3-109 - Bit Manipulation & Bitmasking"
+  },
+  {
+    "taskId": "DSAP3-113",
+    "title": "Counting Bits",
+    "parentTopic": "DSAP3-109 - Bit Manipulation & Bitmasking"
+  },
+  {
+    "taskId": "DSAP3-114",
+    "title": "Reverse Bits",
+    "parentTopic": "DSAP3-109 - Bit Manipulation & Bitmasking"
+  },
+  {
+    "taskId": "DSAP3-115",
+    "title": "Number of 1 Bits",
+    "parentTopic": "DSAP3-109 - Bit Manipulation & Bitmasking"
+  },
+  {
+    "taskId": "DSAP3-116",
+    "title": "Bitwise AND of Numbers Range",
+    "parentTopic": "DSAP3-109 - Bit Manipulation & Bitmasking"
+  },
+  {
+    "taskId": "DSAP3-117",
+    "title": "Sum of Two Integers",
+    "parentTopic": "DSAP3-109 - Bit Manipulation & Bitmasking"
+  },
+  {
+    "taskId": "DSAP3-119",
+    "title": "Count Primes",
+    "parentTopic": "DSAP3-118 - Math & Number Theory (Optional Fundamentals)"
+  },
+  {
+    "taskId": "DSAP3-120",
+    "title": "Greatest Common Divisor of Strings",
+    "parentTopic": "DSAP3-118 - Math & Number Theory (Optional Fundamentals)"
+  },
+  {
+    "taskId": "DSAP3-121",
+    "title": "Pow(x, n)",
+    "parentTopic": "DSAP3-118 - Math & Number Theory (Optional Fundamentals)"
+  },
+  {
+    "taskId": "DSAP3-122",
+    "title": "Happy Number",
+    "parentTopic": "DSAP3-118 - Math & Number Theory (Optional Fundamentals)"
+  },
+  {
+    "taskId": "DSAP3-123",
+    "title": "Factorial Trailing Zeroes",
+    "parentTopic": "DSAP3-118 - Math & Number Theory (Optional Fundamentals)"
+  },
+  {
+    "taskId": "DSAP3-124",
+    "title": "Palindrome Number",
+    "parentTopic": "DSAP3-118 - Math & Number Theory (Optional Fundamentals)"
+  },
+  {
+    "taskId": "DSAP3-125",
+    "title": "Roman to Integer",
+    "parentTopic": "DSAP3-118 - Math & Number Theory (Optional Fundamentals)"
+  }
+]

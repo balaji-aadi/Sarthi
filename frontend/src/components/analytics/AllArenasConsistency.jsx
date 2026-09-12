@@ -17,9 +17,17 @@ const AllArenasConsistency = () => {
             try {
                 const res = await ProjectApi.getAllProjects();
                 const fetchedProjects = res.data?.data || [];
-                setProjects(fetchedProjects);
+                
+                // Only show active arenas (arenas with dates / scheduled)
+                const activeProjects = fetchedProjects.filter(p => {
+                    return p.isScheduled === true || Boolean(p.startDate && p.endDate) || Boolean(p.userSchedule);
+                });
 
-                const statsPromises = fetchedProjects.map(async (project) => {
+                // Natural sort (e.g. LLD Phase 1, Phase 2...)
+                activeProjects.sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { numeric: true, sensitivity: 'base' }));
+                setProjects(activeProjects);
+
+                const statsPromises = activeProjects.map(async (project) => {
                     try {
                         const statsRes = await AnalyticsApi.getProjectHealth({ projectId: project._id, period: 'daily' });
                         return { projectId: project._id, stats: statsRes.data?.data || [] };
@@ -49,48 +57,50 @@ const AllArenasConsistency = () => {
         : projects.filter(p => p._id === selectedArenaId);
 
     return (
-        <div className="bg-white p-4 sm:p-6 rounded-[2rem] border border-slate-100 shadow-lg shadow-slate-100/50 mt-6 transition-all w-full">
+        <div className="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-lg shadow-slate-100/50 dark:shadow-none mt-6 transition-all w-full">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div>
                     <div className="flex items-center gap-2.5 mb-0.5">
-                        <div className="w-8 h-8 bg-vermilion-50 rounded-xl flex items-center justify-center text-primary border border-vermilion-100">
+                        <div className="w-8 h-8 bg-vermilion-50 dark:bg-primary/15 rounded-xl flex items-center justify-center text-primary border border-vermilion-100 dark:border-primary/30">
                             <IoBriefcaseOutline size={18} />
                         </div>
-                        <h3 className="text-lg font-black text-slate-800 tracking-tight">Arenas Consistency Heatmaps</h3>
+                        <h3 className="text-lg font-black text-slate-800 dark:text-white tracking-tight">Active Arenas Consistency Heatmaps</h3>
                     </div>
-                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest pl-10">
-                        Activity & momentum breakdown across all project arenas
+                    <p className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest pl-10">
+                        Activity & momentum breakdown across active scheduled arenas
                     </p>
                 </div>
 
                 {/* Arena Filter Pills */}
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none max-w-full">
-                    <button
-                        onClick={() => setSelectedArenaId('all')}
-                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all whitespace-nowrap shrink-0 ${
-                            selectedArenaId === 'all' 
-                                ? 'bg-slate-900 text-white shadow-sm' 
-                                : 'bg-slate-100 text-slate-500 hover:text-slate-800'
-                        }`}
-                    >
-                        All Arenas ({projects.length})
-                    </button>
-                    {projects.map(p => (
+                {projects.length > 0 && (
+                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none max-w-full">
                         <button
-                            key={p._id}
-                            onClick={() => setSelectedArenaId(p._id)}
-                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
-                                selectedArenaId === p._id 
-                                    ? 'bg-primary text-white shadow-sm' 
-                                    : 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-800 border border-slate-100'
+                            onClick={() => setSelectedArenaId('all')}
+                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all whitespace-nowrap shrink-0 cursor-pointer ${
+                                selectedArenaId === 'all' 
+                                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm' 
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
                             }`}
                         >
-                            <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
-                            <span>{p.name}</span>
+                            All Active Arenas ({projects.length})
                         </button>
-                    ))}
-                </div>
+                        {projects.map(p => (
+                            <button
+                                key={p._id}
+                                onClick={() => setSelectedArenaId(p._id)}
+                                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5 cursor-pointer ${
+                                    selectedArenaId === p._id 
+                                        ? 'bg-primary text-white shadow-sm' 
+                                        : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-white border border-slate-100 dark:border-slate-700/60'
+                                }`}
+                            >
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
+                                <span>{p.name}</span>
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Loading State */}
@@ -100,9 +110,9 @@ const AllArenasConsistency = () => {
                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest animate-pulse">Loading Arena Consistency Data...</p>
                 </div>
             ) : projects.length === 0 ? (
-                <div className="py-10 text-center text-slate-400 border-2 border-dashed border-slate-100 rounded-2xl">
-                    <p className="text-xs font-bold">No Arenas Available</p>
-                    <p className="text-[9px] uppercase tracking-widest mt-1">Create an arena to start tracking consistency maps</p>
+                <div className="py-10 text-center text-slate-400 border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-2xl">
+                    <p className="text-xs font-bold text-slate-700 dark:text-slate-300">No Active Arenas Scheduled</p>
+                    <p className="text-[10px] uppercase tracking-widest text-slate-400 mt-1">Schedule an arena to start tracking consistency maps</p>
                 </div>
             ) : (
                 /* Compact Arenas Grid */

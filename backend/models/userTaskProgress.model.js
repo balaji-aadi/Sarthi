@@ -18,6 +18,35 @@ const revisionLogSchema = new Schema(
   { _id: false }
 );
 
+const solveAttemptSchema = new Schema(
+  {
+    attemptedAt: { type: Date, default: Date.now },
+    durationMinutes: { type: Number, default: 0 },
+    outcome: {
+      type: String,
+      enum: [
+        "SOLVED_INDEPENDENT",
+        "SOLVED_WITH_HINTS",
+        "SOLVED_WITH_SOLUTION",
+        "UNSOLVED"
+      ],
+      required: true
+    },
+    confidence: {
+      type: String,
+      enum: ["LOW", "MEDIUM", "HIGH"],
+      required: true
+    },
+    notes: { type: String, default: "" },
+    focusSessionId: {
+      type: Schema.Types.ObjectId,
+      ref: "FocusSession",
+      default: null
+    }
+  },
+  { _id: true }
+);
+
 const userTaskProgressSchema = new Schema(
   {
     userId: {
@@ -70,8 +99,41 @@ const userTaskProgressSchema = new Schema(
       type: Date,
       default: null
     },
+    latestOutcome: {
+      type: String,
+      enum: [
+        "SOLVED_INDEPENDENT",
+        "SOLVED_WITH_HINTS",
+        "SOLVED_WITH_SOLUTION",
+        "UNSOLVED",
+        null
+      ],
+      default: null
+    },
+    latestConfidence: {
+      type: String,
+      enum: ["LOW", "MEDIUM", "HIGH", null],
+      default: null
+    },
     activityLogs: [activityLogSchema],
-    revisionLogs: [revisionLogSchema]
+    revisionLogs: [revisionLogSchema],
+    solveHistory: [solveAttemptSchema],
+    lldSubmissions: [
+      {
+        language: { type: String, required: true },
+        code: { type: String, required: true },
+        status: { type: String, required: true },
+        executionTimeMs: { type: Number, default: 0 },
+        stdout: { type: String, default: "" },
+        stderr: { type: String, default: "" },
+        submittedAt: { type: Date, default: Date.now }
+      }
+    ],
+    lastSubmittedCode: {
+      type: Map,
+      of: String,
+      default: {}
+    }
   },
   {
     timestamps: true,

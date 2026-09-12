@@ -59,32 +59,7 @@ const ProjectOverview = () => {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-textMain">{project.name} Overview</h1>
-                <div className="flex flex-wrap items-center gap-4 text-xs mt-3">
-                    <span className="font-semibold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">
-                        Timeline: {moment(project.startDate).format("DD MMM YYYY")} - {moment(project.endDate).format("DD MMM YYYY")}
-                    </span>
-                    {project.status === 'completed' && project.completedAt && (() => {
-                        const completed = moment(project.completedAt);
-                        const due = moment(project.endDate);
-                        const completedStr = completed.format("DD MMM YYYY");
-                        if (completed.isAfter(due)) {
-                            const diffMonths = completed.diff(due, 'months', true);
-                            const delayText = diffMonths >= 0.1 ? `+${diffMonths.toFixed(1)} months` : `+${completed.diff(due, 'days')} days`;
-                            return (
-                                <span className="font-bold text-rose-600 bg-rose-50 border border-rose-100 px-3 py-1 rounded-lg">
-                                    Completed: {completedStr} ({delayText} late)
-                                </span>
-                            );
-                        } else {
-                            return (
-                                <span className="font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-lg">
-                                    Completed: {completedStr} (On Time)
-                                </span>
-                            );
-                        }
-                    })()}
-                </div>
+                <h1 className="text-2xl font-bold text-textMain dark:text-white">{project.name} Overview</h1>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

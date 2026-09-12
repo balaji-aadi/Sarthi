@@ -17,7 +17,11 @@ export function ThemeProvider({ children }) {
   }, [theme]);
 
   const toggleTheme = () => {
+    document.documentElement.classList.add("theme-transitioning");
     setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
+    window.setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning");
+    }, 350);
   };
 
   return (

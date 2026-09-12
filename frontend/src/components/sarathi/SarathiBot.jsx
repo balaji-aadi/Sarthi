@@ -140,13 +140,13 @@ const SarathiBot = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-            className="absolute bottom-20 right-0 w-[380px] max-w-[calc(100vw-2rem)] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/60 dark:border-slate-800/80 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 overflow-hidden flex flex-col"
+            className="absolute bottom-24 right-0 w-[380px] max-w-[calc(100vw-2rem)] max-h-[min(560px,calc(100vh-140px))] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 rounded-[2.5rem] shadow-2xl shadow-slate-900/20 overflow-hidden flex flex-col z-20"
           >
             {/* Header */}
-            <div className="p-6 bg-slate-800 dark:bg-slate-950 text-white flex justify-between items-center relative overflow-hidden">
+            <div className="p-5 bg-slate-800 dark:bg-slate-950 text-white flex justify-between items-center relative overflow-hidden shrink-0">
               <div className="absolute top-[-10%] right-[-10%] w-[150px] h-[150px] bg-primary/10 rounded-full blur-[40px] pointer-events-none" />
               <div className="flex items-center gap-3 relative z-10">
-                <div className="w-12 h-12 rounded-2xl overflow-hidden bg-primary border-2 border-white/20 shadow-md">
+                <div className="w-11 h-11 rounded-2xl overflow-hidden bg-primary border-2 border-white/20 shadow-md shrink-0">
                   {/* Little Krishna circular 3D render avatar */}
                   <img
                     src="/little_krishna.jpeg"
@@ -161,23 +161,23 @@ const SarathiBot = () => {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors relative z-10"
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors relative z-10 cursor-pointer"
               >
                 <IoClose size={16} />
               </button>
             </div>
 
             {/* Content Area */}
-            <div className="p-6 space-y-5 max-h-[450px] overflow-y-auto custom-scrollbar">
+            <div className="p-5 space-y-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar">
 
               {/* Gita Shlok Card */}
               <AnimatePresence initial={false}>
                 {!isShlokHidden ? (
                   <motion.div
                     initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                    animate={{ opacity: 1, height: 'auto', marginBottom: 20 }}
+                    animate={{ opacity: 1, height: 'auto', marginBottom: 16 }}
                     exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                    className="bg-slate-50 dark:bg-slate-950/40 rounded-3xl p-5 border border-slate-100 dark:border-slate-800/50 relative overflow-hidden group"
+                    className="bg-slate-50 dark:bg-slate-950/40 rounded-3xl p-4 sm:p-5 border border-slate-100 dark:border-slate-800/50 relative overflow-hidden group"
                   >
                     <div className="absolute top-3 right-3 text-[9px] font-black text-slate-300 dark:text-slate-700 uppercase tracking-widest">
                       Gita Ch.{shlok.chapter} V.{shlok.verse}
@@ -192,7 +192,7 @@ const SarathiBot = () => {
                     {/* Acknowledge & Hide button */}
                     <button
                       onClick={handleDismissShlok}
-                      className="mt-3.5 w-full py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/20 text-slate-500 hover:text-primary text-[8px] font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-1.5"
+                      className="mt-3 w-full py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary/20 text-slate-500 hover:text-primary text-[8px] font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <IoEyeOffOutline size={12} /> Acknowledge & Gain Space
                     </button>
@@ -200,7 +200,7 @@ const SarathiBot = () => {
                 ) : (
                   <button
                     onClick={handleShowShlok}
-                    className="w-full py-2 bg-slate-50 dark:bg-slate-950/20 border border-dashed border-slate-200 dark:border-slate-800 text-slate-400 hover:text-primary text-[9px] font-black uppercase tracking-widest rounded-2xl transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2 bg-slate-50 dark:bg-slate-950/20 border border-dashed border-slate-200 dark:border-slate-800 text-slate-400 hover:text-primary text-[9px] font-black uppercase tracking-widest rounded-2xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <IoBookOutline size={12} /> Show Daily Gita Counsel
                   </button>
@@ -209,8 +209,8 @@ const SarathiBot = () => {
 
               {/* Revision Goal Alert (Most Important: 2 Questions Daily) */}
               <div className={`p-4 rounded-3xl border transition-all ${todayRevisions >= 2
-                  ? 'bg-emerald-50/50 border-emerald-100 text-emerald-800 dark:bg-emerald-950/10 dark:border-emerald-900/30'
-                  : 'bg-rose-50/60 border-rose-100/60 text-rose-800 dark:bg-rose-950/10 dark:border-rose-900/20'
+                  ? 'bg-emerald-50/50 border-emerald-100 text-emerald-800 dark:bg-emerald-950/20 dark:border-emerald-900/30'
+                  : 'bg-rose-50/60 border-rose-100/60 text-rose-800 dark:bg-rose-950/20 dark:border-rose-900/30'
                 }`}>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-[9px] font-black uppercase tracking-wider">Revision Goal (Min 2 Daily)</span>
@@ -222,7 +222,7 @@ const SarathiBot = () => {
                 <div className="flex gap-2.5 items-start">
                   <div className="text-lg mt-0.5">📚</div>
                   <div>
-                    <p className="text-[11px] font-extrabold leading-relaxed">
+                    <p className="text-[11px] font-extrabold leading-relaxed text-slate-800 dark:text-slate-200">
                       {todayRevisions >= 2
                         ? `Wonderful! You have revised ${todayRevisions} problems today. Your mind is sharp and steadfast.`
                         : `Arjuna, revision is your focus anchor. You have only revised ${todayRevisions}/2 problems today. Complete at least 2 questions to solidify your wisdom.`}
@@ -232,65 +232,65 @@ const SarathiBot = () => {
               </div>
 
               {/* Status Metrics Dashboard */}
-              <div className="space-y-3 pt-1">
+              <div className="space-y-2.5 pt-1">
                 <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Your Stats Summary</h4>
 
                 {/* Yesterday hours evaluate (Min 4h, Max 8h) */}
-                <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-950/40 rounded-2xl border border-slate-100 dark:border-slate-800/50">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-primary">
+                <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-950/40 rounded-2xl border border-slate-100 dark:border-slate-800/50">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="p-2 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-primary shrink-0">
                       <IoCalendarOutline size={15} />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-[9px] font-black uppercase text-slate-400 tracking-wider leading-none">Yesterday Study</p>
-                      <p className="text-[11px] font-extrabold text-slate-700 dark:text-slate-300 mt-1">
+                      <p className="text-[11px] font-extrabold text-slate-700 dark:text-slate-200 mt-1 truncate">
                         {formatHours(yesterdayHours)} logged
                       </p>
                     </div>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider ${yesterdayHours < 4
-                      ? 'bg-rose-50 text-rose-600 border border-rose-100'
+                  <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider whitespace-nowrap shrink-0 ${yesterdayHours < 4
+                      ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40'
                       : yesterdayHours > 8
-                        ? 'bg-amber-50 text-amber-600 border border-amber-100'
-                        : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                        ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-100 dark:border-amber-900/40'
+                        : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40'
                     }`}>
                     {yesterdayHours < 4 ? 'Below Goal' : yesterdayHours > 8 ? 'Overworked' : 'On Track'}
                   </span>
                 </div>
 
                 {/* Today Focus Status */}
-                <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-950/40 rounded-2xl border border-slate-100 dark:border-slate-800/50">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-emerald-500">
+                <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-950/40 rounded-2xl border border-slate-100 dark:border-slate-800/50">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="p-2 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-emerald-500 shrink-0">
                       <IoTimeOutline size={15} />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-[9px] font-black uppercase text-slate-400 tracking-wider leading-none">Today's Focus</p>
-                      <p className="text-[11px] font-extrabold text-slate-700 dark:text-slate-300 mt-1">
+                      <p className="text-[11px] font-extrabold text-slate-700 dark:text-slate-200 mt-1 truncate">
                         {todayFocusMinutes} Minutes focused
                       </p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-black text-slate-400">Today</span>
+                  <span className="text-[10px] font-black text-slate-400 shrink-0">Today</span>
                 </div>
 
                 {/* Pending Revisions count */}
                 {pendingRevisions > 0 && (
-                  <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-950/40 rounded-2xl border border-slate-100 dark:border-slate-800/50">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-rose-500">
+                  <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-950/40 rounded-2xl border border-slate-100 dark:border-slate-800/50">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="p-2 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-rose-500 shrink-0">
                         <IoTrendingUpOutline size={15} />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-[9px] font-black uppercase text-slate-400 tracking-wider leading-none">Overdue Tasks</p>
-                        <p className="text-[11px] font-extrabold text-slate-700 dark:text-slate-300 mt-1">
+                        <p className="text-[11px] font-extrabold text-slate-700 dark:text-slate-200 mt-1 truncate">
                           {pendingRevisions} Revisions pending
                         </p>
                       </div>
                     </div>
                     <button
                       onClick={() => { setIsOpen(false); navigate('/revision'); }}
-                      className="text-[9px] font-black text-rose-600 hover:underline uppercase tracking-wider"
+                      className="text-[9px] font-black text-rose-600 dark:text-rose-400 hover:underline uppercase tracking-wider shrink-0 cursor-pointer"
                     >
                       View Desk
                     </button>
@@ -300,7 +300,7 @@ const SarathiBot = () => {
             </div>
 
             {/* Quick Actions Footer */}
-            <div className="p-5 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-950/20 flex gap-2">
+            <div className="p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-slate-950/50 flex gap-2 shrink-0">
               <button
                 onClick={() => {
                   setIsOpen(false);
@@ -311,13 +311,13 @@ const SarathiBot = () => {
                   }
                   navigate('/focus-timer');
                 }}
-                className={`flex-1 py-2.5 px-4 bg-primary text-white hover:bg-primaryHover text-[10px] font-black uppercase tracking-wider rounded-xl transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-1.5 active:scale-95 ${isRevisionLocked ? 'opacity-50' : ''}`}
+                className={`flex-1 py-2.5 px-3 bg-primary text-white hover:bg-primaryHover text-[10px] font-black uppercase tracking-wider rounded-xl transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${isRevisionLocked ? 'opacity-50' : ''}`}
               >
                 Focus Session <IoArrowForward size={12} />
               </button>
               <button
                 onClick={() => { setIsOpen(false); navigate('/revision'); }}
-                className="flex-1 py-2.5 px-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 border border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                className="flex-1 py-2.5 px-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
               >
                 Revision Desk
               </button>

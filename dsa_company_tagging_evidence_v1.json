@@ -1,0 +1,3070 @@
+{
+  "metadata": {
+    "generatedAt": "2026-09-09T15:41:19.707Z",
+    "dataset": "dsa_company_tagging_researched_v1.json",
+    "totalAssociations": 382,
+    "exactCount": 145,
+    "variationOrPatternCount": 1,
+    "companyTaggedDatasetCount": 236,
+    "flaggedCount": 0
+  },
+  "evidenceRecords": [
+    {
+      "taskId": "DSA-3",
+      "company": "Flipkart",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/flipkart.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Flipkart)",
+      "notes": "Curated historical interview dataset indexes Maximum Points you can obtain from cards (maximum-points-you-can-obtain-from-cards) under Flipkart."
+    },
+    {
+      "taskId": "DSA-3",
+      "company": "Uber",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/uber.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Uber)",
+      "notes": "Curated historical interview dataset indexes Maximum Points you can obtain from cards (maximum-points-you-can-obtain-from-cards) under Uber."
+    },
+    {
+      "taskId": "DSA-4",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+      "sourceTitle": "LeetCode Canonical Problem: Longest substring without repeating characters",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-4",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+      "sourceTitle": "LeetCode Canonical Problem: Longest substring without repeating characters",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-6",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Maximum consecutive ones ||| (max-consecutive-ones-iii) under Meta."
+    },
+    {
+      "taskId": "DSA-7",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Fruit into baskets (fruit-into-baskets) under Amazon."
+    },
+    {
+      "taskId": "DSA-7",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Fruit into baskets (fruit-into-baskets) under Google."
+    },
+    {
+      "taskId": "DSA-11",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Longest substring with atmost k distinct character (longest-substring-with-at-most-k-distinct-characters) under Google."
+    },
+    {
+      "taskId": "DSA-11",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Longest substring with atmost k distinct character (longest-substring-with-at-most-k-distinct-characters) under Meta."
+    },
+    {
+      "taskId": "DSA-12",
+      "company": "PayPal",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/paypal.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (PayPal)",
+      "notes": "Curated historical interview dataset indexes Number of substrings containing all 3 characters (number-of-substrings-containing-all-three-characters) under PayPal."
+    },
+    {
+      "taskId": "DSA-15",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Subarrays with k different integers (subarrays-with-k-different-integers) under Amazon."
+    },
+    {
+      "taskId": "DSA-16",
+      "company": "Airbnb",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/minimum-window-substring/",
+      "sourceTitle": "LeetCode Canonical Problem: Minimum window substring",
+      "notes": "Exact canonical problem historically asked in Airbnb technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-16",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/minimum-window-substring/",
+      "sourceTitle": "LeetCode Canonical Problem: Minimum window substring",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-16",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/minimum-window-substring/",
+      "sourceTitle": "LeetCode Canonical Problem: Minimum window substring",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-16",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/minimum-window-substring/",
+      "sourceTitle": "LeetCode Canonical Problem: Minimum window substring",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-16",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/minimum-window-substring/",
+      "sourceTitle": "LeetCode Canonical Problem: Minimum window substring",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-19",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum II (sorted)",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-19",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum II (sorted)",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-19",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum II (sorted)",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-19",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum II (sorted)",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-19",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum II (sorted)",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-19",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum II (sorted)",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-20",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Remove duplicates from sorted array (remove-duplicates-from-sorted-array) under Adobe."
+    },
+    {
+      "taskId": "DSA-20",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Remove duplicates from sorted array (remove-duplicates-from-sorted-array) under Amazon."
+    },
+    {
+      "taskId": "DSA-20",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Remove duplicates from sorted array (remove-duplicates-from-sorted-array) under Apple."
+    },
+    {
+      "taskId": "DSA-20",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Remove duplicates from sorted array (remove-duplicates-from-sorted-array) under Google."
+    },
+    {
+      "taskId": "DSA-20",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Remove duplicates from sorted array (remove-duplicates-from-sorted-array) under Meta."
+    },
+    {
+      "taskId": "DSA-20",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Remove duplicates from sorted array (remove-duplicates-from-sorted-array) under Microsoft."
+    },
+    {
+      "taskId": "DSA-21",
+      "company": "Airbnb",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/airbnb.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Airbnb)",
+      "notes": "Curated historical interview dataset indexes Container with most water (container-with-most-water) under Airbnb."
+    },
+    {
+      "taskId": "DSA-22",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/3sum/",
+      "sourceTitle": "LeetCode Canonical Problem: 3Sum",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-22",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/3sum/",
+      "sourceTitle": "LeetCode Canonical Problem: 3Sum",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-22",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/3sum/",
+      "sourceTitle": "LeetCode Canonical Problem: 3Sum",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-22",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/3sum/",
+      "sourceTitle": "LeetCode Canonical Problem: 3Sum",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-22",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/3sum/",
+      "sourceTitle": "LeetCode Canonical Problem: 3Sum",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-22",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/3sum/",
+      "sourceTitle": "LeetCode Canonical Problem: 3Sum",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-23",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes 4Sum (4sum) under Adobe."
+    },
+    {
+      "taskId": "DSA-23",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes 4Sum (4sum) under Amazon."
+    },
+    {
+      "taskId": "DSA-23",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes 4Sum (4sum) under Apple."
+    },
+    {
+      "taskId": "DSA-23",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes 4Sum (4sum) under Meta."
+    },
+    {
+      "taskId": "DSA-24",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Move zeroes (move-zeroes) under Adobe."
+    },
+    {
+      "taskId": "DSA-24",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Move zeroes (move-zeroes) under Apple."
+    },
+    {
+      "taskId": "DSA-24",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Move zeroes (move-zeroes) under Google."
+    },
+    {
+      "taskId": "DSA-24",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Move zeroes (move-zeroes) under Meta."
+    },
+    {
+      "taskId": "DSA-24",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Move zeroes (move-zeroes) under Microsoft."
+    },
+    {
+      "taskId": "DSA-25",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Amazon."
+    },
+    {
+      "taskId": "DSA-25",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Apple."
+    },
+    {
+      "taskId": "DSA-25",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Google."
+    },
+    {
+      "taskId": "DSA-25",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Meta."
+    },
+    {
+      "taskId": "DSA-25",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Microsoft."
+    },
+    {
+      "taskId": "DSA-26",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Squares of sorted array (squares-of-a-sorted-array) under Adobe."
+    },
+    {
+      "taskId": "DSA-28",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-28",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-28",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-28",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-28",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-28",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-30",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-30",
+      "company": "Airbnb",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum",
+      "notes": "Exact canonical problem historically asked in Airbnb technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-30",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-30",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-30",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-30",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-30",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/two-sum/",
+      "sourceTitle": "LeetCode Canonical Problem: Two Sum",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-31",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Group Anagrams (group-anagrams) under Adobe."
+    },
+    {
+      "taskId": "DSA-31",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Group Anagrams (group-anagrams) under Amazon."
+    },
+    {
+      "taskId": "DSA-31",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Group Anagrams (group-anagrams) under Apple."
+    },
+    {
+      "taskId": "DSA-31",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Group Anagrams (group-anagrams) under Google."
+    },
+    {
+      "taskId": "DSA-31",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Group Anagrams (group-anagrams) under Meta."
+    },
+    {
+      "taskId": "DSA-31",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Group Anagrams (group-anagrams) under Microsoft."
+    },
+    {
+      "taskId": "DSA-32",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
+      "sourceTitle": "LeetCode Canonical Problem: Top K frequent elements",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-32",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
+      "sourceTitle": "LeetCode Canonical Problem: Top K frequent elements",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-32",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
+      "sourceTitle": "LeetCode Canonical Problem: Top K frequent elements",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-33",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Longest consecutive sequence (longest-consecutive-sequence) under Google."
+    },
+    {
+      "taskId": "DSA-34",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Subarray sum equals K (subarray-sum-equals-k) under Meta."
+    },
+    {
+      "taskId": "DSA-34",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Subarray sum equals K (subarray-sum-equals-k) under Microsoft."
+    },
+    {
+      "taskId": "DSA-35",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Happy number (happy-number) under Amazon."
+    },
+    {
+      "taskId": "DSA-35",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Happy number (happy-number) under Apple."
+    },
+    {
+      "taskId": "DSA-35",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Happy number (happy-number) under Meta."
+    },
+    {
+      "taskId": "DSA-36",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Isomorphic strings (isomorphic-strings) under Amazon."
+    },
+    {
+      "taskId": "DSA-36",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Isomorphic strings (isomorphic-strings) under Google."
+    },
+    {
+      "taskId": "DSA-37",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Find the Duplicate Number (find-the-duplicate-number) under Adobe."
+    },
+    {
+      "taskId": "DSA-37",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Find the Duplicate Number (find-the-duplicate-number) under Amazon."
+    },
+    {
+      "taskId": "DSA-37",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Find the Duplicate Number (find-the-duplicate-number) under Google."
+    },
+    {
+      "taskId": "DSA-37",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Find the Duplicate Number (find-the-duplicate-number) under Microsoft."
+    },
+    {
+      "taskId": "DSA-38",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Majority element (majority-element) under Adobe."
+    },
+    {
+      "taskId": "DSA-38",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Majority element (majority-element) under Amazon."
+    },
+    {
+      "taskId": "DSA-38",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Majority element (majority-element) under Apple."
+    },
+    {
+      "taskId": "DSA-38",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Majority element (majority-element) under Google."
+    },
+    {
+      "taskId": "DSA-38",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Majority element (majority-element) under Microsoft."
+    },
+    {
+      "taskId": "DSA-39",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Contains duplicate II (contains-duplicate-ii) under Adobe."
+    },
+    {
+      "taskId": "DSA-39",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Contains duplicate II (contains-duplicate-ii) under Google."
+    },
+    {
+      "taskId": "DSA-41",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Range sum query (range-sum-query-immutable) under Google."
+    },
+    {
+      "taskId": "DSA-41",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Range sum query (range-sum-query-immutable) under Meta."
+    },
+    {
+      "taskId": "DSA-41",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Range sum query (range-sum-query-immutable) under Microsoft."
+    },
+    {
+      "taskId": "DSA-42",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Subarray sum equals K (subarray-sum-equals-k) under Meta."
+    },
+    {
+      "taskId": "DSA-42",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Subarray sum equals K (subarray-sum-equals-k) under Microsoft."
+    },
+    {
+      "taskId": "DSA-43",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Continuous subarray sum (continuous-subarray-sum) under Meta."
+    },
+    {
+      "taskId": "DSA-43",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Continuous subarray sum (continuous-subarray-sum) under Microsoft."
+    },
+    {
+      "taskId": "DSA-46",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Maximum size subarray sum = K (maximum-size-subarray-sum-equals-k) under Meta."
+    },
+    {
+      "taskId": "DSA-49",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Range addition (range-addition) under Google."
+    },
+    {
+      "taskId": "DSA-50",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/product-of-array-except-self/",
+      "sourceTitle": "LeetCode Canonical Problem: Product of array except self",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-50",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/product-of-array-except-self/",
+      "sourceTitle": "LeetCode Canonical Problem: Product of array except self",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-50",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/product-of-array-except-self/",
+      "sourceTitle": "LeetCode Canonical Problem: Product of array except self",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-50",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/product-of-array-except-self/",
+      "sourceTitle": "LeetCode Canonical Problem: Product of array except self",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-50",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/product-of-array-except-self/",
+      "sourceTitle": "LeetCode Canonical Problem: Product of array except self",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-50",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/product-of-array-except-self/",
+      "sourceTitle": "LeetCode Canonical Problem: Product of array except self",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-52",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Maximum subarray (maximum-subarray) under Adobe."
+    },
+    {
+      "taskId": "DSA-52",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Maximum subarray (maximum-subarray) under Amazon."
+    },
+    {
+      "taskId": "DSA-52",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Maximum subarray (maximum-subarray) under Apple."
+    },
+    {
+      "taskId": "DSA-52",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Maximum subarray (maximum-subarray) under Meta."
+    },
+    {
+      "taskId": "DSA-52",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Maximum subarray (maximum-subarray) under Microsoft."
+    },
+    {
+      "taskId": "DSA-53",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Maximum sum circular subarray (maximum-sum-circular-subarray) under Meta."
+    },
+    {
+      "taskId": "DSA-54",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Maximum product subarray (maximum-product-subarray) under Adobe."
+    },
+    {
+      "taskId": "DSA-55",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Best time to buy and sell stock (best-time-to-buy-and-sell-stock) under Adobe."
+    },
+    {
+      "taskId": "DSA-55",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Best time to buy and sell stock (best-time-to-buy-and-sell-stock) under Amazon."
+    },
+    {
+      "taskId": "DSA-55",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Best time to buy and sell stock (best-time-to-buy-and-sell-stock) under Apple."
+    },
+    {
+      "taskId": "DSA-55",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Best time to buy and sell stock (best-time-to-buy-and-sell-stock) under Google."
+    },
+    {
+      "taskId": "DSA-55",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Best time to buy and sell stock (best-time-to-buy-and-sell-stock) under Meta."
+    },
+    {
+      "taskId": "DSA-55",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Best time to buy and sell stock (best-time-to-buy-and-sell-stock) under Microsoft."
+    },
+    {
+      "taskId": "DSA-74",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/merge-intervals/",
+      "sourceTitle": "LeetCode Canonical Problem: Merge intervals",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-74",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/merge-intervals/",
+      "sourceTitle": "LeetCode Canonical Problem: Merge intervals",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-74",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/merge-intervals/",
+      "sourceTitle": "LeetCode Canonical Problem: Merge intervals",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-74",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/merge-intervals/",
+      "sourceTitle": "LeetCode Canonical Problem: Merge intervals",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-74",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/merge-intervals/",
+      "sourceTitle": "LeetCode Canonical Problem: Merge intervals",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-74",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/merge-intervals/",
+      "sourceTitle": "LeetCode Canonical Problem: Merge intervals",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-75",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Insert interval (insert-interval) under Adobe."
+    },
+    {
+      "taskId": "DSA-75",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Insert interval (insert-interval) under Amazon."
+    },
+    {
+      "taskId": "DSA-75",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Insert interval (insert-interval) under Apple."
+    },
+    {
+      "taskId": "DSA-75",
+      "company": "Bloomberg",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/bloomberg.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Bloomberg)",
+      "notes": "Curated historical interview dataset indexes Insert interval (insert-interval) under Bloomberg."
+    },
+    {
+      "taskId": "DSA-75",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Insert interval (insert-interval) under Google."
+    },
+    {
+      "taskId": "DSA-75",
+      "company": "LinkedIn",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/linkedin.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (LinkedIn)",
+      "notes": "Curated historical interview dataset indexes Insert interval (insert-interval) under LinkedIn."
+    },
+    {
+      "taskId": "DSA-75",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Insert interval (insert-interval) under Meta."
+    },
+    {
+      "taskId": "DSA-75",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Insert interval (insert-interval) under Microsoft."
+    },
+    {
+      "taskId": "DSA-75",
+      "company": "Oracle",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/oracle.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Oracle)",
+      "notes": "Curated historical interview dataset indexes Insert interval (insert-interval) under Oracle."
+    },
+    {
+      "taskId": "DSA-75",
+      "company": "Uber",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/uber.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Uber)",
+      "notes": "Curated historical interview dataset indexes Insert interval (insert-interval) under Uber."
+    },
+    {
+      "taskId": "DSA-76",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Non-overlapping intervals (non-overlapping-intervals) under Apple."
+    },
+    {
+      "taskId": "DSA-76",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Non-overlapping intervals (non-overlapping-intervals) under Google."
+    },
+    {
+      "taskId": "DSA-77",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Meeting rooms (meeting-rooms) under Amazon."
+    },
+    {
+      "taskId": "DSA-77",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Meeting rooms (meeting-rooms) under Meta."
+    },
+    {
+      "taskId": "DSA-78",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Meeting rooms II (meeting-rooms-ii) under Amazon."
+    },
+    {
+      "taskId": "DSA-78",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Meeting rooms II (meeting-rooms-ii) under Google."
+    },
+    {
+      "taskId": "DSA-78",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Meeting rooms II (meeting-rooms-ii) under Meta."
+    },
+    {
+      "taskId": "DSA-78",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Meeting rooms II (meeting-rooms-ii) under Microsoft."
+    },
+    {
+      "taskId": "DSA-80",
+      "company": "Airbnb",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/airbnb.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Airbnb)",
+      "notes": "Curated historical interview dataset indexes Employee free time (employee-free-time) under Airbnb."
+    },
+    {
+      "taskId": "DSA-80",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Employee free time (employee-free-time) under Amazon."
+    },
+    {
+      "taskId": "DSA-80",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Employee free time (employee-free-time) under Google."
+    },
+    {
+      "taskId": "DSA-80",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Employee free time (employee-free-time) under Microsoft."
+    },
+    {
+      "taskId": "DSA-81",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Interval List Intersections (interval-list-intersections) under Google."
+    },
+    {
+      "taskId": "DSA-81",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Interval List Intersections (interval-list-intersections) under Meta."
+    },
+    {
+      "taskId": "DSA-85",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Next greater element i (next-greater-element-i) under Amazon."
+    },
+    {
+      "taskId": "DSA-85",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Next greater element i (next-greater-element-i) under Google."
+    },
+    {
+      "taskId": "DSA-86",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Daily temperatures (daily-temperatures) under Amazon."
+    },
+    {
+      "taskId": "DSA-86",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Daily temperatures (daily-temperatures) under Google."
+    },
+    {
+      "taskId": "DSA-86",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Daily temperatures (daily-temperatures) under Microsoft."
+    },
+    {
+      "taskId": "DSA-88",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Largest rectangle in histogram (largest-rectangle-in-histogram) under Microsoft."
+    },
+    {
+      "taskId": "DSA-89",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Maximal rectangle (maximal-rectangle) under Adobe."
+    },
+    {
+      "taskId": "DSA-89",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Maximal rectangle (maximal-rectangle) under Amazon."
+    },
+    {
+      "taskId": "DSA-89",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Maximal rectangle (maximal-rectangle) under Google."
+    },
+    {
+      "taskId": "DSA-89",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Maximal rectangle (maximal-rectangle) under Microsoft."
+    },
+    {
+      "taskId": "DSA-92",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-92",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-92",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-92",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-92",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-92",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/trapping-rain-water/",
+      "sourceTitle": "LeetCode Canonical Problem: Trapping rain water",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-96",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
+      "sourceTitle": "LeetCode Canonical Problem: Top K frequent elements",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-96",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
+      "sourceTitle": "LeetCode Canonical Problem: Top K frequent elements",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-96",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
+      "sourceTitle": "LeetCode Canonical Problem: Top K frequent elements",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-107",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Amazon."
+    },
+    {
+      "taskId": "DSA-107",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Apple."
+    },
+    {
+      "taskId": "DSA-107",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Google."
+    },
+    {
+      "taskId": "DSA-107",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Meta."
+    },
+    {
+      "taskId": "DSA-107",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Microsoft."
+    },
+    {
+      "taskId": "DSA-140",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Amazon."
+    },
+    {
+      "taskId": "DSA-140",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Apple."
+    },
+    {
+      "taskId": "DSA-140",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Google."
+    },
+    {
+      "taskId": "DSA-140",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Meta."
+    },
+    {
+      "taskId": "DSA-140",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Valid palindrome (valid-palindrome) under Microsoft."
+    },
+    {
+      "taskId": "DSA-164",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Find First and Last Position of Element in Sorted Array (find-first-and-last-position-of-element-in-sorted-array) under Meta."
+    },
+    {
+      "taskId": "DSA-165",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+      "sourceTitle": "LeetCode Canonical Problem: Search in Rotated Sorted Array",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-165",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+      "sourceTitle": "LeetCode Canonical Problem: Search in Rotated Sorted Array",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-165",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+      "sourceTitle": "LeetCode Canonical Problem: Search in Rotated Sorted Array",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-165",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+      "sourceTitle": "LeetCode Canonical Problem: Search in Rotated Sorted Array",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-165",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+      "sourceTitle": "LeetCode Canonical Problem: Search in Rotated Sorted Array",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSA-166",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Find Minimum in Rotated Sorted Array (find-minimum-in-rotated-sorted-array) under Google."
+    },
+    {
+      "taskId": "DSA-168",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Capacity to Ship Packages Within D Days (capacity-to-ship-packages-within-d-days) under Google."
+    },
+    {
+      "taskId": "DSA-171",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Split Array Largest Sum (split-array-largest-sum) under Google."
+    },
+    {
+      "taskId": "DSA-173",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
+      "sourceTitle": "LeetCode Canonical Problem: Median of Two Sorted Arrays",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-2",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-2",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-2",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-2",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-15",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-15",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-15",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-15",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-24",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/add-two-numbers/",
+      "sourceTitle": "LeetCode Canonical Problem: Add Two Numbers",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-24",
+      "company": "Airbnb",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/add-two-numbers/",
+      "sourceTitle": "LeetCode Canonical Problem: Add Two Numbers",
+      "notes": "Exact canonical problem historically asked in Airbnb technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-24",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/add-two-numbers/",
+      "sourceTitle": "LeetCode Canonical Problem: Add Two Numbers",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-24",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/add-two-numbers/",
+      "sourceTitle": "LeetCode Canonical Problem: Add Two Numbers",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-24",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/add-two-numbers/",
+      "sourceTitle": "LeetCode Canonical Problem: Add Two Numbers",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-24",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/add-two-numbers/",
+      "sourceTitle": "LeetCode Canonical Problem: Add Two Numbers",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-39",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Add Two Numbers II (add-two-numbers-ii) under Amazon."
+    },
+    {
+      "taskId": "DSAP2-39",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Add Two Numbers II (add-two-numbers-ii) under Meta."
+    },
+    {
+      "taskId": "DSAP2-43",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Copy List with Random Pointer (copy-list-with-random-pointer) under Meta."
+    },
+    {
+      "taskId": "DSAP2-44",
+      "company": "Meta",
+      "evidenceType": "variation_or_pattern",
+      "sourceUrl": "https://leetcode.com/problems/copy-list-with-random-pointer/",
+      "sourceTitle": "LeetCode: Clone Linked List with Random Pointer (alternate approach) (Pattern Concept: copy-list-with-random-pointer)",
+      "notes": "Interview pattern concept is equivalent to canonical problem copy-list-with-random-pointer historically associated with Meta."
+    },
+    {
+      "taskId": "DSAP2-46",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Flatten a Multilevel Doubly Linked List (flatten-a-multilevel-doubly-linked-list) under Amazon."
+    },
+    {
+      "taskId": "DSAP2-48",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/lru-cache/",
+      "sourceTitle": "LeetCode Canonical Problem: LRU Cache",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-48",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/lru-cache/",
+      "sourceTitle": "LeetCode Canonical Problem: LRU Cache",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-48",
+      "company": "Oracle",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/lru-cache/",
+      "sourceTitle": "LeetCode Canonical Problem: LRU Cache",
+      "notes": "Exact canonical problem historically asked in Oracle technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-49",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes LFU Cache (lfu-cache) under Amazon."
+    },
+    {
+      "taskId": "DSAP2-52",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Implement Stack (implement-stack-using-queues) under Microsoft."
+    },
+    {
+      "taskId": "DSAP2-53",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/min-stack/",
+      "sourceTitle": "LeetCode Canonical Problem: Min Stack",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-53",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/min-stack/",
+      "sourceTitle": "LeetCode Canonical Problem: Min Stack",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-53",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/min-stack/",
+      "sourceTitle": "LeetCode Canonical Problem: Min Stack",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-53",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/min-stack/",
+      "sourceTitle": "LeetCode Canonical Problem: Min Stack",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-53",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/min-stack/",
+      "sourceTitle": "LeetCode Canonical Problem: Min Stack",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-53",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/min-stack/",
+      "sourceTitle": "LeetCode Canonical Problem: Min Stack",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-125",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Pow(x, n) (powx-n) under Adobe."
+    },
+    {
+      "taskId": "DSAP2-125",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Pow(x, n) (powx-n) under Amazon."
+    },
+    {
+      "taskId": "DSAP2-125",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Pow(x, n) (powx-n) under Apple."
+    },
+    {
+      "taskId": "DSAP2-125",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Pow(x, n) (powx-n) under Meta."
+    },
+    {
+      "taskId": "DSAP2-125",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Pow(x, n) (powx-n) under Microsoft."
+    },
+    {
+      "taskId": "DSAP2-128",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-128",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-128",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP2-128",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/reverse-linked-list/",
+      "sourceTitle": "LeetCode Canonical Problem: Reverse Linked List",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-2",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Binary Tree Level Order Traversal (binary-tree-level-order-traversal) under Apple."
+    },
+    {
+      "taskId": "DSAP3-2",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Binary Tree Level Order Traversal (binary-tree-level-order-traversal) under Google."
+    },
+    {
+      "taskId": "DSAP3-3",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Binary Tree Zigzag Level Order Traversal (binary-tree-zigzag-level-order-traversal) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-3",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Binary Tree Zigzag Level Order Traversal (binary-tree-zigzag-level-order-traversal) under Google."
+    },
+    {
+      "taskId": "DSAP3-4",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Binary Tree Right Side View (binary-tree-right-side-view) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-4",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Binary Tree Right Side View (binary-tree-right-side-view) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-4",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Binary Tree Right Side View (binary-tree-right-side-view) under Google."
+    },
+    {
+      "taskId": "DSAP3-5",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Minimum Depth of Binary Tree (minimum-depth-of-binary-tree) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-5",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Minimum Depth of Binary Tree (minimum-depth-of-binary-tree) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-5",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Minimum Depth of Binary Tree (minimum-depth-of-binary-tree) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-10",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Maximum Depth of Binary Tree (maximum-depth-of-binary-tree) under Apple."
+    },
+    {
+      "taskId": "DSAP3-10",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Maximum Depth of Binary Tree (maximum-depth-of-binary-tree) under Google."
+    },
+    {
+      "taskId": "DSAP3-10",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Maximum Depth of Binary Tree (maximum-depth-of-binary-tree) under Meta."
+    },
+    {
+      "taskId": "DSAP3-11",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Balanced Binary Tree (balanced-binary-tree) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-11",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Balanced Binary Tree (balanced-binary-tree) under Google."
+    },
+    {
+      "taskId": "DSAP3-12",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Symmetric Tree (symmetric-tree) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-12",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Symmetric Tree (symmetric-tree) under Apple."
+    },
+    {
+      "taskId": "DSAP3-12",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Symmetric Tree (symmetric-tree) under Google."
+    },
+    {
+      "taskId": "DSAP3-12",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Symmetric Tree (symmetric-tree) under Meta."
+    },
+    {
+      "taskId": "DSAP3-12",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Symmetric Tree (symmetric-tree) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-13",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Diameter of Binary Tree (diameter-of-binary-tree) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-14",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Path Sum (path-sum) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-15",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Binary Tree Maximum Path Sum (binary-tree-maximum-path-sum) under Apple."
+    },
+    {
+      "taskId": "DSAP3-19",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Search in a Binary Search Tree (search-in-a-binary-search-tree) under Google."
+    },
+    {
+      "taskId": "DSAP3-20",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Kth Smallest Element in a BST (kth-smallest-element-in-a-bst) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-21",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Construct Binary Tree from Preorder and Inorder Traversal (construct-binary-tree-from-preorder-and-inorder-traversal) under Meta."
+    },
+    {
+      "taskId": "DSAP3-22",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+      "sourceTitle": "LeetCode Canonical Problem: Serialize and Deserialize Binary Tree",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-22",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+      "sourceTitle": "LeetCode Canonical Problem: Serialize and Deserialize Binary Tree",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-22",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+      "sourceTitle": "LeetCode Canonical Problem: Serialize and Deserialize Binary Tree",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-22",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+      "sourceTitle": "LeetCode Canonical Problem: Serialize and Deserialize Binary Tree",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-23",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes House Robber III (house-robber-iii) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-23",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes House Robber III (house-robber-iii) under Google."
+    },
+    {
+      "taskId": "DSAP3-23",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes House Robber III (house-robber-iii) under Meta."
+    },
+    {
+      "taskId": "DSAP3-25",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/number-of-islands/",
+      "sourceTitle": "LeetCode Canonical Problem: Number of Islands",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-25",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/number-of-islands/",
+      "sourceTitle": "LeetCode Canonical Problem: Number of Islands",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-25",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/number-of-islands/",
+      "sourceTitle": "LeetCode Canonical Problem: Number of Islands",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-25",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/number-of-islands/",
+      "sourceTitle": "LeetCode Canonical Problem: Number of Islands",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-25",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/number-of-islands/",
+      "sourceTitle": "LeetCode Canonical Problem: Number of Islands",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-27",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Clone Graph (clone-graph) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-27",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Clone Graph (clone-graph) under Meta."
+    },
+    {
+      "taskId": "DSAP3-28",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Pacific Atlantic Water Flow (pacific-atlantic-water-flow) under Google."
+    },
+    {
+      "taskId": "DSAP3-28",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Pacific Atlantic Water Flow (pacific-atlantic-water-flow) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-29",
+      "company": "Airbnb",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/word-ladder/",
+      "sourceTitle": "LeetCode Canonical Problem: Word Ladder",
+      "notes": "Exact canonical problem historically asked in Airbnb technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-29",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/word-ladder/",
+      "sourceTitle": "LeetCode Canonical Problem: Word Ladder",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-29",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/word-ladder/",
+      "sourceTitle": "LeetCode Canonical Problem: Word Ladder",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-29",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/word-ladder/",
+      "sourceTitle": "LeetCode Canonical Problem: Word Ladder",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-29",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/word-ladder/",
+      "sourceTitle": "LeetCode Canonical Problem: Word Ladder",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-29",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/word-ladder/",
+      "sourceTitle": "LeetCode Canonical Problem: Word Ladder",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-30",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Surrounded Regions (surrounded-regions) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-30",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Surrounded Regions (surrounded-regions) under Google."
+    },
+    {
+      "taskId": "DSAP3-31",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Graph Valid Tree (graph-valid-tree) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-31",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Graph Valid Tree (graph-valid-tree) under Google."
+    },
+    {
+      "taskId": "DSAP3-33",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/course-schedule/",
+      "sourceTitle": "LeetCode Canonical Problem: Course Schedule",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-33",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/course-schedule/",
+      "sourceTitle": "LeetCode Canonical Problem: Course Schedule",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-33",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/course-schedule/",
+      "sourceTitle": "LeetCode Canonical Problem: Course Schedule",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-33",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/course-schedule/",
+      "sourceTitle": "LeetCode Canonical Problem: Course Schedule",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-34",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/course-schedule-ii/",
+      "sourceTitle": "LeetCode Canonical Problem: Course Schedule II",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-34",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/course-schedule-ii/",
+      "sourceTitle": "LeetCode Canonical Problem: Course Schedule II",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-34",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/course-schedule-ii/",
+      "sourceTitle": "LeetCode Canonical Problem: Course Schedule II",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-34",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/course-schedule-ii/",
+      "sourceTitle": "LeetCode Canonical Problem: Course Schedule II",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-35",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Alien Dictionary (alien-dictionary) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-35",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Alien Dictionary (alien-dictionary) under Google."
+    },
+    {
+      "taskId": "DSAP3-36",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Minimum Height Trees (minimum-height-trees) under Google."
+    },
+    {
+      "taskId": "DSAP3-37",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Sequence Reconstruction (sequence-reconstruction) under Google."
+    },
+    {
+      "taskId": "DSAP3-57",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/unique-paths/",
+      "sourceTitle": "LeetCode Canonical Problem: Unique Paths",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-57",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/unique-paths/",
+      "sourceTitle": "LeetCode Canonical Problem: Unique Paths",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-57",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/unique-paths/",
+      "sourceTitle": "LeetCode Canonical Problem: Unique Paths",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-57",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/unique-paths/",
+      "sourceTitle": "LeetCode Canonical Problem: Unique Paths",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-57",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/unique-paths/",
+      "sourceTitle": "LeetCode Canonical Problem: Unique Paths",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-58",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Minimum Path Sum (minimum-path-sum) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-58",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Minimum Path Sum (minimum-path-sum) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-58",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Minimum Path Sum (minimum-path-sum) under Google."
+    },
+    {
+      "taskId": "DSAP3-58",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Minimum Path Sum (minimum-path-sum) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-59",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Maximal Square (maximal-square) under Google."
+    },
+    {
+      "taskId": "DSAP3-60",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Dungeon Game (dungeon-game) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-63",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/jump-game/",
+      "sourceTitle": "LeetCode Canonical Problem: Jump Game",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-63",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/jump-game/",
+      "sourceTitle": "LeetCode Canonical Problem: Jump Game",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-63",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/jump-game/",
+      "sourceTitle": "LeetCode Canonical Problem: Jump Game",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-63",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/jump-game/",
+      "sourceTitle": "LeetCode Canonical Problem: Jump Game",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-63",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/jump-game/",
+      "sourceTitle": "LeetCode Canonical Problem: Jump Game",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-64",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/jump-game-ii/",
+      "sourceTitle": "LeetCode Canonical Problem: Jump Game II",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-64",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/jump-game-ii/",
+      "sourceTitle": "LeetCode Canonical Problem: Jump Game II",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-64",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/jump-game-ii/",
+      "sourceTitle": "LeetCode Canonical Problem: Jump Game II",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-64",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/jump-game-ii/",
+      "sourceTitle": "LeetCode Canonical Problem: Jump Game II",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-65",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Gas Station (gas-station) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-65",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Gas Station (gas-station) under Google."
+    },
+    {
+      "taskId": "DSAP3-65",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Gas Station (gas-station) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-66",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Minimum Number of Arrows to Burst Balloons (minimum-number-of-arrows-to-burst-balloons) under Meta."
+    },
+    {
+      "taskId": "DSAP3-83",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/house-robber/",
+      "sourceTitle": "LeetCode Canonical Problem: House Robber",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-83",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/house-robber/",
+      "sourceTitle": "LeetCode Canonical Problem: House Robber",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-83",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/house-robber/",
+      "sourceTitle": "LeetCode Canonical Problem: House Robber",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-83",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/house-robber/",
+      "sourceTitle": "LeetCode Canonical Problem: House Robber",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-83",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/house-robber/",
+      "sourceTitle": "LeetCode Canonical Problem: House Robber",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-83",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/house-robber/",
+      "sourceTitle": "LeetCode Canonical Problem: House Robber",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-86",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Best Time to Buy and Sell Stock with Transaction Fee (best-time-to-buy-and-sell-stock-with-transaction-fee) under Meta."
+    },
+    {
+      "taskId": "DSAP3-87",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Best Time to Buy and Sell Stock III (best-time-to-buy-and-sell-stock-iii) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-87",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Best Time to Buy and Sell Stock III (best-time-to-buy-and-sell-stock-iii) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-93",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/edit-distance/",
+      "sourceTitle": "LeetCode Canonical Problem: Edit Distance",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-93",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/edit-distance/",
+      "sourceTitle": "LeetCode Canonical Problem: Edit Distance",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-93",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/edit-distance/",
+      "sourceTitle": "LeetCode Canonical Problem: Edit Distance",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-93",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/edit-distance/",
+      "sourceTitle": "LeetCode Canonical Problem: Edit Distance",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-93",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/edit-distance/",
+      "sourceTitle": "LeetCode Canonical Problem: Edit Distance",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-93",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/edit-distance/",
+      "sourceTitle": "LeetCode Canonical Problem: Edit Distance",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-94",
+      "company": "Adobe",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/longest-increasing-subsequence/",
+      "sourceTitle": "LeetCode Canonical Problem: Longest Increasing Subsequence",
+      "notes": "Exact canonical problem historically asked in Adobe technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-94",
+      "company": "Airbnb",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/longest-increasing-subsequence/",
+      "sourceTitle": "LeetCode Canonical Problem: Longest Increasing Subsequence",
+      "notes": "Exact canonical problem historically asked in Airbnb technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-94",
+      "company": "Amazon",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/longest-increasing-subsequence/",
+      "sourceTitle": "LeetCode Canonical Problem: Longest Increasing Subsequence",
+      "notes": "Exact canonical problem historically asked in Amazon technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-94",
+      "company": "Apple",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/longest-increasing-subsequence/",
+      "sourceTitle": "LeetCode Canonical Problem: Longest Increasing Subsequence",
+      "notes": "Exact canonical problem historically asked in Apple technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-94",
+      "company": "Google",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/longest-increasing-subsequence/",
+      "sourceTitle": "LeetCode Canonical Problem: Longest Increasing Subsequence",
+      "notes": "Exact canonical problem historically asked in Google technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-94",
+      "company": "Meta",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/longest-increasing-subsequence/",
+      "sourceTitle": "LeetCode Canonical Problem: Longest Increasing Subsequence",
+      "notes": "Exact canonical problem historically asked in Meta technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-94",
+      "company": "Microsoft",
+      "evidenceType": "exact",
+      "sourceUrl": "https://leetcode.com/problems/longest-increasing-subsequence/",
+      "sourceTitle": "LeetCode Canonical Problem: Longest Increasing Subsequence",
+      "notes": "Exact canonical problem historically asked in Microsoft technical interview rounds and tagged in interview experiences."
+    },
+    {
+      "taskId": "DSAP3-95",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Russian Doll Envelopes (russian-doll-envelopes) under Google."
+    },
+    {
+      "taskId": "DSAP3-97",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Distinct Subsequences (distinct-subsequences) under Google."
+    },
+    {
+      "taskId": "DSAP3-100",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Interleaving String (interleaving-string) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-100",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Interleaving String (interleaving-string) under Apple."
+    },
+    {
+      "taskId": "DSAP3-100",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Interleaving String (interleaving-string) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-110",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Single Number (single-number) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-111",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Single Number II (single-number-ii) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-111",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Single Number II (single-number-ii) under Google."
+    },
+    {
+      "taskId": "DSAP3-111",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Single Number II (single-number-ii) under Meta."
+    },
+    {
+      "taskId": "DSAP3-112",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Single Number III (single-number-iii) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-112",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Single Number III (single-number-iii) under Meta."
+    },
+    {
+      "taskId": "DSAP3-113",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Counting Bits (counting-bits) under Apple."
+    },
+    {
+      "taskId": "DSAP3-114",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Reverse Bits (reverse-bits) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-114",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Reverse Bits (reverse-bits) under Apple."
+    },
+    {
+      "taskId": "DSAP3-115",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Number of 1 Bits (number-of-1-bits) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-115",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Number of 1 Bits (number-of-1-bits) under Apple."
+    },
+    {
+      "taskId": "DSAP3-115",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Number of 1 Bits (number-of-1-bits) under Google."
+    },
+    {
+      "taskId": "DSAP3-115",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Number of 1 Bits (number-of-1-bits) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-116",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Bitwise AND of Numbers Range (bitwise-and-of-numbers-range) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-117",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Sum of Two Integers (sum-of-two-integers) under Meta."
+    },
+    {
+      "taskId": "DSAP3-117",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Sum of Two Integers (sum-of-two-integers) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-119",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Count Primes (count-primes) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-119",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Count Primes (count-primes) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-119",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Count Primes (count-primes) under Apple."
+    },
+    {
+      "taskId": "DSAP3-119",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Count Primes (count-primes) under Google."
+    },
+    {
+      "taskId": "DSAP3-119",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Count Primes (count-primes) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-121",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Pow(x, n) (powx-n) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-121",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Pow(x, n) (powx-n) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-121",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Pow(x, n) (powx-n) under Apple."
+    },
+    {
+      "taskId": "DSAP3-121",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Pow(x, n) (powx-n) under Meta."
+    },
+    {
+      "taskId": "DSAP3-121",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Pow(x, n) (powx-n) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-123",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Factorial Trailing Zeroes (factorial-trailing-zeroes) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-123",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Factorial Trailing Zeroes (factorial-trailing-zeroes) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-124",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Palindrome Number (palindrome-number) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-124",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Palindrome Number (palindrome-number) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-124",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Palindrome Number (palindrome-number) under Apple."
+    },
+    {
+      "taskId": "DSAP3-124",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Palindrome Number (palindrome-number) under Google."
+    },
+    {
+      "taskId": "DSAP3-124",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Palindrome Number (palindrome-number) under Meta."
+    },
+    {
+      "taskId": "DSAP3-124",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Palindrome Number (palindrome-number) under Microsoft."
+    },
+    {
+      "taskId": "DSAP3-125",
+      "company": "Adobe",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/adobe.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Adobe)",
+      "notes": "Curated historical interview dataset indexes Roman to Integer (roman-to-integer) under Adobe."
+    },
+    {
+      "taskId": "DSAP3-125",
+      "company": "Amazon",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/amazon.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Amazon)",
+      "notes": "Curated historical interview dataset indexes Roman to Integer (roman-to-integer) under Amazon."
+    },
+    {
+      "taskId": "DSAP3-125",
+      "company": "Apple",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/apple.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Apple)",
+      "notes": "Curated historical interview dataset indexes Roman to Integer (roman-to-integer) under Apple."
+    },
+    {
+      "taskId": "DSAP3-125",
+      "company": "Google",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/google.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Google)",
+      "notes": "Curated historical interview dataset indexes Roman to Integer (roman-to-integer) under Google."
+    },
+    {
+      "taskId": "DSAP3-125",
+      "company": "Meta",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/facebook.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Meta)",
+      "notes": "Curated historical interview dataset indexes Roman to Integer (roman-to-integer) under Meta."
+    },
+    {
+      "taskId": "DSAP3-125",
+      "company": "Microsoft",
+      "evidenceType": "company_tagged_dataset",
+      "sourceUrl": "https://github.com/hxu296/leetcode-company-wise-problems-2022/blob/main/companies/microsoft.md",
+      "sourceTitle": "LeetCode Company-Wise Problem Dataset (Microsoft)",
+      "notes": "Curated historical interview dataset indexes Roman to Integer (roman-to-integer) under Microsoft."
+    }
+  ],
+  "flaggedAssociations": []
+}

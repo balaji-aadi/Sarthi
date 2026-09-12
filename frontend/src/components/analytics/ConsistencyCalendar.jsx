@@ -11,7 +11,7 @@ const ConsistencyCalendar = ({ stats, period = 'monthly', isEmbedded = false, pr
     const startOfMonth = moment(currentMonth).startOf('month');
     const endOfMonth = moment(currentMonth).endOf('month');
     const daysInMonth = startOfMonth.daysInMonth();
-    
+
     // Create an array of days for the grid
     const calendarDays = [];
     const firstDayOfWeek = startOfMonth.day(); // 0 for Sunday, 1 for Monday...
@@ -40,7 +40,7 @@ const ConsistencyCalendar = ({ stats, period = 'monthly', isEmbedded = false, pr
     const nextMonth = () => setCurrentMonth(moment(currentMonth).add(1, 'month'));
     const prevMonth = () => setCurrentMonth(moment(currentMonth).subtract(1, 'month'));
 
-    const containerClass = isEmbedded 
+    const containerClass = isEmbedded
         ? "w-full text-white relative group"
         : "bg-[#1a1a1a] p-4 sm:p-5 rounded-[2rem] shadow-2xl text-white overflow-hidden relative group";
 
@@ -85,62 +85,41 @@ const ConsistencyCalendar = ({ stats, period = 'monthly', isEmbedded = false, pr
                     const revisions = item.metrics?.revisionsCount || 0;
 
                     const hasWork = tasks > 0 || hours > 0 || accLogs > 0 || revisions > 0;
-                    const isRevisionOnly = hasWork && tasks === 0 && accLogs === 0 && revisions > 0;
-                    const isMixed = hasWork && (tasks > 0 || accLogs > 0) && revisions > 0;
-                    const isActiveOnly = hasWork && revisions === 0 && (tasks > 0 || hours > 0 || accLogs > 0);
+                    // Calculate intensity score
+                    const activityScore = (tasks * 2) + Math.round(hours * 2) + accLogs + (revisions * 1.5);
 
-                    let cellStyle = {};
-                    let bgClass = 'bg-white/5 text-slate-500'; // Idle
+                    let bgClass = 'bg-white/5 text-slate-500 hover:bg-white/10'; // Idle
 
                     if (item.isFuture) {
                         bgClass = 'bg-transparent text-slate-800 opacity-20';
                     } else if (hasWork) {
-                        if (isRevisionOnly) {
-                            // 100% Revision Only - Signature #E34234
-                            cellStyle = {
-                                backgroundColor: '#E34234',
-                                boxShadow: '0 4px 12px 0 rgba(227, 66, 52, 0.35)',
-                                border: '1px solid rgba(227, 66, 52, 0.6)'
-                            };
-                            bgClass = 'text-white font-black';
-                        } else if (isMixed) {
-                            // Dynamic proportional split according to ratio of revisions vs tasks
-                            const totalCount = revisions + tasks;
-                            const revPercent = Math.max(15, Math.min(85, Math.round((revisions / totalCount) * 100)));
-                            cellStyle = {
-                                background: `linear-gradient(135deg, #E34234 0%, #E34234 ${revPercent}%, #10b981 ${revPercent}%, #10b981 100%)`,
-                                boxShadow: '0 4px 12px 0 rgba(227, 66, 52, 0.25), 0 4px 12px 0 rgba(16, 185, 129, 0.25)',
-                                border: '1px solid rgba(255, 255, 255, 0.25)'
-                            };
-                            bgClass = 'text-white font-black drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]';
+                        if (activityScore >= 12 || hours >= 5 || tasks >= 6) {
+                            // Peak intensity (full primary)
+                            bgClass = 'bg-primary text-white shadow-md shadow-primary/40 font-black border border-primary/80';
+                        } else if (activityScore >= 6 || hours >= 3 || tasks >= 3) {
+                            // High intensity
+                            bgClass = 'bg-primary/75 text-white shadow-sm shadow-primary/25 font-bold border border-primary/60';
+                        } else if (activityScore >= 3 || hours >= 1 || tasks >= 1 || revisions >= 1) {
+                            // Moderate intensity
+                            bgClass = 'bg-primary/45 text-white font-semibold border border-primary/40';
                         } else {
-                            // 100% Active Work (Green shades based on intensity)
-                            if (tasks >= 10 || hours >= 8 || accLogs >= 5) {
-                                bgClass = 'bg-emerald-400 text-white shadow-lg shadow-emerald-400/30 border border-emerald-300/40';
-                            } else if (tasks >= 5 || hours >= 4 || accLogs >= 3) {
-                                bgClass = 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 border border-emerald-400/30';
-                            } else if (tasks >= 2 || hours >= 2 || accLogs >= 2) {
-                                bgClass = 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 border border-emerald-500/20';
-                            } else {
-                                bgClass = 'bg-emerald-700 text-slate-100 border border-emerald-600/20';
-                            }
+                            // Light intensity
+                            bgClass = 'bg-primary/25 text-primary-200 font-medium border border-primary/30';
                         }
                     }
 
                     return (
-                        <div 
-                            key={idx} 
+                        <div
+                            key={idx}
                             onClick={() => {
                                 if (!item.padding && !item.isFuture) {
                                     setSelectedDateModal(item.date);
                                 }
                             }}
-                            style={cellStyle}
-                            className={`aspect-square flex items-center justify-center rounded-lg relative text-[10px] font-bold group/day transition-all
+                            className={`aspect-square flex items-center justify-center rounded-lg relative z-0 group-hover/day:z-50 hover:z-50 text-[10px] group/day transition-all
                                 ${item.padding ? 'opacity-0 pointer-events-none' : item.isFuture ? 'cursor-default' : 'hover:scale-105 cursor-pointer active:scale-95'}
-                                ${item.isToday ? 'ring-2 ring-indigo-500 ring-offset-1 ring-offset-[#1a1a1a]' : ''}
+                                ${item.isToday ? 'ring-2 ring-primary ring-offset-1 ring-offset-[#1a1a1a]' : ''}
                                 ${bgClass}
-                                ${!item.padding && !hasWork && !item.isFuture ? 'hover:bg-white/10' : ''}
                             `}
                         >
                             {!item.padding && (
@@ -148,43 +127,46 @@ const ConsistencyCalendar = ({ stats, period = 'monthly', isEmbedded = false, pr
                                     {item.day}
                                     {/* Hover Details */}
                                     {hasWork && (
-                                        <div className={`absolute opacity-0 group-hover/day:opacity-100 bottom-full mb-2 w-36 bg-black/95 p-2.5 rounded-xl text-[8px] font-black z-[100] pointer-events-none shadow-2xl border border-white/10 transition-all duration-200
-                                            ${idx % 7 === 6 ? 'right-0' : idx % 7 === 0 ? 'left-0' : 'left-1/2 -translate-x-1/2'}
-                                        `}>
-                                            {isRevisionOnly && (
-                                                <div className="text-center py-0.5 text-[#E34234] font-extrabold uppercase tracking-wider text-[7px] border-b border-white/10 mb-1">
-                                                    Revision Only
+                                        (() => {
+                                            const showBelow = idx < 14;
+                                            return (
+                                                <div className={`absolute opacity-0 group-hover/day:opacity-100 ${showBelow ? 'top-full mt-2' : 'bottom-full mb-2'} w-36 bg-slate-950/95 p-2.5 rounded-xl text-[8px] font-bold z-[200] pointer-events-none shadow-2xl border border-white/10 backdrop-blur-md transition-all duration-200
+                                                    ${idx % 7 === 6 ? 'right-0' : idx % 7 === 0 ? 'left-0' : 'left-1/2 -translate-x-1/2'}
+                                                `}>
+                                                    <div className="text-center py-0.5 text-primary font-extrabold uppercase tracking-wider text-[7px] border-b border-white/10 mb-1.5 flex items-center justify-center gap-1">
+                                                        <span>Activity Log</span>
+                                                        {/* <span className="text-slate-400 font-normal">({moment(item.date).format('MMM D')})</span> */}
+                                                    </div>
+                                                    {hours > 0 && (
+                                                        <div className="flex justify-between items-center mb-0.5">
+                                                            <span className="text-slate-400 tracking-tighter uppercase font-bold">Focus</span>
+                                                            <span className="text-primary-300 font-black">{hours.toFixed(1)}h</span>
+                                                        </div>
+                                                    )}
+                                                    {tasks > 0 && (
+                                                        <div className="flex justify-between items-center mb-0.5">
+                                                            <span className="text-slate-400 tracking-tighter uppercase font-bold">Tasks</span>
+                                                            <span className="text-white font-black">{tasks}</span>
+                                                        </div>
+                                                    )}
+                                                    {revisions > 0 && (
+                                                        <div className="flex justify-between items-center mb-0.5">
+                                                            <span className="text-slate-400 tracking-tighter uppercase font-bold">Revisions</span>
+                                                            <span className="text-primary-200 font-black">{revisions}</span>
+                                                        </div>
+                                                    )}
+                                                    {accLogs > 0 && (
+                                                        <div className="flex justify-between items-center">
+                                                            <span className="text-slate-400 tracking-tighter uppercase font-bold">Check-ins</span>
+                                                            <span className="text-white font-black">{accLogs}</span>
+                                                        </div>
+                                                    )}
+                                                    <div className={`absolute ${showBelow ? 'bottom-full -mb-1 border-b-slate-950 border-t-transparent' : 'top-full -mt-1 border-t-slate-950 border-b-transparent'} border-4 border-transparent
+                                                        ${idx % 7 === 6 ? 'right-3' : idx % 7 === 0 ? 'left-3' : 'left-1/2 -translate-x-1/2'}
+                                                    `}></div>
                                                 </div>
-                                            )}
-                                            {isMixed && (
-                                                <div className="text-center py-0.5 text-amber-300 font-extrabold uppercase tracking-wider text-[7px] border-b border-white/10 mb-1 flex items-center justify-center gap-1">
-                                                    <span>Dual Activity</span>
-                                                    <span className="text-slate-400 font-normal">({revisions}R / {tasks}T)</span>
-                                                </div>
-                                            )}
-                                            {isActiveOnly && (
-                                                <div className="text-center py-0.5 text-emerald-400 font-extrabold uppercase tracking-wider text-[7px] border-b border-white/10 mb-1">
-                                                    Active Work
-                                                </div>
-                                            )}
-                                            <div className="flex justify-between items-center mb-0.5">
-                                                <span className="text-slate-400 tracking-tighter uppercase font-bold">Focus</span>
-                                                <span className="text-indigo-400 font-black">{hours.toFixed(1)}h</span>
-                                            </div>
-                                            <div className="flex justify-between items-center mb-0.5">
-                                                <span className="text-slate-400 tracking-tighter uppercase font-bold">Tasks</span>
-                                                <span className="text-emerald-400 font-black">{tasks}</span>
-                                            </div>
-                                            {revisions > 0 && (
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-slate-400 tracking-tighter uppercase font-bold">Revisions</span>
-                                                    <span className="text-[#E34234] font-black">{revisions}</span>
-                                                </div>
-                                            )}
-                                            <div className={`absolute top-full -mt-1 border-4 border-transparent border-t-black
-                                                ${idx % 7 === 6 ? 'right-3' : idx % 7 === 0 ? 'left-3' : 'left-1/2 -translate-x-1/2'}
-                                            `}></div>
-                                        </div>
+                                            );
+                                        })()
                                     )}
                                 </>
                             )}
@@ -193,23 +175,17 @@ const ConsistencyCalendar = ({ stats, period = 'monthly', isEmbedded = false, pr
                 })}
             </div>
 
-            {/* Compact Legend */}
-            <div className="mt-3 pt-2.5 border-t border-white/5 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[9px] font-bold text-slate-400 whitespace-nowrap">
-                <div className="flex items-center gap-1.5 shrink-0">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></div>
-                    <span>Active Work</span>
-                </div>
-                <div className="flex items-center gap-1.5 shrink-0">
-                    <div className="w-2 h-2 rounded-full bg-[#E34234] shadow-sm shadow-[#E34234]/50"></div>
-                    <span>Revision</span>
-                </div>
-                <div className="flex items-center gap-1.5 shrink-0">
-                    <div className="w-2.5 h-2.5 rounded-md bg-gradient-to-br from-[#E34234] to-emerald-500 border border-white/20 shadow-sm"></div>
-                    <span>Dual Split</span>
-                </div>
-                <div className="flex items-center gap-1.5 shrink-0">
-                    <div className="w-2 h-2 rounded-full bg-white/20"></div>
-                    <span>Idle</span>
+            {/* Monochromatic Primary Intensity Legend */}
+            <div className="mt-3 pt-2.5 border-t border-white/5 flex items-center justify-between text-[9px] font-bold text-slate-400">
+                <span className="text-[8px] uppercase tracking-wider text-slate-500 font-black">Activity</span>
+                <div className="flex items-center gap-1.5">
+                    <span className="text-[7.5px] text-slate-500 uppercase tracking-wider font-semibold">Less</span>
+                    <div className="w-2.5 h-2.5 rounded-sm bg-white/10" title="Idle" />
+                    <div className="w-2.5 h-2.5 rounded-sm bg-primary/25 border border-primary/30" title="Light" />
+                    <div className="w-2.5 h-2.5 rounded-sm bg-primary/45 border border-primary/40" title="Moderate" />
+                    <div className="w-2.5 h-2.5 rounded-sm bg-primary/75 border border-primary/60" title="High" />
+                    <div className="w-2.5 h-2.5 rounded-sm bg-primary shadow-sm shadow-primary/40" title="Peak" />
+                    <span className="text-[7.5px] text-slate-500 uppercase tracking-wider font-semibold">More</span>
                 </div>
             </div>
 

@@ -90,6 +90,9 @@ export const taskValidationSchema = Yup.object({
   sprint: Yup.string().nullable(),
   parentTask: Yup.string().nullable(),
   youtubeUrl: Yup.string().url("Must be a valid URL").nullable(),
+  leetcodeUrl: Yup.string().url("Must be a valid URL").nullable(),
+  difficulty: Yup.string().oneOf(["Easy", "Medium", "Hard", "", null]).nullable(),
+  isUrlVerified: Yup.boolean().nullable(),
 });
 
 export const userValidationSchema = (isUpdating) =>

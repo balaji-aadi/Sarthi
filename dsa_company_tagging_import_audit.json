@@ -1,0 +1,29 @@
+{
+  "executedAt": "2026-09-09T16:04:06.019Z",
+  "dataset": "dsa_company_tagging_researched_v1.json",
+  "evidenceArtifact": "dsa_company_tagging_evidence_v1.json",
+  "tasksEvaluated": 336,
+  "tasksUpdated": 336,
+  "taggedTasks": 126,
+  "untaggedTasks": 210,
+  "totalCompanyAssociations": 382,
+  "protectedCollectionsBaseline": {
+    "userTaskProgress": 527,
+    "dailyRevision": 52,
+    "focusSession": 417,
+    "pattern": 23,
+    "companyMaster": 24,
+    "totalTasks": 662
+  },
+  "protectedCollectionsPostImport": {
+    "userTaskProgress": 527,
+    "dailyRevision": 52,
+    "focusSession": 417,
+    "pattern": 23,
+    "companyMaster": 24,
+    "totalTasks": 662
+  },
+  "allProtectedCollectionsMatch": true,
+  "taskMutationBoundaryVerified": true,
+  "adminLearnerStateVerified": true
+}

@@ -1,13 +1,18 @@
 import { Router } from "express";
-import { verifyJWT } from "../../middlewares/auth.middleware.js";
+import { verifyJWT, optionalVerifyJWT } from "../../middlewares/auth.middleware.js";
 import { checkPermission } from "../../middlewares/rbac.middleware.js";
 import { canUpdateTask } from "../../middlewares/resource.middleware.js";
 import taskController from "./task.controller.js";
 import taskImports from "./taskimport.js";
 import upload from "../../middlewares/multer.middleware.js";
 import { verifyBranchAccess } from "../../middlewares/branch.middleware.js";
+import { getLldWorkspaceContext, submitLldTaskProgress } from "./lldWorkspace.controller.js";
 
 const router = Router();
+
+// LLD Workspace Routes (Direct Program execution context & submission)
+router.route("/:id/lld-workspace").get(optionalVerifyJWT, getLldWorkspaceContext);
+router.route("/:id/lld-submit").post(verifyJWT, submitLldTaskProgress);
 
 router.route("/create-task").post(verifyJWT, verifyBranchAccess, checkPermission("CREATE_TASK"), taskController.createTask);
 router.route("/get-last-created").get(verifyJWT, verifyBranchAccess, taskController.getLastCreatedTask);
@@ -23,11 +28,15 @@ router.route("/add-revision/:taskId").post(verifyJWT, verifyBranchAccess, taskCo
 router.route("/revision-stats").get(verifyJWT, verifyBranchAccess, taskController.getRevisionStats);
 router.route("/completed-parents").get(verifyJWT, verifyBranchAccess, taskController.getCompletedParents);
 router.route("/suggest-challenge").post(verifyJWT, verifyBranchAccess, taskController.suggestRevisionChallenge);
+router.route("/reflection/:taskId").post(verifyJWT, verifyBranchAccess, taskController.recordReflection);
 
 router.route("/daily-revision").get(verifyJWT, verifyBranchAccess, taskController.getDailyRevision);
 router.route("/daily-revision/start").post(verifyJWT, verifyBranchAccess, taskController.startDailyRevision);
 router.route("/daily-revision/toggle-timer").post(verifyJWT, verifyBranchAccess, taskController.toggleDailyRevisionTimer);
 router.route("/daily-revision/sync-timer").post(verifyJWT, verifyBranchAccess, taskController.syncDailyRevisionTimer);
 router.route("/daily-revision/toggle-revise-tomorrow").post(verifyJWT, verifyBranchAccess, taskController.toggleReviseTomorrow);
+
+// Phase 4: Pattern Alerts
+router.route("/patterns/alerts").get(verifyJWT, verifyBranchAccess, taskController.getPatternAlerts);
 
 export default router;

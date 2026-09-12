@@ -21,15 +21,24 @@ async function backupDatabase() {
   const now = new Date();
   const timestampStr = now.toISOString().replace(/[:.]/g, "-");
   
-  // Save in main project database_backups directory
+  // 1. Root-level database_backups directory
   const rootBackupDir = path.join(process.cwd(), "..", "database_backups");
   const timestampedBackupDir = path.join(rootBackupDir, `backup_${timestampStr}`);
   const latestBackupDir = path.join(rootBackupDir, "LATEST");
 
-  fs.mkdirSync(timestampedBackupDir, { recursive: true });
-  fs.mkdirSync(latestBackupDir, { recursive: true });
+  // 2. Backend-level database_backup directory
+  const backendBackupDir = path.join(process.cwd(), "database_backup");
+  const backendTimestampDir = path.join(process.cwd(), `database_backup_${timestampStr}`);
 
-  console.log(`\nCreated backup target directory:\n  -> ${timestampedBackupDir}`);
+  const targetDirs = [timestampedBackupDir, latestBackupDir, backendBackupDir, backendTimestampDir];
+  for (const dir of targetDirs) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
+  console.log(`\nCreated backup target directories:`);
+  console.log(`  -> Root Snapshot:   ${timestampedBackupDir}`);
+  console.log(`  -> Root LATEST:     ${latestBackupDir}`);
+  console.log(`  -> Backend Folder:  ${backendBackupDir}\n`);
 
   const summary = {};
   let totalDocs = 0;
@@ -39,21 +48,25 @@ async function backupDatabase() {
     const collName = collInfo.name;
     if (collName.startsWith("system.")) continue; // Skip MongoDB internal system collections
 
-    console.log(`Backing up collection: [${collName}]...`);
     const collection = db.collection(collName);
     const documents = await collection.find({}).toArray();
+    const indexes = await collection.indexes();
 
-    // 1. Save to timestamped backup directory
-    const serializedData = EJSON.stringify(documents, null, 2);
-    const filePath = path.join(timestampedBackupDir, `${collName}.json`);
-    fs.writeFileSync(filePath, serializedData, "utf8");
+    // Canonical Extended JSON ensures exact 100% preservation of ObjectIds, Dates, Longs, BinData
+    const serializedData = EJSON.stringify(documents, { relaxed: false }, 2);
+    const serializedIndexes = JSON.stringify(indexes, null, 2);
 
-    // 2. Save to LATEST backup directory for 1-command auto-restore
-    const latestFilePath = path.join(latestBackupDir, `${collName}.json`);
-    fs.writeFileSync(latestFilePath, serializedData, "utf8");
+    for (const dir of targetDirs) {
+      fs.writeFileSync(path.join(dir, `${collName}.json`), serializedData, "utf8");
+      fs.writeFileSync(path.join(dir, `${collName}.indexes.json`), serializedIndexes, "utf8");
+    }
 
-    console.log(`  ✓ Saved ${documents.length} documents for [${collName}]`);
-    summary[collName] = documents.length;
+    console.log(`  ✓ Saved ${documents.length} docs & ${indexes.length} indexes for [${collName}]`);
+    summary[collName] = {
+      count: documents.length,
+      indexes: indexes.length,
+      sizeKb: (Buffer.byteLength(serializedData) / 1024).toFixed(2)
+    };
     totalDocs += documents.length;
   }
 
@@ -65,22 +78,32 @@ async function backupDatabase() {
     collections: summary
   };
 
-  // Write metadata.json
   const metaJson = JSON.stringify(metaData, null, 2);
-  fs.writeFileSync(path.join(timestampedBackupDir, "metadata.json"), metaJson, "utf8");
-  fs.writeFileSync(path.join(latestBackupDir, "metadata.json"), metaJson, "utf8");
+  for (const dir of targetDirs) {
+    fs.writeFileSync(path.join(dir, "metadata.json"), metaJson, "utf8");
+  }
+
+  await mongoose.disconnect();
 
   console.log("\n=================================================================");
   console.log("                 FULL DATABASE BACKUP SUMMARY                    ");
   console.log("=================================================================");
-  console.table(summary);
+  console.table(
+    Object.entries(summary).map(([name, data]) => ({
+      Collection: name,
+      Documents: data.count,
+      Indexes: data.indexes,
+      "Size (KB)": data.sizeKb
+    }))
+  );
   console.log(`  Total Collections Backed Up: ${Object.keys(summary).length}`);
   console.log(`  Total Documents Saved:       ${totalDocs}`);
   console.log("=================================================================");
-  console.log(`\nBackup Folder: ${timestampedBackupDir}`);
-  console.log(`Latest Pointer: ${latestBackupDir}`);
-  console.log("\nTo restore the full database at any time, run 1 command:");
+  console.log(`\nPrimary Backup Location: ${latestBackupDir}`);
+  console.log(`Timestamp Archive:       ${timestampedBackupDir}`);
+  console.log("\nTo restore this full database backup at any time, run:");
   console.log("  npm run db:restore");
+  console.log("  OR: node scripts/restore_db.js");
   console.log("=================================================================\n");
 
   process.exit(0);

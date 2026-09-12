@@ -42,7 +42,7 @@ noteController.getNotes = asyncHandler(async (req, res) => {
     query.userId = userId;
   }
 
-  const notes = await Note.find(query).sort({ updatedAt: -1 });
+  const notes = await Note.find(query).sort({ updatedAt: -1 }).lean();
 
   return res.status(200).json(
     new ApiResponse(200, notes, "Notes retrieved successfully")

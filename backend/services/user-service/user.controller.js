@@ -264,28 +264,26 @@ uc.getCurrentUser = asyncHandler(async (req, res) => {
 
 uc.updateAccountDetails = asyncHandler(async (req, res) => {
   console.log("user update Req.body", req.body);
-  console.log("user update Req.file", req.file);
-  const { email, firstName, lastName, phoneNumber, address } = req.body;
+  const { email, firstName, lastName, phoneNumber, address, profileImage } = req.body;
   const imageLocalPath = req.file?.path;
 
-  const existingUser = await User.findById(req.user?._id)
+  const existingUser = await User.findById(req.user?._id);
   if (!existingUser) {
     return res.status(404).json(new ApiError(404, "User not found"));
   }
 
-  let image = existingUser.profileImage;
+  let image = profileImage || existingUser.profileImage;
   if (imageLocalPath) {
     try {
       const [deleteResult, uploadResult] = await Promise.all([
         existingUser.profileImage ? deleteFromCloudinary(existingUser.profileImage) : Promise.resolve(),
         uploadOnCloudinary(imageLocalPath)
       ]);
-      if (!uploadResult?.url) {
-        return res.status(400).json(new ApiError(400, "Error while uploading image"));
+      if (uploadResult?.url) {
+        image = uploadResult.url;
       }
-      image = uploadResult.url
     } catch (error) {
-      return res.status(500).json(new ApiError(500, "Image handling failed"));
+      console.error("Image handling failed:", error);
     }
   }
 
@@ -293,21 +291,20 @@ uc.updateAccountDetails = asyncHandler(async (req, res) => {
     req.user?._id,
     {
       $set: {
-        email,
-        firstName,
-        lastName,
-        phoneNumber,
-        address,
-        profile_image: image,
+        ...(email && { email: email.toLowerCase().trim() }),
+        ...(firstName && { firstName }),
+        ...(lastName !== undefined && { lastName }),
+        ...(phoneNumber !== undefined && { phoneNumber }),
+        ...(address !== undefined && { address }),
+        profileImage: image,
       },
     },
     { new: true }
-  ).select("-password -refreshToken -userRole -otp -otp_time");
+  ).populate("userRole").populate("userRoles").select("-password -refreshToken -otp -otpTime");
 
   return res
     .status(200)
     .json(new ApiResponse(200, user, "Account details updated successfully"));
-
 });
 
 uc.generateOTP = asyncHandler(async (req, res) => {
@@ -586,7 +583,7 @@ uc.zohoLogin = asyncHandler(async (req, res) => {
 
   const clientId = process.env.ZOHO_CLIENT_ID;
   const clientSecret = process.env.ZOHO_CLIENT_SECRET;
-  const redirectUri = process.env.ZOHO_REDIRECT_URI;
+  const redirectUri = req.body.redirectUri || process.env.ZOHO_REDIRECT_URI || "http://localhost:3000/auth/zoho/callback";
 
   if (!clientId || !clientSecret || !redirectUri) {
     return res.status(500).json(new ApiError(500, "Zoho OAuth environment variables are not configured on the server"));
@@ -695,5 +692,103 @@ uc.zohoLogin = asyncHandler(async (req, res) => {
   }
 });
 
+// Google Direct Login & Auto-Register
+uc.googleLogin = asyncHandler(async (req, res) => {
+  let { email, firstName, lastName, profileImage, credential } = req.body;
 
-export default uc
+  try {
+    // If a Google JWT credential is provided, decode payload
+    if (credential && !email) {
+      try {
+        const payloadBase64 = credential.split(".")[1];
+        const decoded = JSON.parse(Buffer.from(payloadBase64, "base64").toString("utf-8"));
+        email = decoded.email;
+        firstName = firstName || decoded.given_name || decoded.name?.split(" ")[0] || "User";
+        lastName = lastName || decoded.family_name || decoded.name?.split(" ").slice(1).join(" ") || "";
+        profileImage = profileImage || decoded.picture || null;
+      } catch (err) {
+        console.error("Failed to decode Google credential token:", err);
+      }
+    }
+
+    if (!email) {
+      return res.status(400).json(new ApiError(400, "Email is required for Google authentication"));
+    }
+
+    email = email.toLowerCase().trim();
+
+    // Check if user already exists
+    let user = await User.findOne({ email }).populate("userRole").populate("userRoles");
+
+    if (user) {
+      if (user.isActive === false) {
+        return res.status(403).json(new ApiError(403, "The account is disabled. Contact the admin to enable"));
+      }
+
+      // If user doesn't have an avatar and Google provides one, update it
+      if (!user.profileImage && profileImage) {
+        user.profileImage = profileImage;
+        await user.save();
+      }
+
+      const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(res, user);
+
+      const loggedInUser = user.toObject();
+      delete loggedInUser.password;
+      delete loggedInUser.refreshToken;
+      delete loggedInUser.otp;
+      delete loggedInUser.otpTime;
+
+      const options = { httpOnly: true, secure: true };
+      return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "Logged in via Google successfully"));
+    } else {
+      // Auto-register new Google user
+      firstName = firstName || "Google";
+      lastName = lastName || "User";
+
+      let role = await UserRole.findOne({ name: "employee" });
+      if (!role) {
+        role = await UserRole.findOne({ name: "user" });
+      }
+
+      const generatedPassword = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(-10) + "A1!";
+
+      const newUser = await User.create({
+        email,
+        firstName,
+        lastName,
+        password: generatedPassword,
+        userRole: role ? role._id : undefined,
+        userRoles: role ? [role._id] : [],
+        isActive: true,
+        profileImage: profileImage || null,
+      });
+
+      const populatedUser = await User.findById(newUser._id).populate("userRole").populate("userRoles");
+
+      const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(res, populatedUser);
+
+      const loggedInUser = populatedUser.toObject();
+      delete loggedInUser.password;
+      delete loggedInUser.refreshToken;
+      delete loggedInUser.otp;
+      delete loggedInUser.otpTime;
+
+      const options = { httpOnly: true, secure: true };
+      return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "Registered and logged in via Google successfully"));
+    }
+  } catch (error) {
+    console.error("Error during Google Login backend process:", error);
+    return res.status(500).json(new ApiError(500, error.message || "Internal Server Error during Google authentication"));
+  }
+});
+
+export default uc;

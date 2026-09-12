@@ -22,35 +22,35 @@ function assert(condition, message) {
 }
 
 // 1. PrimitiveParser Tests
-const numVal = PrimitiveParser.parse("42", "number");
-assert(numVal === 42, "PrimitiveParser parses string '42' as number 42");
+const numVal = PrimitiveParser.parse(42, "number");
+assert(numVal.kind === "primitive" && numVal.value === 42, "PrimitiveParser parses number 42");
 
-const boolVal = PrimitiveParser.parse("true", "boolean");
-assert(boolVal === true, "PrimitiveParser parses 'true' as boolean true");
+const boolVal = PrimitiveParser.parse(true, "boolean");
+assert(boolVal.kind === "primitive" && boolVal.value === true, "PrimitiveParser parses boolean true");
 
 // 2. ArrayParser Tests
 const arrVal = ArrayParser.parse("[2, 7, 11, 15]");
-assert(Array.isArray(arrVal) && arrVal.length === 4 && arrVal[1] === 7, "ArrayParser parses JSON array string correctly");
+assert(arrVal.kind === "array" && arrVal.elements.length === 4 && arrVal.elements[1] === 7, "ArrayParser parses JSON array string correctly");
 
 // 3. MatrixParser Tests
 const matVal = MatrixParser.parse("[[1, 2], [3, 4]]");
-assert(Array.isArray(matVal) && matVal[1][0] === 3, "MatrixParser parses 2D matrix correctly");
+assert(matVal.kind === "matrix" && matVal.dimensions.rows === 2 && matVal.rows[1][0] === 3, "MatrixParser parses 2D matrix correctly");
 
 // 4. LinkedListParser Tests
 const listHead = LinkedListParser.parse([1, 2, 3]);
-assert(listHead && listHead.val === 1 && listHead.next.val === 2 && listHead.next.next.val === 3, "LinkedListParser builds linked list 1->2->3");
+assert(listHead.kind === "linked_list" && listHead.values[0] === 1 && listHead.values[1] === 2 && listHead.values[2] === 3, "LinkedListParser builds linked list IR 1->2->3");
 
 // 5. BinaryTreeParser Tests
 const treeRoot = BinaryTreeParser.parse([1, null, 2, 3]);
-assert(treeRoot && treeRoot.val === 1 && treeRoot.left === null && treeRoot.right.val === 2 && treeRoot.right.left.val === 3, "BinaryTreeParser builds level-order tree root(1) -> right(2) -> left(3)");
+assert(treeRoot.kind === "binary_tree" && treeRoot.bfsOrder[0] === 1 && treeRoot.bfsOrder[1] === null && treeRoot.bfsOrder[2] === 2, "BinaryTreeParser builds level-order tree IR");
 
 // 6. GraphParser Tests
 const graphHead = GraphParser.parse([[2, 4], [1, 3], [2, 4], [1, 3]]);
-assert(graphHead && graphHead.val === 1 && graphHead.neighbors.length === 2 && graphHead.neighbors[0].val === 2, "GraphParser connects adjacency list graph nodes");
+assert(graphHead.kind === "graph_node" && graphHead.vertexCount === 4 && graphHead.adjacencyList[0][0] === 2, "GraphParser connects adjacency list graph nodes IR");
 
 // 7. Registry Dispatcher Test
-const registryResult = InputParserRegistry.parseInput("LinkedListParser", [10, 20]);
-assert(registryResult && registryResult.val === 10 && registryResult.next.val === 20, "InputParserRegistry dispatches LinkedListParser correctly");
+const registryResult = InputParserRegistry.parseParameter([10, 20], "ListNode");
+assert(registryResult.kind === "linked_list" && registryResult.values[0] === 10 && registryResult.values[1] === 20, "InputParserRegistry dispatches LinkedListParser correctly");
 
 console.log(`\nInputParserRegistry Test Summary: ${passed} Passed, ${failed} Failed.`);
 if (failed > 0) process.exit(1);

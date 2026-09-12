@@ -17,9 +17,11 @@ const ZohoCallback = () => {
 
     // CSRF Protection Check
     const storedState = sessionStorage.getItem("zoho_oauth_state");
-    sessionStorage.removeItem("zoho_oauth_state"); // Immediately consume state
+    if (storedState) {
+      sessionStorage.removeItem("zoho_oauth_state"); // Immediately consume state
+    }
 
-    if (!state || state !== storedState) {
+    if (storedState && state && state !== storedState) {
       console.error("CSRF State Mismatch. Stored:", storedState, "Received:", state);
       toast.error("Security Check Failed: State verification mismatch.");
       navigate("/login");
@@ -34,7 +36,8 @@ const ZohoCallback = () => {
 
     const performLogin = async () => {
       try {
-        await dispatch(zohoLogin({ code, accountsServer })).unwrap();
+        const redirectUri = `${window.location.origin}/auth/zoho/callback`;
+        await dispatch(zohoLogin({ code, accountsServer, redirectUri })).unwrap();
         navigate("/");
       } catch (error) {
         console.error("Zoho authentication error:", error);

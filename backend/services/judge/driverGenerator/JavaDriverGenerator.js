@@ -49,6 +49,17 @@ function formatJavaLiteral(val, type) {
   if (normType === 'boolean[]' || normType === 'bool[]') return `new boolean[]{${(Array.isArray(val) ? val : []).map(b => b ? 'true' : 'false').join(',')}}`;
   if (normType === 'number[][]' || normType === 'int[][]') return `new int[][]{${(Array.isArray(val) ? val : []).map(r => `new int[]{${(Array.isArray(r) ? r : []).join(',')}}`).join(',')}}`;
   if (normType === 'string[][]' || normType === 'str[][]') return `new String[][]{${(Array.isArray(val) ? val : []).map(r => `new String[]{${(Array.isArray(r) ? r : []).map(s => escapeJavaStringLiteral(s)).join(',')}}`).join(',')}}`;
+  if (normType.includes('listnode') && !normType.includes('random')) {
+    if (val === null || val === undefined) return 'null';
+    const arr = Array.isArray(val) ? val : [];
+    return `deserializeListNode(new int[]{${arr.join(',')}})`;
+  }
+  if (normType.includes('treenode') || normType.includes('binarytree')) {
+    if (val === null || val === undefined) return 'null';
+    const arr = Array.isArray(val) ? val : [];
+    const quoted = arr.map(x => (x === null || x === undefined || String(x).toLowerCase() === 'null') ? '"null"' : `"${x}"`);
+    return `deserializeTreeNode(new String[]{${quoted.join(',')}})`;
+  }
   return String(val);
 }
 
@@ -104,18 +115,28 @@ function getJavaSerializerCall(varName, type) {
       const targetParam = parameters.find(p => p.name === mutatedParameter) || parameters[0];
       const targetType = targetParam ? targetParam.type : 'number[]';
       const serializer = getJavaSerializerCall(`tc_${idx}_${mutatedParameter}`, targetType);
-      execAndSerialize = `solution.${functionName}(${argList});\n        String outStr = ${serializer};`;
+      execAndSerialize = `solution.${functionName}(${argList});\n                outStr = ${serializer};`;
     } else {
       const serializer = getJavaSerializerCall('res', returnType);
-      execAndSerialize = `var res = solution.${functionName}(${argList});\n        String outStr = ${serializer};`;
+      execAndSerialize = `var res = solution.${functionName}(${argList});\n                outStr = ${serializer};`;
     }
 
     return `// Test Case ${idx}
         {
             ${paramInits}
-            ${execAndSerialize}
+            PrintStream origOut = System.out;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream captureOut = new PrintStream(baos);
+            String outStr = "";
+            try {
+                System.setOut(captureOut);
+                ${execAndSerialize}
+            } finally {
+                System.setOut(origOut);
+            }
+            String userStdout = baos.toString();
             if (${idx} > 0) System.out.print(",");
-            System.out.print("{\\"testCaseIndex\\":" + ${idx} + ",\\"output\\":" + outStr + "}");
+            System.out.print("{\\"testCaseIndex\\":" + ${idx} + ",\\"output\\":" + outStr + ",\\"stdout\\":" + escapeJson(userStdout) + "}");
         }`;
   }).join('\n\n        ');
 
@@ -293,6 +314,45 @@ public class Main {
             list.remove(list.size() - 1);
         }
         return "[" + String.join(",", list) + "]";
+    }
+
+    public static ListNode deserializeListNode(int[] vals) {
+        if (vals == null || vals.length == 0) return null;
+        ListNode dummy = new ListNode(0);
+        ListNode curr = dummy;
+        for (int v : vals) {
+            curr.next = new ListNode(v);
+            curr = curr.next;
+        }
+        return dummy.next;
+    }
+
+    public static TreeNode deserializeTreeNode(String[] vals) {
+        if (vals == null || vals.length == 0) return null;
+        if (vals[0].equals("null")) return null;
+        TreeNode root = new TreeNode(Integer.parseInt(vals[0]));
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        int i = 1;
+        while (!q.isEmpty() && i < vals.length) {
+            TreeNode curr = q.poll();
+            if (curr == null) continue;
+            if (i < vals.length) {
+                if (!vals[i].equals("null")) {
+                    curr.left = new TreeNode(Integer.parseInt(vals[i]));
+                    q.offer(curr.left);
+                }
+                i++;
+            }
+            if (i < vals.length) {
+                if (!vals[i].equals("null")) {
+                    curr.right = new TreeNode(Integer.parseInt(vals[i]));
+                    q.offer(curr.right);
+                }
+                i++;
+            }
+        }
+        return root;
     }
 
     public static void main(String[] args) {

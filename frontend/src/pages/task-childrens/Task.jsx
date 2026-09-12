@@ -214,6 +214,7 @@ import { IoGitNetworkSharp } from "react-icons/io5";
 
 import { useSelector } from "react-redux";
 import DsaCodingArenaModal from "../../components/dsa/DsaCodingArenaModal";
+import { getCurriculumNodeType, getActionVerbStyle, formatLevelLabel } from "../../utils/curriculumHelper";
 
 const hasAdditionalNotes = (notes) => {
   if (!notes) return false;
@@ -241,7 +242,7 @@ const isLeetCodeEligible = (task) => {
   );
 };
 
-const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
+const Task = ({ key, task, index, handleClick, onReleaseHold, onStartMajorProblem }) => {
   const { currentUser } = useSelector((state) => state.store);
   const [showCodingModal, setShowCodingModal] = useState(false);
   const canCreateSubtask = currentUser?.userRole?.name === "projectmanager" || currentUser?.userRole?.name === "admin";
@@ -323,6 +324,234 @@ const Task = ({ key, task, index, handleClick, onReleaseHold }) => {
       .replace(/&#39;/g, "'")
       .trim();
   };
+
+  const getCleanCardSummary = (t) => {
+    if (!t) return "";
+    if (t.oneLineSummary) return t.oneLineSummary;
+    if (t.curriculumMeta?.oneLineSummary) return t.curriculumMeta.oneLineSummary;
+    if (t.curriculumMeta?.summary) return t.curriculumMeta.summary;
+    if (t.curriculumMeta?.sections?.goal) return t.curriculumMeta.sections.goal;
+
+    if (t.taskDescription) {
+      let plain = t.taskDescription
+        .replace(/^#+\s+[^\n]+/gm, '')
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        .replace(/`([^`]+)`/g, '$1')
+        .replace(/<[^>]*>?/gm, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const firstSentence = plain.split(/[.!?](\s|$)/)[0];
+      return firstSentence && firstSentence.length > 10 ? firstSentence.trim() + '.' : plain.slice(0, 140);
+    }
+    return "";
+  };
+
+  const nodeType = getCurriculumNodeType(task);
+
+  // If this is an LLD curriculum task, render clean curriculum card
+  if (nodeType) {
+    const accentColors = {
+      module: 'bg-indigo-500',
+      unit: 'bg-violet-500',
+      drill: 'bg-teal-500',
+      problem: 'bg-rose-500',
+      version: 'bg-sky-500'
+    };
+
+    const typeBadges = {
+      module: { label: 'MODULE', style: 'bg-indigo-100/70 text-indigo-700 border-indigo-200 dark:bg-indigo-950/50 dark:text-indigo-300 dark:border-indigo-800 font-black' },
+      unit: { label: 'LEARNING UNIT', style: 'bg-violet-100/70 text-violet-700 border-violet-200 dark:bg-violet-950/50 dark:text-violet-300 dark:border-violet-800 font-black' },
+      drill: { label: 'PRACTICAL DRILL', style: 'bg-teal-100/70 text-teal-700 border-teal-200 dark:bg-teal-950/50 dark:text-teal-300 dark:border-teal-800 font-black' },
+      problem: { label: 'MAJOR LLD PROBLEM', style: 'bg-rose-100/80 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800 font-black' },
+      version: { label: 'PROBLEM VERSION', style: 'bg-sky-100/70 text-sky-700 border-sky-200 dark:bg-sky-950/50 dark:text-sky-300 dark:border-sky-800 font-black' }
+    };
+
+    const currentBadge = typeBadges[nodeType] || typeBadges.drill;
+    const accentColor = accentColors[nodeType] || 'bg-slate-400';
+
+    return (
+      <Draggable key={key} draggableId={task._id} index={index}>
+        {(provided) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            className={`group relative bg-white dark:bg-slate-800 rounded-xl border transition-all duration-200 hover:shadow-md overflow-hidden ${nodeType === 'problem'
+              ? 'border-rose-300/80 dark:border-rose-900/60 shadow-xs'
+              : 'border-slate-200 dark:border-slate-700/50 shadow-2xs hover:border-slate-300'
+              } ${nodeType === 'unit' || nodeType === 'drill' || nodeType === 'version' ? 'ml-2 w-[calc(100%-.5rem)]' : 'w-full'
+              }`}
+          >
+            {/* Accent Bar */}
+            <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-xl ${accentColor}`} />
+
+            <div className="p-3.5 sm:p-4">
+              <main onClick={() => handleClick(task)} className="cursor-pointer">
+                {/* Header Row: Badge & Meta */}
+                <div className="flex items-center justify-between mb-2.5">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className={`px-2 py-0.5 rounded text-[9.5px] uppercase tracking-wider border ${currentBadge.style}`}>
+                      {currentBadge.label}
+                    </span>
+
+                    {/* For Drills: Semantic Action Verb Badge */}
+                    {nodeType === 'drill' && task.curriculumMeta?.actionVerb && (
+                      <span className={`px-2 py-0.5 rounded text-[9.5px] font-black uppercase tracking-wider border ${getActionVerbStyle(task.curriculumMeta.actionVerb)}`}>
+                        {task.curriculumMeta.actionVerb}
+                      </span>
+                    )}
+
+                    {/* For Unit: Parent Module indication */}
+                    {nodeType === 'unit' && task.parentTask && (
+                      <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 truncate max-w-[120px]">
+                        / {typeof task.parentTask === 'object' ? task.parentTask.taskName?.split(':')[0] : 'Module'}
+                      </span>
+                    )}
+
+                    {/* For Version: Parent Problem Version Tag */}
+                    {nodeType === 'version' && (
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                        {typeof task.parentTask === 'object' ? task.parentTask.taskName?.split('—')[0]?.trim() || 'Problem' : 'Problem'} · V{task.curriculumMeta?.versionNumber || 1}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Right Meta Header */}
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 shrink-0">
+                    {nodeType === 'drill' && (
+                      <span>
+                        {task.curriculumMeta?.targetTimeMinutes || 15} min · <span className="capitalize">{task.curriculumMeta?.difficulty || 'Easy'}</span>
+                      </span>
+                    )}
+                    {nodeType === 'problem' && (
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-black text-[9.5px]">
+                        {task.curriculumMeta?.difficulty || 'Medium'} · {task.curriculumMeta?.targetTimeMinutes || 90}m
+                      </span>
+                    )}
+                    {nodeType === 'version' && (
+                      <span>
+                        {task.curriculumMeta?.targetTimeMinutes || 30} min
+                      </span>
+                    )}
+                    {nodeType === 'module' && (
+                      <span>
+                        {task.subtaskStats?.total || 0} Units · ~{task.estimatedHours ? `${task.estimatedHours}h` : '6h'}
+                      </span>
+                    )}
+                    {nodeType === 'unit' && (
+                      <span>
+                        {task.subtaskStats?.total || 1} Drills · ~{task.curriculumMeta?.targetTimeMinutes || 45}m
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Title */}
+                <h4 className={`text-sm sm:text-[15px] font-bold leading-snug mb-1.5 line-clamp-2 ${task.status === 'done' ? 'text-slate-400 line-through opacity-70' : 'text-slate-800 dark:text-slate-100'
+                  }`}>
+                  {task.taskName}
+                </h4>
+
+                {/* Concepts list for Learning Unit */}
+                {nodeType === 'unit' && task.curriculumMeta?.conceptTopics?.length > 0 && (
+                  <div className="flex flex-wrap gap-1 my-2">
+                    {task.curriculumMeta.conceptTopics.slice(0, 3).map((topic, i) => (
+                      <span key={i} className="px-2 py-0.5 rounded-md text-[9.5px] font-semibold bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-600/40">
+                        {topic}
+                      </span>
+                    ))}
+                    {task.curriculumMeta.conceptTopics.length > 3 && (
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold text-slate-400">
+                        +{task.curriculumMeta.conceptTopics.length - 3} concepts
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Clean 1-Line Description Snippet */}
+                {nodeType !== 'unit' ? (
+                  <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-2.5">
+                    {getCleanCardSummary(task)}
+                  </p>
+                ) : (
+                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-2.5">
+                    <span>💡</span>
+                    <span>Concept Notes & Core Theory Inside</span>
+                  </div>
+                )}
+
+                {/* Drill Footer: Action · Level · Target Time · Difficulty */}
+                {nodeType === 'drill' && (
+                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-primary dark:text-vermilion-400">
+                      {task.curriculumMeta?.actionVerb || 'BUILD'}
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500">
+                      <span>{formatLevelLabel(task.curriculumMeta) || 'Level A'}</span>
+                      <span>·</span>
+                      <span>{task.curriculumMeta?.targetTimeMinutes || 15} min</span>
+                      <span>·</span>
+                      <span className="capitalize">{task.curriculumMeta?.difficulty || 'Easy'}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Unit Footer: Theory & Exercises */}
+                {nodeType === 'unit' && (
+                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] font-bold text-slate-400 dark:text-slate-500">
+                    <span style={{ fontSize: "0.8rem" }} className="text-primary dark:text-primary font-black uppercase tracking-wider">TEACHING NODE</span>
+                    <span>Theory + Small Example</span>
+                  </div>
+                )}
+
+                {/* Module / Unit Progress Bar */}
+                {(nodeType === 'module' || nodeType === 'unit') && task.subtaskStats?.total > 0 && (
+                  <div className="mt-2.5 bg-slate-50 dark:bg-slate-900/40 p-2 rounded-xl border border-slate-100 dark:border-slate-800/50">
+                    <div className="flex justify-between items-center mb-1 text-[10px] font-bold text-slate-400">
+                      <span>Progress</span>
+                      <span className="text-primary font-black">
+                        {task.subtaskStats.completed}/{task.subtaskStats.total} ({Math.round((task.subtaskStats.completed / task.subtaskStats.total) * 100)}%)
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700/50 rounded-full overflow-hidden">
+                      <div
+                        className="bg-primary h-full rounded-full transition-all duration-300"
+                        style={{ width: `${(task.subtaskStats.completed / task.subtaskStats.total) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Major Problem Footer & Action Button */}
+                {nodeType === 'problem' && (
+                  <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-700/50">
+                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                      {task.curriculumMeta?.targetTimeMinutes || 75} min · {task.subtaskStats?.total || 5} versions
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onStartMajorProblem) {
+                          onStartMajorProblem(task);
+                        } else {
+                          handleClick(task);
+                        }
+                      }}
+                      className="px-3 py-1 rounded-lg bg-primary hover:bg-primary/90 text-white text-xs font-bold shadow-sm shadow-primary/25 flex items-center gap-1 transition-all active:scale-95"
+                    >
+                      <span>Start Problem</span>
+                      <span className="text-xs">→</span>
+                    </button>
+                  </div>
+                )}
+              </main>
+            </div>
+          </div>
+        )}
+      </Draggable>
+    );
+  }
 
   return (
     <>

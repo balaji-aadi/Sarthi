@@ -49,6 +49,14 @@ function formatCppLiteral(val, type) {
   if (normType === 'boolean[]' || normType === 'bool[]') return `{${(Array.isArray(val) ? val : []).map(b => b ? 'true' : 'false').join(',')}}`;
   if (normType === 'number[][]' || normType === 'int[][]') return `{${(Array.isArray(val) ? val : []).map(r => `{${(Array.isArray(r) ? r : []).join(',')}}`).join(',')}}`;
   if (normType === 'string[][]' || normType === 'str[][]') return `{${(Array.isArray(val) ? val : []).map(r => `{${(Array.isArray(r) ? r : []).map(s => escapeCppStringLiteral(s)).join(',')}}`).join(',')}}`;
+  if (normType.includes('listnode') && !normType.includes('random')) {
+    if (!Array.isArray(val) || val.length === 0) return 'nullptr';
+    return `build_list_node({${val.map(x => Number(x)).join(',')}})`;
+  }
+  if (normType.includes('treenode') || normType.includes('binarytree')) {
+    if (!Array.isArray(val) || val.length === 0 || val[0] === null || val[0] === 'null') return 'nullptr';
+    return `build_tree_node({${val.map(x => (x === null || x === 'null' ? '"null"' : `"${x}"`)).join(',')}})`;
+  }
   return String(val);
 }
 
@@ -117,10 +125,26 @@ const TYPE_MAP_CPP = {
       const targetParam = parameters.find(p => p.name === mutatedParameter) || parameters[0];
       const targetType = targetParam ? targetParam.type : 'number[]';
       const serializer = getCppSerializerCall(`tc_${idx}_${mutatedParameter}`, targetType);
-      execAndSerialize = `solution.${functionName}(${argList});\n        string out_str = ${serializer};`;
+      execAndSerialize = `string user_stdout = "";
+            string out_str = "";
+            {
+                CoutRedirector _redirector;
+                solution.${functionName}(${argList});
+                _redirector.restore();
+                user_stdout = escape_json_string(_redirector.str());
+                out_str = ${serializer};
+            }`;
     } else {
       const serializer = getCppSerializerCall('res', returnType);
-      execAndSerialize = `auto res = solution.${functionName}(${argList});\n        string out_str = ${serializer};`;
+      execAndSerialize = `string user_stdout = "";
+            string out_str = "";
+            {
+                CoutRedirector _redirector;
+                auto res = solution.${functionName}(${argList});
+                _redirector.restore();
+                user_stdout = escape_json_string(_redirector.str());
+                out_str = ${serializer};
+            }`;
     }
 
     return `// Test Case ${idx}
@@ -128,7 +152,7 @@ const TYPE_MAP_CPP = {
             ${paramInits}
             ${execAndSerialize}
             if (${idx} > 0) cout << ",";
-            cout << "{\\"testCaseIndex\\":${idx},\\"output\\":" << out_str << "}";
+            cout << "{\\"testCaseIndex\\":${idx},\\"output\\":" << out_str << ",\\"stdout\\":" << user_stdout << "}";
         }`;
   }).join('\n\n        ');
 
@@ -176,6 +200,63 @@ public:
     Node(int _val) : val(_val), next(nullptr), random(nullptr) {}
     Node(int _val, Node* _next, Node* _random) : val(_val), next(_next), random(_random) {}
     Node(int _val, vector<Node*> _neighbors) : val(_val), next(nullptr), random(nullptr), neighbors(_neighbors) {}
+};
+
+// ==========================================
+// 1.5 INPUT DESERIALIZATION & STREAM HELPERS
+// ==========================================
+ListNode* build_list_node(const vector<int>& vals) {
+    if (vals.empty()) return nullptr;
+    ListNode* head = new ListNode(vals[0]);
+    ListNode* curr = head;
+    for (size_t i = 1; i < vals.size(); ++i) {
+        curr->next = new ListNode(vals[i]);
+        curr = curr->next;
+    }
+    return head;
+}
+
+TreeNode* build_tree_node(const vector<string>& vals) {
+    if (vals.empty() || vals[0] == "null") return nullptr;
+    TreeNode* root = new TreeNode(stoi(vals[0]));
+    queue<TreeNode*> q;
+    q.push(root);
+    size_t i = 1;
+    while (!q.empty() && i < vals.size()) {
+        TreeNode* curr = q.front();
+        q.pop();
+        if (i < vals.size()) {
+            if (vals[i] != "null") {
+                curr->left = new TreeNode(stoi(vals[i]));
+                q.push(curr->left);
+            }
+            i++;
+        }
+        if (i < vals.size()) {
+            if (vals[i] != "null") {
+                curr->right = new TreeNode(stoi(vals[i]));
+                q.push(curr->right);
+            }
+            i++;
+        }
+    }
+    return root;
+}
+
+class CoutRedirector {
+    stringstream buf;
+    streambuf* old_buf;
+    bool active;
+public:
+    CoutRedirector() : old_buf(cout.rdbuf(buf.rdbuf())), active(true) {}
+    ~CoutRedirector() { restore(); }
+    void restore() {
+        if (active) {
+            cout.rdbuf(old_buf);
+            active = false;
+        }
+    }
+    string str() const { return buf.str(); }
 };
 
 // ==========================================

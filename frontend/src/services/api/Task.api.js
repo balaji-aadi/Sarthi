@@ -19,4 +19,10 @@ export const TaskApi = {
    toggleDailyRevisionTimer: (timezoneOffset) => Api.post(`task/daily-revision/toggle-timer`, { timezoneOffset }),
    syncDailyRevisionTimer: (payload) => Api.post(`task/daily-revision/sync-timer`, payload),
    toggleReviseTomorrow: (payload) => Api.post(`task/daily-revision/toggle-revise-tomorrow`, payload),
+   recordReflection: (id, payload) => Api.post(`task/reflection/${id}`, payload),
+   getPatternAlerts: () => Api.get("task/patterns/alerts"),
+   getLldWorkspace: (id) => Api.get(`task/${id}/lld-workspace`),
+   submitLldTask: (id, payload) => Api.post(`task/${id}/lld-submit`, payload),
+   runLldCode: (payload) => Api.post("judge/lld/run", payload),
 };
+

@@ -1,0 +1,817 @@
+[
+  {
+    "taskId": "LLDP1-D1.1.1",
+    "taskName": "Stack vs Heap Allocation & Lifetime Drill",
+    "unitCode": "1.1.1",
+    "actionVerb": "BUILD",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Stack vs Heap allocation in LLD",
+      "The this pointer and execution context",
+      "Constructors & Member Initialization Lists",
+      "Destructor cleanup responsibilities",
+      "RAII (Resource Acquisition Is Initialization)"
+    ],
+    "rawDesc": "Implement a resource-holding ConnectionPool class demonstrating stack vs heap instantiation and proper destructor cleanup.\n\n### Objective:\n1. Stack instantiation vs Heap instantiation with new.\n2. Proper lifecycle cleanup in destructor to prevent memory leaks.\n3. Preventing copy construction or assignment when a class owns exclusive system handles.\n\n### Acceptance Criteria:\n* Class allocates and cleans up its own buffer without leaking.\n* Destructor logs destruction sequence proving cleanup upon stack frame exit."
+  },
+  {
+    "taskId": "LLDP1-D1.1.2",
+    "taskName": "Object Ownership & Reference Passing Refactor",
+    "unitCode": "1.1.2",
+    "actionVerb": "REFACTOR",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Value vs Reference semantics (Vehicle& vs Vehicle*)",
+      "Object ownership boundaries (Composition vs Aggregation)",
+      "Const reference passing for read-only efficiency",
+      "Dangling pointers and object lifecycle tracking"
+    ],
+    "rawDesc": "Given buggy code where a Car holds a raw pointer to an Engine created on the stack that goes out of scope, refactor the code to clearly enforce whether the Car owns the engine (Composition) or borrows it (Aggregation), passing by const reference where mutation is forbidden."
+  },
+  {
+    "taskId": "LLDP1-D1.1.3",
+    "taskName": "Dynamic Method Dispatch & Virtual Destructors",
+    "unitCode": "1.1.3",
+    "actionVerb": "BUILD",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Base pointer to derived object (Base* b = new Derived())",
+      "VTable and VPtr runtime dispatch mechanism",
+      "Pure virtual functions and Abstract Classes as strict contracts",
+      "Virtual destructors and avoiding incomplete deletion memory leaks"
+    ],
+    "rawDesc": "Demonstrate runtime dispatch with a base contract pointer. Implement pure virtual function pay(int amount) = 0. Demonstrate the memory leak caused when the base class destructor is not virtual, then fix it with virtual ~PaymentMethod() = default."
+  },
+  {
+    "taskId": "LLDP1-D1.2.1",
+    "taskName": "Defending State Invariants in Shopping Cart",
+    "unitCode": "1.2.1",
+    "actionVerb": "REFACTOR",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Why public getters/setters violate encapsulation",
+      "Defensive copying of internal collections",
+      "Domain business methods vs property setters",
+      "Invariant validation guards on mutation"
+    ],
+    "rawDesc": "A ShoppingCart exposes getItems() returning a raw mutable list. External calling code bypasses validation by clearing the list directly or pushing negative price items. Encapsulate all cart mutations behind business methods (addItem, removeItem, applyCoupon) and return unmodifiable collection views."
+  },
+  {
+    "taskId": "LLDP1-D1.2.2",
+    "taskName": "Immutable Money Value Object with Invariant Guards",
+    "unitCode": "1.2.2",
+    "actionVerb": "BUILD",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Entity (Identity) vs Value Object (Structural Equality)",
+      "Immutability for thread safety and side-effect prevention",
+      "Financial precision: integer cents vs floating point drift",
+      "Self-validating invariants upon construction"
+    ],
+    "rawDesc": "Build an immutable Money Value Object handling integer cents and ISO currency codes. Enforce validation: cents cannot be negative, currency cannot be empty. Invariant guard: adding Money of different currencies throws a typed CurrencyMismatchException. Implement structural value equality."
+  },
+  {
+    "taskId": "LLDP1-D1.3.1",
+    "taskName": "Mapping Association, Aggregation & Composition",
+    "unitCode": "1.3.1",
+    "actionVerb": "COMPARE",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Association (uses-a relationship)",
+      "Aggregation (has-a shared lifecycle)",
+      "Composition (owns-a exclusive lifecycle)",
+      "Cardinality and Multiplicity modeling"
+    ],
+    "rawDesc": "Analyze 6 real-world domain pairs: Order <-> OrderItem, Department <-> Professor, Doctor <-> Patient, House <-> Room, Driver <-> Car, PaymentGateway <-> CheckoutController. Write constructor signatures and lifecycle management logic for each."
+  },
+  {
+    "taskId": "LLDP1-D1.3.2",
+    "taskName": "Dismantling Fragile Base Class in Notification System",
+    "unitCode": "1.3.2",
+    "actionVerb": "REFACTOR",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Fragile Base Class problem",
+      "Class Explosion across multiple variation axes",
+      "Pluggable strategies and decorator composition",
+      "Predicting inheritance collapse under future requirements"
+    ],
+    "rawDesc": "A notification system was modeled with deep inheritance: Notification -> EmailNotification -> EncryptedEmailNotification -> PriorityEncryptedEmailNotification... Refactor the architecture using composition: separate dispatch channel from formatting and priority behaviors so new channels can be added with 1 class instead of 8."
+  },
+  {
+    "taskId": "LLDP1-D1.3.3",
+    "taskName": "Anticipating Inheritance Breakdowns",
+    "unitCode": "1.3.2",
+    "actionVerb": "PREDICT",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 20,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Fragile Base Class problem",
+      "Class Explosion across multiple variation axes",
+      "Pluggable strategies and decorator composition",
+      "Predicting inheritance collapse under future requirements"
+    ],
+    "rawDesc": "Given a game character hierarchy (Character -> Warrior, Mage, Archer), predict what happens when the game introduces dual-class characters or dynamic weapon-swapping at runtime. Formulate the concrete design pivot needed before writing code."
+  },
+  {
+    "taskId": "LLDP1-D1.4.1",
+    "taskName": "Digital Wallet Domain Model & CRC Extraction",
+    "unitCode": "1.4.1",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 35,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Noun-Verb extraction technique",
+      "Filtering out primitive attributes vs genuine domain entities",
+      "CRC (Class-Responsibility-Collaborators) modeling",
+      "Mapping message passing lifelines with UML Sequence diagrams"
+    ],
+    "rawDesc": "Read a 3-paragraph specification for a Peer-to-Peer Digital Wallet. Extract candidate entities (filtering out primitive data and helpers), write CRC cards establishing single responsibility per entity, and trace a sequence diagram for transferFunds()."
+  },
+  {
+    "taskId": "LLDP2-D2.1.1",
+    "taskName": "Dismantling the God Class UserManager",
+    "unitCode": "2.1.1",
+    "actionVerb": "REFACTOR",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Single Responsibility Principle (SRP) definition",
+      "Detecting God Class antipatterns and high coupling",
+      "Extract Class and Move Method refactoring techniques",
+      "Separation of business logic from infrastructure I/O"
+    ],
+    "rawDesc": "An 800-line UserManager handles: password hashing, SQL database persistence, email validation, session tokens, and PDF invoice generation. A bug fix in PDF formatting breaks user login. Extract cohesive sub-components: PasswordService, UserRepository, TokenManager, and InvoiceGenerator. Ensure UserService strictly orchestrates business workflows without touching raw I/O."
+  },
+  {
+    "taskId": "LLDP2-D2.1.2",
+    "taskName": "Segregating Bloated CloudStorageProvider",
+    "unitCode": "2.1.2",
+    "actionVerb": "REFACTOR",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Interface Segregation Principle (ISP) definition",
+      "The smell of throwing UnsupportedOperationException",
+      "Role-based interfaces vs header interfaces",
+      "Decoupling consumer dependencies"
+    ],
+    "rawDesc": "A CloudStorageProvider interface contains: upload(), download(), transcodeVideo(), generateThumbnail(), and billTenant(). Simple text-storage clients are forced to implement video methods with throw new UnsupportedOperationException(). Segregate into role-tailored interfaces: StorageReader, StorageWriter, and MediaProcessor, refactoring clients to depend only on the minimal interface they require."
+  },
+  {
+    "taskId": "LLDP2-D2.2.1",
+    "taskName": "Replacing Type-Code Switch with Polymorphic Strategy",
+    "unitCode": "2.2.1",
+    "actionVerb": "REFACTOR",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 25,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Open/Closed Principle (OCP) definition",
+      "Smell of type-code switch statements across codebases",
+      "Polymorphic strategies and dynamic registration",
+      "Adding new variants with zero modification to tested code"
+    ],
+    "rawDesc": "A TaxCalculator contains a 40-line switch(regionCode) statement. Every quarter when new tax jurisdictions are added, tested code must be modified, risking global regression. Extract an abstract TaxComputationStrategy interface and implement a registry map allowing dynamic registration of regional tax calculators without modifying existing classes."
+  },
+  {
+    "taskId": "LLDP2-D2.2.2",
+    "taskName": "Spotting Liskov Substitution Violations",
+    "unitCode": "2.2.2",
+    "actionVerb": "COMPARE",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Liskov Substitution Principle (LSP) formal definition",
+      "Classic Square extends Rectangle geometric trap",
+      "ReadOnlyCollection extends Collection runtime crash",
+      "Preconditions cannot be strengthened, postconditions cannot be weakened"
+    ],
+    "rawDesc": "Analyze two classic subtyping traps: Square extends Rectangle where setting width mutates height, and ReadOnlyCollection extends Collection where .add() throws runtime exceptions. Write clean, LSP-compliant refactorings separating mutable from immutable hierarchies."
+  },
+  {
+    "taskId": "LLDP2-D2.3.1",
+    "taskName": "Manual Constructor Injection & Fake Ports",
+    "unitCode": "2.3.1",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Dependency Inversion Principle (DIP) definition",
+      "High-level policy decoupling from low-level detail",
+      "Constructor Dependency Injection without magic frameworks",
+      "Testability via Fake/Mock port implementations"
+    ],
+    "rawDesc": "Build an OrderFulfillmentService that depends on abstract PaymentPort and NotificationPort. Provide production implementations (StripeGateway, SendgridMailer). Write unit tests using FakePaymentPort and FakeNotificationPort asserting behavior without network calls."
+  },
+  {
+    "taskId": "LLDP2-D2.4.1",
+    "taskName": "Inheritance vs Composition Trade-offs",
+    "unitCode": "2.4.1",
+    "actionVerb": "DEFEND",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 20,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Inheritance vs Composition decision checklist",
+      "Switch vs Strategy threshold analysis",
+      "Interface vs Abstract Class usage criteria",
+      "Identifying and trimming speculative over-engineering (YAGNI)"
+    ],
+    "rawDesc": "Evaluate 8 concrete scenarios and justify whether inheritance or composition provides superior maintainability, testability, and resilience to requirement changes."
+  },
+  {
+    "taskId": "LLDP2-D2.4.2",
+    "taskName": "Switch vs Polymorphism: Defining the Threshold",
+    "unitCode": "2.4.1",
+    "actionVerb": "COMPARE",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Inheritance vs Composition decision checklist",
+      "Switch vs Strategy threshold analysis",
+      "Interface vs Abstract Class usage criteria",
+      "Identifying and trimming speculative over-engineering (YAGNI)"
+    ],
+    "rawDesc": "When is a 3-case switch statement completely acceptable, and when does it become an antipattern? Establish the 4-question decision checklist to avoid over-engineering."
+  },
+  {
+    "taskId": "LLDP2-D2.4.3",
+    "taskName": "Concrete Class vs Abstract Class vs Interface",
+    "unitCode": "2.4.1",
+    "actionVerb": "COMPARE",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Inheritance vs Composition decision checklist",
+      "Switch vs Strategy threshold analysis",
+      "Interface vs Abstract Class usage criteria",
+      "Identifying and trimming speculative over-engineering (YAGNI)"
+    ],
+    "rawDesc": "Classify when to use pure interfaces (behavioral contracts) vs abstract base classes (shared state and template method hooks)."
+  },
+  {
+    "taskId": "LLDP2-D2.4.4",
+    "taskName": "YAGNI & Over-Engineering Audit",
+    "unitCode": "2.4.1",
+    "actionVerb": "REFACTOR",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 25,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Inheritance vs Composition decision checklist",
+      "Switch vs Strategy threshold analysis",
+      "Interface vs Abstract Class usage criteria",
+      "Identifying and trimming speculative over-engineering (YAGNI)"
+    ],
+    "rawDesc": "Take an over-engineered codebase with 6 unnecessary interfaces and 2 factories for a feature that only has 1 implementation, and refactor it to simple, robust code."
+  },
+  {
+    "taskId": "LLDP2-D2.4.5",
+    "taskName": "Predicting OCP Failures in Notification Engine",
+    "unitCode": "2.4.1",
+    "actionVerb": "PREDICT",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 20,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Inheritance vs Composition decision checklist",
+      "Switch vs Strategy threshold analysis",
+      "Interface vs Abstract Class usage criteria",
+      "Identifying and trimming speculative over-engineering (YAGNI)"
+    ],
+    "rawDesc": "Analyze an existing notification service and predict which future requirements will trigger cascade edits. Formulate the proactive design modification."
+  },
+  {
+    "taskId": "LLDP3-D3.1.1",
+    "taskName": "Dynamic Shipping Cost Engine Refactor",
+    "unitCode": "3.1.1",
+    "actionVerb": "REFACTOR",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Strategy Pattern intent & mechanics",
+      "Dynamic algorithm selection at runtime",
+      "Decoupling clients from algorithmic variants",
+      "Composition over inheritance in algorithm evolution"
+    ],
+    "rawDesc": "A ShippingRateCalculator has hardcoded rules for FedEx, DHL, and Postal. Adding dynamic holiday discounts and overnight courier calculation causes sprawling conditionals.\n\n### Requirements:\n1. Extract an interchangeable ShippingPricingStrategy interface.\n2. Implement concrete strategies and configure them dynamically at checkout.\n3. Write tests verifying strategy swapping without modifying CheckoutService."
+  },
+  {
+    "taskId": "LLDP3-D3.1.2",
+    "taskName": "Decoupled Order Event Broker",
+    "unitCode": "3.1.2",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Observer Pattern intent & pub-sub mechanics",
+      "Dynamic listener subscription and unsubscription",
+      "Loose coupling between subject and observers",
+      "Error isolation during broadcast loops"
+    ],
+    "rawDesc": "Build an in-memory pub-sub OrderEventManager:\n1. When an order is placed, notify InventoryService, EmailService, AnalyticsService, and BillingService.\n2. Allow listeners to subscribe/unsubscribe dynamically at runtime.\n3. Handle exceptions thrown by one listener without terminating the notification loop."
+  },
+  {
+    "taskId": "LLDP3-D3.1.3",
+    "taskName": "Document Workflow Lifecycle State Machine",
+    "unitCode": "3.1.3",
+    "actionVerb": "REFACTOR",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "State Pattern intent & state transitions",
+      "Eliminating conditionals on object state",
+      "State object context delegation",
+      "Illegal transition exception handling"
+    ],
+    "rawDesc": "A publishing platform models a Document with nested `if (status == DRAFT) ... else if (status == REVIEW)`. Invalid transitions happen silently.\n\n### Requirements:\n1. Extract a DocumentState interface.\n2. Encapsulate state-specific behaviors (edit(), review(), publish(), archive()) in concrete state classes.\n3. Throw typed exceptions for illegal transitions (e.g., editing an Archived document)."
+  },
+  {
+    "taskId": "LLDP3-D3.1.4",
+    "taskName": "Transactional Undo/Redo Text Buffer Engine",
+    "unitCode": "3.1.4",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Command Pattern intent & encapsulation",
+      "Command execution and rollback/undo mechanics",
+      "Command history stacks",
+      "Transactional command queueing"
+    ],
+    "rawDesc": "Build a transactional canvas or text buffer:\n1. Encapsulate actions (InsertTextCommand, DeleteTextCommand, FormatCommand) as objects with execute() and undo().\n2. Maintain command history stacks supporting arbitrary multi-level Undo and Redo operations."
+  },
+  {
+    "taskId": "LLDP3-D3.1.5",
+    "taskName": "Extensible Request Filter Pipeline",
+    "unitCode": "3.1.5",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 25,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Chain of Responsibility intent",
+      "Handler linkage and dispatch order",
+      "Early exit vs pipeline pass-through",
+      "Decoupled filtering & validation"
+    ],
+    "rawDesc": "Construct a web request filter pipeline:\n1. Chain handlers: RateLimitHandler -> AuthenticationHandler -> SanitizationHandler -> PayloadValidationHandler.\n2. Allow any handler in the chain to abort the request or pass it to next()."
+  },
+  {
+    "taskId": "LLDP3-D3.2.1",
+    "taskName": "Document Exporter Factory & HTTP Config Builder",
+    "unitCode": "3.2.1",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 35,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Factory Method intent and creator hierarchy",
+      "Builder pattern intent & fluent API construction",
+      "Invariant enforcement during step-by-step building",
+      "Decoupling callers from concrete instantiation"
+    ],
+    "rawDesc": "1. Build a DocumentExporterFactory returning PdfExporter, MarkdownExporter, or HtmlExporter.\n2. Build an immutable HttpRequestConfig using a fluent Builder enforcing mandatory URL and headers before .build()."
+  },
+  {
+    "taskId": "LLDP3-D3.2.2",
+    "taskName": "Dynamic Beverage Addons & Legacy Payment Bridge",
+    "unitCode": "3.2.2",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 35,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Decorator pattern intent & recursive wrapping",
+      "Dynamic runtime behavior augmentation without subclass explosion",
+      "Adapter pattern intent & interface translation",
+      "Wrapping legacy or external vendor SDKs"
+    ],
+    "rawDesc": "1. Build a dynamic beverage ordering system where toppings (Milk, Syrup, WhipCream) wrap Beverage instances dynamically at runtime.\n2. Build an ExternalStripeAdapter wrapping a legacy third-party vendor SDK into our domain's PaymentProcessor interface."
+  },
+  {
+    "taskId": "LLDP3-D3.2.3",
+    "taskName": "In-Memory FileSystem Tree Hierarchy",
+    "unitCode": "3.2.3",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Composite pattern intent",
+      "Uniform treatment of leaves and composites",
+      "Recursive tree traversal algorithms",
+      "Component interface design"
+    ],
+    "rawDesc": "Build an in-memory FileSystem modeling File and Directory:\n1. Both implement FileSystemNode exposing getSize(), printTree(), delete().\n2. A directory computes its size by recursively summing all child files and subdirectories uniformly."
+  },
+  {
+    "taskId": "LLDP3-D3.3.1",
+    "taskName": "Proxy, Facade & Template Method Implementation Drill",
+    "unitCode": "3.3.1",
+    "actionVerb": "COMPARE",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 35,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Proxy pattern: Caching, virtual, and protection proxies",
+      "Facade pattern: High-level unified subsystem interface",
+      "Template Method: Invariant algorithm skeleton with hooks",
+      "Mediator vs Observer: Centralized vs distributed communication"
+    ],
+    "rawDesc": "1. Implement a caching Image Proxy and a high-level Video Converter Facade.\n2. Build an algorithmic skeleton using Template Method with hook steps.\n3. Compare Mediator vs Observer: Centralized hub vs distributed pub-sub."
+  },
+  {
+    "taskId": "LLDP3-D3.3.2",
+    "taskName": "Singleton Antipattern & Thread Safety Refactor",
+    "unitCode": "3.3.2",
+    "actionVerb": "REFACTOR",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 20,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Singleton pattern intent & risks",
+      "Double-Checked Locking and Bill Pugh idioms",
+      "Global state issues and testing bottlenecks",
+      "Refactoring to Dependency Injection"
+    ],
+    "rawDesc": "A global mutable ConfigurationManager.getInstance() creates hidden dependencies, prevents unit testing parallelism, and breaks thread safety.\n\n### Requirements:\n1. Implement thread-safe Double-Checked Locking and Bill Pugh Singleton.\n2. Refactor callers to receive dependencies via constructor injection instead of calling .getInstance()."
+  },
+  {
+    "taskId": "LLDP3-D3.3.3",
+    "taskName": "Specialized GoF Patterns Comparison Drill",
+    "unitCode": "3.3.3",
+    "actionVerb": "COMPARE",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 20,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Flyweight pattern: Intrinsic vs extrinsic state sharing",
+      "Memento pattern: Snapshotting state without violating encapsulation",
+      "Visitor pattern: Adding operations across node hierarchies",
+      "Prototype pattern: Cloning prototype instances"
+    ],
+    "rawDesc": "1. Flyweight: Sharing immutable font/character glyph state in a text rendering engine.\n2. Memento: Capturing private snapshot of game state without breaking encapsulation.\n3. Visitor: Adding XML and JSON export operations across an AST node hierarchy without editing node classes."
+  },
+  {
+    "taskId": "LLDP3-D3.4.1",
+    "taskName": "Strategy vs State Discrimination Decision Drill",
+    "unitCode": "3.4.1",
+    "actionVerb": "COMPARE",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Strategy vs State structural similarity vs behavioral intent",
+      "Client awareness vs state-driven automatic transitions",
+      "Class diagram comparison and discriminator tests"
+    ],
+    "rawDesc": "Both Strategy and State delegate to an interface. Formulate the concrete mental test that determines whether you are solving an interchangeable algorithm problem or a state-driven behavior problem."
+  },
+  {
+    "taskId": "LLDP3-D3.4.2",
+    "taskName": "Decorator vs Adapter vs Proxy Decision Drill",
+    "unitCode": "3.4.2",
+    "actionVerb": "COMPARE",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Wrapper patterns taxonomy",
+      "Adapter: changing interface",
+      "Decorator: augmenting behavior with same interface",
+      "Proxy: controlling access with same interface"
+    ],
+    "rawDesc": "All three wrap an object. Compare their intents:\n* Adapter changes the interface.\n* Decorator augments behavior while keeping the same interface.\n* Proxy controls access while keeping the same interface."
+  },
+  {
+    "taskId": "LLDP3-D3.4.3",
+    "taskName": "E-Commerce Architecture Pattern Prediction Exercise",
+    "unitCode": "3.4.3",
+    "actionVerb": "PREDICT",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 20,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Requirement pivot anticipation",
+      "Recognizing friction points in evolving codebases",
+      "Predicting pattern selection from user stories"
+    ],
+    "rawDesc": "Given an e-commerce checkout handling coupon codes, order totals, and fulfillment.\nPredict which patterns emerge when the business adds: dynamic gift wrapping, multiple payment providers, and external webhook broadcasting."
+  },
+  {
+    "taskId": "LLDP4-D4.1.1",
+    "taskName": "Thread-Safe Bounded Queue Implementation Drill",
+    "unitCode": "4.1.1",
+    "actionVerb": "BUILD",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 20,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Critical section identification",
+      "Mutex locking and condition variables",
+      "Thread-safe queues and bounded buffers",
+      "Deadlock prevention and lock ordering"
+    ],
+    "rawDesc": "Build a thread-safe in-memory BoundedQueue without using built-in concurrent collections:\n1. Implement enqueue() and dequeue() using explicit mutex locks and condition variables.\n2. Ensure threads block safely when queue is full or empty."
+  },
+  {
+    "taskId": "LLDP4-D4.1.2",
+    "taskName": "Expiring Lock Manager with Compensating Release",
+    "unitCode": "4.1.2",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 35,
+    "difficulty": "hard",
+    "conceptTopics": [
+      "Coarse vs fine-grained locking trade-offs",
+      "Time-bound resource leases & TTLs",
+      "Compensating releases and cleanup timers",
+      "Handling concurrent reservation contention"
+    ],
+    "rawDesc": "Build an ExpiringLockManager managing temporary reservations (e.g. cinema seats or hotel rooms):\n1. User locks a resource with a 10-minute TTL.\n2. A background timer releases expired locks if payment is not confirmed.\n3. Write unit tests demonstrating that expired locks become available to competing threads immediately."
+  },
+  {
+    "taskId": "LLDP5-D5.1.1",
+    "taskName": "5-Minute Scoping & Ambiguity Elimination Drill",
+    "unitCode": "5.1.1",
+    "actionVerb": "BUILD",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Functional vs non-functional boundary identification",
+      "Eliminating ambiguity in open-ended prompts",
+      "Negotiating MVP scope with the interviewer",
+      "Establishing input/output contracts"
+    ],
+    "rawDesc": "Given a vague one-line prompt ('Design Amazon Locker' or 'Design a Rate Limiter'):\n1. Formulate the 5 essential scoping questions (functional vs non-functional boundaries).\n2. Clarify scale, concurrency, and persistence assumptions.\n3. Explicitly agree on the top 3 use cases to code with the interviewer."
+  },
+  {
+    "taskId": "LLDP5-D5.1.2",
+    "taskName": "Rapid Entity Extraction & Interface Definition Exercise",
+    "unitCode": "5.1.2",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 25,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Identifying candidate entities and value objects",
+      "Drafting public class contracts & method signatures",
+      "Separating domain models from storage mechanisms",
+      "Fast UML whiteboard sketching"
+    ],
+    "rawDesc": "In 10 minutes, extract core domain entities, value objects, and public API interfaces for an in-memory Cache before writing any implementation details."
+  },
+  {
+    "taskId": "LLDP5-D5.1.3",
+    "taskName": "Clean Production Coding Under 20-Minute Time Limits",
+    "unitCode": "5.1.3",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Pacing and code structuring under pressure",
+      "Defensive coding and invariant guards",
+      "Writing self-documenting method names",
+      "Avoiding compilation blockers during interviews"
+    ],
+    "rawDesc": "Implement a working, encapsulated domain module in 20 minutes with descriptive variable names, invariant validation, and zero syntax errors."
+  },
+  {
+    "taskId": "LLDP5-D5.1.4",
+    "taskName": "Live Requirement Pivot Defense Exercise",
+    "unitCode": "5.1.4",
+    "actionVerb": "DEFEND",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 20,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Evaluating impact of requirement pivots",
+      "Leveraging OCP to minimize ripple effects",
+      "Refactoring without panic or code rewrites",
+      "Explaining design trade-offs live"
+    ],
+    "rawDesc": "Scenario: At minute 35, the interviewer says: 'Now what if users can reserve lockers for someone else and cancel mid-transit?'\nDemonstrate how to adapt your class contracts cleanly without panic."
+  },
+  {
+    "taskId": "LLDP5-D5.2.1",
+    "taskName": "Justifying Abstraction Under Scrutiny Defense Drill",
+    "unitCode": "5.2.1",
+    "actionVerb": "DEFEND",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Premature complexity vs necessary abstraction",
+      "Articulating Open-Closed extensibility benefits",
+      "90-second structured technical justification",
+      "Respectful and collaborative defense posture"
+    ],
+    "rawDesc": "The interviewer challenges: 'Why did you create an interface and strategy pattern here instead of a simple switch statement?'\nDeliver a structured 90-second technical rationale explaining extensibility vs premature complexity."
+  },
+  {
+    "taskId": "LLDP5-D5.2.2",
+    "taskName": "Explaining Concurrency Bottlenecks & Lock Granularity",
+    "unitCode": "5.2.2",
+    "actionVerb": "DEFEND",
+    "level": "A",
+    "levelName": "Concept Drill",
+    "targetTimeMinutes": 15,
+    "difficulty": "easy",
+    "conceptTopics": [
+      "Coarse vs fine-grained lock contention",
+      "Throughput vs latency trade-offs in LLD",
+      "Memory overhead of pattern abstractions",
+      "Lock-free and optimistic concurrency alternatives"
+    ],
+    "rawDesc": "The interviewer asks: 'What happens when 5,000 requests hit your synchronized method every second?'\nExplain thread contention, coarse vs fine-grained locking, and lock-free alternative approaches."
+  },
+  {
+    "taskId": "LLDP5-D5.2.3",
+    "taskName": "Verbal Think-Aloud Modeling Exercise",
+    "unitCode": "5.2.3",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 20,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Avoiding prolonged silence during design",
+      "Verbalizing hypotheses and decision branches",
+      "Soliciting interviewer buy-in at key junctures",
+      "Signaling confidence without arrogance"
+    ],
+    "rawDesc": "Record a verbal design walkthrough: narrate your thought process while mapping candidate classes for a Doctor Appointment Scheduling System without long pauses."
+  },
+  {
+    "taskId": "LLDP5-D5.3.1",
+    "taskName": "30-Minute Fast Scoping & Interface Sprint",
+    "unitCode": "5.3.1",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 30,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Rapid domain mapping",
+      "Strict milestone time-boxing",
+      "Minimalist interface drafting",
+      "Pacing control under tight constraints"
+    ],
+    "rawDesc": "Prompt: Design an In-Memory Key-Value Store with TTL Expiration.\nProduce a complete class hierarchy and public interface contracts in 30 minutes."
+  },
+  {
+    "taskId": "LLDP5-D5.3.2",
+    "taskName": "45-Minute Standard Interview Sprint",
+    "unitCode": "5.3.2",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 45,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Full interview milestone allocation",
+      "Conflict resolution logic modeling",
+      "Balancing depth vs breadth in implementation",
+      "Handling self-identified edge cases"
+    ],
+    "rawDesc": "Prompt: Design a Meeting Room Scheduler.\nEnd-to-end design, conflict detection logic, and working code implementation in 45 minutes."
+  },
+  {
+    "taskId": "LLDP5-D5.3.3",
+    "taskName": "60-Minute Comprehensive System Sprint",
+    "unitCode": "5.3.3",
+    "actionVerb": "BUILD",
+    "level": "B",
+    "levelName": "Design Exercise",
+    "targetTimeMinutes": 60,
+    "difficulty": "hard",
+    "conceptTopics": [
+      "Complex lifecycle modeling under pressure",
+      "Thread pool and queue coordination",
+      "Cancellation and failure recovery semantics",
+      "Stamina and architectural composure"
+    ],
+    "rawDesc": "Prompt: Design an In-Memory Task Scheduler (Cron Engine).\nHandle thread pools, priority queues, periodic recurrence, and task cancellation in 60 minutes."
+  },
+  {
+    "taskId": "LLDP5-D5.4.1",
+    "taskName": "Foundation Tier Full Mock Simulation",
+    "unitCode": "5.4.1",
+    "actionVerb": "BUILD",
+    "level": "C",
+    "levelName": "Full Mock",
+    "targetTimeMinutes": 45,
+    "difficulty": "medium",
+    "conceptTopics": [
+      "Rubric Dimension 1: Domain Modeling & Responsibility Cleanliness (25%)",
+      "Rubric Dimension 2: SOLID & Pattern Application (25%)",
+      "Rubric Dimension 3: Requirement Change Resilience (25%)",
+      "Rubric Dimension 4: Code Quality & Communication (25%)"
+    ],
+    "rawDesc": "Target Domain: Unseen Self-Service Hardware System.\nComplete scoping, design, and code, followed by self-evaluation against the 4-dimension rubric."
+  },
+  {
+    "taskId": "LLDP5-D5.4.2",
+    "taskName": "Intermediate Resource Allocation Mock with Curveball",
+    "unitCode": "5.4.2",
+    "actionVerb": "BUILD",
+    "level": "C",
+    "levelName": "Full Mock",
+    "targetTimeMinutes": 45,
+    "difficulty": "hard",
+    "conceptTopics": [
+      "Mid-session requirement injection resilience",
+      "Temporal conflict resolution",
+      "Live refactoring under scrutiny",
+      "Calibrated rubric scoring"
+    ],
+    "rawDesc": "Target Domain: Unseen Reservation & Fleet Allocation Platform.\nFull mock session with mid-point requirement curveball injection."
+  },
+  {
+    "taskId": "LLDP5-D5.4.3",
+    "taskName": "Advanced High-Concurrency System Mock Simulation",
+    "unitCode": "5.4.3",
+    "actionVerb": "BUILD",
+    "level": "C",
+    "levelName": "Full Mock",
+    "targetTimeMinutes": 60,
+    "difficulty": "hard",
+    "conceptTopics": [
+      "Concurrent state machine design",
+      "Live multi-threaded defense against interviewer challenges",
+      "Deadlock and starvation elimination proof",
+      "Comprehensive post-interview rubric debrief"
+    ],
+    "rawDesc": "Target Domain: High-Concurrency Matchmaking or Bidding Engine.\nHandle race conditions, thread synchronization, and live pushback on design choices."
+  }
+]

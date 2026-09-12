@@ -33,7 +33,14 @@ pc.createProject = asyncHandler(async (req, res) => {
       teamMembers, rolesAndResponsibilities, milestones, status, githubRepository
     } = req.body;
 
-    const requiredFields = { name, access, key, startDate, endDate, priority, projectManager, rolesAndResponsibilities, status };
+    const effectiveStartDate = startDate || new Date();
+    const effectiveEndDate = endDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+    const effectivePriority = priority || "medium";
+    const effectiveRoles = rolesAndResponsibilities || [];
+    const effectiveAccess = access || "private";
+    const effectiveProjectManager = projectManager || req.user?._id;
+
+    const requiredFields = { name, key, status };
 
     const missingFields = Object.keys(requiredFields).filter(field => !requiredFields[field] || requiredFields[field] === 'undefined');
 
@@ -45,18 +52,18 @@ pc.createProject = asyncHandler(async (req, res) => {
 
     const createdProject = await Project.create({
       name,
-      access,
+      access: effectiveAccess,
       key,
       description,
-      startDate,
-      endDate,
-      priority,
+      startDate: effectiveStartDate,
+      endDate: effectiveEndDate,
+      priority: effectivePriority,
       clientName,
       githubRepository,
       budget,
-      projectManager,
-      teamMembers,
-      rolesAndResponsibilities,
+      projectManager: effectiveProjectManager,
+      teamMembers: teamMembers || [req.user?._id],
+      rolesAndResponsibilities: effectiveRoles,
       status,
       completedAt,
       createdBy: req.user?._id,
@@ -195,7 +202,7 @@ pc.getAllProject = asyncHandler(async (req, res) => {
 
   try {
     const { search = "" } = req.query;
-    const { filter = {}, sortOrder = -1 } = req.body;
+    const { filter = {}, sortOrder = 1 } = req.body;
 
     // Filter logic
     let filterQuery = {};
@@ -232,11 +239,13 @@ pc.getAllProject = asyncHandler(async (req, res) => {
 
     if (filter?.type === "active") {
       filterQuery.status = "active";
+    } else if (!isUserAdmin(req.user)) {
+      filterQuery.status = { $nin: ["hide", "hidden"] };
     }
 
     let projects = await Project.find(filterQuery)
       .populate("projectManager teamMembers rolesAndResponsibilities.teamMember")
-      .sort({ _id: sortOrder });
+      .sort({ createdAt: sortOrder, _id: sortOrder });
 
     if (!projects.length) {
       return res.status(200).json(new ApiResponse(200, [], "No projects found"));
@@ -283,6 +292,19 @@ pc.getAllProject = asyncHandler(async (req, res) => {
       return acc;
     }, {});
 
+    // User arena schedules for the logged in user
+    let userScheduleMap = {};
+    if (req.user?._id) {
+      const userSchedules = await UserArenaSchedule.find({
+        userId: req.user._id,
+        projectId: { $in: projectIds }
+      });
+      userScheduleMap = userSchedules.reduce((acc, s) => {
+        acc[s.projectId.toString()] = s;
+        return acc;
+      }, {});
+    }
+
     const formattedProjects = projects.map((project) => {
       const teamMembers = project.teamMembers.map((member) => {
         const rolesAndResponsibilities = project.rolesAndResponsibilities
@@ -302,11 +324,15 @@ pc.getAllProject = asyncHandler(async (req, res) => {
       const total = totalTasksMap[project._id.toString()] || 0;
       const completed = userCompletedMap[project._id.toString()] || 0;
       const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+      const userSchedule = userScheduleMap[project._id.toString()];
+      const isScheduled = !!userSchedule || Boolean(project.startDate && project.endDate);
 
       return {
         ...project.toObject(),
         teamMembers,
         milestones: projectMilestones,
+        isScheduled,
+        userSchedule: userSchedule || null,
         taskStats: {
           total,
           completed,
@@ -314,6 +340,9 @@ pc.getAllProject = asyncHandler(async (req, res) => {
         }
       };
     });
+
+    // Natural ascending sort (e.g. LLD Phase 1, Phase 2, Phase 3...)
+    formattedProjects.sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { numeric: true, sensitivity: 'base' }));
 
     return res.status(200).json(new ApiResponse(200, formattedProjects, "Projects fetched successfully"));
   } catch (error) {

@@ -6,28 +6,34 @@ export const FocusController = {
     try {
       const userId = req.user._id;
       const { startTime, endTime, duration, type, date, task, taskName, taskIdString, statusAtCompletion, completionState, estimatedTimeAtStart, backlogTimeAdded, isBacklog, originalDueDate } = req.body;
+      
+      const now = new Date();
+      const validDuration = Math.max(1, Number(duration) || 1);
+      const validEndTime = endTime ? new Date(endTime) : now;
+      const validStartTime = startTime ? new Date(startTime) : new Date(validEndTime.getTime() - validDuration * 60000);
+
       const session = new FocusSession({
         user: userId,
-        startTime,
-        endTime,
-        duration,
-        type,
-        date: date || new Date(),
+        startTime: validStartTime,
+        endTime: validEndTime,
+        duration: validDuration,
+        type: type || "Focus",
+        date: date ? new Date(date) : validEndTime,
         task,
         taskName,
         taskIdString,
-        statusAtCompletion,
-        completionState,
-        estimatedTimeAtStart,
+        statusAtCompletion: statusAtCompletion || "done",
+        completionState: completionState || "completed",
+        estimatedTimeAtStart: estimatedTimeAtStart || validDuration,
         backlogTimeAdded,
-        isBacklog,
+        isBacklog: Boolean(isBacklog),
         originalDueDate,
         branchId: req.branchId
       });
       await session.save();
 
       // Update Analytics
-      await AnalyticsService.recordFocusTime(userId, duration, session.date, req.branchId, task);
+      await AnalyticsService.recordFocusTime(userId, validDuration, session.date, req.branchId, task);
 
       res.status(201).json({ success: true, data: session });
     } catch (error) {

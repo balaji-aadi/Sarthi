@@ -256,6 +256,7 @@ export class CoreJudgeExecutor {
               testCaseIndex: item.testCaseIndex,
               output: item.actualOutput !== undefined ? item.actualOutput : item.output,
               actualOutput: item.actualOutput !== undefined ? item.actualOutput : item.output,
+              stdout: item.stdout !== undefined ? item.stdout : "",
               success: item.success !== false,
               error: item.error
             }));
@@ -299,6 +300,7 @@ export class CoreJudgeExecutor {
         input: tc.input,
         expectedOutput: tc.expectedOutput,
         actualOutput: actualOutput,
+        stdout: (actualRecord && actualRecord.stdout !== undefined) ? actualRecord.stdout : '',
         reason: compResult.reason,
         code: compResult.code,
         details: compResult.details || {}

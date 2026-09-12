@@ -38,5 +38,21 @@ export const verifyJWT = asyncHandler(async(req, res, next) => {
         console.log("Auth Middleware Error:", error);
         return res.status(403).json(new ApiError(403, `Token error ${error?.message}` || "Invalid access token"));
     }
-    
 })
+
+export const optionalVerifyJWT = asyncHandler(async (req, res, next) => {
+    try {
+        const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
+        if (!token) {
+            req.user = null;
+            return next();
+        }
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const user = await User.findById(decodedToken?._id).select("-password -refreshToken -otp -otp_time");
+        req.user = user || null;
+        next();
+    } catch {
+        req.user = null;
+        next();
+    }
+});

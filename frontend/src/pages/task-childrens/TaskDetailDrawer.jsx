@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { IoClose, IoFlagSharp, IoCalendarOutline, IoTimeOutline, IoPersonOutline, IoAttachOutline, IoGitNetworkSharp, IoCheckmarkCircleOutline, IoTrashOutline, IoArrowDown, IoArrowUp } from 'react-icons/io5';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import { IoClose, IoFlagSharp, IoCalendarOutline, IoTimeOutline, IoPersonOutline, IoAttachOutline, IoGitNetworkSharp, IoCheckmarkCircleOutline, IoTrashOutline, IoArrowDown, IoArrowUp, IoOpenOutline, IoDocumentTextOutline } from 'react-icons/io5';
 import { MdEdit } from 'react-icons/md';
 import { LuCode2 } from 'react-icons/lu';
 import moment from 'moment';
@@ -12,6 +12,9 @@ import { server } from '../../services/config';
 import DsaCodingArenaModal from '../../components/dsa/DsaCodingArenaModal';
 import { FaCode } from "react-icons/fa";
 import ReactQuill from 'react-quill';
+import { getCurriculumNodeType, getActionVerbStyle, formatLevelLabel, getCurriculumDrawerHierarchy, getSafePrerequisites, getCurriculumSortKey, isLldTask, isDsaBranch, isHldBranch } from '../../utils/curriculumHelper';
+import CurriculumContentRenderer from '../../components/lld/CurriculumContentRenderer';
+import TaskLinkedNotes from '../../components/common/TaskLinkedNotes';
 
 const hasAdditionalNotes = (notes) => {
     if (!notes) return false;
@@ -51,18 +54,49 @@ const isHtmlNote = (content) => {
         lower.includes("&lt;body");
 };
 
-const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, canEdit }) => {
+const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, canEdit, onStartMajorProblem }) => {
     const [task, setTask] = useState(initialTask);
     const [showCodingModal, setShowCodingModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [subtasks, setSubtasks] = useState([]);
     const [activeTab, setActiveTab] = useState('subtasks'); // 'subtasks', 'activity', 'attachments'
-    const { currentUser } = useSelector(state => state.store);
+    const { currentUser, activeBranch } = useSelector(state => state.store);
+    const taskNotesRef = useRef(null);
     const isAdmin = currentUser?.userRole?.name?.toLowerCase() === 'admin' ||
-                    currentUser?.role === 'admin' ||
-                    currentUser?.email === 'balajiaadi2000@gmail.com' ||
-                    (currentUser?.userRoles && currentUser.userRoles.some(r => r.name?.toLowerCase() === 'admin'));
+        currentUser?.role === 'admin' ||
+        currentUser?.email === 'balajiaadi2000@gmail.com' ||
+        (currentUser?.userRoles && currentUser.userRoles.some(r => r.name?.toLowerCase() === 'admin'));
     const [notes, setNotes] = useState([]);
+
+    const isTaskLld = isLldTask(task);
+    const isTaskDsa = Boolean(
+        (task?.taskId && /^DSA/i.test(task.taskId)) ||
+        (task?.projectName && typeof task.projectName === 'object' && /^DSA/i.test(task.projectName.name || task.projectName.key)) ||
+        (!isTaskLld && !isHldBranch(activeBranch) && isDsaBranch(activeBranch))
+    );
+    const displayStatus = (isTaskDsa && (task?.status === 'backlog' || task?.status === 'hold')) ? 'todo' : task?.status;
+
+    const linkedNotes = useMemo(() => {
+        if (!notes || !Array.isArray(notes)) return [];
+        return notes.filter(n => {
+            const isLinked = (n.taskId === task?._id) || (n.taskIds && n.taskIds.includes(task?._id));
+            if (isLinked) return true;
+            if (task?.parentTask) {
+                const parentId = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
+                if (n.taskId === parentId || (n.taskIds && n.taskIds.includes(parentId))) return true;
+            }
+            return false;
+        });
+    }, [notes, task]);
+
+    const sortedSubtasks = useMemo(() => {
+        if (!subtasks || !Array.isArray(subtasks)) return [];
+        return [...subtasks].sort((a, b) => {
+            const keyA = getCurriculumSortKey(a.taskId || '');
+            const keyB = getCurriculumSortKey(b.taskId || '');
+            return keyA.localeCompare(keyB, undefined, { numeric: true });
+        });
+    }, [subtasks]);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [isReaderOpen, setIsReaderOpen] = useState(false);
     const [activeReaderNoteId, setActiveReaderNoteId] = useState(null);
@@ -80,6 +114,7 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
     const activeNote = notes.find(n => n._id === activeReaderNoteId);
     // Zen Reading Mode State
     const [isReadingModeActive, setIsReadingModeActive] = useState(false);
+    const [showPersonalTracking, setShowPersonalTracking] = useState(false);
     const lastScrollTopRef = useRef(0);
     const accumulatedScrollRef = useRef(0);
     const transitionLockRef = useRef(false);
@@ -244,12 +279,58 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
     const getCleanSnippet = (content, limit = 100) => {
         if (!content) return "No content";
         let clean = decodeHtmlEntities(content);
-        clean = clean.replace(/<style[\s\S]*?<\/style>/gi, '');
-        clean = clean.replace(/<script[\s\S]*?<\/script>/gi, '');
-        clean = clean.replace(/<div[^>]*class="note-root"[\s\S]*?<div[^>]*class="lang-en-[^"]*"[^>]*>/gi, '');
-        clean = clean.replace(/<[^>]*>?/gm, '');
+        clean = clean.replace(/<style[\s\S]*?<\/style>/gi, ' ');
+        clean = clean.replace(/<script[\s\S]*?<\/script>/gi, ' ');
+        clean = clean.replace(/<div[^>]*class="note-root"[\s\S]*?<div[^>]*class="lang-en-[^"]*"[^>]*>/gi, ' ');
+        clean = clean.replace(/<[^>]*>?/gm, ' ');
         clean = clean.replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim();
         return clean.slice(0, limit) + (clean.length > limit ? "..." : "");
+    };
+
+    const parseNotePreview = (content) => {
+        if (!content) return { text: "No content", links: [] };
+        let clean = decodeHtmlEntities(content);
+        clean = clean.replace(/<style[\s\S]*?<\/style>/gi, ' ');
+        clean = clean.replace(/<script[\s\S]*?<\/script>/gi, ' ');
+        clean = clean.replace(/<div[^>]*class="note-root"[\s\S]*?<div[^>]*class="lang-en-[^"]*"[^>]*>/gi, ' ');
+
+        // Extract URLs before removing tags
+        const urlRegex = /(https?:\/\/[^\s<"']+)/gi;
+        const matches = clean.match(urlRegex) || [];
+        const uniqueLinks = Array.from(new Set(matches)).slice(0, 3).map(url => {
+            let label = "Resource";
+            const lower = url.toLowerCase();
+            if (lower.includes("eraser.io")) {
+                label = "Eraser.io Diagram";
+            } else if (lower.includes("excalidraw.com")) {
+                label = "Excalidraw";
+            } else if (lower.includes("leetcode.com")) {
+                label = "LeetCode";
+            } else if (lower.includes("youtube.com") || lower.includes("youtu.be")) {
+                label = "Video Tutorial";
+            } else if (lower.includes("github.com")) {
+                label = "GitHub";
+            } else {
+                try {
+                    const parsed = new URL(url);
+                    label = parsed.hostname.replace(/^www\./, '');
+                } catch (e) {
+                    label = "Resource Link";
+                }
+            }
+            return { url, label };
+        });
+
+        // Strip HTML tags with space to preserve separation
+        clean = clean.replace(/<[^>]+>/g, ' ');
+        // Strip raw URLs from prose snippet
+        clean = clean.replace(urlRegex, ' ');
+        clean = clean.replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim();
+
+        return {
+            text: clean ? (clean.slice(0, 110) + (clean.length > 110 ? "..." : "")) : "",
+            links: uniqueLinks
+        };
     };
 
     const extractBilingual = (html, noteId) => {
@@ -307,6 +388,10 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
     };
 
     const handleCreateNote = async () => {
+        if (!isAdmin) {
+            toast.error("Only administrators can create notes.");
+            return;
+        }
         try {
             const defaultTitle = `Note for ${task?.taskName || 'Task'}`;
             const defaultContent = `<div style="font-family: sans-serif;">
@@ -420,7 +505,13 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
     const fetchSubtasks = async (parentId) => {
         try {
             const res = await TaskApi.getAllTasks({ filter: { parentTask: parentId } });
-            setSubtasks(res.data?.data || []);
+            const list = res.data?.data || [];
+            list.sort((a, b) => {
+                const keyA = getCurriculumSortKey(a.taskId || '');
+                const keyB = getCurriculumSortKey(b.taskId || '');
+                return keyA.localeCompare(keyB, undefined, { numeric: true });
+            });
+            setSubtasks(list);
         } catch (error) {
             console.error("Failed to fetch subtasks", error);
         }
@@ -449,7 +540,7 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
             <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
 
             {/* Drawer Content */}
-            <div className={`relative w-full max-w-2xl bg-white shadow-2xl h-full flex flex-col transform transition-transform duration-300 ease-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+            <div className={`relative w-full max-w-6xl bg-white shadow-2xl h-full flex flex-col transform transition-transform duration-300 ease-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
 
                 {/* Header */}
                 <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-white sticky top-0 z-[70] shadow-sm">
@@ -459,17 +550,29 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                         </span>
                         <h2 className="text-lg font-bold text-textMain truncate tracking-tight">{task?.taskName}</h2>
                         <div className="flex items-center justify-between gap-2 shrink-0">
-                            {task?.parentTask && (
+                            {isTaskLld ? (
                                 <button
-                                    onClick={() => setShowCodingModal(true)}
-                                    className="px-2.5 py-1.5 bg-slate-50 text-textSub rounded-xl transition-all flex items-center gap-1.5 text-xs font-bold shadow-sm group cursor-pointer"
-                                    title="Open Code Workspace"
+                                    type="button"
+                                    onClick={() => taskNotesRef.current?.openReader()}
+                                    className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/50 text-amber-800 dark:text-amber-300 rounded-xl transition-all flex items-center gap-1.5 text-xs font-bold shadow-xs border border-amber-200 dark:border-amber-800/80 cursor-pointer"
+                                    title="View Linked Solution / Notes"
                                 >
-                                    <span className="text-emerald-500 font-black text-sm tracking-tighter"><FaCode /></span>
-                                    <span className="hidden sm:inline text-sm font-semibold">Code</span>
+                                    <span className="text-amber-500 font-bold text-sm">💡</span>
+                                    <span className="hidden sm:inline text-sm font-semibold">Solution</span>
                                 </button>
+                            ) : (
+                                task?.parentTask && (
+                                    <button
+                                        onClick={() => setShowCodingModal(true)}
+                                        className="px-2.5 py-1.5 bg-slate-50 text-textSub rounded-xl transition-all flex items-center gap-1.5 text-xs font-bold shadow-sm group cursor-pointer"
+                                        title="Open Code Workspace"
+                                    >
+                                        <span className="text-emerald-500 font-black text-sm tracking-tighter"><FaCode /></span>
+                                        <span className="hidden sm:inline text-sm font-semibold">Code</span>
+                                    </button>
+                                )
                             )}
-                            {canEdit && (
+                            {canEdit && isAdmin && (
                                 <button
                                     onClick={() => onTaskUpdate(task)}
                                     className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-all flex items-center gap-1 text-sm font-bold"
@@ -493,33 +596,189 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-                        {/* Left Main Content */}
                         <div className="md:col-span-2 space-y-8">
-                            {/* Description */}
+                            {/* Explicit Curriculum Hierarchy Header */}
+                            {isLldTask(task) && task?.curriculumMeta && (() => {
+                                const hier = getCurriculumDrawerHierarchy(task);
+                                if (!hier) return null;
+                                return (
+                                    <div className="space-y-3 mb-6 pb-5 border-b border-slate-200/70 dark:border-slate-800">
+                                        {/* Explicit 3-Tier Hierarchy */}
+                                        <div className="space-y-3">
+                                            {/* Tier 1: Phase */}
+                                            <div>
+                                                <div className="text-[10px] font-mono font-black uppercase tracking-widest text-primary">
+                                                    {hier.phaseTag}
+                                                </div>
+                                                <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                                    {hier.phaseTitle}
+                                                </div>
+                                            </div>
+
+                                            {/* Tier 2: Unit */}
+                                            <div>
+                                                <div className="text-[10px] font-mono font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                                                    {hier.unitTag}
+                                                </div>
+                                                <div className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                                                    {hier.unitTitle}
+                                                </div>
+                                            </div>
+
+                                            {/* Tier 3: Drill / Item */}
+                                            <div className="pt-0.5">
+                                                <div className="text-[11px] font-mono font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-0.5">
+                                                    {hier.itemTag}
+                                                </div>
+                                                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight leading-snug">
+                                                    {hier.itemTitle}
+                                                </h1>
+                                            </div>
+                                        </div>
+
+                                        {/* Compact Metadata Row: BUILD · Level A · 15 min · Easy */}
+                                        <div className="flex flex-wrap items-center gap-2 pt-2 text-xs font-bold text-slate-600 dark:text-slate-300">
+                                            {hier.actionVerb && (
+                                                <span className={`px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${getActionVerbStyle(hier.actionVerb)}`}>
+                                                    {hier.actionVerb}
+                                                </span>
+                                            )}
+                                            {hier.level && (
+                                                <>
+                                                    <span className="text-slate-300 dark:text-slate-600">·</span>
+                                                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                                        {hier.level}
+                                                    </span>
+                                                </>
+                                            )}
+                                            {hier.targetTime && (
+                                                <>
+                                                    <span className="text-slate-300 dark:text-slate-600">·</span>
+                                                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                                        {hier.targetTime}
+                                                    </span>
+                                                </>
+                                            )}
+                                            {hier.difficulty && (
+                                                <>
+                                                    <span className="text-slate-300 dark:text-slate-600">·</span>
+                                                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 capitalize">
+                                                        {hier.difficulty}
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+
+                            {/* Major Problem Launch Actions Banner */}
+                            {task?.curriculumMeta?.nodeType === 'major_problem' && (
+                                <div className="p-4 mb-6 bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 rounded-2xl space-y-3 shadow-xs">
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <span className="px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-500 text-white shadow-xs">
+                                                🎯 MAJOR LLD PROBLEM
+                                            </span>
+                                            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
+                                                Target: {task.curriculumMeta?.targetTimeMinutes || 75} min · {task.curriculumMeta?.difficulty || 'Medium'}
+                                            </span>
+                                        </div>
+                                        <span className="text-xs font-bold text-rose-600 dark:text-rose-400">
+                                            {task.subtaskStats?.total || 5} Evolving Problem Versions
+                                        </span>
+                                    </div>
+
+                                    <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => onStartMajorProblem && onStartMajorProblem(task, 'learning')}
+                                            className="flex-1 min-w-[180px] py-2.5 px-4 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold shadow-md shadow-primary/20 flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                                        >
+                                            <span>Start Problem (Learning Mode)</span>
+                                            <span className="text-sm">→</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => onStartMajorProblem && onStartMajorProblem(task, 'interview')}
+                                            className="py-2.5 px-4 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-md shadow-rose-500/20 flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                                        >
+                                            <span>Interview Mode (Timed)</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Learning Content / Description */}
                             <section>
                                 <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-[11px] font-black text-textSub uppercase tracking-[0.2em]">Description</h3>
+                                    <h3 className="text-[11px] font-black text-textSub uppercase tracking-[0.2em]">
+                                        {task?.curriculumMeta ? "Curriculum Learning Content" : "Description"}
+                                    </h3>
                                     <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent ml-4" />
                                 </div>
-                                <div
-                                    className="text-textMain text-sm leading-relaxed bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm quill-content w-full max-w-full break-words overflow-hidden"
-                                    dangerouslySetInnerHTML={{
-                                        __html: (() => {
-                                            let html = task?.taskDescription || "<p class='italic text-slate-400'>No description provided.</p>";
-                                            // Robust unescaping for double/triple escaped content
-                                            for (let i = 0; i < 3; i++) {
-                                                html = html.replace(/&lt;/g, '<')
-                                                    .replace(/&gt;/g, '>')
-                                                    .replace(/&amp;/g, '&')
-                                                    .replace(/&quot;/g, '"')
-                                                    .replace(/&#39;/g, "'");
-                                                if (!html.includes('&')) break;
-                                            }
-                                            // Auto-link
-                                            return html.replace(/(?<!href=")(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
-                                        })()
-                                    }}
-                                />
+                                {task?.curriculumMeta ? (
+                                    <>
+                                        {/* For Drills: Display the Concept Notes from the parent Learning Unit directly at the top so theory is always accessible before practicing */}
+                                        {task?.curriculumMeta?.nodeType === 'drill' && task?.parentTask && (() => {
+                                            const parentDesc = typeof task.parentTask === 'object' ? task.parentTask.taskDescription : '';
+                                            if (!parentDesc) return null;
+                                            const match = parentDesc.match(/(### Concept Notes:[\s\S]*?)(?=### 1\. What Are We Trying To Solve\?|$)/i);
+                                            const conceptNotesText = match ? match[1].trim() : null;
+                                            if (!conceptNotesText) return null;
+
+                                            return (
+                                                <div className="mb-6 space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-[11px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                                                            <span className="text-sm">💡</span>
+                                                            <span>Theory Layer · {typeof task.parentTask === 'object' ? (task.parentTask.taskName?.split(':')[0] || 'Unit') : 'Unit'}</span>
+                                                        </span>
+                                                        <button
+                                                            onClick={() => handleNavigateToParent(typeof task.parentTask === 'object' ? task.parentTask._id : task.parentTask)}
+                                                            className="text-xs text-primary hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                                                            title="Open full Learning Unit"
+                                                        >
+                                                            <span>View Full Unit</span>
+                                                            <span>→</span>
+                                                        </button>
+                                                    </div>
+                                                    <CurriculumContentRenderer
+                                                        content={conceptNotesText}
+                                                        nodeType="unit"
+                                                        title={typeof task.parentTask === 'object' ? task.parentTask.taskName : 'Concept Notes'}
+                                                        taskId={typeof task.parentTask === 'object' ? task.parentTask.taskId : ''}
+                                                    />
+                                                </div>
+                                            );
+                                        })()}
+
+                                        <CurriculumContentRenderer
+                                            content={task.taskDescription}
+                                            nodeType={task.curriculumMeta.nodeType}
+                                            title={task.taskName}
+                                            taskId={task.taskId}
+                                        />
+                                    </>
+                                ) : (
+                                    <div
+                                        className="text-textMain text-sm leading-relaxed bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm quill-content w-full max-w-full break-words overflow-hidden"
+                                        dangerouslySetInnerHTML={{
+                                            __html: (() => {
+                                                let html = task?.taskDescription || "<p class='italic text-slate-400'>No description provided.</p>";
+                                                for (let i = 0; i < 3; i++) {
+                                                    html = html.replace(/&lt;/g, '<')
+                                                        .replace(/&gt;/g, '>')
+                                                        .replace(/&amp;/g, '&')
+                                                        .replace(/&quot;/g, '"')
+                                                        .replace(/&#39;/g, "'");
+                                                    if (!html.includes('&')) break;
+                                                }
+                                                return html.replace(/(?<!href=")(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+                                            })()
+                                        }}
+                                    />
+                                )}
 
                                 {task?.youtubeUrl && getYoutubeId(task.youtubeUrl) && (
                                     <div className="mt-6">
@@ -537,6 +796,53 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                 className="absolute inset-0 w-full h-full"
                                             ></iframe>
                                         </div>
+                                    </div>
+                                )}
+
+                                {/* Collapsed Personal Tracking for Curriculum Tasks (Rule 9) */}
+                                {task?.curriculumMeta && (
+                                    <div className="mt-8 pt-5 border-t border-slate-200/60 dark:border-slate-800">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPersonalTracking(prev => !prev)}
+                                            className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors py-2 px-1 rounded cursor-pointer select-none"
+                                        >
+                                            <span>PERSONAL TRACKING</span>
+                                            <span className="text-xs font-bold text-slate-400">
+                                                {showPersonalTracking ? '▾' : '▸'}
+                                            </span>
+                                        </button>
+                                        {showPersonalTracking && (
+                                            <div className="mt-3 p-5 bg-slate-50/80 dark:bg-slate-900/40 rounded-2xl border border-slate-200/80 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4 animate-in fade-in duration-200">
+                                                <div>
+                                                    <label className="text-[10px] font-black text-textSub uppercase mb-2 block tracking-widest">Status</label>
+                                                    <span className={`px-3 py-1.5 rounded-xl font-black text-[11px] uppercase tracking-wider border inline-block ${statusColors[displayStatus] || 'bg-slate-100'}`}>
+                                                        {displayStatus}
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <label className="text-[10px] font-black text-textSub uppercase mb-2 block tracking-widest">Priority</label>
+                                                    <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black tracking-wider uppercase border w-fit ${priorityColors[task?.taskPriority] || 'bg-slate-100'}`}>
+                                                        <IoFlagSharp className="text-xs" /> {task?.taskPriority}
+                                                    </span>
+                                                </div>
+                                                {!isTaskDsa && (
+                                                    <div>
+                                                        <label className="text-[10px] font-black text-textSub uppercase mb-1.5 block tracking-widest">Dates</label>
+                                                        <div className="text-xs font-semibold text-textMain space-y-0.5">
+                                                            <div><span className="text-textSub font-normal">Start:</span> {task?.taskStartDate ? moment(task.taskStartDate).format("MMM DD, YYYY") : "N/A"}</div>
+                                                            <div><span className="text-textSub font-normal">Due:</span> {task?.taskDueDate ? moment(task.taskDueDate).format("MMM DD, YYYY") : "N/A"}</div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                <div>
+                                                    <label className="text-[10px] font-black text-textSub uppercase mb-1.5 block tracking-widest">Estimation</label>
+                                                    <span className="text-xs font-bold text-textMain block mt-0.5">
+                                                        {task?.estimatedHours ? `${Math.floor(task.estimatedHours)}h ${Math.round((task.estimatedHours % 1) * 60)}m` : "0h 0m"}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
@@ -609,83 +915,15 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                     );
                                 })()}
 
-                                {(() => {
-                                    const linkedNotes = notes.filter(n => {
-                                        const isLinked = (n.taskId === task?._id) || (n.taskIds && n.taskIds.includes(task?._id));
-                                        if (isLinked) return true;
-                                        if (task?.parentTask) {
-                                            const parentId = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
-                                            if (n.taskId === parentId || (n.taskIds && n.taskIds.includes(parentId))) return true;
-                                        }
-                                        return false;
-                                    });
-
-                                    return (
-                                        <div className="mt-6">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h3 className="text-[11px] font-black text-textSub uppercase tracking-[0.2em]">Linked Notes</h3>
-                                                {isAdmin && (
-                                                    <button
-                                                        type="button"
-                                                        onClick={handleCreateNote}
-                                                        className="px-2 py-1 bg-yellow-450 hover:bg-yellow-500 text-slate-800 text-[10px] font-bold rounded-lg transition-all cursor-pointer select-none"
-                                                    >
-                                                        + Add Note
-                                                    </button>
-                                                )}
-                                            </div>
-
-                                            {linkedNotes.length === 0 ? (
-                                                <div className="text-center py-6 bg-slate-50 dark:bg-slate-900/20 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 select-none">
-                                                    <p className="text-xs text-slate-400 font-bold uppercase">No notes linked</p>
-                                                    <p className="text-[10px] text-slate-400/85 mt-0.5">Create notes directly for this task.</p>
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setActiveReaderNoteId(linkedNotes[0]._id);
-                                                            setIsReaderOpen(true);
-                                                        }}
-                                                        className="w-full py-2.5 px-4 bg-yellow-450 hover:bg-yellow-500 text-slate-800 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 shadow-lg shadow-yellow-500/10 flex items-center justify-center gap-2 mb-3 cursor-pointer select-none"
-                                                    >
-                                                        📖 Open Notes Document Center
-                                                    </button>
-
-                                                    <div className="max-h-72 overflow-y-auto custom-scrollbar space-y-2 pr-1">
-                                                        {linkedNotes.map((note) => {
-                                                            const snippet = getCleanSnippet(note.content, 100);
-                                                            return (
-                                                                <div
-                                                                    key={note._id}
-                                                                    onClick={() => {
-                                                                        setActiveReaderNoteId(note._id);
-                                                                        setIsReaderOpen(true);
-                                                                    }}
-                                                                    style={{ borderColor: `${note.color}40`, borderLeftColor: note.color }}
-                                                                    className="p-3 bg-white dark:bg-slate-900/40 rounded-2xl border border-l-4 flex flex-col gap-1.5 shadow-2xs hover:shadow-xs transition-shadow duration-200 cursor-pointer select-none"
-                                                                >
-                                                                    <div className="flex items-center justify-between">
-                                                                        <h5 className="font-extrabold text-[11px] text-slate-850 dark:text-slate-200 uppercase tracking-wider truncate flex-1">
-                                                                            {note.title || "Untitled Note"}
-                                                                        </h5>
-                                                                        <span className="text-[8px] font-bold text-slate-400">
-                                                                            {note.updatedAt ? moment(note.updatedAt).format("ll") : "Just now"}
-                                                                        </span>
-                                                                    </div>
-                                                                    <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed">
-                                                                        {snippet}
-                                                                    </p>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </>
-                                            )}
-                                        </div>
-                                    );
-                                })()}
+                                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                    <TaskLinkedNotes
+                                        ref={taskNotesRef}
+                                        taskId={task?._id}
+                                        parentTaskId={typeof task?.parentTask === 'object' ? task?.parentTask?._id : task?.parentTask}
+                                        taskName={task?.taskName}
+                                        isAdmin={isAdmin}
+                                    />
+                                </div>
                             </section>
 
                             {/* Subtasks / Attachments Section */}
@@ -727,17 +965,32 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                 </div>
                                             ) : null}
 
-                                            {subtasks.length > 0 ? (
+                                            {sortedSubtasks.length > 0 ? (
                                                 <div className="grid grid-cols-1 gap-3">
-                                                    {subtasks.map(sub => (
-                                                        <div key={sub._id} className="group p-3 bg-white border border-borderLight rounded-xl hover:border-primary/30 hover:shadow-sm transition-all flex items-center justify-between">
-                                                            <div className="flex items-center gap-3 min-w-0">
-                                                                <div className={`w-2 h-2 rounded-full shrink-0 ${sub.status === 'done' ? 'bg-green-500' : 'bg-slate-400'}`} />
+                                                    {sortedSubtasks.map(sub => (
+                                                        <div
+                                                            key={sub._id}
+                                                            onClick={() => handleNavigateToParent(sub._id)}
+                                                            className="group p-3.5 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl hover:border-primary/50 hover:shadow-md transition-all flex items-center justify-between cursor-pointer"
+                                                        >
+                                                            <div className="flex items-center gap-3.5 min-w-0">
+                                                                <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${sub.status === 'done' ? 'bg-green-500 shadow-xs shadow-green-500/50' : 'bg-slate-400'}`} />
                                                                 <div className="min-w-0">
-                                                                    <p className={`text-sm font-bold truncate leading-none mb-1 ${sub.status === 'done' ? 'text-textSub/60 line-through' : 'text-textMain'}`}>{sub.taskName}</p>
+                                                                    <p className={`text-[15px] sm:text-base font-bold truncate leading-snug mb-1.5 ${sub.status === 'done' ? 'text-textSub/60 line-through' : 'text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors'}`}>
+                                                                        {sub.taskName}
+                                                                    </p>
                                                                     <div className="flex items-center gap-2">
-                                                                        <span className="text-[10px] font-mono font-bold text-textSub bg-slate-100 px-1.5 py-0.5 rounded">{sub.taskId || 'N/A'}</span>
-                                                                        <span className={`text-[10px] font-bold uppercase ${statusColors[sub.status]} px-1.5 py-0.5 rounded`}>{sub.status}</span>
+                                                                        <span className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200/60 dark:border-slate-700">
+                                                                            {sub.taskId || 'N/A'}
+                                                                        </span>
+                                                                        <span className={`text-[11px] font-black uppercase tracking-wider ${statusColors[sub.status]} px-2 py-0.5 rounded border`}>
+                                                                            {sub.status}
+                                                                        </span>
+                                                                        {sub.curriculumMeta?.targetTimeMinutes && (
+                                                                            <span className="text-xs font-semibold text-slate-400">
+                                                                                · {sub.curriculumMeta.targetTimeMinutes}m
+                                                                            </span>
+                                                                        )}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -792,8 +1045,8 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
                                                         </div>
                                                     );
                                                 }) || (
-                                                    <p className="text-sm text-textSub col-span-2 text-center py-6">No attachments found.</p>
-                                                )}
+                                                        <p className="text-sm text-textSub col-span-2 text-center py-6">No attachments found.</p>
+                                                    )}
                                             </div>
                                         </div>
                                     )}
@@ -803,640 +1056,144 @@ const TaskDetailDrawer = ({ isOpen, onClose, task: initialTask, onTaskUpdate, ca
 
                         {/* Right Sidebar Metadata */}
                         <div className="space-y-6">
-                            {/* Status */}
-                            <div>
-                                <label className="text-[10px] font-black text-textSub uppercase mb-3 block tracking-[0.1em]">Status</label>
-                                <span className={`px-4 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest border transition-all hover:scale-105 duration-300 inline-block ${statusColors[task?.status] || 'bg-slate-100'}`}>
-                                    {task?.status}
-                                </span>
-                            </div>
+                            {/* Learner Information Panel (Clean & Non-Duplicated) */}
+                            {(() => {
+                                const nodeType = getCurriculumNodeType(task);
+                                if (!nodeType) return null;
+                                const hier = getCurriculumDrawerHierarchy(task);
 
-                            {/* Priority */}
-                            <div>
-                                <label className="text-[10px] font-black text-textSub uppercase mb-3 block tracking-[0.1em]">Priority</label>
-                                <span className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-black tracking-widest uppercase border transition-all hover:scale-105 duration-300 ${priorityColors[task?.taskPriority] || 'bg-slate-100'}`}>
-                                    <IoFlagSharp className="text-sm" /> {task?.taskPriority}
-                                </span>
-                            </div>
+                                return (
+                                    <div className="bg-slate-50/90 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 space-y-3.5 shadow-xs">
+                                        <div className="flex items-center justify-between border-b border-slate-200/70 dark:border-slate-800 pb-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                                Learner Info
+                                            </span>
+                                            <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                                                LLD Track
+                                            </span>
+                                        </div>
 
-                            {/* Dates */}
-                            <div className="bg-slate-50/50 dark:bg-slate-900/30 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-5">
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
-                                            <IoCalendarOutline size={16} className="text-primary" />
-                                        </div>
-                                        <div>
-                                            <label className="text-[9px] font-black text-textSub uppercase block tracking-widest">Start Date</label>
-                                            <span className="text-xs font-bold text-textMain">{task?.taskStartDate ? moment(task.taskStartDate).format("MMM DD, YYYY") : "N/A"}</span>
+                                        <div className="space-y-3 text-xs">
+                                            {/* 1. Progress */}
+                                            <div>
+                                                <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block mb-1">Progress</span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`px-2.5 py-0.5 rounded-md text-xs font-bold capitalize border ${task.status === 'done'
+                                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800'
+                                                        : task.status === 'in-progress'
+                                                            ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800'
+                                                            : 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                                                        }`}>
+                                                        {task.status === 'done' ? '✓ Completed' : task.status === 'in-progress' ? '● In Progress' : '○ Not Started'}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* 2. Target Time */}
+                                            <div>
+                                                <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block mb-0.5">Target Time</span>
+                                                <div className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200 font-bold">
+                                                    <span>⏱</span>
+                                                    <span>{hier?.targetTime || '15 min'}</span>
+                                                </div>
+                                            </div>
+
+                                            {/* 3. Prerequisites */}
+                                            <div>
+                                                <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block mb-0.5">Prerequisites</span>
+                                                <div className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
+                                                    {task?.curriculumMeta?.nodeType === 'drill' && task.parentTask ? (
+                                                        <button
+                                                            onClick={() => handleNavigateToParent(typeof task.parentTask === 'object' ? task.parentTask._id : task.parentTask)}
+                                                            className="text-left text-primary hover:underline font-semibold flex items-center gap-1 cursor-pointer group"
+                                                            title="Click to view Learning Unit & Theory"
+                                                        >
+                                                            <span>📖</span>
+                                                            <span className="group-hover:text-primary-600">{getSafePrerequisites(task, hier)}</span>
+                                                        </button>
+                                                    ) : (
+                                                        getSafePrerequisites(task, hier)
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* 4. Concepts */}
+                                            {hier?.conceptTopics?.length > 0 && (
+                                                <div className="pt-1">
+                                                    <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block mb-1.5">Core Concepts</span>
+                                                    <div className="flex flex-wrap gap-1.5">
+                                                        {hier.conceptTopics.map((concept, idx) => (
+                                                            <span key={idx} className="px-2 py-0.5 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded text-[11px] font-semibold border border-slate-200 dark:border-slate-700 shadow-2xs">
+                                                                {concept}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
-                                            <IoCalendarOutline size={16} className="text-orange-500" />
-                                        </div>
-                                        <div>
-                                            <label className="text-[9px] font-black text-textSub uppercase block tracking-widest">Due Date</label>
-                                            <span className="text-xs font-bold text-textMain">{task?.taskDueDate ? moment(task.taskDueDate).format("MMM DD, YYYY") : "N/A"}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="pt-4 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center gap-3">
-                                    <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
-                                        <IoTimeOutline size={16} className="text-emerald-500" />
-                                    </div>
+                                );
+                            })()}
+
+                            {/* Status, Priority, Dates (Only for standard/DSA tasks, moved to collapsed section for curriculum tasks) */}
+                            {!isLldTask(task) && (
+                                <>
+                                    {/* Status */}
                                     <div>
-                                        <label className="text-[9px] font-black text-textSub uppercase block tracking-widest">Estimation</label>
-                                        <span className="text-xs font-bold text-textMain">{task?.estimatedHours ? `${Math.floor(task.estimatedHours)}h ${Math.round((task.estimatedHours % 1) * 60)}m` : "0h 0m"}</span>
+                                        <label className="text-[10px] font-black text-textSub uppercase mb-3 block tracking-[0.1em]">Status</label>
+                                        <span className={`px-4 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest border transition-all hover:scale-105 duration-300 inline-block ${statusColors[displayStatus] || 'bg-slate-100'}`}>
+                                            {displayStatus}
+                                        </span>
                                     </div>
-                                </div>
-                            </div>
+
+                                    {/* Priority */}
+                                    <div>
+                                        <label className="text-[10px] font-black text-textSub uppercase mb-3 block tracking-[0.1em]">Priority</label>
+                                        <span className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-black tracking-widest uppercase border transition-all hover:scale-105 duration-300 ${priorityColors[task?.taskPriority] || 'bg-slate-100'}`}>
+                                            <IoFlagSharp className="text-sm" /> {task?.taskPriority}
+                                        </span>
+                                    </div>
+
+                                    {/* Dates & Estimation */}
+                                    <div className="bg-slate-50/50 dark:bg-slate-900/30 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-5">
+                                        {!isTaskDsa && (
+                                            <div className="space-y-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
+                                                        <IoCalendarOutline size={16} className="text-primary" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-[9px] font-black text-textSub uppercase block tracking-widest">Start Date</label>
+                                                        <span className="text-xs font-bold text-textMain">{task?.taskStartDate ? moment(task.taskStartDate).format("MMM DD, YYYY") : "N/A"}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
+                                                        <IoCalendarOutline size={16} className="text-orange-500" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-[9px] font-black text-textSub uppercase block tracking-widest">Due Date</label>
+                                                        <span className="text-xs font-bold text-textMain">{task?.taskDueDate ? moment(task.taskDueDate).format("MMM DD, YYYY") : "N/A"}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <div className={`${!isTaskDsa ? 'pt-4 border-t border-slate-200/50 dark:border-slate-700/50' : ''} flex items-center gap-3`}>
+                                            <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
+                                                <IoTimeOutline size={16} className="text-emerald-500" />
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] font-black text-textSub uppercase block tracking-widest">Estimation</label>
+                                                <span className="text-xs font-bold text-textMain">{task?.estimatedHours ? `${Math.floor(task.estimatedHours)}h ${Math.round((task.estimatedHours % 1) * 60)}m` : "0h 0m"}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
-            {/* Linked Notes Documentation Center Overlay Modal */}
-            {isReaderOpen && (() => {
-                const serverUrl = server.replace('/api/v1', '');
-                const linkedNotes = notes.filter(n => {
-                    const isLinked = (n.taskId === task?._id) || (n.taskIds && n.taskIds.includes(task?._id));
-                    if (isLinked) return true;
-                    if (task?.parentTask) {
-                        const parentId = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
-                        if (n.taskId === parentId || (n.taskIds && n.taskIds.includes(parentId))) return true;
-                    }
-                    return false;
-                });
-
-                return (
-                    <div className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-xs transition-all duration-500 ${isReadingModeActive ? 'p-0' : 'p-2 sm:p-4 md:p-8'}`}>
-                        <div className={`bg-white dark:bg-themeBG text-themeText shadow-2xl w-full h-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-300 transition-all ${isReadingModeActive ? 'rounded-none' : 'rounded-2xl sm:rounded-3xl'}`}>
-                            {/* Header */}
-                            <div className={`px-4 sm:px-6 md:px-8 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-50/50 transition-all duration-500 ease-in-out origin-top ${isReadingModeActive ? 'max-h-0 py-0 opacity-0 overflow-hidden border-none' : 'max-h-[160px] sm:max-h-[100px] py-3.5 sm:py-5 opacity-100'}`}>
-                                <div className="min-w-0 w-full sm:w-auto flex items-center justify-between sm:block">
-                                    <div className="min-w-0">
-                                        <h2 className="text-base sm:text-lg font-black text-slate-800 dark:text-white truncate">
-                                            Document Center: {task?.taskName}
-                                        </h2>
-                                        <p className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">
-                                            {linkedNotes.length} Linked Note(s)
-                                        </p>
-                                    </div>
-                                    <button
-                                        onClick={() => {
-                                            setIsReaderOpen(false);
-                                            setReaderSearchTerm("");
-                                        }}
-                                        className="sm:hidden group p-2 bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-500 rounded-xl transition-all duration-200 border border-slate-200/50 cursor-pointer shrink-0"
-                                    >
-                                        <IoClose size={18} />
-                                    </button>
-                                </div>
-                                <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                                    <input
-                                        type="text"
-                                        placeholder="Search linked notes..."
-                                        value={readerSearchTerm}
-                                        onChange={(e) => setReaderSearchTerm(e.target.value)}
-                                        className="px-3 sm:px-4 py-1.5 sm:py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:ring-1 focus:ring-primary w-full sm:w-60 bg-white font-semibold text-slate-800"
-                                    />
-                                    <button
-                                        onClick={() => {
-                                            setIsReaderOpen(false);
-                                            setReaderSearchTerm("");
-                                        }}
-                                        className="hidden sm:flex group p-2.5 bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-500 rounded-xl transition-all duration-200 border border-slate-200/50 cursor-pointer shrink-0"
-                                    >
-                                        <IoClose size={18} />
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Split Body */}
-                            <div className="flex-1 flex overflow-hidden min-h-0 relative">
-                                {/* Left Column: Notes List Sidebar */}
-                                <div className={`border-r border-slate-100 dark:border-slate-800 flex flex-col bg-slate-50/20 shrink-0 transition-all duration-500 ease-in-out origin-left ${isReadingModeActive
-                                    ? 'w-0 opacity-0 overflow-hidden border-none'
-                                    : `${activeReaderNoteId ? 'hidden md:flex' : 'flex w-full'} md:w-72 lg:w-80 opacity-100`
-                                    }`}>
-                                    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
-                                        {linkedNotes
-                                            .filter(n => {
-                                                if (!readerSearchTerm) return true;
-                                                return (n.title || "").toLowerCase().includes(readerSearchTerm.toLowerCase()) ||
-                                                    (n.content || "").toLowerCase().includes(readerSearchTerm.toLowerCase());
-                                            })
-                                            .map((note) => {
-                                                const isActive = activeReaderNoteId === note._id;
-                                                const snippet = getCleanSnippet(note.content, 60);
-                                                return (
-                                                    <div
-                                                        key={note._id}
-                                                        onClick={() => setActiveReaderNoteId(note._id)}
-                                                        className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col gap-1 relative overflow-hidden select-none ${isActive
-                                                            ? "bg-primary/5 border-primary shadow-sm"
-                                                            : "bg-white dark:bg-slate-900 border-slate-150 dark:border-slate-800 hover:border-slate-350"
-                                                            }`}
-                                                    >
-                                                        {/* Color dot */}
-                                                        <div
-                                                            style={{ backgroundColor: note.color }}
-                                                            className="absolute top-0 bottom-0 left-0 w-1.5"
-                                                        />
-                                                        <h5 className={`font-black text-xs truncate pl-1.5 ${isActive ? "text-primary" : "text-slate-800 dark:text-white"}`}>
-                                                            {note.title || "Untitled Note"}
-                                                        </h5>
-                                                        <p className="text-[10px] text-slate-500 dark:text-slate-400 pl-1.5 line-clamp-2 leading-relaxed">
-                                                            {snippet}
-                                                        </p>
-                                                    </div>
-                                                );
-                                            })
-                                        }
-                                        {linkedNotes.filter(n => {
-                                            if (!readerSearchTerm) return true;
-                                            return (n.title || "").toLowerCase().includes(readerSearchTerm.toLowerCase()) ||
-                                                (n.content || "").toLowerCase().includes(readerSearchTerm.toLowerCase());
-                                        }).length === 0 && (
-                                                <div className="text-center py-10 text-slate-400 text-xs font-bold uppercase">
-                                                    No matching notes
-                                                </div>
-                                            )}
-                                    </div>
-                                </div>
-
-                                {/* Right Column: Reading Area */}
-                                <div
-                                    className={`flex-1 flex flex-col bg-white dark:bg-themeBG overflow-y-auto custom-scrollbar min-w-0 ${!activeReaderNoteId ? 'hidden md:flex' : 'flex w-full'
-                                        }`}
-                                    onScroll={handleReaderScroll}
-                                >
-                                    {(() => {
-                                        const activeNote = linkedNotes.find(n => n._id === activeReaderNoteId);
-                                        if (!activeNote) {
-                                            return (
-                                                <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-2 p-6 text-center">
-                                                    <p className="text-xs font-bold uppercase tracking-wider">Select a note from the sidebar to read</p>
-                                                </div>
-                                            );
-                                        }
-
-                                        return (
-                                            <div className="w-full space-y-4 sm:space-y-6">
-                                                {/* Mobile Navigation Bar back to Notes List */}
-                                                {!isReadingModeActive && (
-                                                    <div className="md:hidden px-4 pt-3 pb-2 bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 flex items-center justify-between sticky top-0 z-[100000]">
-                                                        <button
-                                                            onClick={() => setActiveReaderNoteId(null)}
-                                                            className="flex items-center gap-1.5 text-xs font-black text-primary bg-primary/10 px-3 py-1.5 rounded-xl active:scale-95 transition-all shadow-2xs cursor-pointer"
-                                                        >
-                                                            <span className="text-sm">←</span> All Notes ({linkedNotes.length})
-                                                        </button>
-                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest truncate max-w-[140px] pl-2">
-                                                            {activeNote.title || "Untitled Note"}
-                                                        </span>
-                                                    </div>
-                                                )}
-
-                                                {/* Note Header */}
-                                                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-slate-100 dark:border-slate-800 sticky top-0 bg-white z-[99999] transition-all duration-500 ease-in-out overflow-hidden ${isReadingModeActive ? 'max-h-0 p-0 opacity-0 border-none' : 'max-h-[320px] sm:max-h-[200px] px-4 sm:px-8 py-3.5 sm:py-5 border-b opacity-100'}`}>
-                                                    <div className="min-w-0 flex-1">
-                                                        <div className="flex items-center gap-2 mb-2">
-                                                            <span
-                                                                style={{ backgroundColor: activeNote.color }}
-                                                                className="w-3 h-3 rounded-full border border-black/10"
-                                                            />
-                                                            <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Linked Sticky Note</span>
-                                                        </div>
-                                                        {isEditingNote ? (
-                                                            <input
-                                                                type="text"
-                                                                value={editedTitle}
-                                                                onChange={(e) => setEditedTitle(e.target.value)}
-                                                                className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-xl outline-none focus:ring-1 focus:ring-primary"
-                                                            />
-                                                        ) : (
-                                                            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight break-words">
-                                                                {activeNote.title || "Untitled Note"}
-                                                            </h1>
-                                                        )}
-                                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide mt-2">
-                                                            Last updated: {new Date(activeNote.updatedAt).toLocaleString("en-US", {
-                                                                day: "numeric",
-                                                                month: "long",
-                                                                year: "numeric",
-                                                                hour: "numeric",
-                                                                minute: "2-digit",
-                                                                hour12: true
-                                                            })}
-                                                        </p>
-                                                    </div>
-
-                                                    {/* Edit & Action Buttons */}
-                                                    <div className="flex flex-wrap items-center gap-2 shrink-0 sm:ml-4 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 sm:border-none w-full sm:w-auto justify-end">
-                                                        {isEditingNote ? (
-                                                            <>
-                                                                <button
-                                                                    onClick={handleSaveNote}
-                                                                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md select-none"
-                                                                >
-                                                                    Save
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => setIsEditingNote(false)}
-                                                                    className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer select-none"
-                                                                >
-                                                                    Cancel
-                                                                </button>
-                                                            </>
-                                                        ) : (
-                                                            activeNote.taskId && task?._id && String(activeNote.taskId) !== String(task._id) ? (
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="text-[10px] font-black text-violet-500 bg-violet-500/10 border border-violet-200/50 px-2.5 py-1.5 rounded-xl uppercase tracking-wider select-none">
-                                                                        📌 Parent Note (Read-Only)
-                                                                    </span>
-                                                                    {task?.parentTask && (
-                                                                        <button
-                                                                            onClick={() => {
-                                                                                const parentId = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
-                                                                                if (parentId) {
-                                                                                    handleNavigateToParent(parentId);
-                                                                                }
-                                                                            }}
-                                                                            className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md select-none"
-                                                                        >
-                                                                            Navigate to Parent
-                                                                        </button>
-                                                                    )}
-                                                                </div>
-                                                            ) : isAdmin ? (
-                                                                <>
-                                                                    <button
-                                                                        onClick={() => {
-                                                                            setEditedTitle(activeNote.title || "Untitled Note");
-                                                                            const info = extractBilingual(activeNote.content, activeNote._id);
-                                                                            if (info.isBilingual) {
-                                                                                setIsBilingual(true);
-                                                                                setBilingualTaskId(info.taskId);
-                                                                                setEditedEnContent(info.en);
-                                                                                setEditedHiContent(info.hi);
-                                                                            } else {
-                                                                                setIsBilingual(false);
-                                                                                const isHtml = isHtmlNote(activeNote.content);
-                                                                                const rawContent = isHtml ? decodeHtmlEntities(activeNote.content) : (activeNote.content || "");
-                                                                                setEditedContent(rawContent);
-                                                                                setEditorMode(isHtml ? "code" : "rich");
-                                                                            }
-                                                                            setIsEditingNote(true);
-                                                                        }}
-                                                                        className="px-4 py-2 bg-yellow-450 hover:bg-yellow-500 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md select-none"
-                                                                    >
-                                                                        Edit
-                                                                    </button>
-                                                                    <button
-                                                                        onClick={() => setShowDeleteConfirm(true)}
-                                                                        className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-bold rounded-xl transition-all cursor-pointer border border-red-200/50 select-none"
-                                                                    >
-                                                                        Delete
-                                                                    </button>
-                                                                </>
-                                                            ) : (
-                                                                <span className="text-[10px] font-black text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-xl uppercase tracking-wider select-none">
-                                                                    📖 Read-Only
-                                                                </span>
-                                                            )
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                {/* Optional Attachment Image */}
-                                                {activeNote.imageUrl && (
-                                                    <div className="rounded-2xl border border-slate-100 overflow-hidden bg-slate-50/50 aspect-video max-h-96 flex items-center justify-center">
-                                                        <img
-                                                            src={activeNote.imageUrl.startsWith("http") ? activeNote.imageUrl : `${serverUrl}${activeNote.imageUrl}`}
-                                                            alt="Note attachment"
-                                                            className="w-full h-full object-contain"
-                                                        />
-                                                    </div>
-                                                )}
-
-                                                {/* Content */}
-                                                {isEditingNote ? (
-                                                    <div className="space-y-4 drawer-quill">
-                                                        <style>{`
-                                                              .drawer-quill .ql-toolbar.ql-snow {
-                                                                border-color: #cbd5e1 !important;
-                                                                background-color: #f8fafc;
-                                                                border-top-left-radius: 12px;
-                                                                border-top-right-radius: 12px;
-                                                              }
-                                                              .drawer-quill .ql-container.ql-snow {
-                                                                border-color: #cbd5e1 !important;
-                                                                background-color: #ffffff;
-                                                                border-bottom-left-radius: 12px;
-                                                                border-bottom-right-radius: 12px;
-                                                                font-family: inherit !important;
-                                                                font-size: 13px !important;
-                                                              }
-                                                              .drawer-quill .ql-editor {
-                                                                min-height: 250px;
-                                                                max-height: 600px;
-                                                                overflow-y: auto;
-                                                                color: #1e293b;
-                                                              }
-                                                              .dark .drawer-quill .ql-toolbar.ql-snow {
-                                                                border-color: #334155 !important;
-                                                                background-color: #1e293b;
-                                                              }
-                                                              .dark .drawer-quill .ql-toolbar.ql-snow .ql-stroke {
-                                                                stroke: #cbd5e1 !important;
-                                                              }
-                                                              .dark .drawer-quill .ql-toolbar.ql-snow .ql-fill {
-                                                                fill: #cbd5e1 !important;
-                                                              }
-                                                              .dark .drawer-quill .ql-toolbar.ql-snow .ql-picker {
-                                                                color: #cbd5e1 !important;
-                                                              }
-                                                              .dark .drawer-quill .ql-container.ql-snow {
-                                                                border-color: #334155 !important;
-                                                                background-color: #0f172a;
-                                                              }
-                                                              .dark .drawer-quill .ql-editor {
-                                                                color: #f1f5f9 !important;
-                                                              }
-                                                          `}</style>
-                                                        {isBilingual ? (
-                                                            <div className="space-y-4">
-                                                                <div className="space-y-2">
-                                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                                        🇬🇧 English Content
-                                                                    </label>
-                                                                    <ReactQuill
-                                                                        value={editedEnContent}
-                                                                        onChange={setEditedEnContent}
-                                                                        placeholder="Type English notes here..."
-                                                                        modules={{
-                                                                            toolbar: [
-                                                                                [{ 'header': [1, 2, 3, false] }],
-                                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                                                ['link', 'clean']
-                                                                            ]
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                                <div className="space-y-2">
-                                                                    <div className="flex justify-between items-center mb-1">
-                                                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                                            🇮🇳 Hindi Content (हिन्दी अनुवाद)
-                                                                        </label>
-                                                                        <button
-                                                                            type="button"
-                                                                            disabled={isTranslating}
-                                                                            onClick={async () => {
-                                                                                const translation = await handleTranslateToHindi(editedEnContent);
-                                                                                if (translation) {
-                                                                                    setEditedHiContent(translation);
-                                                                                }
-                                                                            }}
-                                                                            className="text-[10px] font-black text-violet-500 hover:text-violet-600 uppercase tracking-wider flex items-center gap-1 cursor-pointer select-none bg-violet-50 dark:bg-violet-950/20 px-2.5 py-1 rounded-lg border border-violet-100 dark:border-violet-900 transition-all active:scale-95"
-                                                                        >
-                                                                            {isTranslating ? "⏳ Translating..." : "⚡ Translate from English"}
-                                                                        </button>
-                                                                    </div>
-                                                                    <ReactQuill
-                                                                        value={editedHiContent}
-                                                                        onChange={setEditedHiContent}
-                                                                        placeholder="Type Hindi notes here..."
-                                                                        modules={{
-                                                                            toolbar: [
-                                                                                [{ 'header': [1, 2, 3, false] }],
-                                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                                                ['link', 'clean']
-                                                                            ]
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="space-y-2">
-                                                                <div className="flex justify-between items-center mb-1 gap-2 flex-wrap">
-                                                                    <div className="flex items-center gap-2">
-                                                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Note HTML / Text Content</label>
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => {
-                                                                                if (editorMode === "rich") {
-                                                                                    setEditedContent(decodeHtmlEntities(editedContent));
-                                                                                    setEditorMode("code");
-                                                                                } else {
-                                                                                    setEditorMode("rich");
-                                                                                }
-                                                                            }}
-                                                                            className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md border transition-all ${
-                                                                                editorMode === "code"
-                                                                                    ? "bg-blue-500 text-white border-blue-500 hover:bg-blue-600"
-                                                                                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200"
-                                                                            }`}
-                                                                        >
-                                                                            {editorMode === "code" ? "📝 Use Rich Text" : "💻 Use HTML/CSS Code"}
-                                                                        </button>
-                                                                    </div>
-                                                                    <button
-                                                                        type="button"
-                                                                        disabled={isTranslating}
-                                                                        onClick={async () => {
-                                                                            const translation = await handleTranslateToHindi(editedContent);
-                                                                            if (translation) {
-                                                                                setEditedEnContent(editedContent);
-                                                                                setEditedHiContent(translation);
-                                                                                setIsBilingual(true);
-                                                                                setBilingualTaskId(activeNote?.taskId || task?._id);
-                                                                            }
-                                                                        }}
-                                                                        className="text-[10px] font-black text-violet-500 hover:text-violet-600 uppercase tracking-wider flex items-center gap-1 cursor-pointer select-none bg-violet-50 dark:bg-violet-950/20 px-2.5 py-1 rounded-lg border border-violet-100 dark:border-violet-900 transition-all active:scale-95"
-                                                                    >
-                                                                        {isTranslating ? "⏳ Translating..." : "🌐 Auto-Translate note to Hindi"}
-                                                                    </button>
-                                                                </div>
-                                                                {editorMode === "code" ? (
-                                                                    <textarea
-                                                                        value={editedContent}
-                                                                        onChange={(e) => setEditedContent(e.target.value)}
-                                                                        placeholder="Paste or write HTML/CSS code directly here..."
-                                                                        className="w-full min-h-[300px] max-h-[600px] font-mono text-[11px] p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-slate-100 leading-normal"
-                                                                    />
-                                                                ) : (
-                                                                    <ReactQuill
-                                                                        value={editedContent}
-                                                                        onChange={setEditedContent}
-                                                                        placeholder="Type notes here..."
-                                                                        modules={{
-                                                                            toolbar: [
-                                                                                [{ 'header': [1, 2, 3, false] }],
-                                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                                                ['link', 'clean']
-                                                                            ]
-                                                                        }}
-                                                                    />
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ) : (
-                                                    <div className="ql-snow">
-                                                        <style>{`
-                                                              .ql-snow .ql-editor pre.ql-syntax {
-                                                                background-color: #0f172a !important;
-                                                                color: #f8fafc !important;
-                                                                padding: 16px !important;
-                                                                border-radius: 12px !important;
-                                                                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-                                                                font-size: 12px !important;
-                                                                line-height: 1.6 !important;
-                                                                margin: 12px 0 !important;
-                                                              }
-                                                              .dark .ql-snow .ql-editor pre.ql-syntax {
-                                                                background-color: #020617 !important;
-                                                                border-color: #1e293b !important;
-                                                              }
-                                                              .ql-snow .ql-editor > .note-root > div > *:first-child {
-                                                                margin-top: 0 !important;
-                                                              }
-                                                              .ql-snow .ql-editor {
-                                                                white-space: normal !important;
-                                                              }
-                                                              .ql-snow .ql-editor * {
-                                                                white-space: normal !important;
-                                                              }
-                                                              .ql-snow .ql-editor pre,
-                                                              .ql-snow .ql-editor pre *,
-                                                              .ql-snow .ql-editor code,
-                                                              .ql-snow .ql-editor code *,
-                                                              .ql-snow .ql-editor [class*="lang-"],
-                                                              .ql-snow .ql-editor [class*="lang-"] * {
-                                                                white-space: pre-wrap !important;
-                                                              }
-                                                              .ql-snow .ql-editor h1,
-                                                              .ql-snow .ql-editor h2,
-                                                              .ql-snow .ql-editor h3 {
-                                                                margin-top: 16px !important;
-                                                                margin-bottom: 8px !important;
-                                                                font-weight: 800 !important;
-                                                              }
-                                                              .ql-snow .ql-editor p {
-                                                                margin-top: 0 !important;
-                                                                                margin-bottom: 8px !important;
-                                                              }
-                                                              .ql-snow .ql-editor ul,
-                                                              .ql-snow .ql-editor ol {
-                                                                margin-top: 0 !important;
-                                                                margin-bottom: 8px !important;
-                                                              }
-                                                          `}</style>
-                                                        {isHtmlNote(activeNote.content) ? (
-                                                            <iframe
-                                                                ref={iframeRef}
-                                                                title={activeNote.title || "Note HTML Preview"}
-                                                                srcDoc={decodeHtmlEntities(activeNote.content) + `
-                                                                 <script>
-                                                                    window.addEventListener('scroll', () => {
-                                                                        window.parent.postMessage({ type: 'iframeScroll', scrollTop: window.scrollY || document.documentElement.scrollTop, scrollHeight: document.documentElement.scrollHeight, clientHeight: window.innerHeight || document.documentElement.clientHeight }, '*');
-                                                                    });
-                                                                    window.addEventListener('load', () => {
-                                                                        window.parent.postMessage({ type: 'iframeScroll', scrollTop: window.scrollY || document.documentElement.scrollTop, scrollHeight: document.documentElement.scrollHeight, clientHeight: window.innerHeight || document.documentElement.clientHeight }, '*');
-                                                                    });
-                                                                    window.addEventListener('resize', () => {
-                                                                        window.parent.postMessage({ type: 'iframeScroll', scrollTop: window.scrollY || document.documentElement.scrollTop, scrollHeight: document.documentElement.scrollHeight, clientHeight: window.innerHeight || document.documentElement.clientHeight }, '*');
-                                                                    });
-                                                                 </script>
-                                                                 `}
-                                                                className={`w-full bg-white transition-all duration-500 border-none ${isReadingModeActive ? 'min-h-[100vh] rounded-none' : 'min-h-[600px] rounded-b-2xl md:rounded-b-3xl'}`}
-                                                                sandbox="allow-scripts allow-same-origin"
-                                                            />
-                                                        ) : (
-                                                            <div
-                                                                className="note-reader-container max-w-none text-sm text-slate-700 dark:text-slate-355 leading-relaxed font-medium ql-editor overflow-y-auto"
-                                                                style={{ maxHeight: isReadingModeActive ? '100vh' : '600px' }}
-                                                                onScroll={handleReaderScroll}
-                                                                dangerouslySetInnerHTML={{ __html: activeNote.content }}
-                                                            />
-                                                        )}
-
-                                                        {/* Floating Bottom Action Bar (End Read & Scroll Button) in Full Screen/Reading Mode */}
-                                                        {isReadingModeActive && (
-                                                            <div className="fixed bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2 z-[999999] pointer-events-auto flex items-center gap-3 animate-in slide-in-from-bottom-5 fade-in zoom-in duration-300">
-                                                                <button
-                                                                    onClick={handleExitReadingMode}
-                                                                    className="group flex items-center gap-2 px-5 py-3 rounded-full bg-slate-900/70 dark:bg-slate-900/80 hover:bg-slate-900 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl text-white transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer text-xs font-black tracking-wider uppercase select-none"
-                                                                    title="Exit Full Screen Reading Mode"
-                                                                >
-                                                                    <IoClose className="text-base text-red-400 group-hover:rotate-90 transition-transform duration-300" />
-                                                                    <span>End Read</span>
-                                                                </button>
-
-                                                                {iframeScrollInfo.canScroll && (
-                                                                    <button
-                                                                        onClick={handleFloatingScroll}
-                                                                        className="group flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/30 dark:bg-slate-900/60 hover:bg-white/50 dark:hover:bg-slate-900/80 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-2xl text-slate-800 dark:text-white transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer select-none"
-                                                                        title={iframeScrollInfo.isAtBottom ? "Scroll to Top" : "Scroll to Bottom"}
-                                                                    >
-                                                                        {iframeScrollInfo.isAtBottom ? (
-                                                                            <IoArrowUp className="text-lg sm:text-xl opacity-90 group-hover:opacity-100 transition-opacity" />
-                                                                        ) : (
-                                                                            <IoArrowDown className="text-lg sm:text-xl opacity-90 group-hover:opacity-100 transition-opacity" />
-                                                                        )}
-                                                                    </button>
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })()}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-            })()}
-
-            {/* Custom Delete Confirmation Modal */}
-            {showDeleteConfirm && (
-                <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-md p-6 overflow-hidden flex flex-col items-center text-center animate-in zoom-in-95 duration-200">
-                        <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/20 flex items-center justify-center mb-4">
-                            <IoTrashOutline className="text-red-500 text-xl" />
-                        </div>
-
-                        <h3 className="text-base font-black text-slate-850 dark:text-white uppercase tracking-wider mb-2">Delete Note</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-6 max-w-xs leading-relaxed font-semibold">
-                            Are you sure you want to delete this note? This action cannot be undone.
-                        </p>
-
-                        <div className="flex gap-3 w-full">
-                            <button
-                                onClick={() => {
-                                    handleDeleteNote(activeReaderNoteId);
-                                    setShowDeleteConfirm(false);
-                                }}
-                                className="flex-1 py-2.5 bg-red-500 hover:bg-red-650 text-white text-xs font-black rounded-xl uppercase tracking-wider transition-all cursor-pointer shadow-md select-none animate-in duration-200"
-                            >
-                                Confirm Delete
-                            </button>
-                            <button
-                                onClick={() => setShowDeleteConfirm(false)}
-                                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black rounded-xl uppercase tracking-wider transition-all cursor-pointer select-none"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* LeetCode Coding Simulation Modal */}
             <DsaCodingArenaModal

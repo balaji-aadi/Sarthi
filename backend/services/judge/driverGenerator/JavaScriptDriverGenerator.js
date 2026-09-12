@@ -263,23 +263,56 @@ ${studentCode}
 
             ${semanticValidator === 'DeepCopyValidator' ? 'const originalNodeIds = collectOriginalNodeIds(args);' : ''}
 
-            ${inPlaceMutation ? `
-            // In-Place Mutation Execution
-            const mutatedIdx = ${parameters.findIndex(p => p.name === mutatedParameter)};
-            ${functionName}(...args);
-            const output = serializeOutput(args[mutatedIdx]);
-            ` : `
-            const result = ${functionName}(...args);
-            ${semanticValidator === 'DeepCopyValidator' ? 'validateDeepCopy(result, originalNodeIds);' : ''}
-            const output = serializeOutput(result);
-            `}
+            let userStdout = '';
+            const MAX_CAPTURED = 65536;
+            const origStdoutWrite = process.stdout.write;
+            const origConsoleLog = console.log;
+            const origConsoleWarn = console.warn;
+            const origConsoleError = console.error;
+
+            process.stdout.write = function(chunk, encoding, cb) {
+                const str = (typeof chunk === 'string' ? chunk : chunk.toString(encoding || 'utf8'));
+                if (userStdout.length < MAX_CAPTURED) {
+                    userStdout += str.slice(0, MAX_CAPTURED - userStdout.length);
+                }
+                return origStdoutWrite.call(process.stdout, chunk, encoding, cb);
+            };
+            console.log = function(...a) {
+                const line = a.map(x => typeof x === 'object' ? JSON.stringify(x) : String(x)).join(' ') + '\\n';
+                if (userStdout.length < MAX_CAPTURED) {
+                    userStdout += line.slice(0, MAX_CAPTURED - userStdout.length);
+                }
+                return origStdoutWrite.call(process.stdout, line);
+            };
+            console.warn = console.log;
+            console.error = console.log;
+
+            let output = null;
+            try {
+                ${inPlaceMutation ? `
+                // In-Place Mutation Execution
+                const mutatedIdx = ${parameters.findIndex(p => p.name === mutatedParameter)};
+                ${functionName}(...args);
+                output = serializeOutput(args[mutatedIdx]);
+                ` : `
+                const result = ${functionName}(...args);
+                ${semanticValidator === 'DeepCopyValidator' ? 'validateDeepCopy(result, originalNodeIds);' : ''}
+                output = serializeOutput(result);
+                `}
+            } finally {
+                process.stdout.write = origStdoutWrite;
+                console.log = origConsoleLog;
+                console.warn = origConsoleWarn;
+                console.error = origConsoleError;
+            }
 
             results.push({
                 testCaseIndex: idx,
-                output: output
+                output: output,
+                stdout: userStdout
             });
         } catch (err) {
-            console.log(JSON.stringify({
+            console.log('\\n' + JSON.stringify({
                 status: "RUNTIME_ERROR",
                 testCaseIndex: idx,
                 errorType: err.name || "Error",
@@ -289,7 +322,7 @@ ${studentCode}
         }
     }
 
-    console.log(JSON.stringify({
+    console.log('\\n' + JSON.stringify({
         status: "SUCCESS",
         results: results
     }));

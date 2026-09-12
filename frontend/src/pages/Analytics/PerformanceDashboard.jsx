@@ -388,26 +388,26 @@ const PerformanceDashboard = () => {
     return (
         <div className="px-1 py-4 sm:px-2 w-full max-w-full space-y-6 animate-in fade-in duration-500 pb-20">
             {/* Header */}
-            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 pb-6 border-b border-slate-100">
+            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 pb-6 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-4 min-w-fit">
-                    <div className="w-14 h-14 bg-slate-800 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-slate-200 shrink-0">
+                    <div className="w-14 h-14 bg-slate-900 dark:bg-slate-800 border border-slate-700/50 rounded-2xl flex items-center justify-center text-primary shadow-lg shrink-0">
                         <IoBarChartOutline size={28} />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black text-slate-800 tracking-tight">Smart Dashboard</h1>
-                        <p className="text-slate-500 font-medium whitespace-nowrap">Performance insights & productivity metrics</p>
+                        <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Smart Dashboard</h1>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">Performance insights & productivity metrics</p>
                     </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-4">
 
-                    <div className="flex flex-wrap items-center gap-3 bg-slate-50/50 p-2 rounded-[1.5rem] border border-slate-200/50">
-                        <div className="flex bg-white p-1 rounded-xl shadow-sm border border-slate-200">
+                    <div className="flex flex-wrap items-center gap-3 bg-slate-50/70 dark:bg-slate-900/80 p-2 rounded-[1.5rem] border border-slate-200/60 dark:border-slate-800 backdrop-blur-md">
+                        <div className="flex bg-white dark:bg-slate-800 p-1 rounded-xl shadow-sm border border-slate-200/80 dark:border-slate-700">
                             {['daily', 'weekly', 'monthly', 'yearly', 'custom'].map((p) => (
                                 <button
                                     key={p}
                                     onClick={() => setPeriod(p)}
-                                    className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${period === p ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all cursor-pointer ${period === p ? 'bg-primary text-white shadow-md shadow-primary/20' : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
                                 >
                                     {p}
                                 </button>
@@ -415,17 +415,17 @@ const PerformanceDashboard = () => {
                         </div>
 
                         {period === 'daily' && (
-                            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-vermilion-100 dark:border-slate-700 shadow-sm animate-in slide-in-from-top-1 duration-300">
                                 <IoCalendarOutline className="text-primary" size={14} />
                                 <div className="flex flex-col">
-                                    <span className="text-[7px] font-black text-vermilion-400 uppercase leading-none mb-0.5">
+                                    <span className="text-[7px] font-black text-vermilion-400 dark:text-primary-300 uppercase leading-none mb-0.5">
                                         SELECT DATE
                                     </span>
                                     <input
                                         type="date"
                                         value={selectedDate}
                                         onChange={(e) => setSelectedDate(e.target.value)}
-                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 p-0 h-auto"
+                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary dark:text-primary-300 focus:ring-0 p-0 h-auto"
                                     />
                                 </div>
                             </div>
@@ -433,26 +433,26 @@ const PerformanceDashboard = () => {
 
                         {period === 'weekly' && (
                             <>
-                                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                                <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-vermilion-100 dark:border-slate-700 shadow-sm animate-in slide-in-from-top-1 duration-300">
                                     <IoCalendarOutline className="text-primary" size={14} />
                                     <div className="flex flex-col">
-                                        <span className="text-[7px] font-black text-vermilion-400 uppercase leading-none mb-0.5">SELECT MONTH</span>
+                                        <span className="text-[7px] font-black text-vermilion-400 dark:text-primary-300 uppercase leading-none mb-0.5">SELECT MONTH</span>
                                         <input
                                             type="month"
                                             value={selectedMonth}
                                             onChange={(e) => setSelectedMonth(e.target.value)}
-                                            className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 cursor-pointer p-0 h-auto"
+                                            className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary dark:text-primary-300 focus:ring-0 cursor-pointer p-0 h-auto"
                                         />
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                                <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-vermilion-100 dark:border-slate-700 shadow-sm animate-in slide-in-from-top-1 duration-300">
                                     <IoFlaskOutline className="text-primary" size={14} />
                                     <div className="flex flex-col">
-                                        <span className="text-[7px] font-black text-vermilion-400 uppercase leading-none mb-0.5">SELECT WEEK</span>
+                                        <span className="text-[7px] font-black text-vermilion-400 dark:text-primary-300 uppercase leading-none mb-0.5">SELECT WEEK</span>
                                         <select
                                             value={selectedWeekIndex}
                                             onChange={(e) => setSelectedWeekIndex(parseInt(e.target.value))}
-                                            className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 p-0 h-auto cursor-pointer appearance-none"
+                                            className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary dark:text-primary-300 focus:ring-0 p-0 h-auto cursor-pointer appearance-none [&>option]:bg-white [&>option]:dark:bg-slate-800 [&>option]:text-slate-900 [&>option]:dark:text-white"
                                         >
                                             {getWeeksInMonth(selectedMonth).map((w, idx) => (
                                                 <option key={idx} value={idx}>{w.display}</option>
@@ -464,56 +464,56 @@ const PerformanceDashboard = () => {
                         )}
 
                         {period === 'monthly' && (
-                            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-vermilion-100 dark:border-slate-700 shadow-sm animate-in slide-in-from-top-1 duration-300">
                                 <IoCalendarOutline className="text-primary" size={14} />
                                 <div className="flex flex-col">
-                                    <span className="text-[7px] font-black text-vermilion-400 uppercase leading-none mb-0.5">SELECT MONTH</span>
+                                    <span className="text-[7px] font-black text-vermilion-400 dark:text-primary-300 uppercase leading-none mb-0.5">SELECT MONTH</span>
                                     <input
                                         type="month"
                                         value={selectedMonth}
                                         onChange={(e) => setSelectedMonth(e.target.value)}
-                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 cursor-pointer p-0 h-auto"
+                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary dark:text-primary-300 focus:ring-0 cursor-pointer p-0 h-auto"
                                     />
                                 </div>
                             </div>
                         )}
 
                         {period === 'yearly' && (
-                            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-vermilion-100 dark:border-slate-700 shadow-sm animate-in slide-in-from-top-1 duration-300">
                                 <IoCalendarOutline className="text-primary" size={14} />
                                 <div className="flex flex-col">
-                                    <span className="text-[7px] font-black text-vermilion-400 uppercase leading-none mb-0.5">SELECT YEAR</span>
+                                    <span className="text-[7px] font-black text-vermilion-400 dark:text-primary-300 uppercase leading-none mb-0.5">SELECT YEAR</span>
                                     <input
                                         type="number"
                                         min="2020"
                                         max="2030"
                                         value={selectedYear}
                                         onChange={(e) => setSelectedYear(e.target.value)}
-                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 p-0 h-5 w-12"
+                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary dark:text-primary-300 focus:ring-0 p-0 h-5 w-12"
                                     />
                                 </div>
                             </div>
                         )}
 
                         {period === 'custom' && (
-                            <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-xl border border-vermilion-100 shadow-sm animate-in slide-in-from-top-1 duration-300">
+                            <div className="flex items-center gap-3 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-vermilion-100 dark:border-slate-700 shadow-sm animate-in slide-in-from-top-1 duration-300">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[8px] font-black text-vermilion-400 uppercase">From</span>
+                                    <span className="text-[8px] font-black text-vermilion-400 dark:text-primary-300 uppercase">From</span>
                                     <input
                                         type="date"
                                         value={customStart}
                                         onChange={(e) => setCustomStart(e.target.value)}
-                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 p-0"
+                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary dark:text-primary-300 focus:ring-0 p-0"
                                     />
                                 </div>
-                                <div className="w-px h-3 bg-vermilion-100"></div>
+                                <div className="w-px h-3 bg-vermilion-100 dark:bg-slate-700"></div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[8px] font-black text-vermilion-400 uppercase">To</span>
+                                    <span className="text-[8px] font-black text-vermilion-400 dark:text-primary-300 uppercase">To</span>
                                     <input
                                         type="date"
                                         value={customEnd}
                                         onChange={(e) => setCustomEnd(e.target.value)}
-                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary focus:ring-0 p-0"
+                                        className="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-primary dark:text-primary-300 focus:ring-0 p-0"
                                     />
                                 </div>
                             </div>
@@ -536,7 +536,7 @@ const PerformanceDashboard = () => {
                                         }
                                     }
                                 }}
-                                className="px-5 py-2.5 bg-slate-800 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg shadow-slate-200 flex items-center gap-2"
+                                className="px-4 py-2 bg-slate-800 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-slate-700/60 flex items-center gap-2 cursor-pointer"
                             >
                                 <IoTrendingUpOutline /> Sync
                             </button>
@@ -591,21 +591,21 @@ const PerformanceDashboard = () => {
             {/* Performance Trend Chart & Workload Distribution */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Main Performance Chart */}
-                <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-100/50 min-h-[450px] relative overflow-hidden">
+                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-100/50 dark:shadow-none min-h-[450px] relative overflow-hidden">
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex flex-col">
-                            <h3 className="text-xl font-black" style={{ color: '#1e293b' }}>Performance Trend</h3>
+                            <h3 className="text-xl font-black text-slate-900 dark:text-white">Performance Trend</h3>
                             {period === 'monthly' && (
-                                <div className="flex bg-slate-100 p-1 rounded-xl mt-2 w-fit">
+                                <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mt-2 w-fit border border-slate-200/60 dark:border-slate-700/60">
                                     <button
                                         onClick={() => setChartView('trend')}
-                                        className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${chartView === 'trend' ? 'bg-white text-primary shadow-sm' : 'text-slate-400'}`}
+                                        className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all cursor-pointer ${chartView === 'trend' ? 'bg-white dark:bg-slate-900 text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'}`}
                                     >
                                         Daily Trend
                                     </button>
                                     <button
                                         onClick={() => setChartView('weekly')}
-                                        className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${chartView === 'weekly' ? 'bg-white text-primary shadow-sm' : 'text-slate-400'}`}
+                                        className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all cursor-pointer ${chartView === 'weekly' ? 'bg-white dark:bg-slate-900 text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'}`}
                                     >
                                         Weekly View
                                     </button>
@@ -613,13 +613,13 @@ const PerformanceDashboard = () => {
                             )}
                         </div>
                         <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest">
-                            <span className="flex items-center gap-1.5" style={{ color: '#E34234' }}><span className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#E34234' }}></span> POINTS</span>
-                            <span className="flex items-center gap-1.5" style={{ color: '#FF7F50' }}><span className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#FFA590' }}></span> HOURS</span>
+                            <span className="flex items-center gap-1.5 text-primary"><span className="w-3 h-3 rounded-full shadow-sm bg-primary"></span> POINTS</span>
+                            <span className="flex items-center gap-1.5 text-coral-400"><span className="w-3 h-3 rounded-full shadow-sm bg-coral-400"></span> HOURS</span>
                         </div>
                     </div>
                     <div className="h-[300px] w-full">
                         {loading ? (
-                            <div className="w-full h-full flex items-center justify-center bg-slate-50/50 rounded-3xl animate-pulse">
+                            <div className="w-full h-full flex items-center justify-center bg-slate-50/50 dark:bg-slate-800/50 rounded-3xl animate-pulse">
                                 <span className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Synchronizing Data...</span>
                             </div>
                         ) : hasNoWork ? (
@@ -627,7 +627,7 @@ const PerformanceDashboard = () => {
                         ) : (period === 'monthly' && chartView === 'weekly') ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-800" />
                                     <XAxis
                                         dataKey="name"
                                         axisLine={false}
@@ -640,7 +640,7 @@ const PerformanceDashboard = () => {
                                         tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }}
                                     />
                                     <Tooltip
-                                        contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontSize: '12px', padding: '16px' }}
+                                        contentStyle={{ borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: '#090d16', color: '#ffffff', fontSize: '12px', padding: '12px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)' }}
                                         itemStyle={{ fontWeight: 900, padding: '2px 0' }}
                                         formatter={(value, name) => [name === 'hours' ? `${Number(value).toFixed(2)} hrs` : value, name.toUpperCase()]}
                                     />
@@ -653,15 +653,15 @@ const PerformanceDashboard = () => {
                                 <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="colorPoints" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#E34234" stopOpacity={0.1} />
+                                            <stop offset="5%" stopColor="#E34234" stopOpacity={0.25} />
                                             <stop offset="95%" stopColor="#E34234" stopOpacity={0} />
                                         </linearGradient>
                                         <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#FF7F50" stopOpacity={0.1} />
+                                            <stop offset="5%" stopColor="#FF7F50" stopOpacity={0.2} />
                                             <stop offset="95%" stopColor="#FF7F50" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-800" />
                                     <XAxis
                                         dataKey="name"
                                         axisLine={false}
@@ -675,16 +675,16 @@ const PerformanceDashboard = () => {
                                         tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }}
                                     />
                                     <Tooltip
-                                        contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', fontSize: '12px', padding: '16px' }}
+                                        contentStyle={{ borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: '#090d16', color: '#ffffff', fontSize: '12px', padding: '12px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)' }}
                                         itemStyle={{ fontWeight: 900, padding: '2px 0' }}
                                         formatter={(value, name) => [name === 'hours' ? `${Number(value).toFixed(2)} hrs` : value, name.toUpperCase()]}
-                                        labelStyle={{ color: '#64748b', fontWeight: 800, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.1em' }}
+                                        labelStyle={{ color: '#94a3b8', fontWeight: 800, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.1em' }}
                                     />
                                     <Area
                                         type="monotone"
                                         dataKey="points"
                                         stroke="#E34234"
-                                        strokeWidth={4}
+                                        strokeWidth={3.5}
                                         fillOpacity={1}
                                         fill="url(#colorPoints)"
                                     />
@@ -707,12 +707,11 @@ const PerformanceDashboard = () => {
 
                 {/* Workload Distribution Card */}
                 <div
-                    style={{ backgroundColor: '#1e293b', color: '#ffffff' }}
-                    className="p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 flex flex-col justify-between overflow-hidden relative group"
+                    className="bg-slate-900 dark:bg-slate-900 border border-slate-800 text-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/30 dark:shadow-none flex flex-col justify-between overflow-hidden relative group"
                 >
-                    <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all duration-700"></div>
+                    <div className="absolute -right-10 -top-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-700 pointer-events-none"></div>
                     <div className="relative z-10">
-                        <h3 className="text-xl font-black mb-8 tracking-tight" style={{ color: '#ffffff' }}>Workload Distribution</h3>
+                        <h3 className="text-xl font-black mb-8 tracking-tight text-white">Workload Distribution</h3>
                         <div className="space-y-6">
                             <DistributionItem
                                 label="Completed"
@@ -739,10 +738,10 @@ const PerformanceDashboard = () => {
                     </div>
                     <div className="relative z-10 mt-8 pt-6 border-t border-white/10">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl">🚀</div>
+                            <div className="w-10 h-10 bg-white/10 border border-white/10 rounded-xl flex items-center justify-center text-xl shadow-inner">🚀</div>
                             <div>
-                                <p className="text-[11px] font-black uppercase tracking-widest mb-0.5" style={{ color: '#e2e8f0' }}>Efficiency Score</p>
-                                <p className="text-lg font-black" style={{ color: '#ffffff' }}>{efficiencyScore}% Punctual & Productive</p>
+                                <p className="text-[11px] font-black uppercase tracking-widest mb-0.5 text-slate-300">Efficiency Score</p>
+                                <p className="text-lg font-black text-white">{efficiencyScore}% Punctual & Productive</p>
                             </div>
                         </div>
                     </div>
@@ -754,8 +753,8 @@ const PerformanceDashboard = () => {
                 <div className="lg:col-span-1">
                     <ConsistencyCalendar stats={dailyStats.length ? dailyStats : stats} />
                 </div>
-                <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-100/50">
-                    <h3 className="text-xl font-black text-slate-800 mb-6 uppercase tracking-tight">Peak Activity Days</h3>
+                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-100/50 dark:shadow-none">
+                    <h3 className="text-xl font-black text-slate-800 dark:text-white mb-6 uppercase tracking-tight">Peak Activity Days</h3>
                     <div className="space-y-4">
                         {stats
                             .filter(s => (s.metrics.tasksCompleted > 0 || s.metrics.storyPointsDone > 0 || s.metrics.hoursLogged > 0))
@@ -764,13 +763,13 @@ const PerformanceDashboard = () => {
                             .map((s, idx) => {
                                 const dayPoints = s.metrics.storyPointsDone || 0;
                                 return (
-                                    <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white cursor-pointer transition-all hover:scale-[1.02] hover:shadow-md">
+                                    <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800/80 cursor-pointer transition-all hover:scale-[1.01] hover:shadow-md">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-primary shadow-sm">
+                                            <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center text-primary shadow-sm border border-slate-200/50 dark:border-slate-700/50">
                                                 <IoCheckmarkDoneCircleOutline size={20} />
                                             </div>
                                             <div>
-                                                <p className="font-black text-slate-800 text-sm italic">{moment(s.date).format('MMMM DD, YYYY')}</p>
+                                                <p className="font-black text-slate-800 dark:text-white text-sm italic">{moment(s.date).format('MMMM DD, YYYY')}</p>
                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                                                     {s.metrics.tasksCompleted} Tasks · {s.metrics.hoursLogged.toFixed(1)} hrs
                                                 </p>
@@ -780,12 +779,12 @@ const PerformanceDashboard = () => {
                                             {dayPoints > 0 ? (
                                                 <>
                                                     <p className="font-black text-primary">+{dayPoints} PTS</p>
-                                                    <div className="h-1 w-20 bg-slate-200 rounded-full mt-1 overflow-hidden">
+                                                    <div className="h-1 w-20 bg-slate-200 dark:bg-slate-700 rounded-full mt-1 overflow-hidden">
                                                         <div className="bg-primary h-full" style={{ width: `${Math.min(dayPoints * 10, 100)}%` }}></div>
                                                     </div>
                                                 </>
                                             ) : (
-                                                <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-wider border border-emerald-100/60">
+                                                <span className="px-3 py-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-wider border border-emerald-100/60 dark:border-emerald-800/40">
                                                     Active Day
                                                 </span>
                                             )}
@@ -811,29 +810,29 @@ const PerformanceDashboard = () => {
 
 const StatCard = ({ icon, label, value, subtext, color, trend }) => {
     const colors = {
-        indigo: 'text-primary bg-primary/10 border-primary/20',
-        emerald: 'text-emerald-600 bg-emerald-50 border-emerald-100',
-        rose: 'text-rose-600 bg-rose-50 border-rose-100',
-        blue: 'text-blue-600 bg-blue-50 border-blue-100',
-        amber: 'text-amber-600 bg-amber-50 border-amber-100',
+        indigo: 'text-primary bg-primary/10 border-primary/20 dark:bg-primary/20 dark:border-primary/30',
+        emerald: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-100 dark:border-emerald-800/40',
+        rose: 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-100 dark:border-rose-800/40',
+        blue: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-100 dark:border-blue-800/40',
+        amber: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-100 dark:border-amber-800/40',
     };
 
     return (
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-slate-300 transition-all group overflow-hidden relative min-h-[150px] flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all group overflow-hidden relative min-h-[150px] flex flex-col justify-between">
             <div className="flex justify-between items-start mb-3">
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform border ${colors[color] || colors.indigo}`}>
                     <span className="text-lg">{icon}</span>
                 </div>
                 {trend && (
-                    <div className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${trend.startsWith('+') ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'} border border-current/10`}>
+                    <div className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${trend.startsWith('+') ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400'} border border-current/10`}>
                         {trend}
                     </div>
                 )}
             </div>
             <div>
-                <p className="text-xs font-semibold text-slate-500 mb-1 leading-none">{label}</p>
-                <h2 className="text-2xl font-black text-slate-900 mb-1 truncate">{value}</h2>
-                <p className="text-xs font-medium text-slate-400 truncate">{subtext}</p>
+                <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 leading-none">{label}</p>
+                <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-1 truncate">{value}</h2>
+                <p className="text-xs font-medium text-slate-400 dark:text-slate-500 truncate">{subtext}</p>
             </div>
         </div>
     );

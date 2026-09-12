@@ -39,19 +39,43 @@ export const zohoLogin = createAsyncThunk(
   }
 );
 
+export const googleLogin = createAsyncThunk(
+  "auth/googleLogin",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await AuthApi.googleLogin(payload);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Google Login failed"
+      );
+    }
+  }
+);
+
 const storeSlice = createSlice({
   name: "store",
   initialState: {
-    token: false,
-    currentUser: null,
+    token: !!localStorage.getItem("accessToken"),
+    currentUser: (() => {
+      try {
+        return JSON.parse(localStorage.getItem("currentUser")) || null;
+      } catch (e) {
+        return null;
+      }
+    })(),
     loading: false,
     error: false,
     success: false,
-    isAuthenticated: false,
+    isAuthenticated: !!localStorage.getItem("accessToken"),
     showConsistencyModal: false,
-    globalSearch: "",
-    activeBranch: JSON.parse(localStorage.getItem("activeBranch")) || null,
-    branches: [],
+    activeBranch: (() => {
+      try {
+        return JSON.parse(localStorage.getItem("activeBranch")) || null;
+      } catch (e) {
+        return null;
+      }
+    })(),
     globalSettings: {
         subscriptionType: "free"
     },
@@ -84,6 +108,11 @@ const storeSlice = createSlice({
     },
     updateCurrentUser: (state, action) => {
       state.currentUser = { ...state.currentUser, ...action.payload };
+      try {
+        localStorage.setItem("currentUser", JSON.stringify(state.currentUser));
+      } catch (e) {
+        console.error("Failed to save currentUser to localStorage", e);
+      }
     },
   },
   extraReducers: (builder) => {
@@ -133,6 +162,30 @@ const storeSlice = createSlice({
         state.error = true;
         state.success = false;
         toast.error(action.payload || "Zoho Login Failed");
+      })
+
+      .addCase(googleLogin.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+        state.success = false;
+      })
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.success = true;
+        state.token = true;
+        state.isAuthenticated = true;
+        state.currentUser = action.payload.data.user || null;
+        localStorage.setItem("currentUser", JSON.stringify(action.payload.data.user));
+        localStorage.setItem("accessToken", action.payload.data.accessToken);
+        localStorage.setItem("refreshToken", action.payload.data.refreshToken);
+        toast.success(`Welcome ${action.payload.data?.user?.firstName}`);
+      })
+      .addCase(googleLogin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.success = false;
+        toast.error(action.payload || "Google Login Failed");
       })
 
       .addCase(logout.pending, (state) => {

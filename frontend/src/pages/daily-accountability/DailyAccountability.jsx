@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GridSection from './GridSection';
 import { FaDownload, FaSearch, FaPlus } from 'react-icons/fa';
 import { DailyAccountabilityApi } from '../../services/api/DailyAccountability.api';
+import SarathiLoader from '../../components/common/SarathiLoader';
 import toast from 'react-hot-toast';
 
 const DEFAULT_SECTIONS = [
@@ -159,9 +160,8 @@ const DailyAccountability = () => {
         {/* Main Tab Content Area */}
         <div className="flex-1 overflow-hidden p-6 bg-slate-50/50 flex flex-col">
             {loading ? (
-                <div className="w-full h-full flex flex-col items-center justify-center text-textSub">
-                    <span className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin mb-4"></span>
-                    <p>Syncing from Cloud...</p>
+                <div className="w-full h-full flex items-center justify-center">
+                    <SarathiLoader message="Syncing from Cloud..." size="md" />
                 </div>
             ) : (
                 activeSection ? (

@@ -12,16 +12,28 @@ async function restoreDatabase() {
   console.log("       SARTHI DATABASE RECOVERY & FULL RESTORE ENGINE           ");
   console.log("=================================================================\n");
 
-  const defaultBackupDir = path.join(process.cwd(), "..", "database_backups", "LATEST");
-  const backupDir = process.argv[2] || defaultBackupDir;
+  // Determine candidate backup directory
+  const rootLatest = path.join(process.cwd(), "..", "database_backups", "LATEST");
+  const backendBackup = path.join(process.cwd(), "database_backup");
+  
+  let backupDir = process.argv[2];
+  if (!backupDir) {
+    if (fs.existsSync(rootLatest) && fs.existsSync(path.join(rootLatest, "metadata.json"))) {
+      backupDir = rootLatest;
+    } else if (fs.existsSync(backendBackup) && fs.existsSync(path.join(backendBackup, "metadata.json"))) {
+      backupDir = backendBackup;
+    } else {
+      backupDir = rootLatest;
+    }
+  }
 
   if (!fs.existsSync(backupDir)) {
-    console.error(`ERROR: Specified backup directory does not exist: ${backupDir}`);
+    console.error(`❌ ERROR: Specified backup directory does not exist: ${backupDir}`);
     process.exit(1);
   }
 
   console.log(`Loading backup snapshot from: ${backupDir}`);
-  console.log("Connecting to MongoDB...");
+  console.log("Connecting to MongoDB Atlas...");
   await mongoose.connect(uri);
   console.log("✓ Connected successfully.");
 
@@ -32,10 +44,10 @@ async function restoreDatabase() {
   if (fs.existsSync(metadataPath)) {
     const meta = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
     console.log(`\nSnapshot Details:`);
-    console.log(`  Timestamp:        ${meta.timestamp}`);
-    console.log(`  Target Database:  ${meta.database}`);
-    console.log(`  Total Collections:${meta.totalCollections}`);
-    console.log(`  Total Documents:  ${meta.totalDocuments}`);
+    console.log(`  Timestamp:         ${meta.timestamp}`);
+    console.log(`  Target Database:   ${meta.database || db.databaseName}`);
+    console.log(`  Total Collections: ${meta.totalCollections}`);
+    console.log(`  Total Documents:   ${meta.totalDocuments}\n`);
   }
 
   const files = fs.readdirSync(backupDir);
@@ -43,10 +55,13 @@ async function restoreDatabase() {
   let totalRestoredDocs = 0;
 
   for (const file of files) {
-    if (!file.endsWith(".json") || file === "metadata.json") continue;
+    if (!file.endsWith(".json") || file.endsWith(".indexes.json") || file === "metadata.json" || file === "backup_metadata.json") {
+      continue;
+    }
 
     const collName = path.basename(file, ".json");
     const filePath = path.join(backupDir, file);
+    const indexFilePath = path.join(backupDir, `${collName}.indexes.json`);
     const content = fs.readFileSync(filePath, "utf8");
 
     let documents;
@@ -63,8 +78,30 @@ async function restoreDatabase() {
     await collection.deleteMany({});
 
     if (documents.length > 0) {
-      const docsToInsert = documents.map(doc => convertTypes(doc));
-      await collection.insertMany(docsToInsert);
+      await collection.insertMany(documents, { ordered: false });
+    }
+
+    // Restore indexes if index file exists
+    if (fs.existsSync(indexFilePath)) {
+      try {
+        const indexes = JSON.parse(fs.readFileSync(indexFilePath, "utf8"));
+        for (const idx of indexes) {
+          if (idx.name === "_id_") continue; // Default primary index already exists
+          try {
+            const { key, name, unique, sparse, background } = idx;
+            const options = {};
+            if (name) options.name = name;
+            if (unique) options.unique = unique;
+            if (sparse) options.sparse = sparse;
+            if (background) options.background = background;
+            await collection.createIndex(key, options);
+          } catch (idxErr) {
+            // Index creation warning can be safely skipped if already matches
+          }
+        }
+      } catch (err) {
+        console.warn(`  ⚠️ Index recovery notice for ${collName}: ${err.message}`);
+      }
     }
 
     console.log(`  ✓ Restored ${documents.length} documents into [${collName}]`);
@@ -72,50 +109,24 @@ async function restoreDatabase() {
     totalRestoredDocs += documents.length;
   }
 
+  await mongoose.disconnect();
+
   console.log("\n=================================================================");
   console.log("               DATABASE FULL RECOVERY COMPLETED                 ");
   console.log("=================================================================");
-  console.table(restoredSummary);
-  console.log(`  Total Restored Documents: ${totalRestoredDocs}`);
+  console.table(
+    Object.entries(restoredSummary).map(([name, count]) => ({
+      Collection: name,
+      "Restored Documents": count
+    }))
+  );
+  console.log(`  Total Restored Collections: ${Object.keys(restoredSummary).length}`);
+  console.log(`  Total Restored Documents:   ${totalRestoredDocs}`);
   console.log("=================================================================");
   console.log("  STATUS: Database fully recovered to exact backup state!");
   console.log("=================================================================\n");
 
   process.exit(0);
-}
-
-function convertTypes(obj) {
-  if (obj === null || obj === undefined) return obj;
-
-  if (obj instanceof mongoose.Types.ObjectId || obj instanceof Date) {
-    return obj;
-  }
-
-  if (typeof obj === 'string') {
-    if (/^[0-9a-fA-F]{24}$/.test(obj)) {
-      return new mongoose.Types.ObjectId(obj);
-    }
-    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(obj)) {
-      return new Date(obj);
-    }
-    return obj;
-  }
-
-  if (Array.isArray(obj)) {
-    return obj.map(convertTypes);
-  }
-
-  if (typeof obj === 'object') {
-    const newObj = {};
-    for (const key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        newObj[key] = convertTypes(obj[key]);
-      }
-    }
-    return newObj;
-  }
-
-  return obj;
 }
 
 restoreDatabase().catch(err => {

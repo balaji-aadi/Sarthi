@@ -24,13 +24,19 @@ import { ProgressService } from '../progress-service/progress.service.js';
  */
 export const checkAndTransitionTasks = async () => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            console.warn('[Cron] DB not connected yet. Skipping task transition.');
+            return;
+        }
         const startOfToday = new Date();
         startOfToday.setHours(0, 0, 0, 0);
         
         // Find tasks where:
         // 1. Due date is before today (meaning the deadline has passed)
         // 2. Status is not 'done' and not 'backlog'
+        // 3. Exclude DSA tasks (DSA has no backlog or overdue date transition)
         const tasksToTransition = await Task.find({
+            taskId: { $not: /^DSA/i },
             taskDueDate: { $lt: startOfToday },
             status: { $nin: ['done', 'backlog', 'inprogress', 'hold'] }
         });

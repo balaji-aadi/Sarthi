@@ -34,7 +34,7 @@ export function generatePythonDriverHarness(studentCode, functionDefinition, exe
   const serializedTCs = JSON.stringify(testCases);
   const validationHelpersCode = SemanticValidatorRegistry.getInjectedValidationCode('python', semanticValidator);
 
-  return `import sys, json, time
+  return `import sys, json, time, io
 from typing import List, Optional
 
 # ==========================================
@@ -253,24 +253,32 @@ def run_driver():
 
             ${semanticValidator === 'DeepCopyValidator' ? 'original_node_ids = collect_original_node_ids(args)' : ''}
 
-            solution = Solution()
-            ${inPlaceMutation ? `
-            # In-Place Mutation Execution
-            # Mutated Parameter: ${mutatedParameter}
-            mutated_idx = ${parameters.findIndex(p => p.name === mutatedParameter)}
-            solution.${functionName}(*args)
-            output = serialize_output(args[mutated_idx])
-            ` : `
-            result = solution.${functionName}(*args)
-            ${semanticValidator === 'DeepCopyValidator' ? 'validate_deep_copy(result, original_node_ids)' : ''}
-            output = serialize_output(result)
-            `}
+            user_stdout_buf = io.StringIO()
+            old_stdout = sys.stdout
+            sys.stdout = user_stdout_buf
+            try:
+                solution = Solution()
+                ${inPlaceMutation ? `
+                # In-Place Mutation Execution
+                # Mutated Parameter: ${mutatedParameter}
+                mutated_idx = ${parameters.findIndex(p => p.name === mutatedParameter)}
+                solution.${functionName}(*args)
+                output = serialize_output(args[mutated_idx])
+                ` : `
+                result = solution.${functionName}(*args)
+                ${semanticValidator === 'DeepCopyValidator' ? 'validate_deep_copy(result, original_node_ids)' : ''}
+                output = serialize_output(result)
+                `}
+            finally:
+                sys.stdout = old_stdout
 
             results.append({
                 "testCaseIndex": idx,
-                "output": output
+                "output": output,
+                "stdout": user_stdout_buf.getvalue()
             })
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(json.dumps({
                 "status": "RUNTIME_ERROR",
                 "testCaseIndex": idx,

@@ -44,9 +44,9 @@ const testCases = [
 const harness = DriverGeneratorService.generateDriverHarness("python", studentCode, fnDef, execProfile, testCases);
 
 assert(harness.includes("class Solution:"), "Injects student solution code");
-assert(harness.includes("res = fn(*args)"), "Dynamically invokes resolved callable fn(*args)");
-assert(harness.includes("__SARTHI_JUDGE_OUTPUT_START__"), "Includes JSON report start marker");
-assert(harness.includes("__SARTHI_JUDGE_OUTPUT_END__"), "Includes JSON report end marker");
+assert(harness.includes("solution.twoSum"), "Dynamically invokes resolved callable solution.twoSum");
+assert(harness.includes('"status": "SUCCESS"'), "Includes standard SUCCESS envelope");
+assert(harness.includes('"results": results'), "Includes results in envelope");
 assert(harness.includes("serialize_output"), "Includes output serialization helper");
 
 console.log(`\nDriverGeneratorService Test Summary: ${passed} Passed, ${failed} Failed.`);

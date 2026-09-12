@@ -4,6 +4,9 @@ export const BranchApi = {
     getAllBranches: async () => {
         return await Api.get("/branch");
     },
+    getBranches: async () => {
+        return await Api.get("/branch");
+    },
     createBranch: async (data) => {
         return await Api.post("/branch", data);
     },

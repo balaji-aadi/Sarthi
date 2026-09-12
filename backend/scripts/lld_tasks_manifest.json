@@ -1,0 +1,2022 @@
+[
+  {
+    "_id": "6a9a6c3db864b09f656e6f28",
+    "taskName": "Stack vs Heap Allocation & Lifetime Drill",
+    "taskId": "LLDP1-D1.1.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7873e5f6c670d53440ee",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6c40b864b09f656e6f2b",
+    "taskName": "Object Ownership & Reference Passing Refactor",
+    "taskId": "LLDP1-D1.1.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7873e5f6c670d53440f7",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6c42b864b09f656e6f2e",
+    "taskName": "Dynamic Method Dispatch & Virtual Destructors",
+    "taskId": "LLDP1-D1.1.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7874e5f6c670d53440fd",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6c4cb864b09f656e6f34",
+    "taskName": "Defending State Invariants in Shopping Cart",
+    "taskId": "LLDP1-D1.2.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7874e5f6c670d5344106",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6c50b864b09f656e6f37",
+    "taskName": "Immutable Money Value Object with Invariant Guards",
+    "taskId": "LLDP1-D1.2.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7875e5f6c670d534410c",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6c5ab864b09f656e6f3d",
+    "taskName": "Mapping Association, Aggregation & Composition",
+    "taskId": "LLDP1-D1.3.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7875e5f6c670d5344115",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6c5bb864b09f656e6f40",
+    "taskName": "Dismantling Fragile Base Class in Notification System",
+    "taskId": "LLDP1-D1.3.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7875e5f6c670d534411b",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6c5bb864b09f656e6f43",
+    "taskName": "Anticipating Inheritance Breakdowns",
+    "taskId": "LLDP1-D1.3.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7875e5f6c670d534411b",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6c5db864b09f656e6f49",
+    "taskName": "Digital Wallet Domain Model & CRC Extraction",
+    "taskId": "LLDP1-D1.4.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7876e5f6c670d5344127",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6c3ab864b09f656e6f25",
+    "taskName": "Module 1.1: C++ Foundations for Low Level Design",
+    "taskId": "LLDP1-M1",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6c4bb864b09f656e6f31",
+    "taskName": "Module 1.2: Encapsulation, State Guards & Value Objects",
+    "taskId": "LLDP1-M2",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6c55b864b09f656e6f3a",
+    "taskName": "Module 1.3: Object Relationships & Composition vs Inheritance",
+    "taskId": "LLDP1-M3",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6c5cb864b09f656e6f46",
+    "taskName": "Module 1.4: Practical OOAD: Requirements to Domain Architecture",
+    "taskId": "LLDP1-M4",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6c5eb864b09f656e6f4c",
+    "taskName": "Problem 1 — Design a Vending Machine",
+    "taskId": "LLDP1-P1",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6c5fb864b09f656e6f4f",
+    "taskName": "Version 1: Baseline In-Memory Dispense",
+    "taskId": "LLDP1-P1-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6c5eb864b09f656e6f4c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6c68b864b09f656e6f52",
+    "taskName": "Version 2: Multi-Item Catalog & State Machine",
+    "taskId": "LLDP1-P1-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6c5eb864b09f656e6f4c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6c76b864b09f656e6f55",
+    "taskName": "Version 3: Cash Float & Exact Change Algorithm",
+    "taskId": "LLDP1-P1-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6c5eb864b09f656e6f4c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6c8db864b09f656e6f58",
+    "taskName": "Version 4: Requirement Change — Card & Promotional Discounts",
+    "taskId": "LLDP1-P1-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6c5eb864b09f656e6f4c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6c90b864b09f656e6f5b",
+    "taskName": "Version 5: Architectural Review & Invariant Audit",
+    "taskId": "LLDP1-P1-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6c5eb864b09f656e6f4c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6c92b864b09f656e6f5e",
+    "taskName": "Problem 2 — Design Tic Tac Toe",
+    "taskId": "LLDP1-P2",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6c98b864b09f656e6f61",
+    "taskName": "Version 1: Classic 3x3 Grid Engine",
+    "taskId": "LLDP1-P2-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6c92b864b09f656e6f5e",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6c9db864b09f656e6f64",
+    "taskName": "Version 2: N x N Scaling & O(1) Win Evaluation",
+    "taskId": "LLDP1-P2-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6c92b864b09f656e6f5e",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6c9fb864b09f656e6f67",
+    "taskName": "Version 3: Requirement Change — Move History & Undo",
+    "taskId": "LLDP1-P2-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6c92b864b09f656e6f5e",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6ca3b864b09f656e6f6a",
+    "taskName": "Version 4: Design Review & Invariant Audit",
+    "taskId": "LLDP1-P2-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6c92b864b09f656e6f5e",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6ca5b864b09f656e6f6d",
+    "taskName": "Problem 3 — Design a Coffee Maker",
+    "taskId": "LLDP1-P3",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6ca6b864b09f656e6f70",
+    "taskName": "Version 1: Fixed Recipes & Inventory Tracking",
+    "taskId": "LLDP1-P3-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6ca5b864b09f656e6f6d",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6ca8b864b09f656e6f73",
+    "taskName": "Version 2: Dynamic Recipe Customization",
+    "taskId": "LLDP1-P3-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6ca5b864b09f656e6f6d",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6cacb864b09f656e6f76",
+    "taskName": "Version 3: Requirement Change — Tea & Specialty Drinks",
+    "taskId": "LLDP1-P3-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6ca5b864b09f656e6f6d",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6cc3b864b09f656e6f79",
+    "taskName": "Version 4: Design Review & Audit",
+    "taskId": "LLDP1-P3-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6ca5b864b09f656e6f6d",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6cc9b864b09f656e6f7c",
+    "taskName": "Problem 4 — Design a Library Management System",
+    "taskId": "LLDP1-P4",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6ccdb864b09f656e6f7f",
+    "taskName": "Version 1: Catalog & Physical Copy Multiplicity",
+    "taskId": "LLDP1-P4-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6cc9b864b09f656e6f7c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6cd0b864b09f656e6f82",
+    "taskName": "Version 2: Borrowing Policies & FIFO Reservation Queue",
+    "taskId": "LLDP1-P4-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6cc9b864b09f656e6f7c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6cd3b864b09f656e6f85",
+    "taskName": "Version 3: Overdue Fine Engine & Member Suspension",
+    "taskId": "LLDP1-P4-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6cc9b864b09f656e6f7c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6cdcb864b09f656e6f88",
+    "taskName": "Version 4: Design Review & Invariant Audit",
+    "taskId": "LLDP1-P4-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6cc9b864b09f656e6f7c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a7873e5f6c670d53440ee",
+    "taskId": "LLDP1-U1.1.1",
+    "parentTask": "6a9a6c3ab864b09f656e6f25",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 1.1.1: Memory Semantics & Object Lifecycles",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7873e5f6c670d53440f7",
+    "taskId": "LLDP1-U1.1.2",
+    "parentTask": "6a9a6c3ab864b09f656e6f25",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 1.1.2: Pointers, References & Object Ownership",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7874e5f6c670d53440fd",
+    "taskId": "LLDP1-U1.1.3",
+    "parentTask": "6a9a6c3ab864b09f656e6f25",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 1.1.3: Dynamic Polymorphism & VTable Mental Model",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7874e5f6c670d5344106",
+    "taskId": "LLDP1-U1.2.1",
+    "parentTask": "6a9a6c4bb864b09f656e6f31",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 1.2.1: State Encapsulation & Defending Invariants",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7875e5f6c670d534410c",
+    "taskId": "LLDP1-U1.2.2",
+    "parentTask": "6a9a6c4bb864b09f656e6f31",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 1.2.2: Immutable Domain Value Objects",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7875e5f6c670d5344115",
+    "taskId": "LLDP1-U1.3.1",
+    "parentTask": "6a9a6c55b864b09f656e6f3a",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 1.3.1: Ownership Semantics & Multiplicity Mapping",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7875e5f6c670d534411b",
+    "taskId": "LLDP1-U1.3.2",
+    "parentTask": "6a9a6c55b864b09f656e6f3a",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 1.3.2: Composition Over Inheritance & Class Explosion",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7876e5f6c670d5344127",
+    "taskId": "LLDP1-U1.4.1",
+    "parentTask": "6a9a6c5cb864b09f656e6f46",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 1.4.1: Noun-Verb Analysis & CRC Responsibility Mapping",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a6cf6b864b09f656e6f91",
+    "taskName": "Dismantling the God Class UserManager",
+    "taskId": "LLDP2-D2.1.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a792be5f6c670d5344172",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6cfcb864b09f656e6f94",
+    "taskName": "Segregating Bloated CloudStorageProvider",
+    "taskId": "LLDP2-D2.1.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7958e5f6c670d5344178",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6d18b864b09f656e6f9a",
+    "taskName": "Replacing Type-Code Switch with Polymorphic Strategy",
+    "taskId": "LLDP2-D2.2.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a798be5f6c670d5344181",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6d21b864b09f656e6f9d",
+    "taskName": "Spotting Liskov Substitution Violations",
+    "taskId": "LLDP2-D2.2.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a799ae5f6c670d5344187",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6d30b864b09f656e6fa3",
+    "taskName": "Manual Constructor Injection & Fake Ports",
+    "taskId": "LLDP2-D2.3.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79a3e5f6c670d5344190",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6d41b864b09f656e6fa9",
+    "taskName": "Inheritance vs Composition Trade-offs",
+    "taskId": "LLDP2-D2.4.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79a7e5f6c670d5344199",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6d7fb864b09f656e6fac",
+    "taskName": "Switch vs Polymorphism: Defining the Threshold",
+    "taskId": "LLDP2-D2.4.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79a7e5f6c670d5344199",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6d82b864b09f656e6faf",
+    "taskName": "Concrete Class vs Abstract Class vs Interface",
+    "taskId": "LLDP2-D2.4.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79a7e5f6c670d5344199",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6d86b864b09f656e6fb2",
+    "taskName": "YAGNI & Over-Engineering Audit",
+    "taskId": "LLDP2-D2.4.4",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79a7e5f6c670d5344199",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6d89b864b09f656e6fb5",
+    "taskName": "Predicting OCP Failures in Notification Engine",
+    "taskId": "LLDP2-D2.4.5",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79a7e5f6c670d5344199",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6cecb864b09f656e6f8e",
+    "taskName": "Module 2.1: Code Smells & High Cohesion (SRP & ISP)",
+    "taskId": "LLDP2-M1",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6d01b864b09f656e6f97",
+    "taskName": "Module 2.2: Extensibility & Polymorphic Subtyping (OCP & LSP)",
+    "taskId": "LLDP2-M2",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6d27b864b09f656e6fa0",
+    "taskName": "Module 2.3: Decoupling & Inversion of Control (DIP)",
+    "taskId": "LLDP2-M3",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6d32b864b09f656e6fa6",
+    "taskName": "Module 2.4: Dedicated Design Decision Drills",
+    "taskId": "LLDP2-M4",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6d99b864b09f656e6fb8",
+    "taskName": "Problem 5 — Design a Multi-Floor Parking Lot",
+    "taskId": "LLDP2-P1",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6da1b864b09f656e6fbb",
+    "taskName": "Version 1: Single Floor Baseline",
+    "taskId": "LLDP2-P1-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6d99b864b09f656e6fb8",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6da3b864b09f656e6fbe",
+    "taskName": "Version 2: Vehicle & Spot Multiplicity",
+    "taskId": "LLDP2-P1-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6d99b864b09f656e6fb8",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6da3b864b09f656e6fc1",
+    "taskName": "Version 3: Multi-Floor Topology & Displays",
+    "taskId": "LLDP2-P1-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6d99b864b09f656e6fb8",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6da4b864b09f656e6fc4",
+    "taskName": "Version 4: Pluggable Spot Allocation Strategies",
+    "taskId": "LLDP2-P1-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6d99b864b09f656e6fb8",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6da5b864b09f656e6fc7",
+    "taskName": "Version 5: Dynamic Tiered Fee Structures",
+    "taskId": "LLDP2-P1-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6d99b864b09f656e6fb8",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6da6b864b09f656e6fca",
+    "taskName": "Version 6: Requirement Change — EV Charging Bays",
+    "taskId": "LLDP2-P1-V6",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6d99b864b09f656e6fb8",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6da9b864b09f656e6fcd",
+    "taskName": "Version 7: Comprehensive Design Review & Invariant Audit",
+    "taskId": "LLDP2-P1-V7",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6d99b864b09f656e6fb8",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6da9b864b09f656e6fd0",
+    "taskName": "Problem 6 — Design an Automated Teller Machine (ATM)",
+    "taskId": "LLDP2-P2",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6daab864b09f656e6fd3",
+    "taskName": "Version 1: Card & PIN Flow",
+    "taskId": "LLDP2-P2-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6da9b864b09f656e6fd0",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6dadb864b09f656e6fd6",
+    "taskName": "Version 2: State-Driven User Lifecycle",
+    "taskId": "LLDP2-P2-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6da9b864b09f656e6fd0",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6dafb864b09f656e6fd9",
+    "taskName": "Version 3: Cash Cassettes & Dispensing Algorithm",
+    "taskId": "LLDP2-P2-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6da9b864b09f656e6fd0",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6dafb864b09f656e6fdc",
+    "taskName": "Version 4: Requirement Change — Transaction Rollback & Audit",
+    "taskId": "LLDP2-P2-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6da9b864b09f656e6fd0",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6dafb864b09f656e6fdf",
+    "taskName": "Version 5: Design Review & Invariant Audit",
+    "taskId": "LLDP2-P2-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6da9b864b09f656e6fd0",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6dafb864b09f656e6fe2",
+    "taskName": "Problem 7 — Design a Car Rental System",
+    "taskId": "LLDP2-P3",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6db9b864b09f656e6fe5",
+    "taskName": "Version 1: Fleet Catalog & Basic Reservation",
+    "taskId": "LLDP2-P3-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6dafb864b09f656e6fe2",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6dbab864b09f656e6fe8",
+    "taskName": "Version 2: Temporal Conflict Resolution",
+    "taskId": "LLDP2-P3-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6dafb864b09f656e6fe2",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6dbab864b09f656e6feb",
+    "taskName": "Version 3: Add-on Services & Dynamic Pricing",
+    "taskId": "LLDP2-P3-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6dafb864b09f656e6fe2",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6dbbb864b09f656e6fee",
+    "taskName": "Version 4: Requirement Change — One-Way Rentals & Penalties",
+    "taskId": "LLDP2-P3-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6dafb864b09f656e6fe2",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6dbdb864b09f656e6ff1",
+    "taskName": "Version 5: Design Review & Invariant Audit",
+    "taskId": "LLDP2-P3-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6dafb864b09f656e6fe2",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a792be5f6c670d5344172",
+    "taskId": "LLDP2-U2.1.1",
+    "parentTask": "6a9a6cecb864b09f656e6f8e",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 2.1.1: Single Responsibility & Dismantling God Classes",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7958e5f6c670d5344178",
+    "taskId": "LLDP2-U2.1.2",
+    "parentTask": "6a9a6cecb864b09f656e6f8e",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 2.1.2: Interface Segregation & Client-Specific Contracts",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a798be5f6c670d5344181",
+    "taskId": "LLDP2-U2.2.1",
+    "parentTask": "6a9a6d01b864b09f656e6f97",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 2.2.1: Open/Closed Principle via Polymorphic Dispatch",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a799ae5f6c670d5344187",
+    "taskId": "LLDP2-U2.2.2",
+    "parentTask": "6a9a6d01b864b09f656e6f97",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 2.2.2: Liskov Substitution & Behavioral Subtyping",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a79a3e5f6c670d5344190",
+    "taskId": "LLDP2-U2.3.1",
+    "parentTask": "6a9a6d27b864b09f656e6fa0",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 2.3.1: Dependency Inversion & Mockable Ports",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a79a7e5f6c670d5344199",
+    "taskId": "LLDP2-U2.4.1",
+    "parentTask": "6a9a6d32b864b09f656e6fa6",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 2.4.1: Fundamental Structural Trade-Offs",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a6dd0b864b09f656e6ffa",
+    "taskName": "Dynamic Shipping Cost Engine Refactor",
+    "taskId": "LLDP3-D3.1.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79cce5f6c670d53441ed",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6dd2b864b09f656e6ffd",
+    "taskName": "Decoupled Order Event Broker",
+    "taskId": "LLDP3-D3.1.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79cce5f6c670d53441f3",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6dd2b864b09f656e7000",
+    "taskName": "Document Workflow Lifecycle State Machine",
+    "taskId": "LLDP3-D3.1.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79eee5f6c670d53441f9",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6dd3b864b09f656e7003",
+    "taskName": "Transactional Undo/Redo Text Buffer Engine",
+    "taskId": "LLDP3-D3.1.4",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79f1e5f6c670d53441ff",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6dd6b864b09f656e7006",
+    "taskName": "Extensible Request Filter Pipeline",
+    "taskId": "LLDP3-D3.1.5",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79f2e5f6c670d5344205",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6dd6b864b09f656e700c",
+    "taskName": "Document Exporter Factory & HTTP Config Builder",
+    "taskId": "LLDP3-D3.2.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79f3e5f6c670d534420e",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6dd7b864b09f656e700f",
+    "taskName": "Dynamic Beverage Addons & Legacy Payment Bridge",
+    "taskId": "LLDP3-D3.2.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79f3e5f6c670d5344214",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6dd9b864b09f656e7012",
+    "taskName": "In-Memory FileSystem Tree Hierarchy",
+    "taskId": "LLDP3-D3.2.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79f3e5f6c670d534421a",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6de5b864b09f656e7018",
+    "taskName": "Proxy, Facade & Template Method Implementation Drill",
+    "taskId": "LLDP3-D3.3.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a79f8e5f6c670d5344223",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6de9b864b09f656e701b",
+    "taskName": "Singleton Antipattern & Thread Safety Refactor",
+    "taskId": "LLDP3-D3.3.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a04e5f6c670d5344229",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6dedb864b09f656e701e",
+    "taskName": "Specialized GoF Patterns Comparison Drill",
+    "taskId": "LLDP3-D3.3.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a05e5f6c670d534422f",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e05b864b09f656e7024",
+    "taskName": "Strategy vs State Discrimination Decision Drill",
+    "taskId": "LLDP3-D3.4.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a05e5f6c670d5344238",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e08b864b09f656e7027",
+    "taskName": "Decorator vs Adapter vs Proxy Decision Drill",
+    "taskId": "LLDP3-D3.4.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a06e5f6c670d534423e",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e08b864b09f656e702a",
+    "taskName": "E-Commerce Architecture Pattern Prediction Exercise",
+    "taskId": "LLDP3-D3.4.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a0ae5f6c670d5344244",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6dceb864b09f656e6ff7",
+    "taskName": "Module 3.1: Tier 1 Deep Behavioral Patterns",
+    "taskId": "LLDP3-M1",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6dd6b864b09f656e7009",
+    "taskName": "Module 3.2: Tier 1 Deep Creational & Structural Patterns",
+    "taskId": "LLDP3-M2",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6ddab864b09f656e7015",
+    "taskName": "Module 3.3: Tier 2 & Tier 3 Pattern Masterclass",
+    "taskId": "LLDP3-M3",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6e01b864b09f656e7021",
+    "taskName": "Module 3.4: Pattern Decision & Prediction Drills",
+    "taskId": "LLDP3-M4",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6e09b864b09f656e702d",
+    "taskName": "Problem 8 — Design an Elevator Control System",
+    "taskId": "LLDP3-P1",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6e09b864b09f656e7030",
+    "taskName": "Version 1: Single Car Baseline",
+    "taskId": "LLDP3-P1-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e09b864b09f656e702d",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e09b864b09f656e7033",
+    "taskName": "Version 2: LOOK & SCAN Scheduling Algorithms",
+    "taskId": "LLDP3-P1-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e09b864b09f656e702d",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e09b864b09f656e7036",
+    "taskName": "Version 3: Multi-Car Bank Controller",
+    "taskId": "LLDP3-P1-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e09b864b09f656e702d",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e09b864b09f656e7039",
+    "taskName": "Version 4: Door Obstruction & Weight Invariants",
+    "taskId": "LLDP3-P1-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e09b864b09f656e702d",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e09b864b09f656e703c",
+    "taskName": "Version 5: Requirement Change — VIP & Maintenance Modes",
+    "taskId": "LLDP3-P1-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e09b864b09f656e702d",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e703f",
+    "taskName": "Version 6: Design Review & Invariant Audit",
+    "taskId": "LLDP3-P1-V6",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e09b864b09f656e702d",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e705a",
+    "taskName": "Version 1: Classic Board & Movement",
+    "taskId": "LLDP3-P10-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0ab864b09f656e7057",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e705d",
+    "taskName": "Version 2: Extensible Jump Entities",
+    "taskId": "LLDP3-P10-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0ab864b09f656e7057",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e7060",
+    "taskName": "Version 3: Requirement Change — Multiple Dice & Turn Rules",
+    "taskId": "LLDP3-P10-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0ab864b09f656e7057",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e7063",
+    "taskName": "Version 4: Design Review & Invariant Audit",
+    "taskId": "LLDP3-P10-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0ab864b09f656e7057",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e7069",
+    "taskName": "Version 1: Basic Multi-Channel Dispatch",
+    "taskId": "LLDP3-P11-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0bb864b09f656e7066",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e706c",
+    "taskName": "Version 2: Template & Formatting Decorators",
+    "taskId": "LLDP3-P11-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0bb864b09f656e7066",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e706f",
+    "taskName": "Version 3: Rate Limiting & Filter Pipeline",
+    "taskId": "LLDP3-P11-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0bb864b09f656e7066",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e7072",
+    "taskName": "Version 4: Requirement Change — Provider Failover & Retry",
+    "taskId": "LLDP3-P11-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0bb864b09f656e7066",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e7075",
+    "taskName": "Version 5: Design Review & Invariant Audit",
+    "taskId": "LLDP3-P11-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0bb864b09f656e7066",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e7042",
+    "taskName": "Problem 9 — Design Splitwise",
+    "taskId": "LLDP3-P2",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e7045",
+    "taskName": "Version 1: User & Group Foundation",
+    "taskId": "LLDP3-P2-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0ab864b09f656e7042",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e7048",
+    "taskName": "Version 2: Pluggable Split Strategies",
+    "taskId": "LLDP3-P2-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0ab864b09f656e7042",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e704b",
+    "taskName": "Version 3: Rounding & Currency Invariants",
+    "taskId": "LLDP3-P2-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0ab864b09f656e7042",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e704e",
+    "taskName": "Version 4: Debt Simplification Graph Algorithm",
+    "taskId": "LLDP3-P2-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0ab864b09f656e7042",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e7051",
+    "taskName": "Version 5: Requirement Change — Multi-Currency & Activity Feed",
+    "taskId": "LLDP3-P2-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0ab864b09f656e7042",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e7054",
+    "taskName": "Version 6: Design Review & Invariant Audit",
+    "taskId": "LLDP3-P2-V6",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0ab864b09f656e7042",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0ab864b09f656e7057",
+    "taskName": "Problem 10 — Design Snake & Ladder",
+    "taskId": "LLDP3-P3",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e7066",
+    "taskName": "Problem 11 — Design a Multi-Channel Notification Engine",
+    "taskId": "LLDP3-P4",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a79cce5f6c670d53441ed",
+    "taskId": "LLDP3-U3.1.1",
+    "parentTask": "6a9a6dceb864b09f656e6ff7",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.1.1: Strategy Pattern — Decoupling Algorithm Families",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a79cce5f6c670d53441f3",
+    "taskId": "LLDP3-U3.1.2",
+    "parentTask": "6a9a6dceb864b09f656e6ff7",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.1.2: Observer Pattern — Event Broadcasting & State Sync",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a79eee5f6c670d53441f9",
+    "taskId": "LLDP3-U3.1.3",
+    "parentTask": "6a9a6dceb864b09f656e6ff7",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.1.3: State Pattern — Encapsulating Lifecycle Transitions",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a79f1e5f6c670d53441ff",
+    "taskId": "LLDP3-U3.1.4",
+    "parentTask": "6a9a6dceb864b09f656e6ff7",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.1.4: Command Pattern — Encapsulating Operations & Undo/Redo",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a79f2e5f6c670d5344205",
+    "taskId": "LLDP3-U3.1.5",
+    "parentTask": "6a9a6dceb864b09f656e6ff7",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.1.5: Chain of Responsibility — Extensible Request Pipelines",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a79f3e5f6c670d534420e",
+    "taskId": "LLDP3-U3.2.1",
+    "parentTask": "6a9a6dd6b864b09f656e7009",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.2.1: Factory Method & Fluent Builder Patterns",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a79f3e5f6c670d5344214",
+    "taskId": "LLDP3-U3.2.2",
+    "parentTask": "6a9a6dd6b864b09f656e7009",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.2.2: Decorator & Adapter Patterns",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a79f3e5f6c670d534421a",
+    "taskId": "LLDP3-U3.2.3",
+    "parentTask": "6a9a6dd6b864b09f656e7009",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.2.3: Composite Pattern — Uniform Tree Hierarchies",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a79f8e5f6c670d5344223",
+    "taskId": "LLDP3-U3.3.1",
+    "parentTask": "6a9a6ddab864b09f656e7015",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.3.1: Tier 2 Structural & Behavioral Patterns",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7a04e5f6c670d5344229",
+    "taskId": "LLDP3-U3.3.2",
+    "parentTask": "6a9a6ddab864b09f656e7015",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.3.2: The Singleton Antipattern & Dependency Injection",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7a05e5f6c670d534422f",
+    "taskId": "LLDP3-U3.3.3",
+    "parentTask": "6a9a6ddab864b09f656e7015",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.3.3: Tier 3 Specialized GoF Patterns",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7a05e5f6c670d5344238",
+    "taskId": "LLDP3-U3.4.1",
+    "parentTask": "6a9a6e01b864b09f656e7021",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.4.1: Strategy vs State Discrimination",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7a06e5f6c670d534423e",
+    "taskId": "LLDP3-U3.4.2",
+    "parentTask": "6a9a6e01b864b09f656e7021",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.4.2: Decorator vs Adapter vs Proxy Comparison",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7a0ae5f6c670d5344244",
+    "taskId": "LLDP3-U3.4.3",
+    "parentTask": "6a9a6e01b864b09f656e7021",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 3.4.3: Predicting Pattern Emergence Under Scale",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e707e",
+    "taskName": "Thread-Safe Bounded Queue Implementation Drill",
+    "taskId": "LLDP4-D4.1.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a67e5f6c670d534429b",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e7081",
+    "taskName": "Expiring Lock Manager with Compensating Release",
+    "taskId": "LLDP4-D4.1.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a68e5f6c670d53442a1",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e0bb864b09f656e707b",
+    "taskName": "Module 4.1: Problem-Driven Concurrency in Low Level Design",
+    "taskId": "LLDP4-M1",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6e0cb864b09f656e7084",
+    "taskName": "Problem 12 — Design BookMyShow (Movie Booking & Seat Locking)",
+    "taskId": "LLDP4-P1",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6e0cb864b09f656e7087",
+    "taskName": "Version 1: Cinema Topology & Catalog Hierarchy",
+    "taskId": "LLDP4-P1-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e7084",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0cb864b09f656e708a",
+    "taskName": "Version 2: Temporary Seat Locking Mechanism",
+    "taskId": "LLDP4-P1-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e7084",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0cb864b09f656e708d",
+    "taskName": "Version 3: Payment Integration & Booking Confirmation",
+    "taskId": "LLDP4-P1-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e7084",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0cb864b09f656e7090",
+    "taskName": "Version 4: Timeout Compensation Engine",
+    "taskId": "LLDP4-P1-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e7084",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0cb864b09f656e7093",
+    "taskName": "Version 5: Dynamic Occupancy-Based Pricing",
+    "taskId": "LLDP4-P1-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e7084",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0cb864b09f656e7096",
+    "taskName": "Version 6: Concurrent Stress Testing Suite",
+    "taskId": "LLDP4-P1-V6",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e7084",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0cb864b09f656e7099",
+    "taskName": "Version 7: Comprehensive Design Review & Invariant Audit",
+    "taskId": "LLDP4-P1-V7",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e7084",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0cb864b09f656e709c",
+    "taskName": "Problem 13 — Design a Ride-Sharing Dispatch Platform (Cab Booking)",
+    "taskId": "LLDP4-P2",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6e0db864b09f656e709f",
+    "taskName": "Version 1: Spatial Domain & Matching",
+    "taskId": "LLDP4-P2-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e709c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0db864b09f656e70a2",
+    "taskName": "Version 2: Trip State Machine Lifecycle",
+    "taskId": "LLDP4-P2-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e709c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e0fb864b09f656e70a5",
+    "taskName": "Version 3: Dynamic Fare & Surge Pricing",
+    "taskId": "LLDP4-P2-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e709c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e13b864b09f656e70a8",
+    "taskName": "Version 4: Driver Acceptance Timeout & Cascading",
+    "taskId": "LLDP4-P2-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e709c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e25b864b09f656e70ab",
+    "taskName": "Version 5: Requirement Change — Shared Pool Rides",
+    "taskId": "LLDP4-P2-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e709c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e25b864b09f656e70ae",
+    "taskName": "Version 6: Design Review & Invariant Audit",
+    "taskId": "LLDP4-P2-V6",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e0cb864b09f656e709c",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e25b864b09f656e70b1",
+    "taskName": "Problem 14 — Design a Chess Game Engine",
+    "taskId": "LLDP4-P3",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6e34b864b09f656e70b4",
+    "taskName": "Version 1: Board & Basic Piece Movements",
+    "taskId": "LLDP4-P3-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e25b864b09f656e70b1",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e44b864b09f656e70b7",
+    "taskName": "Version 2: Path Obstruction & Capture Rules",
+    "taskId": "LLDP4-P3-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e25b864b09f656e70b1",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e4cb864b09f656e70ba",
+    "taskName": "Version 3: Special Moves (Castling, En Passant, Promotion)",
+    "taskId": "LLDP4-P3-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e25b864b09f656e70b1",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e53b864b09f656e70bd",
+    "taskName": "Version 4: Check & Checkmate Detection",
+    "taskId": "LLDP4-P3-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e25b864b09f656e70b1",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e5fb864b09f656e70c0",
+    "taskName": "Version 5: Design Review & Invariant Audit",
+    "taskId": "LLDP4-P3-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e25b864b09f656e70b1",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e62b864b09f656e70c3",
+    "taskName": "Problem 15 — Design a Food Ordering & Delivery Platform",
+    "taskId": "LLDP4-P4",
+    "taskType": "MajorProblem",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "major_problem"
+    }
+  },
+  {
+    "_id": "6a9a6e63b864b09f656e70c6",
+    "taskName": "Version 1: Catalog & Cart Foundation",
+    "taskId": "LLDP4-P4-V1",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e62b864b09f656e70c3",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e64b864b09f656e70c9",
+    "taskName": "Version 2: Order Lifecycle State Machine",
+    "taskId": "LLDP4-P4-V2",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e62b864b09f656e70c3",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e65b864b09f656e70cc",
+    "taskName": "Version 3: Courier Assignment & Matchmaking",
+    "taskId": "LLDP4-P4-V3",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e62b864b09f656e70c3",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e67b864b09f656e70cf",
+    "taskName": "Version 4: Promotional Engine & Dynamic Fees",
+    "taskId": "LLDP4-P4-V4",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e62b864b09f656e70c3",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e77b864b09f656e70d2",
+    "taskName": "Version 5: Real-time Event Notifications",
+    "taskId": "LLDP4-P4-V5",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e62b864b09f656e70c3",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a6e7cb864b09f656e70d5",
+    "taskName": "Version 6: Design Review & Invariant Audit",
+    "taskId": "LLDP4-P4-V6",
+    "taskType": "ProblemVersion",
+    "parentTask": "6a9a6e62b864b09f656e70c3",
+    "curriculumMeta": {
+      "nodeType": "problem_version"
+    }
+  },
+  {
+    "_id": "6a9a7a67e5f6c670d534429b",
+    "taskId": "LLDP4-U4.1.1",
+    "parentTask": "6a9a6e0bb864b09f656e707b",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 4.1.1: Critical Sections & Thread-Safe Data Structures",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7a68e5f6c670d53442a1",
+    "taskId": "LLDP4-U4.1.2",
+    "parentTask": "6a9a6e0bb864b09f656e707b",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 4.1.2: Temporal Resource Leasing & Lock Granularity",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a6e80b864b09f656e70de",
+    "taskName": "5-Minute Scoping & Ambiguity Elimination Drill",
+    "taskId": "LLDP5-D5.1.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a97e5f6c670d5344301",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e81b864b09f656e70e1",
+    "taskName": "Rapid Entity Extraction & Interface Definition Exercise",
+    "taskId": "LLDP5-D5.1.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a97e5f6c670d5344307",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e81b864b09f656e70e4",
+    "taskName": "Clean Production Coding Under 20-Minute Time Limits",
+    "taskId": "LLDP5-D5.1.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a97e5f6c670d534430d",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e81b864b09f656e70e7",
+    "taskName": "Live Requirement Pivot Defense Exercise",
+    "taskId": "LLDP5-D5.1.4",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7a98e5f6c670d5344313",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e81b864b09f656e70ed",
+    "taskName": "Justifying Abstraction Under Scrutiny Defense Drill",
+    "taskId": "LLDP5-D5.2.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7ab0e5f6c670d534431c",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e81b864b09f656e70f0",
+    "taskName": "Explaining Concurrency Bottlenecks & Lock Granularity",
+    "taskId": "LLDP5-D5.2.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7ab4e5f6c670d5344322",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e81b864b09f656e70f3",
+    "taskName": "Verbal Think-Aloud Modeling Exercise",
+    "taskId": "LLDP5-D5.2.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7ac2e5f6c670d5344328",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e81b864b09f656e70f9",
+    "taskName": "30-Minute Fast Scoping & Interface Sprint",
+    "taskId": "LLDP5-D5.3.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7ad8e5f6c670d5344331",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e82b864b09f656e70fc",
+    "taskName": "45-Minute Standard Interview Sprint",
+    "taskId": "LLDP5-D5.3.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7b07e5f6c670d5344337",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e82b864b09f656e70ff",
+    "taskName": "60-Minute Comprehensive System Sprint",
+    "taskId": "LLDP5-D5.3.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7b5ee5f6c670d534433d",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e82b864b09f656e7105",
+    "taskName": "Foundation Tier Full Mock Simulation",
+    "taskId": "LLDP5-D5.4.1",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a7bcce5f6c670d5344346",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e83b864b09f656e7108",
+    "taskName": "Intermediate Resource Allocation Mock with Curveball",
+    "taskId": "LLDP5-D5.4.2",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a83d9b340fdfe2cc3058e",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e83b864b09f656e710b",
+    "taskName": "Advanced High-Concurrency System Mock Simulation",
+    "taskId": "LLDP5-D5.4.3",
+    "taskType": "CurriculumDrill",
+    "parentTask": "6a9a83e1b340fdfe2cc30594",
+    "curriculumMeta": {
+      "nodeType": "drill"
+    }
+  },
+  {
+    "_id": "6a9a6e80b864b09f656e70db",
+    "taskName": "Module 5.1: The 45-Minute Interview Execution Protocol",
+    "taskId": "LLDP5-M1",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6e81b864b09f656e70ea",
+    "taskName": "Module 5.2: Communication, Pushback & Defense Drills",
+    "taskId": "LLDP5-M2",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6e81b864b09f656e70f6",
+    "taskName": "Module 5.3: Timed Pressure Sprints",
+    "taskId": "LLDP5-M3",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a6e82b864b09f656e7102",
+    "taskName": "Module 5.4: Full Mock Interview Simulations (4-Dimension Rubric)",
+    "taskId": "LLDP5-M4",
+    "taskType": "CurriculumModule",
+    "parentTask": null,
+    "curriculumMeta": {
+      "nodeType": "module"
+    }
+  },
+  {
+    "_id": "6a9a7a97e5f6c670d5344301",
+    "taskId": "LLDP5-U5.1.1",
+    "parentTask": "6a9a6e80b864b09f656e70db",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.1.1: Scoping & Ambiguity Elimination Protocol",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7a97e5f6c670d5344307",
+    "taskId": "LLDP5-U5.1.2",
+    "parentTask": "6a9a6e80b864b09f656e70db",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.1.2: Rapid Entity Extraction & Contract Definition",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7a97e5f6c670d534430d",
+    "taskId": "LLDP5-U5.1.3",
+    "parentTask": "6a9a6e80b864b09f656e70db",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.1.3: Clean Production Coding Under Time Pressure",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7a98e5f6c670d5344313",
+    "taskId": "LLDP5-U5.1.4",
+    "parentTask": "6a9a6e80b864b09f656e70db",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.1.4: Absorbing Curveball Requirement Pivots",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7ab0e5f6c670d534431c",
+    "taskId": "LLDP5-U5.2.1",
+    "parentTask": "6a9a6e81b864b09f656e70ea",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.2.1: Defending Against Over-Engineering Pushback",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7ab4e5f6c670d5344322",
+    "taskId": "LLDP5-U5.2.2",
+    "parentTask": "6a9a6e81b864b09f656e70ea",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.2.2: Articulating Performance & Concurrency Trade-Offs",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7ac2e5f6c670d5344328",
+    "taskId": "LLDP5-U5.2.3",
+    "parentTask": "6a9a6e81b864b09f656e70ea",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.2.3: Continuous Verbal Think-Aloud Discipline",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7ad8e5f6c670d5344331",
+    "taskId": "LLDP5-U5.3.1",
+    "parentTask": "6a9a6e81b864b09f656e70f6",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.3.1: 30-Minute Rapid Scoping & Interface Sprint",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7b07e5f6c670d5344337",
+    "taskId": "LLDP5-U5.3.2",
+    "parentTask": "6a9a6e81b864b09f656e70f6",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.3.2: 45-Minute Standard Interview Sprint",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7b5ee5f6c670d534433d",
+    "taskId": "LLDP5-U5.3.3",
+    "parentTask": "6a9a6e81b864b09f656e70f6",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.3.3: 60-Minute Comprehensive System Sprint",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a7bcce5f6c670d5344346",
+    "taskId": "LLDP5-U5.4.1",
+    "parentTask": "6a9a6e82b864b09f656e7102",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.4.1: Foundation Tier System Mock Simulation",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a83d9b340fdfe2cc3058e",
+    "taskId": "LLDP5-U5.4.2",
+    "parentTask": "6a9a6e82b864b09f656e7102",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.4.2: Intermediate Resource Allocation System Mock",
+    "taskType": "CurriculumUnit"
+  },
+  {
+    "_id": "6a9a83e1b340fdfe2cc30594",
+    "taskId": "LLDP5-U5.4.3",
+    "parentTask": "6a9a6e82b864b09f656e7102",
+    "curriculumMeta": {
+      "nodeType": "unit"
+    },
+    "taskName": "Unit 5.4.3: Advanced High-Concurrency System Mock",
+    "taskType": "CurriculumUnit"
+  }
+]

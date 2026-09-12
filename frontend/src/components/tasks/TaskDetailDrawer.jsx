@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { TaskApi } from '../../services/api/Task.api';
@@ -12,6 +12,9 @@ import DsaCodingArenaModal from '../dsa/DsaCodingArenaModal';
 import { LuCode2 } from 'react-icons/lu';
 import ReactQuill from 'react-quill';
 import { IoRepeatOutline, IoTrophyOutline, IoTrashOutline } from 'react-icons/io5';
+import { getActionVerbStyle, formatLevelLabel, getCurriculumDrawerHierarchy, getCurriculumSortKey, isLldTask } from '../../utils/curriculumHelper';
+import CurriculumContentRenderer from '../lld/CurriculumContentRenderer';
+import TaskLinkedNotes from '../common/TaskLinkedNotes';
 
 import moment from 'moment';
 import {
@@ -81,10 +84,41 @@ const TaskDetailDrawer = () => {
     const [sprints, setSprints] = useState([]);
     const [milestones, setMilestones] = useState([]);
     const [notes, setNotes] = useState([]);
+
+    const isLldTask = Boolean(
+        task?.curriculumMeta ||
+        task?.subject === 'LLD' ||
+        task?.taskType === 'LLD' ||
+        task?.branch === 'LLD' ||
+        (task?.parentTask && typeof task.parentTask === 'object' && task.parentTask.curriculumMeta)
+    );
+
+    const linkedNotes = useMemo(() => {
+        if (!notes || !Array.isArray(notes)) return [];
+        return notes.filter(n => {
+            const isLinked = (n.taskId === task?._id) || (n.taskIds && n.taskIds.includes(task?._id));
+            if (isLinked) return true;
+            if (task?.parentTask) {
+                const parentId = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
+                if (n.taskId === parentId || (n.taskIds && n.taskIds.includes(parentId))) return true;
+            }
+            return false;
+        });
+    }, [notes, task]);
+
+    const sortedSubtasks = useMemo(() => {
+        if (!subtasks || !Array.isArray(subtasks)) return [];
+        return [...subtasks].sort((a, b) => {
+            const keyA = getCurriculumSortKey(a.taskId || '');
+            const keyB = getCurriculumSortKey(b.taskId || '');
+            return keyA.localeCompare(keyB, undefined, { numeric: true });
+        });
+    }, [subtasks]);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [isReaderOpen, setIsReaderOpen] = useState(false);
     const [activeReaderNoteId, setActiveReaderNoteId] = useState(null);
     const [readerSearchTerm, setReaderSearchTerm] = useState("");
+    const [showPersonalTracking, setShowPersonalTracking] = useState(false);
 
     const getCleanSnippet = (content, limit = 100) => {
         if (!content) return "No content";
@@ -287,7 +321,13 @@ const TaskDetailDrawer = () => {
                 }
 
                 const subRes = await TaskApi.getAllTasks({ filter: { parentTask: taskId } });
-                setSubtasks(subRes.data?.data || []);
+                const list = subRes.data?.data || [];
+                list.sort((a, b) => {
+                    const keyA = getCurriculumSortKey(a.taskId || '');
+                    const keyB = getCurriculumSortKey(b.taskId || '');
+                    return keyA.localeCompare(keyB, undefined, { numeric: true });
+                });
+                setSubtasks(list);
             } catch (error) {
                 console.error("Failed to fetch task details", error);
             } finally {
@@ -383,15 +423,32 @@ const TaskDetailDrawer = () => {
                     <span className="text-xs text-textSub font-mono font-bold bg-slate-50 px-2 py-0.5 rounded border border-borderLight">{task?.taskId}</span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                    {task?.parentTask && (
-                        <button
-                            onClick={() => setShowCodingModal(true)}
-                            className="px-2.5 py-1.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-slate-700 hover:text-emerald-600 rounded-xl transition-all flex items-center gap-1.5 text-xs font-bold shadow-sm group cursor-pointer"
-                            title="Open Code Workspace"
-                        >
-                            <span className="text-emerald-500 font-black text-sm tracking-tighter">&lt;/&gt;</span>
-                            <span className="hidden sm:inline font-bold">Code</span>
-                        </button>
+                    {isLldTask ? (
+                        linkedNotes.length > 0 && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setActiveReaderNoteId(linkedNotes[0]._id);
+                                    setIsReaderOpen(true);
+                                }}
+                                className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl transition-all flex items-center gap-1.5 text-xs font-bold shadow-xs border border-amber-200 cursor-pointer"
+                                title="View Linked Solution / Notes"
+                            >
+                                <span className="text-amber-500 font-bold text-sm">💡</span>
+                                <span className="hidden sm:inline text-sm font-semibold">Solution</span>
+                            </button>
+                        )
+                    ) : (
+                        task?.parentTask && (
+                            <button
+                                onClick={() => setShowCodingModal(true)}
+                                className="px-2.5 py-1.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-slate-700 hover:text-emerald-600 rounded-xl transition-all flex items-center gap-1.5 text-xs font-bold shadow-sm group cursor-pointer"
+                                title="Open Code Workspace"
+                            >
+                                <span className="text-emerald-500 font-black text-sm tracking-tighter">&lt;/&gt;</span>
+                                <span className="hidden sm:inline font-bold">Code</span>
+                            </button>
+                        )
                     )}
                     <button
                         onClick={closeDrawer}
@@ -412,116 +469,203 @@ const TaskDetailDrawer = () => {
                 </div>
             ) : task ? (
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8">
-                    {/* Title */}
-                    <div>
-                        <h2 className="text-2xl font-black text-textMain tracking-tight mb-1">{task.taskName}</h2>
-                        <div className="h-1 w-20 bg-primary/20 rounded-full"></div>
-                    </div>
+                    {/* Clean Curriculum Hierarchy Header */}
+                    {isLldTask(task) && task?.curriculumMeta ? (
+                        (() => {
+                            const hier = getCurriculumDrawerHierarchy(task);
+                            if (!hier) return null;
+                            return (
+                                <div className="space-y-3 mb-6 pb-5 border-b border-slate-200/70 dark:border-slate-800">
+                                    {/* Explicit 3-Tier Hierarchy */}
+                                    <div className="space-y-3">
+                                        {/* Tier 1: Phase */}
+                                        <div>
+                                            <div className="text-[10px] font-mono font-black uppercase tracking-widest text-primary">
+                                                {hier.phaseTag}
+                                            </div>
+                                            <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                                {hier.phaseTitle}
+                                            </div>
+                                        </div>
 
-                    {/* Meta Data Grid */}
-                    <div className="grid grid-cols-2 gap-6">
-                        <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
-                                <IoFlagOutline /> Priority
-                            </label>
-                            <div className={`flex items-center gap-2 p-3 bg-slate-50/50 rounded-2xl border ${task.taskPriority === 'high' ? 'border-red-100 text-red-600' :
-                                    task.taskPriority === 'medium' ? 'border-amber-100 text-amber-600' :
-                                        'border-blue-100 text-blue-600'
-                                }`}>
-                                <div className={`w-2 h-2 rounded-full ${task.taskPriority === 'high' ? 'bg-red-500' :
-                                        task.taskPriority === 'medium' ? 'bg-amber-500' :
-                                            'bg-blue-500'
-                                    }`}></div>
-                                <span className="text-sm font-bold capitalize">{task.taskPriority || 'Medium'}</span>
-                            </div>
-                        </div>
+                                        {/* Tier 2: Unit */}
+                                        <div>
+                                            <div className="text-[10px] font-mono font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                                                {hier.unitTag}
+                                            </div>
+                                            <div className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                                                {hier.unitTitle}
+                                            </div>
+                                        </div>
 
-                        <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
-                                <IoCheckmarkCircleOutline /> Status
-                            </label>
-                            <div className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
-                                <span className="text-sm font-bold capitalize text-textMain">{task.status || 'Todo'}</span>
-                            </div>
-                        </div>
+                                        {/* Tier 3: Drill / Item */}
+                                        <div className="pt-0.5">
+                                            <div className="text-[11px] font-mono font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-0.5">
+                                                {hier.itemTag}
+                                            </div>
+                                            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight leading-snug">
+                                                {hier.itemTitle}
+                                            </h1>
+                                        </div>
+                                    </div>
 
-                        <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
-                                <IoCalendarOutline /> Start Date
-                            </label>
-                            {canEditDates ? (
-                                <input
-                                    type="date"
-                                    defaultValue={task.taskStartDate ? moment(task.taskStartDate).format('YYYY-MM-DD') : ''}
-                                    onChange={(e) => handleUpdateTask({ taskStartDate: e.target.value })}
-                                    className="w-full p-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-textMain focus:ring-1 focus:ring-primary outline-none cursor-pointer"
-                                />
-                            ) : (
-                                <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
-                                    <span className="text-sm font-bold text-textMain">
-                                        {task.taskStartDate ? moment(task.taskStartDate).format('MMM DD, YYYY') : 'Not Started'}
-                                    </span>
+                                    {/* Compact Metadata Row: BUILD · Level A · 15 min · Easy */}
+                                    <div className="flex flex-wrap items-center gap-2 pt-2 text-xs font-bold text-slate-600 dark:text-slate-300">
+                                        {hier.actionVerb && (
+                                            <span className={`px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${getActionVerbStyle(hier.actionVerb)}`}>
+                                                {hier.actionVerb}
+                                            </span>
+                                        )}
+                                        {hier.level && (
+                                            <>
+                                                <span className="text-slate-300 dark:text-slate-600">·</span>
+                                                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                                    {hier.level}
+                                                </span>
+                                            </>
+                                        )}
+                                        {hier.targetTime && (
+                                            <>
+                                                <span className="text-slate-300 dark:text-slate-600">·</span>
+                                                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                                    {hier.targetTime}
+                                                </span>
+                                            </>
+                                        )}
+                                        {hier.difficulty && (
+                                            <>
+                                                <span className="text-slate-300 dark:text-slate-600">·</span>
+                                                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 capitalize">
+                                                    {hier.difficulty}
+                                                </span>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
-                            )}
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
-                                <IoCalendarOutline /> Due Date
-                            </label>
-                            {canEditDates ? (
-                                <input
-                                    type="date"
-                                    defaultValue={task.taskDueDate ? moment(task.taskDueDate).format('YYYY-MM-DD') : ''}
-                                    onChange={(e) => handleUpdateTask({ taskDueDate: e.target.value })}
-                                    className="w-full p-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-textMain focus:ring-1 focus:ring-primary outline-none cursor-pointer"
-                                />
-                            ) : (
-                                <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
-                                    <span className="text-sm font-bold text-textMain">
-                                        {task.taskDueDate ? moment(task.taskDueDate).format('MMM DD, YYYY') : 'No Date Set'}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
-                                <IoTimeOutline /> Estimation
-                            </label>
-                            <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
-                                <span className="text-sm font-bold text-textMain">{task.estimatedHours || 0} Hours</span>
+                            );
+                        })()
+                    ) : (
+                        <>
+                            {/* Title */}
+                            <div>
+                                <h2 className="text-2xl font-black text-textMain tracking-tight mb-1">{task.taskName}</h2>
+                                <div className="h-1 w-20 bg-primary/20 rounded-full"></div>
                             </div>
-                        </div>
-                    </div>
+
+                            {/* Meta Data Grid (Only for non-curriculum tasks) */}
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
+                                        <IoFlagOutline /> Priority
+                                    </label>
+                                    <div className={`flex items-center gap-2 p-3 bg-slate-50/50 rounded-2xl border ${task.taskPriority === 'high' ? 'border-red-100 text-red-600' :
+                                            task.taskPriority === 'medium' ? 'border-amber-100 text-amber-600' :
+                                                'border-blue-100 text-blue-600'
+                                        }`}>
+                                        <div className={`w-2 h-2 rounded-full ${task.taskPriority === 'high' ? 'bg-red-500' :
+                                                task.taskPriority === 'medium' ? 'bg-amber-500' :
+                                                    'bg-blue-500'
+                                            }`}></div>
+                                        <span className="text-sm font-bold capitalize">{task.taskPriority || 'Medium'}</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
+                                        <IoCheckmarkCircleOutline /> Status
+                                    </label>
+                                    <div className="flex items-center gap-2 p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
+                                        <span className="text-sm font-bold capitalize text-textMain">{task.status || 'Todo'}</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
+                                        <IoCalendarOutline /> Start Date
+                                    </label>
+                                    {canEditDates ? (
+                                        <input
+                                            type="date"
+                                            defaultValue={task.taskStartDate ? moment(task.taskStartDate).format('YYYY-MM-DD') : ''}
+                                            onChange={(e) => handleUpdateTask({ taskStartDate: e.target.value })}
+                                            className="w-full p-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-textMain focus:ring-1 focus:ring-primary outline-none cursor-pointer"
+                                        />
+                                    ) : (
+                                        <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
+                                            <span className="text-sm font-bold text-textMain">
+                                                {task.taskStartDate ? moment(task.taskStartDate).format('MMM DD, YYYY') : 'Not Started'}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
+                                        <IoCalendarOutline /> Due Date
+                                    </label>
+                                    {canEditDates ? (
+                                        <input
+                                            type="date"
+                                            defaultValue={task.taskDueDate ? moment(task.taskDueDate).format('YYYY-MM-DD') : ''}
+                                            onChange={(e) => handleUpdateTask({ taskDueDate: e.target.value })}
+                                            className="w-full p-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-textMain focus:ring-1 focus:ring-primary outline-none cursor-pointer"
+                                        />
+                                    ) : (
+                                        <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
+                                            <span className="text-sm font-bold text-textMain">
+                                                {task.taskDueDate ? moment(task.taskDueDate).format('MMM DD, YYYY') : 'No Date Set'}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
+                                        <IoTimeOutline /> Estimation
+                                    </label>
+                                    <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
+                                        <span className="text-sm font-bold text-textMain">{task.estimatedHours || 0} Hours</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
 
                     {/* Description */}
                     <div className="space-y-3">
                         <div className="flex items-center justify-between">
                             <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
-                                <IoDocumentTextOutline /> Description
+                                <IoDocumentTextOutline /> {task?.curriculumMeta ? "Curriculum Learning Content" : "Description"}
                             </label>
                             <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent ml-4" />
                         </div>
-                        <div
-                            className="w-full min-h-[120px] p-5 text-sm text-textMain bg-white border border-slate-100 rounded-3xl shadow-sm leading-relaxed quill-content break-words overflow-hidden"
-                            dangerouslySetInnerHTML={{
-                                __html: (() => {
-                                    let html = task?.taskDescription || "<p class='italic text-slate-400'>No description provided.</p>";
-                                    // Robust unescaping
-                                    for (let i = 0; i < 3; i++) {
-                                        html = html.replace(/&lt;/g, '<')
-                                            .replace(/&gt;/g, '>')
-                                            .replace(/&amp;/g, '&')
-                                            .replace(/&quot;/g, '"')
-                                            .replace(/&#39;/g, "'");
-                                        if (!html.includes('&')) break;
-                                    }
-                                    // Auto-link URLs
-                                    return html.replace(/(?<!href=")(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">$1</a>');
-                                })()
-                            }}
-                        />
+                        {task?.curriculumMeta ? (
+                            <CurriculumContentRenderer 
+                                content={task.taskDescription} 
+                                nodeType={task.curriculumMeta.nodeType} 
+                                title={task.taskName} 
+                            />
+                        ) : (
+                            <div
+                                className="w-full min-h-[120px] p-5 text-sm text-textMain bg-white border border-slate-100 rounded-3xl shadow-sm leading-relaxed quill-content break-words overflow-hidden"
+                                dangerouslySetInnerHTML={{
+                                    __html: (() => {
+                                        let html = task?.taskDescription || "<p class='italic text-slate-400'>No description provided.</p>";
+                                        // Robust unescaping
+                                        for (let i = 0; i < 3; i++) {
+                                            html = html.replace(/&lt;/g, '<')
+                                                .replace(/&gt;/g, '>')
+                                                .replace(/&amp;/g, '&')
+                                                .replace(/&quot;/g, '"')
+                                                .replace(/&#39;/g, "'");
+                                            if (!html.includes('&')) break;
+                                        }
+                                        // Auto-link URLs
+                                        return html.replace(/(?<!href=")(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">$1</a>');
+                                    })()
+                                }}
+                            />
+                        )}
                     </div>
 
                     {task?.youtubeUrl && getYoutubeId(task.youtubeUrl) && (
@@ -542,6 +686,56 @@ const TaskDetailDrawer = () => {
                                     className="absolute inset-0 w-full h-full"
                                 ></iframe>
                             </div>
+                        </div>
+                    )}
+
+                    {/* Collapsed Personal Tracking for Curriculum Tasks (Rule 9) */}
+                    {task?.curriculumMeta && (
+                        <div className="pt-4 border-t border-slate-200/60 dark:border-slate-800">
+                            <button
+                                type="button"
+                                onClick={() => setShowPersonalTracking(prev => !prev)}
+                                className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors py-2 px-1 rounded cursor-pointer select-none"
+                            >
+                                <span>PERSONAL TRACKING</span>
+                                <span className="text-xs font-bold text-slate-400">
+                                    {showPersonalTracking ? '▾' : '▸'}
+                                </span>
+                            </button>
+                            {showPersonalTracking && (
+                                <div className="mt-3 p-5 bg-slate-50/80 dark:bg-slate-900/40 rounded-2xl border border-slate-200/80 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-5 gap-4 animate-in fade-in duration-200">
+                                    <div>
+                                        <label className="text-[10px] font-black text-textSub uppercase mb-2 block tracking-widest">Status</label>
+                                        <span className="px-3 py-1.5 rounded-xl font-black text-[11px] uppercase tracking-wider border inline-block bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                            {task?.status || 'Todo'}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-black text-textSub uppercase mb-2 block tracking-widest">Priority</label>
+                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black tracking-wider uppercase border bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                            <IoFlagOutline className="text-xs" /> {task?.taskPriority || 'Medium'}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-black text-textSub uppercase mb-1.5 block tracking-widest">Start Date</label>
+                                        <span className="text-xs font-semibold text-textMain block">
+                                            {task?.taskStartDate ? moment(task.taskStartDate).format("MMM DD, YYYY") : "Not Started"}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-black text-textSub uppercase mb-1.5 block tracking-widest">Due Date</label>
+                                        <span className="text-xs font-semibold text-textMain block">
+                                            {task?.taskDueDate ? moment(task.taskDueDate).format("MMM DD, YYYY") : "No Date Set"}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-black text-textSub uppercase mb-1.5 block tracking-widest">Estimation</label>
+                                        <span className="text-xs font-bold text-textMain block">
+                                            {task?.estimatedHours || 0} Hours
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -616,85 +810,14 @@ const TaskDetailDrawer = () => {
                         );
                     })()}
 
-                    {(() => {
-                        const linkedNotes = notes.filter(n => {
-                            const isLinked = (n.taskId === task?._id) || (n.taskIds && n.taskIds.includes(task?._id));
-                            if (isLinked) return true;
-                            if (task?.parentTask) {
-                                const parentId = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
-                                if (n.taskId === parentId || (n.taskIds && n.taskIds.includes(parentId))) return true;
-                            }
-                            return false;
-                        });
-
-                        return (
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                    <label className="text-[10px] font-black text-textSub uppercase tracking-widest flex items-center gap-1">
-                                        Linked Notes
-                                    </label>
-                                    {isAdmin && (
-                                        <button
-                                            type="button"
-                                            onClick={handleCreateNote}
-                                            className="px-2 py-1 bg-yellow-450 hover:bg-yellow-500 text-slate-800 text-[10px] font-bold rounded-lg transition-all cursor-pointer select-none"
-                                        >
-                                            + Add Note
-                                        </button>
-                                    )}
-                                </div>
-
-                                {linkedNotes.length === 0 ? (
-                                    <div className="text-center py-6 bg-slate-50 dark:bg-slate-900/20 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 select-none">
-                                        <p className="text-xs text-slate-400 font-bold uppercase">No notes linked</p>
-                                        <p className="text-[10px] text-slate-400/85 mt-0.5">Create notes directly for this task.</p>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setActiveReaderNoteId(linkedNotes[0]._id);
-                                                setIsReaderOpen(true);
-                                            }}
-                                            className="w-full py-2.5 px-4 bg-yellow-450 hover:bg-yellow-500 text-slate-800 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 shadow-lg shadow-yellow-500/10 flex items-center justify-center gap-2 mb-3 cursor-pointer select-none"
-                                        >
-                                            📖 Open Notes Document Center
-                                        </button>
-
-                                        <div className="max-h-72 overflow-y-auto custom-scrollbar space-y-2 pr-1">
-                                            {linkedNotes.map((note) => {
-                                                const snippet = getCleanSnippet(note.content, 100);
-                                                return (
-                                                    <div
-                                                        key={note._id}
-                                                        onClick={() => {
-                                                            setActiveReaderNoteId(note._id);
-                                                            setIsReaderOpen(true);
-                                                        }}
-                                                        style={{ borderColor: `${note.color}40`, itBorderLeftColor: note.color }}
-                                                        className="p-3 bg-white dark:bg-slate-900/40 rounded-2xl border border-l-4 flex flex-col gap-1.5 shadow-2xs hover:shadow-xs transition-shadow duration-200 cursor-pointer select-none"
-                                                    >
-                                                        <div className="flex items-center justify-between">
-                                                            <h5 className="font-extrabold text-[11px] text-slate-850 dark:text-slate-200 uppercase tracking-wider truncate flex-1">
-                                                                {note.title || "Untitled Note"}
-                                                            </h5>
-                                                            <span className="text-[8px] font-bold text-slate-400">
-                                                                {note.updatedAt ? moment(note.updatedAt).format("ll") : "Just now"}
-                                                            </span>
-                                                        </div>
-                                                        <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed">
-                                                            {snippet}
-                                                        </p>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        );
-                    })()}
+                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <TaskLinkedNotes
+                            taskId={task?._id}
+                            parentTaskId={typeof task?.parentTask === 'object' ? task?.parentTask?._id : task?.parentTask}
+                            taskName={task?.taskName}
+                            isAdmin={isAdmin}
+                        />
+                    </div>
 
                     {/* Subtasks Section */}
                     {/* Subtasks Section (Only for Parent Tasks) */}
@@ -746,17 +869,20 @@ const TaskDetailDrawer = () => {
                                 )}
 
                                 {/* Subtask List */}
-                                {subtasks.length > 0 ? (
-                                    subtasks.map(subtask => (
-                                        <div key={subtask._id} className="group flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg border border-transparent hover:border-borderLight transition-colors">
+                                {sortedSubtasks.length > 0 ? (
+                                    sortedSubtasks.map(subtask => (
+                                        <div key={subtask._id} className="group flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-slate-850 rounded-xl border border-transparent hover:border-borderLight transition-all">
                                             <button
                                                 onClick={() => toggleSubtaskStatus(subtask)}
                                                 className={`text-slate-400 hover:text-green-600 transition-colors ${subtask.status === 'done' ? 'text-green-500' : ''}`}
                                             >
-                                                <IoCheckmarkCircleOutline size={20} />
+                                                <IoCheckmarkCircleOutline size={22} />
                                             </button>
-                                            <span className={`flex-1 text-sm ${subtask.status === 'done' ? 'text-textSub line-through' : 'text-textMain'}`}>
+                                            <span className={`flex-1 text-[15px] sm:text-base font-bold leading-snug ${subtask.status === 'done' ? 'text-textSub line-through' : 'text-textMain'}`}>
                                                 {subtask.taskName}
+                                            </span>
+                                            <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200/60 dark:border-slate-700">
+                                                {subtask.taskId || 'N/A'}
                                             </span>
                                         </div>
                                     ))
@@ -871,517 +997,6 @@ const TaskDetailDrawer = () => {
                     Task not found.
                 </div>
             )}
-            {/* Linked Notes Documentation Center Overlay Modal */}
-            {isReaderOpen && (() => {
-                const serverUrl = server.replace('/api/v1', '');
-                const linkedNotes = notes.filter(n => {
-                    const isLinked = (n.taskId === task?._id) || (n.taskIds && n.taskIds.includes(task?._id));
-                    if (isLinked) return true;
-                    if (task?.parentTask) {
-                        const parentId = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
-                        if (n.taskId === parentId || (n.taskIds && n.taskIds.includes(parentId))) return true;
-                    }
-                    return false;
-                });
-
-                return (
-                    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-                        <div className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-3xl shadow-2xl w-full max-w-6xl h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
-                            {/* Header */}
-                            <div className="px-8 py-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50">
-                                <div className="min-w-0">
-                                    <h2 className="text-lg font-black text-slate-800 dark:text-white truncate">
-                                        Document Center: {task?.taskName}
-                                    </h2>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">
-                                        {linkedNotes.length} Linked Note(s)
-                                    </p>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    {/* Search input */}
-                                    <input
-                                        type="text"
-                                        placeholder="Search linked notes..."
-                                        value={readerSearchTerm}
-                                        onChange={(e) => setReaderSearchTerm(e.target.value)}
-                                        className="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:ring-1 focus:ring-primary w-60 bg-white font-semibold text-slate-800"
-                                    />
-                                    <button
-                                        onClick={() => {
-                                            setIsReaderOpen(false);
-                                            setReaderSearchTerm("");
-                                        }}
-                                        className="group p-2.5 bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-500 rounded-xl transition-all duration-200 border border-slate-200/50 cursor-pointer"
-                                    >
-                                        <IoClose size={18} />
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Split Body */}
-                            <div className="flex-1 flex overflow-hidden min-h-0">
-                                {/* Left Column: Notes List Sidebar */}
-                                <div className="w-80 border-r border-slate-100 dark:border-slate-800 flex flex-col bg-slate-50/20 shrink-0">
-                                    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
-                                        {linkedNotes
-                                            .filter(n => {
-                                                if (!readerSearchTerm) return true;
-                                                return (n.title || "").toLowerCase().includes(readerSearchTerm.toLowerCase()) ||
-                                                    (n.content || "").toLowerCase().includes(readerSearchTerm.toLowerCase());
-                                            })
-                                            .map((note) => {
-                                                const isActive = activeReaderNoteId === note._id;
-                                                const snippet = getCleanSnippet(note.content, 60);
-                                                return (
-                                                    <div
-                                                        key={note._id}
-                                                        onClick={() => setActiveReaderNoteId(note._id)}
-                                                        className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col gap-1 relative overflow-hidden select-none ${isActive
-                                                                ? "bg-primary/5 border-primary shadow-sm"
-                                                                : "bg-white dark:bg-slate-900 border-slate-150 dark:border-slate-800 hover:border-slate-355"
-                                                            }`}
-                                                    >
-                                                        {/* Color dot */}
-                                                        <div
-                                                            style={{ backgroundColor: note.color }}
-                                                            className="absolute top-0 bottom-0 left-0 w-1.5"
-                                                        />
-                                                        <h5 className={`font-black text-xs truncate pl-1.5 ${isActive ? "text-primary" : "text-slate-800 dark:text-white"}`}>
-                                                            {note.title || "Untitled Note"}
-                                                        </h5>
-                                                        <p className="text-[10px] text-slate-500 dark:text-slate-400 pl-1.5 line-clamp-2 leading-relaxed">
-                                                            {snippet}
-                                                        </p>
-                                                    </div>
-                                                );
-                                            })
-                                        }
-                                        {linkedNotes.filter(n => {
-                                            if (!readerSearchTerm) return true;
-                                            return (n.title || "").toLowerCase().includes(readerSearchTerm.toLowerCase()) ||
-                                                (n.content || "").toLowerCase().includes(readerSearchTerm.toLowerCase());
-                                        }).length === 0 && (
-                                                <div className="text-center py-10 text-slate-400 text-xs font-bold uppercase">
-                                                    No matching notes
-                                                </div>
-                                            )}
-                                    </div>
-                                </div>
-
-                                {/* Right Column: Reading Area */}
-                                <div className="flex-1 flex flex-col bg-white dark:bg-slate-950 overflow-y-auto custom-scrollbar p-10 min-w-0">
-                                    {(() => {
-                                        const activeNote = linkedNotes.find(n => n._id === activeReaderNoteId);
-                                        if (!activeNote) {
-                                            return (
-                                                <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-2">
-                                                    <p className="text-xs font-bold uppercase tracking-wider">Select a note from the sidebar to read</p>
-                                                </div>
-                                            );
-                                        }
-
-                                        return (
-                                            <div className="max-w-3xl w-full mx-auto space-y-6">
-                                                {/* Note Header */}
-                                                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-5">
-                                                    <div className="min-w-0 flex-1">
-                                                        <div className="flex items-center gap-2 mb-2">
-                                                            <span
-                                                                style={{ backgroundColor: activeNote.color }}
-                                                                className="w-3 h-3 rounded-full border border-black/10"
-                                                            />
-                                                            <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Linked Sticky Note</span>
-                                                        </div>
-                                                        {isEditingNote ? (
-                                                            <input
-                                                                type="text"
-                                                                value={editedTitle}
-                                                                onChange={(e) => setEditedTitle(e.target.value)}
-                                                                className="text-2xl font-black text-slate-900 dark:text-white leading-tight w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-xl outline-none focus:ring-1 focus:ring-primary"
-                                                            />
-                                                        ) : (
-                                                            <h1 className="text-3xl font-black text-slate-900 dark:text-white leading-tight">
-                                                                {activeNote.title || "Untitled Note"}
-                                                            </h1>
-                                                        )}
-                                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide mt-2">
-                                                            Last updated: {new Date(activeNote.updatedAt).toLocaleString("en-US", {
-                                                                day: "numeric",
-                                                                month: "long",
-                                                                year: "numeric",
-                                                                hour: "numeric",
-                                                                minute: "2-digit",
-                                                                hour12: true
-                                                            })}
-                                                        </p>
-                                                    </div>
-
-                                                    {/* Edit & Action Buttons */}
-                                                    <div className="flex items-center gap-2 shrink-0 ml-4">
-                                                        {isEditingNote ? (
-                                                            <>
-                                                                <button
-                                                                    onClick={handleSaveNote}
-                                                                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md select-none"
-                                                                >
-                                                                    Save
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => setIsEditingNote(false)}
-                                                                    className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer select-none"
-                                                                >
-                                                                    Cancel
-                                                                </button>
-                                                            </>
-                                                        ) : (
-                                                            activeNote.taskId && task?._id && String(activeNote.taskId) !== String(task._id) ? (
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="text-[10px] font-black text-violet-500 bg-violet-500/10 border border-violet-200/50 px-2.5 py-1.5 rounded-xl uppercase tracking-wider select-none">
-                                                                        📌 Parent Note (Read-Only)
-                                                                    </span>
-                                                                    {task?.parentTask && (
-                                                                        <button
-                                                                            onClick={() => {
-                                                                                const parentId = typeof task.parentTask === 'object' ? task.parentTask?._id : task.parentTask;
-                                                                                if (parentId) {
-                                                                                    setIsReaderOpen(false);
-                                                                                    setActiveReaderNoteId(null);
-                                                                                    setSearchParams({ taskId: parentId });
-                                                                                }
-                                                                            }}
-                                                                            className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md select-none"
-                                                                        >
-                                                                            Navigate to Parent
-                                                                        </button>
-                                                                    )}
-                                                                </div>
-                                                            ) : isAdmin ? (
-                                                                <>
-                                                                    <button
-                                                                        onClick={() => {
-                                                                            setEditedTitle(activeNote.title || "Untitled Note");
-                                                                            const info = extractBilingual(activeNote.content, activeNote._id);
-                                                                            if (info.isBilingual) {
-                                                                                setIsBilingual(true);
-                                                                                setBilingualTaskId(info.taskId);
-                                                                                setEditedEnContent(info.en);
-                                                                                setEditedHiContent(info.hi);
-                                                                            } else {
-                                                                                setIsBilingual(false);
-                                                                                const isHtml = isHtmlNote(activeNote.content);
-                                                                                const rawContent = isHtml ? decodeHtmlEntities(activeNote.content) : (activeNote.content || "");
-                                                                                setEditedContent(rawContent);
-                                                                                setEditorMode(isHtml ? "code" : "rich");
-                                                                            }
-                                                                            setIsEditingNote(true);
-                                                                        }}
-                                                                        className="px-4 py-2 bg-yellow-450 hover:bg-yellow-500 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md select-none"
-                                                                    >
-                                                                        Edit
-                                                                    </button>
-                                                                    <button
-                                                                        onClick={() => setShowDeleteConfirm(true)}
-                                                                        className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-bold rounded-xl transition-all cursor-pointer border border-red-200/50 select-none"
-                                                                    >
-                                                                        Delete
-                                                                    </button>
-                                                                </>
-                                                            ) : (
-                                                                <span className="text-[10px] font-black text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-xl uppercase tracking-wider select-none">
-                                                                    📖 Read-Only
-                                                                </span>
-                                                            )
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                {/* Optional Attachment Image */}
-                                                {activeNote.imageUrl && (
-                                                    <div className="rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden bg-slate-50/50 aspect-video max-h-96 flex items-center justify-center">
-                                                        <img
-                                                            src={activeNote.imageUrl.startsWith("http") ? activeNote.imageUrl : `${serverUrl}${activeNote.imageUrl}`}
-                                                            alt="Note attachment"
-                                                            className="w-full h-full object-contain"
-                                                        />
-                                                    </div>
-                                                )}
-
-                                                {/* Content */}
-                                                {isEditingNote ? (
-                                                    <div className="space-y-4 drawer-quill">
-                                                        <style>{`
-                                                              .drawer-quill .ql-toolbar.ql-snow {
-                                                                border-color: #cbd5e1 !important;
-                                                                background-color: #f8fafc;
-                                                                border-top-left-radius: 12px;
-                                                                border-top-right-radius: 12px;
-                                                              }
-                                                              .drawer-quill .ql-container.ql-snow {
-                                                                border-color: #cbd5e1 !important;
-                                                                background-color: #ffffff;
-                                                                border-bottom-left-radius: 12px;
-                                                                border-bottom-right-radius: 12px;
-                                                                font-family: inherit !important;
-                                                                font-size: 13px !important;
-                                                              }
-                                                              .drawer-quill .ql-editor {
-                                                                min-height: 250px;
-                                                                max-height: 600px;
-                                                                overflow-y: auto;
-                                                                color: #1e293b;
-                                                              }
-                                                              .dark .drawer-quill .ql-toolbar.ql-snow {
-                                                                border-color: #334155 !important;
-                                                                background-color: #1e293b;
-                                                              }
-                                                              .dark .drawer-quill .ql-toolbar.ql-snow .ql-stroke {
-                                                                stroke: #cbd5e1 !important;
-                                                              }
-                                                              .dark .drawer-quill .ql-toolbar.ql-snow .ql-fill {
-                                                                fill: #cbd5e1 !important;
-                                                              }
-                                                              .dark .drawer-quill .ql-toolbar.ql-snow .ql-picker {
-                                                                color: #cbd5e1 !important;
-                                                              }
-                                                              .dark .drawer-quill .ql-container.ql-snow {
-                                                                border-color: #334155 !important;
-                                                                background-color: #0f172a;
-                                                              }
-                                                              .dark .drawer-quill .ql-editor {
-                                                                color: #f1f5f9 !important;
-                                                              }
-                                                          `}</style>
-                                                        {isBilingual ? (
-                                                            <div className="space-y-4">
-                                                                <div className="space-y-2">
-                                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                                        🇬🇧 English Content
-                                                                    </label>
-                                                                    <ReactQuill
-                                                                        value={editedEnContent}
-                                                                        onChange={setEditedEnContent}
-                                                                        placeholder="Type English notes here..."
-                                                                        modules={{
-                                                                            toolbar: [
-                                                                                [{ 'header': [1, 2, 3, false] }],
-                                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                                                ['link', 'clean']
-                                                                            ]
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                                <div className="space-y-2">
-                                                                    <div className="flex justify-between items-center mb-1">
-                                                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                                            🇮🇳 Hindi Content (हिन्दी अनुवाद)
-                                                                        </label>
-                                                                        <button
-                                                                            type="button"
-                                                                            disabled={isTranslating}
-                                                                            onClick={async () => {
-                                                                                const translation = await handleTranslateToHindi(editedEnContent);
-                                                                                if (translation) {
-                                                                                    setEditedHiContent(translation);
-                                                                                }
-                                                                            }}
-                                                                            className="text-[10px] font-black text-violet-500 hover:text-violet-600 uppercase tracking-wider flex items-center gap-1 cursor-pointer select-none bg-violet-50 dark:bg-violet-950/20 px-2.5 py-1 rounded-lg border border-violet-100 dark:border-violet-900 transition-all active:scale-95"
-                                                                        >
-                                                                            {isTranslating ? "⏳ Translating..." : "⚡ Translate from English"}
-                                                                        </button>
-                                                                    </div>
-                                                                    <ReactQuill
-                                                                        value={editedHiContent}
-                                                                        onChange={setEditedHiContent}
-                                                                        placeholder="Type Hindi notes here..."
-                                                                        modules={{
-                                                                            toolbar: [
-                                                                                [{ 'header': [1, 2, 3, false] }],
-                                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                                                ['link', 'clean']
-                                                                            ]
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="space-y-2">
-                                                                <div className="flex justify-between items-center mb-1 gap-2 flex-wrap">
-                                                                    <div className="flex items-center gap-2">
-                                                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Note HTML / Text Content</label>
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => {
-                                                                                if (editorMode === "rich") {
-                                                                                    setEditedContent(decodeHtmlEntities(editedContent));
-                                                                                    setEditorMode("code");
-                                                                                } else {
-                                                                                    setEditorMode("rich");
-                                                                                }
-                                                                            }}
-                                                                            className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md border transition-all ${
-                                                                                editorMode === "code"
-                                                                                    ? "bg-blue-500 text-white border-blue-500 hover:bg-blue-600"
-                                                                                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200"
-                                                                            }`}
-                                                                        >
-                                                                            {editorMode === "code" ? "📝 Use Rich Text" : "💻 Use HTML/CSS Code"}
-                                                                        </button>
-                                                                    </div>
-                                                                    <button
-                                                                        type="button"
-                                                                        disabled={isTranslating}
-                                                                        onClick={async () => {
-                                                                            const translation = await handleTranslateToHindi(editedContent);
-                                                                            if (translation) {
-                                                                                setEditedEnContent(editedContent);
-                                                                                setEditedHiContent(translation);
-                                                                                setIsBilingual(true);
-                                                                                setBilingualTaskId(activeNote?.taskId || task?._id);
-                                                                            }
-                                                                        }}
-                                                                        className="text-[10px] font-black text-violet-500 hover:text-violet-600 uppercase tracking-wider flex items-center gap-1 cursor-pointer select-none bg-violet-50 dark:bg-violet-950/20 px-2.5 py-1 rounded-lg border border-violet-100 dark:border-violet-900 transition-all active:scale-95"
-                                                                    >
-                                                                        {isTranslating ? "⏳ Translating..." : "🌐 Auto-Translate note to Hindi"}
-                                                                    </button>
-                                                                </div>
-                                                                {editorMode === "code" ? (
-                                                                    <textarea
-                                                                        value={editedContent}
-                                                                        onChange={(e) => setEditedContent(e.target.value)}
-                                                                        placeholder="Paste or write HTML/CSS code directly here..."
-                                                                        className="w-full min-h-[300px] max-h-[600px] font-mono text-[11px] p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-slate-100 leading-normal"
-                                                                    />
-                                                                ) : (
-                                                                    <ReactQuill
-                                                                        value={editedContent}
-                                                                        onChange={setEditedContent}
-                                                                        placeholder="Type notes here..."
-                                                                        modules={{
-                                                                            toolbar: [
-                                                                                [{ 'header': [1, 2, 3, false] }],
-                                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                                                ['link', 'clean']
-                                                                            ]
-                                                                        }}
-                                                                    />
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ) : (
-                                                    <div className="ql-snow">
-                                                        <style>{`
-                                                              .ql-snow .ql-editor pre.ql-syntax {
-                                                                background-color: #0f172a !important;
-                                                                color: #f8fafc !important;
-                                                                padding: 16px !important;
-                                                                border-radius: 12px !important;
-                                                                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-                                                                font-size: 12px !important;
-                                                                line-height: 1.6 !important;
-                                                                margin: 12px 0 !important;
-                                                              }
-                                                              .dark .ql-snow .ql-editor pre.ql-syntax {
-                                                                background-color: #020617 !important;
-                                                                border-color: #1e293b !important;
-                                                              }
-                                                              .ql-snow .ql-editor > .note-root > div > *:first-child {
-                                                                margin-top: 0 !important;
-                                                              }
-                                                              .ql-snow .ql-editor {
-                                                                white-space: normal !important;
-                                                              }
-                                                              .ql-snow .ql-editor * {
-                                                                white-space: normal !important;
-                                                              }
-                                                              .ql-snow .ql-editor pre,
-                                                              .ql-snow .ql-editor pre *,
-                                                              .ql-snow .ql-editor code,
-                                                              .ql-snow .ql-editor code *,
-                                                              .ql-snow .ql-editor [class*="lang-"],
-                                                              .ql-snow .ql-editor [class*="lang-"] * {
-                                                                white-space: pre-wrap !important;
-                                                              }
-                                                              .ql-snow .ql-editor h1,
-                                                              .ql-snow .ql-editor h2,
-                                                              .ql-snow .ql-editor h3 {
-                                                                margin-top: 16px !important;
-                                                                margin-bottom: 8px !important;
-                                                                font-weight: 800 !important;
-                                                                color: inherit !important;
-                                                              }
-                                                              .ql-snow .ql-editor p {
-                                                                margin-top: 0 !important;
-                                                                margin-bottom: 8px !important;
-                                                              }
-                                                              .ql-snow .ql-editor ul,
-                                                              .ql-snow .ql-editor ol {
-                                                                margin-top: 0 !important;
-                                                                margin-bottom: 8px !important;
-                                                              }
-                                                          `}</style>
-                                                        {isHtmlNote(activeNote.content) ? (
-                                                            <iframe
-                                                                title={activeNote.title || "Note HTML Preview"}
-                                                                srcDoc={decodeHtmlEntities(activeNote.content)}
-                                                                className="w-full min-h-[600px] border border-slate-200 dark:border-slate-800 rounded-2xl bg-white"
-                                                                sandbox="allow-scripts allow-same-origin"
-                                                            />
-                                                        ) : (
-                                                            <div
-                                                                className="max-w-none text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium ql-editor"
-                                                                dangerouslySetInnerHTML={{ __html: activeNote.content }}
-                                                            />
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })()}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-            })()}
-
-            {/* Custom Delete Confirmation Modal */}
-            {showDeleteConfirm && (
-                <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-md p-6 overflow-hidden flex flex-col items-center text-center animate-in zoom-in-95 duration-200">
-                        <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/20 flex items-center justify-center mb-4">
-                            <IoTrashOutline className="text-red-500 text-xl" />
-                        </div>
-
-                        <h3 className="text-base font-black text-slate-850 dark:text-white uppercase tracking-wider mb-2">Delete Note</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-6 max-w-xs leading-relaxed font-semibold">
-                            Are you sure you want to delete this note? This action cannot be undone.
-                        </p>
-
-                        <div className="flex gap-3 w-full">
-                            <button
-                                onClick={() => {
-                                    handleDeleteNote(activeReaderNoteId);
-                                    setShowDeleteConfirm(false);
-                                }}
-                                className="flex-1 py-2.5 bg-red-500 hover:bg-red-650 text-white text-xs font-black rounded-xl uppercase tracking-wider transition-all cursor-pointer shadow-md select-none animate-in duration-200"
-                            >
-                                Confirm Delete
-                            </button>
-                            <button
-                                onClick={() => setShowDeleteConfirm(false)}
-                                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black rounded-xl uppercase tracking-wider transition-all cursor-pointer select-none"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {/* LeetCode Coding Simulation Modal */}
             <DsaCodingArenaModal
                 isOpen={showCodingModal}

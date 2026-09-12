@@ -40,7 +40,8 @@ export class DockerSandboxExecutor {
     language,
     sourceCode,
     executionLimits = {},
-    testCasesCount = 1
+    testCasesCount = 1,
+    directProgram = false
   }) {
     if (!isDockerAvailable()) {
       return createProcessExecutionResult({
@@ -78,9 +79,11 @@ export class DockerSandboxExecutor {
       // Inside sandbox: compile then execute
       containerCommand = ['sh', '-c', 'g++ -O2 -std=c++17 /workspace/solution.cpp -o /tmp/solution.out && /tmp/solution.out'];
     } else if (cleanLang === 'java') {
-      fileName = 'Main.java';
+      const classNameMatch = sourceCode.match(/public\s+class\s+([A-Za-z0-9_$]+)/);
+      const className = classNameMatch ? classNameMatch[1] : 'Main';
+      fileName = `${className}.java`;
       // Inside sandbox: compile then execute
-      containerCommand = ['sh', '-c', 'javac /workspace/Main.java -d /tmp && java -cp /tmp Main'];
+      containerCommand = ['sh', '-c', `javac /workspace/${fileName} -d /tmp && java -cp /tmp ${className}`];
     }
 
     fs.writeFileSync(path.join(tempDir, fileName), sourceCode, 'utf8');
@@ -176,6 +179,17 @@ export class DockerSandboxExecutor {
           return resolve(createProcessExecutionResult({
             status: 'MEMORY_LIMIT_EXCEEDED',
             error: `Process exceeded maximum memory limit of ${limits.memoryLimitMb}MB.`,
+            executionTimeMs,
+            stdout,
+            stderr
+          }));
+        }
+
+        // Direct Program mode (LLD): Exit code 0 is an immediate SUCCESS
+        if (directProgram && code === 0) {
+          return resolve(createProcessExecutionResult({
+            status: 'SUCCESS',
+            exitCode: 0,
             executionTimeMs,
             stdout,
             stderr

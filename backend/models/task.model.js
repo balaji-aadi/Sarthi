@@ -66,6 +66,36 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: false
     },
+    difficulty: {
+      type: String,
+      enum: ["Easy", "Medium", "Hard", null],
+      default: null,
+      index: true
+    },
+    leetcodeUrl: {
+      type: String,
+      default: "",
+      trim: true
+    },
+    isUrlVerified: {
+      type: Boolean,
+      default: false
+    },
+    patternRef: {
+      type: Schema.Types.ObjectId,
+      ref: "Pattern",
+      default: null,
+      index: true
+    },
+    companyTags: [
+      {
+        company: {
+          type: Schema.Types.ObjectId,
+          ref: "Company",
+          required: true
+        }
+      }
+    ],
     attachments: [{ 
       type: String 
     }],
@@ -146,6 +176,44 @@ const taskSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "Branch",
       index: true
+    },
+    // Structured Curriculum Metadata (LLD & Advanced Curricula)
+    curriculumMeta: {
+      nodeType: { 
+        type: String, 
+        enum: ["module", "unit", "drill", "major_problem", "problem_version", null], 
+        default: null 
+      },
+      level: { 
+        type: String, 
+        enum: ["A", "B", "C", null], 
+        default: null 
+      },
+      levelName: { 
+        type: String, 
+        default: "" 
+      },
+      actionVerb: { 
+        type: String, 
+        enum: ["BUILD", "REFACTOR", "COMPARE", "EXTEND", "DEFEND", "PREDICT", null], 
+        default: null 
+      },
+      unitCode: { 
+        type: String, 
+        default: "" 
+      },
+      conceptTopics: [
+        { type: String }
+      ],
+      targetTimeMinutes: { 
+        type: Number, 
+        default: 0 
+      },
+      difficulty: { 
+        type: String, 
+        enum: ["easy", "medium", "hard", null], 
+        default: null 
+      }
     }
   }, 
   { 

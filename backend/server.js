@@ -24,6 +24,7 @@ import httpServer, { socketService } from "./app.js";
 import connectDB from "./config/db.config.js";
 import { initSprintActivationJob } from "./services/sprint-service/sprintActivation.job.js";
 import { initTaskTransitionJob } from "./services/task-service/taskTransition.job.js";
+import { initPamphletSyncJob } from "./services/pamphlet-service/pamphletSync.job.js";
 import { repairAllProgress } from "./services/progress-service/repairProgress.js";
 
 const PORT = process.env.PORT || 5001;
@@ -39,6 +40,7 @@ connectDB()
       // Run background jobs AFTER server starts
       initSprintActivationJob();
       initTaskTransitionJob();
+      initPamphletSyncJob();
 
       // Optional: run repair task in background
       repairAllProgress().catch(err => console.error("Repair background error:", err));

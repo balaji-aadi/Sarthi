@@ -1,0 +1,254 @@
+[
+  {
+    "taskId": "DSA-2",
+    "title": "Patterns Brief",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers",
+    "slugAttempt": "patterns-brief",
+    "normAttempt": "patterns brief"
+  },
+  {
+    "taskId": "DSA-6",
+    "title": "Maximum consecutive ones |||",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers",
+    "slugAttempt": "maximum-consecutive-ones-iii",
+    "normAttempt": "maximum consecutive ones iii"
+  },
+  {
+    "taskId": "DSA-11",
+    "title": "Longest substring with atmost k distinct character",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers",
+    "slugAttempt": "longest-substring-with-atmost-k-distinct-character",
+    "normAttempt": "longest substring with atmost k distinct character"
+  },
+  {
+    "taskId": "DSA-12",
+    "title": "Number of substrings containing all 3 characters",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers",
+    "slugAttempt": "number-of-substrings-containing-all-3-characters",
+    "normAttempt": "number of substrings containing all 3 characters"
+  },
+  {
+    "taskId": "DSA-13",
+    "title": "Binary subarrays with some",
+    "parentTopic": "DSA-1 - Sliding window / Two pointers",
+    "slugAttempt": "binary-subarrays-with-some",
+    "normAttempt": "binary subarrays with some"
+  },
+  {
+    "taskId": "DSA-19",
+    "title": "Two Sum II (sorted)",
+    "parentTopic": "DSA-18 - Two Pointers",
+    "slugAttempt": "two-sum-ii-sorted",
+    "normAttempt": "two sum ii sorted"
+  },
+  {
+    "taskId": "DSA-26",
+    "title": "Squares of sorted array",
+    "parentTopic": "DSA-18 - Two Pointers",
+    "slugAttempt": "squares-of-sorted-array",
+    "normAttempt": "squares of sorted array"
+  },
+  {
+    "taskId": "DSA-27",
+    "title": "Partition array",
+    "parentTopic": "DSA-18 - Two Pointers",
+    "slugAttempt": "partition-array",
+    "normAttempt": "partition array"
+  },
+  {
+    "taskId": "DSA-41",
+    "title": "Range sum query",
+    "parentTopic": "DSA-40 - Prefix Sum",
+    "slugAttempt": "range-sum-query",
+    "normAttempt": "range sum query"
+  },
+  {
+    "taskId": "DSA-44",
+    "title": "Subarrays divisible by K",
+    "parentTopic": "DSA-40 - Prefix Sum",
+    "slugAttempt": "subarrays-divisible-by-k",
+    "normAttempt": "subarrays divisible by k"
+  },
+  {
+    "taskId": "DSA-46",
+    "title": "Maximum size subarray sum = K",
+    "parentTopic": "DSA-40 - Prefix Sum",
+    "slugAttempt": "maximum-size-subarray-sum-k",
+    "normAttempt": "maximum size subarray sum k"
+  },
+  {
+    "taskId": "DSA-47",
+    "title": "Difference array basics",
+    "parentTopic": "DSA-40 - Prefix Sum",
+    "slugAttempt": "difference-array-basics",
+    "normAttempt": "difference array basics"
+  },
+  {
+    "taskId": "DSA-56",
+    "title": "Maximum sum rectangle (2D Kadane)",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm",
+    "slugAttempt": "maximum-sum-rectangle-2d-kadane",
+    "normAttempt": "maximum sum rectangle 2d kadane"
+  },
+  {
+    "taskId": "DSA-61",
+    "title": "Maximum difference problem",
+    "parentTopic": "DSA-51 - Kadane’s Algorithm",
+    "slugAttempt": "maximum-difference-problem",
+    "normAttempt": "maximum difference problem"
+  },
+  {
+    "taskId": "DSA-87",
+    "title": "Stock span",
+    "parentTopic": "DSA-84 - Monotonic Stack",
+    "slugAttempt": "stock-span",
+    "normAttempt": "stock span"
+  },
+  {
+    "taskId": "DSA-90",
+    "title": "Next smaller element",
+    "parentTopic": "DSA-84 - Monotonic Stack",
+    "slugAttempt": "next-smaller-element",
+    "normAttempt": "next smaller element"
+  },
+  {
+    "taskId": "DSA-110",
+    "title": "Longest palindrome subsequence",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)",
+    "slugAttempt": "longest-palindrome-subsequence",
+    "normAttempt": "longest palindrome subsequence"
+  },
+  {
+    "taskId": "DSA-115",
+    "title": "Minimum insertions to palindrome",
+    "parentTopic": "DSA-106 - Palindrome (STRINGS)",
+    "slugAttempt": "minimum-insertions-to-palindrome",
+    "normAttempt": "minimum insertions to palindrome"
+  },
+  {
+    "taskId": "DSA-170",
+    "title": "Aggressive Cows",
+    "parentTopic": "DSA-163 - Binary search",
+    "slugAttempt": "aggressive-cows",
+    "normAttempt": "aggressive cows"
+  },
+  {
+    "taskId": "DSAP2-21",
+    "title": "Reverse Linked List Recursive",
+    "parentTopic": "DSAP2-14 - Reverse Pattern - Linked List",
+    "slugAttempt": "reverse-linked-list-recursive",
+    "normAttempt": "reverse linked list recursive"
+  },
+  {
+    "taskId": "DSAP2-22",
+    "title": "Reverse first K elements of given linked list",
+    "parentTopic": "DSAP2-14 - Reverse Pattern - Linked List",
+    "slugAttempt": "reverse-first-k-elements-of-given-linked-list",
+    "normAttempt": "reverse first k elements of given linked list"
+  },
+  {
+    "taskId": "DSAP2-44",
+    "title": "Clone Linked List with Random Pointer (alternate approach)",
+    "parentTopic": "DSAP2-42 - Random Pointer - Linked List",
+    "slugAttempt": "clone-linked-list-with-random-pointer-alternate-approach",
+    "normAttempt": "clone linked list with random pointer alternate approach"
+  },
+  {
+    "taskId": "DSAP2-52",
+    "title": "Implement Stack",
+    "parentTopic": "DSAP2-51 - Basic Stack - Stack",
+    "slugAttempt": "implement-stack",
+    "normAttempt": "implement stack"
+  },
+  {
+    "taskId": "DSAP2-77",
+    "title": "Implement Queue",
+    "parentTopic": "DSAP2-76 - Queue Basics - Queue",
+    "slugAttempt": "implement-queue",
+    "normAttempt": "implement queue"
+  },
+  {
+    "taskId": "DSAP2-88",
+    "title": "Front Middle Back Queue",
+    "parentTopic": "DSAP2-87 - Design Queue - Queue",
+    "slugAttempt": "front-middle-back-queue",
+    "normAttempt": "front middle back queue"
+  },
+  {
+    "taskId": "DSAP2-89",
+    "title": "Hit Counter",
+    "parentTopic": "DSAP2-87 - Design Queue - Queue",
+    "slugAttempt": "hit-counter",
+    "normAttempt": "hit counter"
+  },
+  {
+    "taskId": "DSAP3-96",
+    "title": "Number of Longest Increasing Subsequences",
+    "parentTopic": "DSAP3-90 - LCS & LIS Pattern (Strings/Sequences)",
+    "slugAttempt": "number-of-longest-increasing-subsequences",
+    "normAttempt": "number of longest increasing subsequences"
+  },
+  {
+    "taskId": "DSAP2-111",
+    "title": "Factorial",
+    "parentTopic": "DSAP2-110 - Fundamentals - Recursion",
+    "slugAttempt": "factorial",
+    "normAttempt": "factorial"
+  },
+  {
+    "taskId": "DSAP2-112",
+    "title": "Fibonacci",
+    "parentTopic": "DSAP2-110 - Fundamentals - Recursion",
+    "slugAttempt": "fibonacci",
+    "normAttempt": "fibonacci"
+  },
+  {
+    "taskId": "DSAP2-113",
+    "title": "Power Function",
+    "parentTopic": "DSAP2-110 - Fundamentals - Recursion",
+    "slugAttempt": "power-function",
+    "normAttempt": "power function"
+  },
+  {
+    "taskId": "DSAP2-114",
+    "title": "Sum of Array",
+    "parentTopic": "DSAP2-110 - Fundamentals - Recursion",
+    "slugAttempt": "sum-of-array",
+    "normAttempt": "sum of array"
+  },
+  {
+    "taskId": "DSAP2-123",
+    "title": "Merge Sort",
+    "parentTopic": "DSAP2-122 - Divide & Conquer - Recursion",
+    "slugAttempt": "merge-sort",
+    "normAttempt": "merge sort"
+  },
+  {
+    "taskId": "DSAP2-124",
+    "title": "Quick Sort",
+    "parentTopic": "DSAP2-122 - Divide & Conquer - Recursion",
+    "slugAttempt": "quick-sort",
+    "normAttempt": "quick sort"
+  },
+  {
+    "taskId": "DSAP2-132",
+    "title": "Josephus Problem",
+    "parentTopic": "DSAP2-131 - Advanced Recursion - Recursion",
+    "slugAttempt": "josephus-problem",
+    "normAttempt": "josephus problem"
+  },
+  {
+    "taskId": "DSAP2-133",
+    "title": "Tower of Hanoi",
+    "parentTopic": "DSAP2-131 - Advanced Recursion - Recursion",
+    "slugAttempt": "tower-of-hanoi",
+    "normAttempt": "tower of hanoi"
+  },
+  {
+    "taskId": "DSAP2-134",
+    "title": "Recursive Bubble Sort (conceptual exercise)",
+    "parentTopic": "DSAP2-131 - Advanced Recursion - Recursion",
+    "slugAttempt": "recursive-bubble-sort-conceptual-exercise",
+    "normAttempt": "recursive bubble sort conceptual exercise"
+  }
+]

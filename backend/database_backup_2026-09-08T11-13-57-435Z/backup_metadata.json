@@ -1,0 +1,188 @@
+{
+  "databaseName": "task-management",
+  "backupCreatedAt": "2026-09-08T11:14:05.051Z",
+  "totalCollections": 30,
+  "totalDocuments": 2744,
+  "collections": [
+    {
+      "collection": "globalsettings",
+      "documentCount": 1,
+      "fileSizeKb": "0.37",
+      "indexesCount": 1
+    },
+    {
+      "collection": "bugs",
+      "documentCount": 0,
+      "fileSizeKb": "0.00",
+      "indexesCount": 1
+    },
+    {
+      "collection": "focussessions",
+      "documentCount": 411,
+      "fileSizeKb": "272.54",
+      "indexesCount": 2
+    },
+    {
+      "collection": "submissions",
+      "documentCount": 49,
+      "fileSizeKb": "43.41",
+      "indexesCount": 6
+    },
+    {
+      "collection": "activities",
+      "documentCount": 0,
+      "fileSizeKb": "0.00",
+      "indexesCount": 1
+    },
+    {
+      "collection": "tasks",
+      "documentCount": 660,
+      "fileSizeKb": "1287.03",
+      "indexesCount": 10
+    },
+    {
+      "collection": "milestones",
+      "documentCount": 0,
+      "fileSizeKb": "0.00",
+      "indexesCount": 2
+    },
+    {
+      "collection": "dailyrevisions",
+      "documentCount": 50,
+      "fileSizeKb": "77.13",
+      "indexesCount": 3
+    },
+    {
+      "collection": "notifications",
+      "documentCount": 265,
+      "fileSizeKb": "102.08",
+      "indexesCount": 1
+    },
+    {
+      "collection": "problems",
+      "documentCount": 16,
+      "fileSizeKb": "87.20",
+      "indexesCount": 6
+    },
+    {
+      "collection": "companies",
+      "documentCount": 24,
+      "fileSizeKb": "5.97",
+      "indexesCount": 3
+    },
+    {
+      "collection": "testcases",
+      "documentCount": 0,
+      "fileSizeKb": "0.00",
+      "indexesCount": 1
+    },
+    {
+      "collection": "sprints",
+      "documentCount": 0,
+      "fileSizeKb": "0.00",
+      "indexesCount": 4
+    },
+    {
+      "collection": "languages",
+      "documentCount": 5,
+      "fileSizeKb": "1.51",
+      "indexesCount": 2
+    },
+    {
+      "collection": "userarenaschedules",
+      "documentCount": 16,
+      "fileSizeKb": "8.60",
+      "indexesCount": 5
+    },
+    {
+      "collection": "payments",
+      "documentCount": 2,
+      "fileSizeKb": "0.67",
+      "indexesCount": 2
+    },
+    {
+      "collection": "performancestats",
+      "documentCount": 362,
+      "fileSizeKb": "256.68",
+      "indexesCount": 8
+    },
+    {
+      "collection": "users",
+      "documentCount": 2,
+      "fileSizeKb": "2.25",
+      "indexesCount": 3
+    },
+    {
+      "collection": "epics",
+      "documentCount": 0,
+      "fileSizeKb": "0.00",
+      "indexesCount": 1
+    },
+    {
+      "collection": "fcmdevices",
+      "documentCount": 0,
+      "fileSizeKb": "0.00",
+      "indexesCount": 1
+    },
+    {
+      "collection": "usertaskprogresses",
+      "documentCount": 525,
+      "fileSizeKb": "312.30",
+      "indexesCount": 9
+    },
+    {
+      "collection": "patterns",
+      "documentCount": 23,
+      "fileSizeKb": "6.82",
+      "indexesCount": 3
+    },
+    {
+      "collection": "notes",
+      "documentCount": 231,
+      "fileSizeKb": "7329.60",
+      "indexesCount": 2
+    },
+    {
+      "collection": "dsapamphlets",
+      "documentCount": 31,
+      "fileSizeKb": "66.08",
+      "indexesCount": 5
+    },
+    {
+      "collection": "projects",
+      "documentCount": 10,
+      "fileSizeKb": "11.86",
+      "indexesCount": 3
+    },
+    {
+      "collection": "userroles",
+      "documentCount": 4,
+      "fileSizeKb": "2.43",
+      "indexesCount": 2
+    },
+    {
+      "collection": "dailyaccountabilities",
+      "documentCount": 1,
+      "fileSizeKb": "0.35",
+      "indexesCount": 2
+    },
+    {
+      "collection": "permissions",
+      "documentCount": 22,
+      "fileSizeKb": "4.91",
+      "indexesCount": 2
+    },
+    {
+      "collection": "topics",
+      "documentCount": 32,
+      "fileSizeKb": "7.76",
+      "indexesCount": 3
+    },
+    {
+      "collection": "branches",
+      "documentCount": 2,
+      "fileSizeKb": "10.82",
+      "indexesCount": 3
+    }
+  ]
+}

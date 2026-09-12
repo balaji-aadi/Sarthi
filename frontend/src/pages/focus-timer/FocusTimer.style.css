@@ -325,3 +325,116 @@
   background: white;
   box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
 }
+
+/* ==========================================================================
+   Universal Dark Mode Support
+   ========================================================================== */
+html.dark .focus-main-card {
+  background: #0d111a;
+  border: 1px solid #1e293b;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+html.dark .focus-title-group h2 {
+  color: #f8fafc;
+}
+
+html.dark .focus-title-group p {
+  color: #94a3b8;
+}
+
+html.dark .card-half {
+  background: #141a26;
+  border-color: #1e293b;
+}
+
+html.dark .card-top {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+html.dark .card-bottom {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+html.dark .digit-text {
+  color: #f8fafc;
+}
+
+html.dark .unit-label-new {
+  color: #64748b;
+}
+
+html.dark .clock-sep {
+  color: #334155;
+}
+
+html.dark .duration-presets {
+  background: #141a26;
+  border: 1px solid #1e293b;
+}
+
+html.dark .preset-btn {
+  color: #94a3b8;
+}
+
+html.dark .preset-btn.active {
+  background: #0d111a;
+  color: #f8fafc;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+}
+
+html.dark .manual-input-wrapper {
+  background: #0d111a;
+  border-color: #1e293b;
+}
+
+html.dark .manual-input {
+  color: #f8fafc;
+}
+
+html.dark .manual-input::placeholder {
+  color: #64748b;
+}
+
+html.dark .mini-stat-card {
+  background: #0d111a;
+  border-color: #1e293b;
+}
+
+html.dark .mini-stat-card .label {
+  color: #64748b;
+}
+
+html.dark .mini-stat-card .value {
+  color: #f8fafc;
+}
+
+html.dark .mini-stat-card .sub {
+  color: #94a3b8;
+}
+
+html.dark .recent-logs-section {
+  background: #0d111a;
+  border-color: #1e293b;
+}
+
+html.dark .section-header h3 {
+  color: #f8fafc;
+}
+
+html.dark .premium-log-card {
+  background: #141a26;
+  border-color: #1e293b;
+}
+
+html.dark .premium-log-card:hover {
+  background: #1e2638;
+}
+
+html.dark .recent-logs-section tr:hover {
+  background-color: rgba(30, 41, 59, 0.75) !important;
+}
+
+html.dark .recent-logs-section tr:hover td span {
+  color: inherit;
+}

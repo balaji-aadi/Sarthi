@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import InputField from "../../components/InputField";
-import { LuSave, LuX, LuPlus, LuTrash2, LuUsers, LuLayoutDashboard, LuFlag } from "react-icons/lu";
+import { LuSave, LuX, LuLayoutDashboard } from "react-icons/lu";
 import { useLoading } from "../../components/loader/LoaderContext";
 import { ProjectApi } from "../../services/api/Project.api";
 import { UserApi } from "../../services/api/user.api";
@@ -16,64 +16,21 @@ const CreateProject = ({
   setIsUpdating,
   setProjectData,
 }) => {
-  const [teamMembersList, setTeamMembersList] = useState([]);
-  const [rolesAndResponsibilities, setRolesAndResponsibilities] = useState([
-    { teamMember: "", role: "", responsibility: "" },
-  ]);
-  const [milestones, setMilestones] = useState([]);
-
   const { handleLoading } = useLoading();
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser } = useSelector((state) => state.store);
 
-  // Fetch Users for Dropdowns
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await UserApi.users();
-        setTeamMembersList(res.data?.data || []);
-      } catch (err) {
-        console.error("Failed to fetch users", err);
-      }
-    };
-    fetchUsers();
-  }, []);
-
-  const managerOptions = teamMembersList
-    .filter(({ userRole }) => userRole?.name === "projectmanager" || userRole?.name === "admin") // Assuming admins can also be PMs
-    .map(({ _id, firstName, lastName }) => ({
-      value: _id,
-      label: `${firstName} ${lastName}`,
-    }));
-
-  const teamOptions = teamMembersList.map(({ _id, firstName, lastName }) => ({
-    value: _id,
-    label: `${firstName} ${lastName}`,
-  }));
-
   const initialValues = {
     name: "",
     key: "",
-    priority: "medium",
     access: "private",
-    clientName: "",
-    budget: 0,
-    githubRepository: "",
     status: "active",
-    startDate: "",
-    endDate: "",
     description: "",
     projectManager: currentUser?._id || "",
     teamMembers: currentUser?._id ? [currentUser._id] : [],
     rolesAndResponsibilities: [],
-    milestones: [],
-    settings: {
-      enableYoutubeSearch: false,
-      enableLeetCodeSearch: false,
-      enableSprints: false,
-      sprintDuration: 2
-    }
+    milestones: []
   };
 
   const formik = useFormik({
@@ -127,8 +84,8 @@ const CreateProject = ({
 
         toast.success(
           isUpdateMode
-            ? "Project and milestones updated successfully"
-            : "Project and milestones created successfully"
+            ? "Arena updated successfully"
+            : "Arena created successfully"
         );
         
         // Dispatch event for Sidebar to refresh
@@ -157,49 +114,17 @@ const CreateProject = ({
     if (projectData) {
       if(setIsUpdating) setIsUpdating(true);
 
-      const formatDate = (dateString) => {
-        if (!dateString) return "";
-        return new Date(dateString).toISOString().split("T")[0];
-      };
-
-      // Safely map roles to ensure teamMember is an ID
-      const mappedRoles = (projectData.rolesAndResponsibilities || []).map(r => ({
-          ...r,
-          teamMember: r.teamMember?._id || r.teamMember || ""
-      }));
-
       formik.setValues({
         name: projectData.name || "",
         key: projectData.key || "",
-        priority: projectData.priority || "",
         access: projectData.access || "private",
-        clientName: projectData.clientName || "",
-        budget: projectData.budget || "",
-        githubRepository: projectData.githubRepository || "",
         status: projectData.status || "active",
-        startDate: formatDate(projectData.startDate),
-        endDate: formatDate(projectData.endDate),
         description: projectData.description || "",
         projectManager: projectData.projectManager?._id || projectData.projectManager || currentUser?._id || "",
         teamMembers: projectData.teamMembers?.map((m) => m._id || m) || (currentUser?._id ? [currentUser._id] : []),
-        rolesAndResponsibilities: mappedRoles,
-        milestones: projectData.milestones || [], // Keep original objects for _id reference
-        settings: projectData.settings || {
-            enableYoutubeSearch: false,
-            enableLeetCodeSearch: false,
-            enableSprints: false,
-            sprintDuration: 2
-        }
+        rolesAndResponsibilities: [],
+        milestones: []
       });
-      setRolesAndResponsibilities(mappedRoles);
-      
-      // Map Milestones with formatted dates for local state (UI)
-      const mappedMilestones = (projectData.milestones || []).map(m => ({
-          ...m,
-          commenceDate: formatDate(m.commenceDate),
-          expectedDate: formatDate(m.expectedDate)
-      }));
-      setMilestones(mappedMilestones);
     }
   }, [data, location.state]);
 
@@ -249,33 +174,33 @@ const CreateProject = ({
   };
 
   return (
-    <div className="min-h-screen bg-bgLight p-6 pb-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 pb-20 transition-colors duration-200">
       {/* Header */}
       <div className="max-w-7xl mx-auto mb-8 flex items-center justify-between">
         <div>
-           <div className="flex items-center gap-3 text-textSub text-sm mb-2">
-              <span className="cursor-pointer hover:text-primary" onClick={() => navigate('/arenas')}>Arenas</span>
+           <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 text-sm mb-2">
+              <span className="cursor-pointer hover:text-primary transition-colors" onClick={() => navigate('/arenas')}>Arenas</span>
               <span>/</span>
-              <span className="text-textMain font-medium">{data || location.state?.project ? "Update Arena" : "New Arena"}</span>
+              <span className="text-slate-900 dark:text-white font-medium">{data || location.state?.project ? "Update Arena" : "New Arena"}</span>
            </div>
-           <h1 className="text-3xl font-bold text-textMain flex items-center gap-3">
+           <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
               <LuLayoutDashboard className="text-primary" />
               {data || location.state?.project ? "Update Arena Details" : "Create New Arena"}
            </h1>
-           <p className="text-textSub mt-1">Configure arena settings and details.</p>
+           <p className="text-slate-500 dark:text-slate-400 mt-1">Configure arena settings and operational details.</p>
         </div>
         <div className="flex gap-3">
             <button
                 type="button"
                 onClick={() => navigate('/arenas')}
-                className="px-4 py-2 border border-borderLight text-textSub rounded-xl hover:bg-slate-50 transition-colors flex items-center gap-2"
+                className="px-4 py-2 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-2 font-medium text-sm"
             >
                 <LuX /> Cancel
             </button>
             <button
                 type="button"
                 onClick={formik.handleSubmit}
-                className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primaryHover shadow-lg shadow-primary/30 transition-all flex items-center gap-2 font-medium"
+                className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primaryHover shadow-lg shadow-primary/30 transition-all flex items-center gap-2 font-medium text-sm"
             >
                 <LuSave /> {data || location.state?.project ? "Save Changes" : "Create Arena"}
             </button>
@@ -284,11 +209,10 @@ const CreateProject = ({
 
       <form onSubmit={formik.handleSubmit} className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Left Column: Project Details */}
+        {/* Left Column: General Info */}
         <div className="lg:col-span-2 space-y-6">
-            {/* General Info Card */}
-            <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
-                <h3 className="text-lg font-bold text-textMain mb-6 border-b border-borderLight pb-4">General Information</h3>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6 transition-colors">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">General Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <InputField
                         label="Arena Name"
@@ -297,7 +221,7 @@ const CreateProject = ({
                         value={formik.values.name}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        placeholder="e.g. Website Redesign"
+                        placeholder="e.g. DSA phase 1"
                         error={formik.touched.name && formik.errors.name}
                         isRequired
                     />
@@ -308,7 +232,7 @@ const CreateProject = ({
                         value={formik.values.key}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        placeholder="e.g. WEB-24"
+                        placeholder="e.g. DSA"
                         error={formik.touched.key && formik.errors.key}
                         isRequired
                     />
@@ -320,85 +244,19 @@ const CreateProject = ({
                             value={formik.values.description}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            placeholder="Describe the project goals and scope..."
+                            placeholder="Describe the arena objectives, problem sets, and scope..."
                             error={formik.touched.description && formik.errors.description}
                             style="h-32"
                         />
                     </div>
                 </div>
             </div>
-
-            {/* Timeline & Budget Card */}
-            <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
-                <h3 className="text-lg font-bold text-textMain mb-6 border-b border-borderLight pb-4">Timeline & Resources</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <InputField
-                        label="Start Date"
-                        name="startDate"
-                        type="date"
-                        value={formik.values.startDate}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.startDate && formik.errors.startDate}
-                        isRequired
-                    />
-                    <InputField
-                        label="End Date"
-                        name="endDate"
-                        type="date"
-                        value={formik.values.endDate}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.endDate && formik.errors.endDate}
-                        isRequired
-                    />
-                    {false && (
-                      <>
-                        <InputField
-                            label="Budget (Optional)"
-                            name="budget"
-                            type="number"
-                            value={formik.values.budget}
-                            onChange={formik.handleChange}
-                            placeholder="0.00"
-                            error={formik.touched.budget && formik.errors.budget}
-                        />
-                        <InputField
-                            label="Client Name"
-                            name="clientName"
-                            type="text"
-                            value={formik.values.clientName}
-                            onChange={formik.handleChange}
-                            placeholder="Client Company"
-                            error={formik.touched.clientName && formik.errors.clientName}
-                        />
-                      </>
-                    )}
-                </div>
-            </div>
-
-            {/* Milestones Card */}
-            {/* Milestones Card Hidden */}
-            {false && (
-                <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
-                    {/* Hiding Milestones content to retain code */}
-                </div>
-            )}
-            
-            {/* Roles & Responsibilities Card Hidden */}
-            {false && (
-                <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
-                    {/* Hiding Roles & Responsibilities content to retain code */}
-                </div>
-            )}
         </div>
 
-
-        {/* Right Column: Settings & Team */}
+        {/* Right Column: Settings */}
         <div className="space-y-6">
-            {/* Settings Card */}
-            <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
-                <h3 className="text-lg font-bold text-textMain mb-6 border-b border-borderLight pb-4">Settings</h3>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6 transition-colors">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">Settings</h3>
                 <div className="space-y-4">
                     <InputField
                         label="Status"
@@ -410,79 +268,13 @@ const CreateProject = ({
                             { value: 'active', label: 'Active' },
                             { value: 'hold', label: 'On Hold' },
                             { value: 'completed', label: 'Completed' },
-                            { value: 'closed', label: 'Closed' }
+                            { value: 'closed', label: 'Closed' },
+                            { value: 'hide', label: 'Hidden (Admin Only)' }
                         ]}
                         isRequired
                     />
-                    <InputField
-                        label="Priority"
-                        name="priority"
-                        type="select"
-                        value={formik.values.priority}
-                        onChange={formik.handleChange}
-                        options={[
-                            { value: 'high', label: 'High' },
-                            { value: 'medium', label: 'Medium' },
-                            { value: 'low', label: 'Low' }
-                        ]}
-                        isRequired
-                    />
-                    {false && (
-                        <InputField
-                            label="Access Level"
-                            name="access"
-                            type="select"
-                            value={formik.values.access}
-                            onChange={formik.handleChange}
-                            options={[
-                                { value: 'private', label: 'Private (Team Only)' },
-                                { value: 'public', label: 'Public (Organization)' }
-                            ]}
-                            isRequired
-                        />
-                    )}
-                    <InputField
-                        label="Repository URL"
-                        name="githubRepository"
-                        type="text"
-                        value={formik.values.githubRepository}
-                        onChange={formik.handleChange}
-                        placeholder="GitHub / GitLab URL"
-                    />
-                    
-                    {/* Quick Actions Settings */}
-                    <div className="pt-4 border-t border-borderLight space-y-4">
-                        <h4 className="text-xs font-bold text-textSub uppercase tracking-wider">Quick Actions</h4>
-                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-borderLight/50">
-                            <span className="text-sm font-medium text-textMain">YouTube Search</span>
-                            <input 
-                                type="checkbox"
-                                name="settings.enableYoutubeSearch"
-                                checked={formik.values.settings.enableYoutubeSearch}
-                                onChange={formik.handleChange}
-                                className="w-4 h-4 text-primary rounded border-borderLight focus:ring-primary"
-                            />
-                        </div>
-                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-borderLight/50">
-                            <span className="text-sm font-medium text-textMain">LeetCode Search</span>
-                            <input 
-                                type="checkbox"
-                                name="settings.enableLeetCodeSearch"
-                                checked={formik.values.settings.enableLeetCodeSearch}
-                                onChange={formik.handleChange}
-                                className="w-4 h-4 text-primary rounded border-borderLight focus:ring-primary"
-                            />
-                        </div>
-                    </div>
                 </div>
             </div>
-
-            {/* Team Assignment Card Hidden */}
-            {false && (
-                <div className="bg-white rounded-2xl shadow-sm border border-borderLight p-6">
-                    {/* Hiding Team Formation content to retain code */}
-                </div>
-            )}
         </div>
 
       </form>

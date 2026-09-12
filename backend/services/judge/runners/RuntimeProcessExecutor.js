@@ -60,7 +60,8 @@ export class RuntimeProcessExecutor {
     testCasesCount = 1,
     compileTimeoutMs = 5000,
     maxOutputBytes = DEFAULT_OUTPUT_LIMIT_BYTES,
-    maxMemoryMb = 256
+    maxMemoryMb = 256,
+    directProgram = false
   }) {
     const cleanLang = (language || '').toLowerCase().trim();
     const tempDir = path.join(os.tmpdir(), `sarthi_run_${crypto.randomUUID()}`);
@@ -81,7 +82,8 @@ export class RuntimeProcessExecutor {
           totalTimeoutMs,
           maxOutputBytes,
           maxMemoryMb,
-          startTime
+          startTime,
+          directProgram
         });
       } else if (cleanLang === 'python' || cleanLang === 'python3' || cleanLang === 'py') {
         return await RuntimeProcessExecutor._executePython({
@@ -89,7 +91,8 @@ export class RuntimeProcessExecutor {
           tempDir,
           totalTimeoutMs,
           maxOutputBytes,
-          startTime
+          startTime,
+          directProgram
         });
       } else if (cleanLang === 'cpp' || cleanLang === 'c++' || cleanLang === 'cplusplus') {
         return await RuntimeProcessExecutor._executeCpp({
@@ -98,7 +101,8 @@ export class RuntimeProcessExecutor {
           compileTimeoutMs,
           totalTimeoutMs,
           maxOutputBytes,
-          startTime
+          startTime,
+          directProgram
         });
       } else if (cleanLang === 'java') {
         return await RuntimeProcessExecutor._executeJava({
@@ -107,7 +111,8 @@ export class RuntimeProcessExecutor {
           compileTimeoutMs,
           totalTimeoutMs,
           maxOutputBytes,
-          startTime
+          startTime,
+          directProgram
         });
       } else {
         return createProcessExecutionResult({
@@ -126,7 +131,7 @@ export class RuntimeProcessExecutor {
   // ---------------------------------------------------------------------------
   // 1. JavaScript (Node.js) Execution
   // ---------------------------------------------------------------------------
-  static async _executeNode({ sourceCode, tempDir, totalTimeoutMs, maxOutputBytes, maxMemoryMb = 256, startTime }) {
+  static async _executeNode({ sourceCode, tempDir, totalTimeoutMs, maxOutputBytes, maxMemoryMb = 256, startTime, directProgram = false }) {
     const filePath = path.join(tempDir, 'solution.js');
     fs.writeFileSync(filePath, sourceCode, 'utf8');
 
@@ -136,7 +141,8 @@ export class RuntimeProcessExecutor {
       cwd: tempDir,
       totalTimeoutMs,
       maxOutputBytes,
-      startTime
+      startTime,
+      directProgram
     });
   }
 
@@ -169,7 +175,7 @@ export class RuntimeProcessExecutor {
     return null;
   }
 
-  static async _executePython({ sourceCode, tempDir, totalTimeoutMs, maxOutputBytes, startTime }) {
+  static async _executePython({ sourceCode, tempDir, totalTimeoutMs, maxOutputBytes, startTime, directProgram = false }) {
     const filePath = path.join(tempDir, 'solution.py');
     fs.writeFileSync(filePath, sourceCode, 'utf8');
 
@@ -188,14 +194,15 @@ export class RuntimeProcessExecutor {
       cwd: tempDir,
       totalTimeoutMs,
       maxOutputBytes,
-      startTime
+      startTime,
+      directProgram
     });
   }
 
   // ---------------------------------------------------------------------------
   // 3. C++ Compilation & Execution
   // ---------------------------------------------------------------------------
-  static async _executeCpp({ sourceCode, tempDir, compileTimeoutMs, totalTimeoutMs, maxOutputBytes, startTime }) {
+  static async _executeCpp({ sourceCode, tempDir, compileTimeoutMs, totalTimeoutMs, maxOutputBytes, startTime, directProgram = false }) {
     const srcPath = path.join(tempDir, 'solution.cpp');
     const exeName = process.platform === 'win32' ? 'solution.exe' : 'solution.out';
     const exePath = path.join(tempDir, exeName);
@@ -227,15 +234,18 @@ export class RuntimeProcessExecutor {
       cwd: tempDir,
       totalTimeoutMs,
       maxOutputBytes,
-      startTime
+      startTime,
+      directProgram
     });
   }
 
   // ---------------------------------------------------------------------------
   // 4. Java Compilation & Execution
   // ---------------------------------------------------------------------------
-  static async _executeJava({ sourceCode, tempDir, compileTimeoutMs, totalTimeoutMs, maxOutputBytes, startTime }) {
-    const srcPath = path.join(tempDir, 'Main.java');
+  static async _executeJava({ sourceCode, tempDir, compileTimeoutMs, totalTimeoutMs, maxOutputBytes, startTime, directProgram = false }) {
+    const classNameMatch = sourceCode.match(/public\s+class\s+([A-Za-z0-9_$]+)/);
+    const className = classNameMatch ? classNameMatch[1] : 'Main';
+    const srcPath = path.join(tempDir, `${className}.java`);
     fs.writeFileSync(srcPath, sourceCode, 'utf8');
 
     if (!isCommandAvailable('javac') || !isCommandAvailable('java')) {
@@ -260,11 +270,12 @@ export class RuntimeProcessExecutor {
     // Step 2: Execution
     return RuntimeProcessExecutor._runProcess({
       cmd: 'java',
-      args: ['-cp', tempDir, '-Xss64m', 'Main'],
+      args: ['-cp', tempDir, '-Xss64m', className],
       cwd: tempDir,
       totalTimeoutMs,
       maxOutputBytes,
-      startTime
+      startTime,
+      directProgram
     });
   }
 
@@ -329,7 +340,7 @@ export class RuntimeProcessExecutor {
   // ---------------------------------------------------------------------------
   // Helper: Run Process with Stream Monitoring & Timeouts
   // ---------------------------------------------------------------------------
-  static _runProcess({ cmd, args, cwd, totalTimeoutMs, maxOutputBytes, startTime }) {
+  static _runProcess({ cmd, args, cwd, totalTimeoutMs, maxOutputBytes, startTime, directProgram = false }) {
     return new Promise((resolve) => {
       let stdout = '';
       let stderr = '';
@@ -396,6 +407,17 @@ export class RuntimeProcessExecutor {
           return resolve(createProcessExecutionResult({
             status: 'OUTPUT_LIMIT_EXCEEDED',
             error: `Output exceeded maximum allowed buffer limit (${maxOutputBytes} bytes).`,
+            executionTimeMs,
+            stdout,
+            stderr
+          }));
+        }
+
+        // Direct Program mode (LLD): Exit code 0 is an immediate SUCCESS
+        if (directProgram && code === 0) {
+          return resolve(createProcessExecutionResult({
+            status: 'SUCCESS',
+            exitCode: 0,
             executionTimeMs,
             stdout,
             stderr

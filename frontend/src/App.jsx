@@ -58,6 +58,7 @@ import PerformanceDashboard from "./pages/Analytics/PerformanceDashboard";
 import DailyAccountability from "./pages/daily-accountability/DailyAccountability";
 import FocusTimer from "./pages/focus-timer/FocusTimer";
 import Revision from "./pages/task-childrens/Revision";
+import DsaCompaniesPage from "./pages/dsa/DsaCompaniesPage";
 import SettingsGlobal from "./pages/SettingsGlobal";
 import BranchDashboard from "./pages/BranchDashboard";
 import PricingPage from "./pages/subscription/PricingPage";
@@ -69,6 +70,9 @@ import ProjectOverview from "./pages/project-childrens/ProjectOverview";
 import ProjectConsistencyPage from "./pages/project-childrens/ProjectConsistencyPage";
 import Milestones from "./pages/project-childrens/Milestones";
 import DsaProblemPage from "./pages/dsa/DsaProblemPage";
+import LldWorkspacePage from "./pages/lld/LldWorkspacePage";
+import LldLessonPage from "./pages/lld/LldLessonPage";
+import { LldLanguageProvider } from "./context/LldLanguageContext";
 
 import ProjectBoard from "./pages/project-childrens/ProjectBoard";
 import Backlog from "./pages/project-childrens/Backlog";
@@ -78,6 +82,19 @@ import Settings from "./pages/project-childrens/Settings";
 import { useDispatch, useSelector } from "react-redux";
 import { BranchApi } from "./services/api/Branch.api";
 import { setGlobalSettings } from "./store/slices/storeSlice";
+
+import PublicLandingPage from "./pages/landing/PublicLandingPage";
+import { useLocation } from "react-router-dom";
+
+const RootGateway = () => {
+  const { isAuthenticated } = useSelector((state) => state.store);
+  const location = useLocation();
+
+  if (!isAuthenticated && location.pathname === "/") {
+    return <PublicLandingPage />;
+  }
+  return <MainLayout />;
+};
 
 function App() {
   const dispatch = useDispatch();
@@ -101,111 +118,111 @@ function App() {
   // Global Background Focus Timer Watcher
   useEffect(() => {
     const handleBackgroundFocusCheck = async () => {
-       // If we are already on the Focus Timer page, let it handle its own logic
-       if (window.location.pathname === '/focus-timer') return;
+      // If we are already on the Focus Timer page, let it handle its own logic
+      if (window.location.pathname === '/focus-timer') return;
 
-       const timerStateStr = getScopedItem("focus_timer_state");
-       const bindingObjStr = getScopedItem("focus_timer_task_binding");
-       const activeBranchStr = localStorage.getItem("activeBranch");
-       if (!timerStateStr || !bindingObjStr || !activeBranchStr) return;
-       
-       try {
-           const timerState = JSON.parse(timerStateStr);
-           const bindingObj = JSON.parse(bindingObjStr);
-           if (bindingObj.isRevision) return; // Do not auto-complete revision tasks in background
-           
-           if (timerState.isActive && timerState.startTime) {
-               const durationSetting = timerState.selectedDuration * 60;
-               const startTimeMs = new Date(timerState.startTime).getTime();
-               const nowMs = Date.now();
-               const sessionSeconds = Math.floor((nowMs - startTimeMs) / 1000);
-               const totalSpent = (timerState.accumulatedTime || 0) + sessionSeconds;
-               
-                if (totalSpent >= durationSetting) {
-                    if (bindingObj.taskType === "AI Challenge") {
-                        // AI Challenge Auto-extend:
-                        // 1. Log the elapsed block (durationSetting minutes)
-                        const actualDuration = Math.round(durationSetting / 60);
-                        const start = moment(timerState.startTime);
-                        const end = moment(nowMs);
-                        
-                        const sessionData = {
-                            date: start.format("YYYY-MM-DD"),
-                            startTime: start.toISOString(),
-                            endTime: end.toISOString(),
-                            duration: actualDuration,
-                            type: "Focus",
-                            task: bindingObj.taskId,
-                            taskName: bindingObj.taskName,
-                            taskIdString: bindingObj.taskIdString,
-                            statusAtCompletion: "inprogress",
-                            completionState: "incompleted",
-                            estimatedTimeAtStart: timerState.selectedDuration,
-                            isBacklog: false,
-                            originalDueDate: bindingObj.dueDate
-                        };
-                        
-                        await FocusApi.createSession(sessionData);
-                        
-                        // 2. Auto-extend: reset timer state to active, 20 minutes
-                        const newTimerState = {
-                            ...timerState,
-                            timeLeft: 20 * 60,
-                            isActive: true,
-                            startTime: new Date().toISOString(),
-                            accumulatedTime: 0,
-                            selectedDuration: 20
-                        };
-                        setScopedItem("focus_timer_state", newTimerState);
-                        toast.success("AI Challenge block completed. Automatically extended by 20 minutes.");
-                        return;
-                    }
+      const timerStateStr = getScopedItem("focus_timer_state");
+      const bindingObjStr = getScopedItem("focus_timer_task_binding");
+      const activeBranchStr = localStorage.getItem("activeBranch");
+      if (!timerStateStr || !bindingObjStr || !activeBranchStr) return;
 
-                     // Expiration Reached completely in the background: Check auto-extensions
-                     const extensions = timerState.autoExtensions || 0;
-                     if (extensions < 2) {
-                         const newTimerState = {
-                             ...timerState,
-                             selectedDuration: timerState.selectedDuration + 30,
-                             autoExtensions: extensions + 1
-                         };
-                         setScopedItem("focus_timer_state", newTimerState);
-                         toast.success("Background focus block ended. Automatically extended by 30 minutes.");
-                         return;
-                     }
+      try {
+        const timerState = JSON.parse(timerStateStr);
+        const bindingObj = JSON.parse(bindingObjStr);
+        if (bindingObj.isRevision) return; // Do not auto-complete revision tasks in background
 
-                     // Expiration Reached completely in the background after extensions
-                     const actualDuration = Math.max(Math.round(durationSetting / 60), 1);
-                     const start = moment(timerState.startTime);
-                     const end = moment(nowMs);
-                     
-                     const sessionData = {
-                         date: start.format("YYYY-MM-DD"),
-                         startTime: start.toISOString(),
-                         endTime: end.toISOString(),
-                         duration: actualDuration,
-                         type: "Focus",
-                         task: bindingObj.taskId,
-                         taskName: bindingObj.taskName,
-                         taskIdString: bindingObj.taskIdString,
-                         statusAtCompletion: "backlog",
-                         completionState: "incompleted",
-                         estimatedTimeAtStart: timerState.selectedDuration
-                     };
-                     
-                     await FocusApi.createSession(sessionData);
-                     await TaskApi.taskLogs(bindingObj.taskId, { status: "backlog" });
-                     
-                     removeScopedItem("focus_timer_task_binding");
-                     removeScopedItem("focus_timer_state");
-                     removeScopedItem("focus_timer_retrievable");
-                     
-                     // setShowGlobalBacklogModal(true); // Disabled to prevent user disturbance
-                 }
+        if (timerState.isActive && timerState.startTime) {
+          const durationSetting = timerState.selectedDuration * 60;
+          const startTimeMs = new Date(timerState.startTime).getTime();
+          const nowMs = Date.now();
+          const sessionSeconds = Math.floor((nowMs - startTimeMs) / 1000);
+          const totalSpent = (timerState.accumulatedTime || 0) + sessionSeconds;
+
+          if (totalSpent >= durationSetting) {
+            if (bindingObj.taskType === "AI Challenge") {
+              // AI Challenge Auto-extend:
+              // 1. Log the elapsed block (durationSetting minutes)
+              const actualDuration = Math.round(durationSetting / 60);
+              const start = moment(timerState.startTime);
+              const end = moment(nowMs);
+
+              const sessionData = {
+                date: start.format("YYYY-MM-DD"),
+                startTime: start.toISOString(),
+                endTime: end.toISOString(),
+                duration: actualDuration,
+                type: "Focus",
+                task: bindingObj.taskId,
+                taskName: bindingObj.taskName,
+                taskIdString: bindingObj.taskIdString,
+                statusAtCompletion: "inprogress",
+                completionState: "incompleted",
+                estimatedTimeAtStart: timerState.selectedDuration,
+                isBacklog: false,
+                originalDueDate: bindingObj.dueDate
+              };
+
+              await FocusApi.createSession(sessionData);
+
+              // 2. Auto-extend: reset timer state to active, 20 minutes
+              const newTimerState = {
+                ...timerState,
+                timeLeft: 20 * 60,
+                isActive: true,
+                startTime: new Date().toISOString(),
+                accumulatedTime: 0,
+                selectedDuration: 20
+              };
+              setScopedItem("focus_timer_state", newTimerState);
+              toast.success("AI Challenge block completed. Automatically extended by 20 minutes.");
+              return;
             }
-        } catch (e) { console.error("Global timer monitor err", e); }
+
+            // Expiration Reached completely in the background: Check auto-extensions
+            const extensions = timerState.autoExtensions || 0;
+            if (extensions < 2) {
+              const newTimerState = {
+                ...timerState,
+                selectedDuration: timerState.selectedDuration + 30,
+                autoExtensions: extensions + 1
+              };
+              setScopedItem("focus_timer_state", newTimerState);
+              toast.success("Background focus block ended. Automatically extended by 30 minutes.");
+              return;
+            }
+
+            // Expiration Reached completely in the background after extensions
+            const actualDuration = Math.max(Math.round(durationSetting / 60), 1);
+            const start = moment(timerState.startTime);
+            const end = moment(nowMs);
+
+            const sessionData = {
+              date: start.format("YYYY-MM-DD"),
+              startTime: start.toISOString(),
+              endTime: end.toISOString(),
+              duration: actualDuration,
+              type: "Focus",
+              task: bindingObj.taskId,
+              taskName: bindingObj.taskName,
+              taskIdString: bindingObj.taskIdString,
+              statusAtCompletion: "backlog",
+              completionState: "incompleted",
+              estimatedTimeAtStart: timerState.selectedDuration
+            };
+
+            await FocusApi.createSession(sessionData);
+            await TaskApi.taskLogs(bindingObj.taskId, { status: "backlog" });
+
+            removeScopedItem("focus_timer_task_binding");
+            removeScopedItem("focus_timer_state");
+            removeScopedItem("focus_timer_retrievable");
+
+            // setShowGlobalBacklogModal(true); // Disabled to prevent user disturbance
+          }
+        }
+      } catch (e) { console.error("Global timer monitor err", e); }
     };
-    
+
     const interval = setInterval(handleBackgroundFocusCheck, 15000); // Check every 15s to be accurate
     return () => clearInterval(interval);
   }, []);
@@ -217,7 +234,7 @@ function App() {
       setShowGlobalBacklogModal(false);
       setExpiredTaskData(null);
       setBacklogHoursInput("");
-    } catch(e) {
+    } catch (e) {
       console.error("Failed to save backlog estimate", e);
     }
   };
@@ -225,6 +242,10 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
+        {/* Public Landing Page explicit route */}
+        <Route path="/landing" element={<PublicLandingPage />} />
+        <Route path="/story" element={<PublicLandingPage />} />
+
         {/* Athentication routes start here */}
         <Route
           path="/reset"
@@ -242,7 +263,7 @@ function App() {
         <Route path="/auth/zoho/callback" element={<PublicRoute element={<ZohoCallback />} />} />
         {/* Athentication routes end here */}
 
-        <Route path="/" element={<MainLayout />}>
+        <Route path="/" element={<RootGateway />}>
           <Route
             path="/"
             element={<ProtectedRoute element={<Dashboard />} />}
@@ -258,6 +279,26 @@ function App() {
           <Route
             path="arena/dsa/problem"
             element={<ProtectedRoute element={<DsaProblemPage />} />}
+          />
+          <Route
+            path="arena/lld/workspace/:taskId"
+            element={<ProtectedRoute element={<LldWorkspacePage />} />}
+          />
+          <Route
+            path="workspace/lld/:taskId"
+            element={<ProtectedRoute element={<LldWorkspacePage />} />}
+          />
+          <Route
+            path="arena/lld/lesson/:lessonId"
+            element={<ProtectedRoute element={<LldLessonPage />} />}
+          />
+          <Route
+            path="arena/lld/chapter/:chapterNum/lesson/:lessonId"
+            element={<ProtectedRoute element={<LldLessonPage />} />}
+          />
+          <Route
+            path="arena/lld/lesson"
+            element={<ProtectedRoute element={<LldLessonPage />} />}
           />
           <Route
             path="arena/:slug"
@@ -317,7 +358,7 @@ function App() {
 
           {/* user routes start here */}
           <Route path="user" element={<ProtectedRoute element={<User />} />}>
-             <Route index element={<ProtectedRoute element={<TeamList />} />} />
+            <Route index element={<ProtectedRoute element={<TeamList />} />} />
             <Route
               path="create"
               element={<ProtectedRoute element={<CreateUser />} />}
@@ -383,6 +424,10 @@ function App() {
             element={<ProtectedRoute element={<Revision />} />}
           />
           <Route
+            path="companies"
+            element={<ProtectedRoute element={<DsaCompaniesPage />} />}
+          />
+          <Route
             path="settings"
             element={<ProtectedRoute element={<SettingsGlobal />} />}
           />
@@ -404,63 +449,65 @@ function App() {
 
         {/* Project Specific Routes (Separate Layout) */}
         <Route path="project/:projectId" element={<ProtectedRoute element={<ProjectLayout />} />}>
-            <Route path="overview" element={<ProtectedRoute element={<ProjectOverview />} />} />
-            <Route path="consistency" element={<ProtectedRoute element={<ProjectConsistencyPage />} />} />
-            <Route path="milestones" element={<ProtectedRoute element={<Milestones />} />} />
-            <Route path="board" element={<ProtectedRoute element={<ProjectBoard />} />} />
-            <Route path="backlog" element={<ProtectedRoute element={<Backlog />} />} />
-            <Route path="sprints" element={<ProtectedRoute element={<Sprints />} />} />
-            <Route path="settings" element={<ProtectedRoute element={<Settings />} />} />
+          <Route path="overview" element={<ProtectedRoute element={<ProjectOverview />} />} />
+          <Route path="consistency" element={<ProtectedRoute element={<ProjectConsistencyPage />} />} />
+          <Route path="milestones" element={<ProtectedRoute element={<Milestones />} />} />
+          <Route path="board" element={<ProtectedRoute element={<ProjectBoard />} />} />
+          <Route path="backlog" element={<ProtectedRoute element={<Backlog />} />} />
+          <Route path="sprints" element={<ProtectedRoute element={<Sprints />} />} />
+          <Route path="settings" element={<ProtectedRoute element={<Settings />} />} />
         </Route>
 
       </>
     )
   );
   return (
-    <div className="flex flex-col h-screen w-full overflow-hidden bg-bgLight">
-      <div className="flex-1 relative overflow-hidden">
+    <div className="flex flex-col h-screen w-full overflow-hidden bg-bgLight dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+      <div className="flex-1 relative overflow-auto">
         <Toaster
           containerStyle={{
             top: "4rem",
             zIndex: "9999999999999",
           }}
         />
-        <RouterProvider router={router} />
+        <LldLanguageProvider>
+          <RouterProvider router={router} />
+        </LldLanguageProvider>
 
         {/* Global Backlog Estimator Modal for Background Expiration */}
         {showGlobalBacklogModal && (
           <div className="fixed inset-0 z-[9999999] flex items-center justify-center p-4">
-             <div className="absolute inset-0 bg-red-900/60 backdrop-blur-sm"></div>
-             <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md flex flex-col gap-4 animate-in zoom-in-95 duration-200 border border-slate-100">
-                <div className="flex items-center gap-3 text-rose-500">
-                   <IoTimeOutline size={28} />
-                   <h3 className="text-xl font-bold text-slate-800">Background Timer Completed!</h3>
-                </div>
-                <p className="text-slate-600 text-sm font-medium">Your global focus timer has fully elapsed for <strong className="text-slate-800">{expiredTaskData?.taskName}</strong>! The task has automatically been transitioned to the <strong>Backlog</strong>.</p>
-                <p className="text-slate-600 text-sm font-medium mt-2">Please provide a new time estimate (in hours) to resume work on this item later.</p>
-                
-                <div className="mt-4">
-                   <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 block">New Backlog Estimate (Hours)</label>
-                   <input 
-                      type="number" 
-                      step="0.5" 
-                      placeholder="e.g. 1.5"
-                      value={backlogHoursInput}
-                      onChange={(e) => setBacklogHoursInput(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-colors"
-                   />
-                </div>
+            <div className="absolute inset-0 bg-red-900/60 backdrop-blur-sm"></div>
+            <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md flex flex-col gap-4 animate-in zoom-in-95 duration-200 border border-slate-100">
+              <div className="flex items-center gap-3 text-rose-500">
+                <IoTimeOutline size={28} />
+                <h3 className="text-xl font-bold text-slate-800">Background Timer Completed!</h3>
+              </div>
+              <p className="text-slate-600 text-sm font-medium">Your global focus timer has fully elapsed for <strong className="text-slate-800">{expiredTaskData?.taskName}</strong>! The task has automatically been transitioned to the <strong>Backlog</strong>.</p>
+              <p className="text-slate-600 text-sm font-medium mt-2">Please provide a new time estimate (in hours) to resume work on this item later.</p>
 
-                <div className="flex items-center gap-3 mt-4 justify-end">
-                  <button 
-                    onClick={handleGlobalSubmitBacklog}
-                    disabled={!backlogHoursInput}
-                    className="w-full px-4 py-3 rounded-xl font-bold text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 bg-rose-500 hover:bg-rose-600"
-                  >
-                    Submit Backlog Estimate
-                  </button>
-                </div>
-             </div>
+              <div className="mt-4">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 block">New Backlog Estimate (Hours)</label>
+                <input
+                  type="number"
+                  step="0.5"
+                  placeholder="e.g. 1.5"
+                  value={backlogHoursInput}
+                  onChange={(e) => setBacklogHoursInput(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-colors"
+                />
+              </div>
+
+              <div className="flex items-center gap-3 mt-4 justify-end">
+                <button
+                  onClick={handleGlobalSubmitBacklog}
+                  disabled={!backlogHoursInput}
+                  className="w-full px-4 py-3 rounded-xl font-bold text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 bg-rose-500 hover:bg-rose-600"
+                >
+                  Submit Backlog Estimate
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

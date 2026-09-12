@@ -15,7 +15,12 @@ import TaskDetailDrawer from '../components/tasks/TaskDetailDrawer';
 import ArenaScheduleModal from '../components/tasks/ArenaScheduleModal';
 import { setGlobalSearch } from '../store/slices/storeSlice';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IoChevronDownOutline, IoFilterOutline } from 'react-icons/io5';
+import { IoChevronDownOutline, IoFilterOutline, IoCompassOutline } from 'react-icons/io5';
+import { isLldBranch, isDsaArena, isLldArena } from '../utils/curriculumHelper';
+import LldCurriculumRoadmapModal from '../components/lld/LldCurriculumRoadmapModal';
+import DsaWorkspace from '../components/dsa/workspace/DsaWorkspace';
+import LldTrackHome from '../components/lld/track/LldTrackHome';
+import LldPhaseView from '../components/lld/curriculum/LldPhaseView';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -24,9 +29,11 @@ const Dashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { currentUser, globalSearch, activeBranch } = useSelector((state) => state.store);
 
-  const isManager = currentUser?.userRole?.name === "projectmanager";
-  const isAdmin = currentUser?.userRole?.name === "admin";
-  const canCreate = isManager || isAdmin;
+  const isAdmin = currentUser?.email === "balajiaadi2000@gmail.com" ||
+    currentUser?.userRole?.name?.toLowerCase() === "admin" ||
+    currentUser?.role === "admin" ||
+    (currentUser?.userRoles && currentUser.userRoles.some(r => r.name?.toLowerCase() === "admin"));
+  const canCreate = isAdmin;
 
   // View mode for Arena views ('board', 'spreadsheet', 'timeline', 'calendar', 'sprints')
   const [viewMode, setViewMode] = useState(searchParams.get('view') || 'board');
@@ -35,6 +42,7 @@ const Dashboard = () => {
   // Controls visibility toggle for Arena views (hidden initially to prevent load flash)
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isRoadmapModalOpen, setIsRoadmapModalOpen] = useState(false);
   const userToggledControlsRef = React.useRef(false);
 
   // Global Filters
@@ -49,6 +57,11 @@ const Dashboard = () => {
   const [members, setMembers] = useState([]);
   const [tasks, setTasks] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Authoritative Module Context
+  const currentProjectObj = (projects || []).find(p => p.value === projectId);
+  const isDsa = isDsaArena({ project: currentProjectObj, activeBranch, slug });
+  const isLld = isLldArena({ project: currentProjectObj, activeBranch, slug });
 
   // In-memory cache for ultra-fast instant switching without network delays
   const taskCacheRef = React.useRef({});
@@ -81,13 +94,15 @@ const Dashboard = () => {
             ProjectApi.getAllProjects(),
             UserApi.users()
           ]);
-          currentProjects = pRes.data?.data?.map(p => ({
-            value: p._id,
-            label: p.name,
-            slug: (p.key?.trim() || p.name?.trim().replace(/\s+/g, '-')).toLowerCase(),
-            name: p.name?.trim(),
-            key: p.key?.trim()
-          })) || [];
+          currentProjects = (pRes.data?.data || [])
+            .map(p => ({
+              value: p._id,
+              label: p.name,
+              slug: (p.key?.trim() || p.name?.trim().replace(/\s+/g, '-')).toLowerCase(),
+              name: p.name?.trim(),
+              key: p.key?.trim()
+            }))
+            .sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { numeric: true, sensitivity: 'base' }));
           if (currentProjects.length > 0) {
             projectsCacheRef.current = currentProjects;
           }
@@ -114,13 +129,15 @@ const Dashboard = () => {
       if (!matched) {
         try {
           const pRes = await ProjectApi.getAllProjects();
-          const freshProjects = pRes.data?.data?.map(p => ({
-            value: p._id,
-            label: p.name,
-            slug: (p.key?.trim() || p.name?.trim().replace(/\s+/g, '-')).toLowerCase(),
-            name: p.name?.trim(),
-            key: p.key?.trim()
-          })) || [];
+          const freshProjects = (pRes.data?.data || [])
+            .map(p => ({
+              value: p._id,
+              label: p.name,
+              slug: (p.key?.trim() || p.name?.trim().replace(/\s+/g, '-')).toLowerCase(),
+              name: p.name?.trim(),
+              key: p.key?.trim()
+            }))
+            .sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { numeric: true, sensitivity: 'base' }));
           if (freshProjects.length > 0) {
             currentProjects = freshProjects;
             projectsCacheRef.current = freshProjects;
@@ -207,8 +224,10 @@ const Dashboard = () => {
   }, [projectId, slug]);
 
   const filteredTasks = (tasks || []).filter(t => {
-    const matchesSearch = t.taskName?.toLowerCase().includes(globalSearch.toLowerCase()) ||
-      t.taskId?.toLowerCase().includes(globalSearch.toLowerCase());
+    const searchLower = (globalSearch || '').toLowerCase();
+    const matchesSearch = !searchLower ||
+      t.taskName?.toLowerCase().includes(searchLower) ||
+      t.taskId?.toLowerCase().includes(searchLower);
     
     if (!projectId) return matchesSearch;
     const pId = typeof t.projectName === 'object' ? (t.projectName?._id || t.projectName?.id) : t.projectName;
@@ -221,12 +240,11 @@ const Dashboard = () => {
     isDataLoaded && tasks && tasks.length > 0 && tasks.some(t => t.taskStartDate || t.taskDueDate)
   );
 
-  // Automatically hide controls for scheduled arenas and show controls for unscheduled arenas
+  // Keep controls hidden by default
   useEffect(() => {
-    if (isDataLoaded && !userToggledControlsRef.current) {
-      setIsControlsVisible(!isArenaScheduled);
-    }
-  }, [isDataLoaded, isArenaScheduled, slug]);
+    userToggledControlsRef.current = false;
+    setIsControlsVisible(false);
+  }, [slug]);
 
   const handleCreateTask = () => {
     navigate('/task/create-task');
@@ -241,7 +259,7 @@ const Dashboard = () => {
   // 1. MAIN DASHBOARD ROUTE ("/") -> Render ONLY Performance Analytics Dashboard
   if (!slug) {
     return (
-      <div className="h-full w-full overflow-y-auto bg-bgLight">
+      <div className="h-full w-full overflow-y-auto bg-bgLight dark:bg-[#0A0D14] transition-colors">
         <PerformanceDashboard />
       </div>
     );
@@ -249,32 +267,49 @@ const Dashboard = () => {
 
   // 2. SPECIFIC ARENA ROUTE ("/arena/:slug") -> Render Arena Tasks with Collapsible Controls Header
   return (
-    <div className="h-full flex flex-col bg-bgLight relative">
-      {/* Floating CONTROLS Trigger Button when Collapsed */}
-      {!isControlsVisible && !isEditingTask && (
-        <div className="fixed right-5 top-20 z-[100] pointer-events-auto">
-          <motion.button
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              userToggledControlsRef.current = true;
-              setIsControlsVisible(true);
-            }}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-primary hover:bg-primaryHover text-white rounded-full shadow-lg shadow-primary/20 border border-white/20 text-xs font-bold transition-all cursor-pointer hover:shadow-xl hover:scale-105 active:scale-95"
-            title="Expand header controls"
-          >
-            <IoFilterOutline size={13} className="text-white" />
-            <span>Controls</span>
-            <IoChevronDownOutline size={12} className="text-white/80" />
-          </motion.button>
+    <div className="h-full flex flex-col bg-bgLight dark:bg-[#0A0D14] relative transition-colors">
+      {/* Floating Action Buttons (Roadmap + Controls) */}
+      {!isEditingTask && (
+        <div className="fixed right-5 top-20 z-[100] pointer-events-auto flex items-center gap-2">
+          {isLld && (
+            <motion.button
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsRoadmapModalOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 hover:text-primary rounded-full shadow-md hover:shadow-lg border border-borderLight text-xs font-bold transition-all cursor-pointer active:scale-95"
+              title="LLD Curriculum Roadmap & Target Outcomes"
+            >
+              <IoCompassOutline size={14} className="text-primary" />
+              <span>Roadmap</span>
+            </motion.button>
+          )}
+
+          {!isDsa && !isLld && !isControlsVisible && (
+            <motion.button
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                userToggledControlsRef.current = true;
+                setIsControlsVisible(true);
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-primary hover:bg-primaryHover text-white rounded-full shadow-lg shadow-primary/20 border border-white/20 text-xs font-bold transition-all cursor-pointer hover:shadow-xl hover:scale-105 active:scale-95"
+              title="Expand header controls"
+            >
+              <IoFilterOutline size={13} className="text-white" />
+              <span>Controls</span>
+              <IoChevronDownOutline size={12} className="text-white/80" />
+            </motion.button>
+          )}
         </div>
       )}
 
       {/* Expandable Header Controls (Image 3 style) */}
       <AnimatePresence>
-        {isControlsVisible && (
+        {!isDsa && !isLld && isControlsVisible && (
           <motion.div
             initial={{ opacity: 0, y: -20, height: 0 }}
             animate={{ opacity: 1, y: 0, height: 'auto' }}
@@ -323,83 +358,126 @@ const Dashboard = () => {
               hasProjectSelected={!!projectId}
               isArenaScheduled={isArenaScheduled}
               isDataLoaded={isDataLoaded}
+              isLld={isLld}
+              onOpenRoadmap={() => setIsRoadmapModalOpen(true)}
             />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Arena View Content (Board, Spreadsheet, Timeline, Calendar, Sprints) - Full Page Coverage */}
-      <div className={`flex-1 overflow-y-auto w-full transition-all duration-500 ${viewMode === 'board' ? 'p-0 h-full' : 'p-3 sm:p-4'}`}>
-        {viewMode === 'board' && (
-          <MyTask
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-            externalProjectId={projectId}
-            externalMemberId={memberId}
-            externalSearch={globalSearch}
-            externalSort={sortBy}
-            externalParentId={parentId}
-            externalTasks={tasks}
-            externalLoading={loading}
-            onEditStateChange={(editing) => setIsEditingTask(editing)}
-            onOpenSchedule={(isDataLoaded && !isArenaScheduled) ? () => setIsScheduleModalOpen(true) : null}
+      {/* Arena View Content (DSA Workspace vs LLD Curriculum vs Generic Board, Spreadsheet, Timeline, Calendar, Sprints) */}
+      <div className={`flex-1 overflow-y-auto w-full transition-all duration-500 ${isDsa || isLld || viewMode === 'board' ? 'p-0 h-full' : 'p-3 sm:p-4'}`}>
+        {isDsa ? (
+          <DsaWorkspace
+            projectId={projectId}
+            project={currentProjectObj}
+            tasks={tasks || []}
+            loading={loading}
+            onTasksUpdated={async () => {
+              if (projectId) {
+                delete taskCacheRef.current[projectId];
+                try {
+                  const filter = { projectName: projectId };
+                  if (memberId) filter.assignee = memberId;
+                  const res = await TaskApi.getAllTasks({ filter });
+                  const fresh = res.data?.data || [];
+                  taskCacheRef.current[projectId] = fresh;
+                  setTasks(fresh);
+                } catch (e) {
+                  console.error("Failed to refresh tasks", e);
+                }
+              }
+            }}
           />
-        )}
+        ) : isLld ? (
+          slug?.toLowerCase() === 'lld' || !projectId ? (
+            <LldTrackHome activeBranch={activeBranch} />
+          ) : (
+            <LldPhaseView project={currentProjectObj} tasks={tasks || []} loading={loading} />
+          )
+        ) : (
+          <>
+            {viewMode === 'board' && (
+              <MyTask
+                viewMode={viewMode}
+                setViewMode={setViewMode}
+                externalProjectId={projectId}
+                externalMemberId={memberId}
+                externalSearch={globalSearch}
+                externalSort={sortBy}
+                externalParentId={parentId}
+                externalTasks={tasks}
+                externalLoading={loading}
+                onEditStateChange={(editing) => setIsEditingTask(editing)}
+                onOpenSchedule={(isDataLoaded && !isArenaScheduled) ? () => setIsScheduleModalOpen(true) : null}
+              />
+            )}
 
-        {viewMode === 'spreadsheet' && (
-          <TaskTable
-            tasks={filteredTasks}
-            isLoading={loading}
-            projects={projects.map(p => ({ _id: p.value, name: p.label }))}
-            members={members.map(m => ({ _id: m.value, firstName: m.label.split(' ')[0], lastName: m.label.split(' ')[1] }))}
-            selectedProject={projectId}
-            selectedMember={memberId}
-            onProjectChange={setProjectId}
-            onMemberChange={setMemberId}
-          />
-        )}
+            {viewMode === 'spreadsheet' && (
+              <TaskTable
+                tasks={filteredTasks}
+                isLoading={loading}
+                projects={projects.map(p => ({ _id: p.value, name: p.label }))}
+                members={members.map(m => ({ _id: m.value, firstName: m.label.split(' ')[0], lastName: m.label.split(' ')[1] }))}
+                selectedProject={projectId}
+                selectedMember={memberId}
+                onProjectChange={setProjectId}
+                onMemberChange={setMemberId}
+              />
+            )}
 
-        {viewMode === 'timeline' && (
-          <TimelineBoard tasks={filteredTasks} isLoading={loading} onTaskClick={handleTaskClick} />
-        )}
+            {viewMode === 'timeline' && (
+              <TimelineBoard tasks={filteredTasks} isLoading={loading} onTaskClick={handleTaskClick} />
+            )}
 
-        {viewMode === 'calendar' && (
-          <CalendarBoard tasks={filteredTasks} isLoading={loading} onTaskClick={handleTaskClick} />
-        )}
+            {viewMode === 'calendar' && (
+              <CalendarBoard tasks={filteredTasks} isLoading={loading} onTaskClick={handleTaskClick} />
+            )}
 
-        {viewMode === 'sprints' && (
-          <Sprints projectId={projectId} />
+            {viewMode === 'sprints' && (
+              <Sprints projectId={projectId} />
+            )}
+          </>
         )}
       </div>
 
-      <TaskDetailDrawer />
+      {!isDsa && !isLld && <TaskDetailDrawer />}
 
       {/* User-Specific Arena Schedule Modal */}
-      <ArenaScheduleModal
-        isOpen={isScheduleModalOpen}
-        onClose={() => setIsScheduleModalOpen(false)}
-        projectId={projectId}
-        projectName={projects.find(p => p.value === projectId)?.label}
-        tasks={tasks || []}
-        onScheduleApplied={async () => {
-          if (projectId) {
-            delete taskCacheRef.current[projectId];
-            try {
-              setLoading(true);
-              const filter = { projectName: projectId };
-              if (memberId) filter.assignee = memberId;
-              const res = await TaskApi.getAllTasks({ filter });
-              const fetchedTasks = res.data?.data || [];
-              taskCacheRef.current[projectId] = fetchedTasks;
-              setTasks(fetchedTasks);
-            } catch (err) {
-              console.error("Failed to refresh tasks after schedule applied", err);
-            } finally {
-              setLoading(false);
+      {!isDsa && !isLld && (
+        <ArenaScheduleModal
+          isOpen={isScheduleModalOpen}
+          onClose={() => setIsScheduleModalOpen(false)}
+          projectId={projectId}
+          projectName={projects.find(p => p.value === projectId)?.label}
+          isArenaScheduled={isArenaScheduled}
+          onTasksUpdated={async () => {
+            if (projectId) {
+              delete taskCacheRef.current[projectId];
+              try {
+                setLoading(true);
+                const filter = { projectName: projectId };
+                if (memberId) filter.assignee = memberId;
+                const res = await TaskApi.getAllTasks({ filter });
+                const fetchedTasks = res.data?.data || [];
+                taskCacheRef.current[projectId] = fetchedTasks;
+                setTasks(fetchedTasks);
+              } catch (err) {
+                console.error("Failed to refresh tasks after schedule applied", err);
+              } finally {
+                setLoading(false);
+              }
             }
-          }
-        }}
-      />
+          }}
+        />
+      )}
+      {/* LLD Curriculum Roadmap & Target Outcomes Modal */}
+      {isLld && (
+        <LldCurriculumRoadmapModal
+          isOpen={isRoadmapModalOpen}
+          onClose={() => setIsRoadmapModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

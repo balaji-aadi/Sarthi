@@ -2,19 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { UserApi } from '../../services/api/user.api';
 import { useNavigate } from 'react-router-dom';
-import { IoAdd, IoSearchOutline, IoMailOutline, IoCallOutline, IoGridOutline, IoListOutline, IoLockClosed, IoLockOpen } from 'react-icons/io5';
-import { Table } from '../../components/Table/Table';
-import { FaEdit, FaBan, FaCheckCircle } from 'react-icons/fa';
+import { 
+    IoSearchOutline, 
+    IoShieldCheckmarkOutline, 
+    IoPersonOutline, 
+    IoLockClosedOutline, 
+    IoCheckmarkCircleOutline, 
+    IoCloseCircleOutline,
+    IoCheckmarkOutline
+} from 'react-icons/io5';
+import { FaEdit } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 const TeamList = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
-    const [viewMode, setViewMode] = useState('grid');
     const [actionLoading, setActionLoading] = useState(null);
-    const { activeBranch } = useSelector((state) => state.store);
+    const { activeBranch, currentUser } = useSelector((state) => state.store);
     const navigate = useNavigate();
+
+    const isCurrentAdmin = currentUser?.email === "balajiaadi2000@gmail.com" ||
+        currentUser?.userRole?.name?.toLowerCase() === 'admin' ||
+        currentUser?.role === 'admin' ||
+        (currentUser?.userRoles && currentUser.userRoles.some(r => r.name?.toLowerCase() === 'admin'));
 
     useEffect(() => {
         if (activeBranch) {
@@ -26,7 +37,6 @@ const TeamList = () => {
         try {
             setLoading(true);
             const res = await UserApi.users();
-            console.log(res);
             setUsers(res.data?.data || []);
         } catch (error) {
             console.error("Failed to fetch users", error);
@@ -35,283 +45,250 @@ const TeamList = () => {
         }
     };
 
-    const filteredUsers = users.filter(u => 
-        (u.firstName + ' ' + u.lastName).toLowerCase().includes(search.toLowerCase()) ||
-        u.email?.toLowerCase().includes(search.toLowerCase())
-    );
+    const handleToggleStatus = async (user) => {
+        if (actionLoading) return;
+        setActionLoading(user._id);
+        try {
+            const nextStatus = !user.isActive;
+            await UserApi.bulkUpdateStatus({ userIds: [user._id], isActive: nextStatus });
+            toast.success(nextStatus ? "Member enabled successfully" : "Member disabled successfully");
+            setUsers(prev => prev.map(u => u._id === user._id ? { ...u, isActive: nextStatus } : u));
+        } catch (e) {
+            toast.error("Failed to update status");
+        } finally {
+            setActionLoading(null);
+        }
+    };
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 8;
+    const filteredUsers = users.filter(u => {
+        const full = `${u.firstName || ''} ${u.lastName || ''}`.toLowerCase();
+        const mail = (u.email || '').toLowerCase();
+        const q = search.toLowerCase();
+        return full.includes(q) || mail.includes(q);
+    });
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [search]);
+    const getRoleName = (u) => {
+        let rName = u.userRole?.name || null;
+        if (!rName && u.userRoles && u.userRoles.length > 0) {
+            rName = u.userRoles.map(r => r.name).join(", ");
+        }
+        if (!rName) rName = typeof u.userRole === 'string' ? u.userRole : 'Member';
+        const lower = rName.toLowerCase();
+        if (lower === 'employee' || lower === 'user') return 'Member';
+        if (lower === 'admin') return 'Admin';
+        return rName;
+    };
 
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
-
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-    const columnDefs = [
-        { headerName: "First Name", field: "firstName" },
-        { headerName: "Last Name", field: "lastName" },
-        { headerName: "Email", field: "email" },
-        { 
-            headerName: "Role", 
-            field: "userRole.name",
-            valueGetter: (params) => {
-                 const role = params.data.userRole;
-                 let roleName = role && role.name ? role.name : null;
-                 if (!roleName && params.data.userRoles && params.data.userRoles.length > 0) {
-                     roleName = params.data.userRoles.map(r => r.name).join(", ");
-                 }
-                 if (!roleName) roleName = typeof role === 'string' ? 'Role ID: ' + role.substring(0,5) : 'Member';
-                 return roleName.toLowerCase() === 'employee' ? 'USER' : roleName;
-            }
-        },
-        {
-            headerName: "Status",
-            field: "isActive",
-            valueGetter: (params) => params.data.isActive ? "Active" : "Disabled"
-        },
-        { 
-            headerName: "Actions", 
-            field: "actions",
-            cellRenderer: (params) => {
-                const isAdmin = params.data.userRole?.name === 'admin' || (params.data.userRoles && params.data.userRoles.some(r => r.name === 'admin'));
-                
-                return (
-                    <div className="flex items-center gap-2">
-                        <button onClick={() => navigate('/user/create', { state: { user: params.data } })} className="text-blue-500 hover:text-blue-700 transition-all" title="Edit User">
-                            <FaEdit size={16} />
-                        </button>
-                        {!isAdmin && (
-                            <button 
-                                onClick={async () => {
-                                    try {
-                                        await UserApi.bulkUpdateStatus({ userIds: [params.data._id], isActive: !params.data.isActive });
-                                        
-                                        // Update grid instantly
-                                        params.data.isActive = !params.data.isActive;
-                                        if (params.api) {
-                                            params.api.refreshCells({ rowNodes: [params.node], force: true });
-                                        }
-
-                                        toast.success(params.data.isActive ? "User enabled successfully" : "User disabled successfully");
-                                        fetchUsers();
-                                    } catch (e) {
-                                        toast.error("Failed to update status");
-                                    }
-                                }}
-                                className={`p-1.5 rounded-full transition-all ${params.data.isActive ? 'bg-red-100 text-red-600 hover:bg-red-200 hover:scale-110' : 'bg-green-100 text-green-600 hover:bg-green-200 hover:scale-110'}`}
-                                title={params.data.isActive ? 'Disable User' : 'Enable User'}
-                            >
-                                {params.data.isActive ? <IoLockClosed size={16} /> : <IoLockOpen size={16} />}
-                            </button>
-                        )}
-                    </div>
-                );
-            }
-        },
-    ];
-
-    // NOTE: CreateUser needs to handle location state if passed like above, or we stick to Modal logic?
-    // CreateUser uses a Modal internally but is also a page? 
-    // Actually in the App.jsx routes: <Route path="create" element={<ProtectedRoute element={<CreateUser />} />} />
-    // So distinct page. The modal logic inside CreateUser might be for when it's used as a component elsewhere or just legacy.
-    // Let's assume navigating to /user/create is correct for "Add Member". 
-    // Editing might need a different route or params. 
-    // Just View for now.
+    const isUserAdmin = (u) => {
+        return u.email === "balajiaadi2000@gmail.com" ||
+            u.userRole?.name?.toLowerCase() === 'admin' ||
+            u.role === 'admin' ||
+            (u.userRoles && u.userRoles.some(r => r.name?.toLowerCase() === 'admin'));
+    };
 
     return (
-        <div className="bg-bgLight min-h-full flex flex-col">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h1 className="text-2xl font-bold text-textMain">Users</h1>
-                    <p className="text-textSub text-sm mt-1">Manage users and access permissions</p>
-                </div>
-                <div className="flex items-center gap-3">
-                     <div className="flex bg-white p-1 rounded-lg border border-borderLight mr-2">
-                        <button
-                            onClick={() => setViewMode('grid')}
-                            className={`p-2 rounded-md transition-all ${viewMode === 'grid' ? 'bg-primary/10 text-primary' : 'text-textSub hover:text-textMain'}`}
-                            title="Grid View"
-                        >
-                            <IoGridOutline />
-                        </button>
-                        <button
-                            onClick={() => setViewMode('table')}
-                            className={`p-2 rounded-md transition-all ${viewMode === 'table' ? 'bg-primary/10 text-primary' : 'text-textSub hover:text-textMain'}`}
-                            title="List View"
-                        >
-                            <IoListOutline />
-                        </button>
-                     </div>
+        <div className="p-6 lg:p-8 bg-slate-50/70 dark:bg-slate-950 min-h-full transition-colors duration-200">
+            {/* Main Container */}
+            <div className="max-w-7xl mx-auto space-y-6">
+                
+                {/* Page Title & Actions */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div className="flex items-center gap-2.5">
+                            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Members</h1>
+                            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                {users.length} {users.length === 1 ? 'member' : 'members'}
+                            </span>
+                        </div>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                            Manage your workspace members and their access controls.
+                        </p>
+                    </div>
 
-                     {viewMode === 'grid' && (
+                    <div className="flex items-center gap-3">
                         <div className="relative">
-                            <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-textSub" />
+                            <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input 
-                                type="text" 
-                                placeholder="Search members..." 
-                                className="pl-10 pr-4 py-2 rounded-xl border border-borderLight focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white text-sm w-64"
+                                type="text"
+                                placeholder="Search members..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
+                                className="pl-9 pr-8 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 w-60 sm:w-64 transition-all"
                             />
+                            <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400 border border-slate-200 dark:border-slate-700 px-1 py-0.5 rounded bg-slate-50 dark:bg-slate-800 pointer-events-none">
+                                ⌘K
+                            </div>
                         </div>
-                     )}
-
-                     <button 
-                        onClick={() => navigate('/user/create')}
-                        className="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-xl font-semibold shadow-lg shadow-primary/30 flex items-center gap-2 transition-transform active:scale-95"
-                     >
-                        <IoAdd size={18} />
-                        <span>Add User</span>
-                     </button>
-                </div>
-            </div>
-
-            {/* Content */}
-            <div className="flex-1">
-                {viewMode === 'table' ? (
-                    <div className="bg-surface rounded-2xl shadow-sm border border-borderLight overflow-hidden h-[calc(100vh-200px)]">
-                         <Table
-                            column={columnDefs}
-                            getTableFunction={UserApi.users}
-                            searchLabel={"Users"}
-                            totalCount={true}
-                        />
                     </div>
-                ) : (
-                    <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                </div>
+
+                {/* 2-Column Responsive Layout (Inspired by Image 4) */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    
+                    {/* Left Column: Member List (2 Cols on Large) */}
+                    <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden transition-colors">
+                        
+                        {/* Table Header */}
+                        <div className="grid grid-cols-12 px-5 py-3.5 bg-slate-50/70 dark:bg-slate-800/40 border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                            <div className="col-span-6">Member</div>
+                            <div className="col-span-3">Role</div>
+                            <div className="col-span-3 text-right">Actions</div>
+                        </div>
+
+                        {/* Member Rows */}
+                        <div className="divide-y divide-slate-100 dark:divide-slate-800/80">
                             {loading ? (
                                 [...Array(4)].map((_, i) => (
-                                    <div key={i} className="bg-surface h-48 rounded-2xl shadow-sm border border-borderLight animate-pulse"></div>
-                                ))
-                            ) : currentUsers.length > 0 ? (
-                                currentUsers.map((user) => (
-                                    <div 
-                                        key={user._id} 
-                                        className="bg-surface rounded-[2rem] p-6 shadow-sm border border-borderLight hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all group flex flex-col items-center text-center relative"
-                                    >
-                                         <div className="relative mb-4">
-                                             <img 
-                                                 src={user.profileImage || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=E34234&color=fff`} 
-                                                 alt={user.firstName} 
-                                                 className="w-24 h-24 rounded-[2rem] object-cover border-4 border-white shadow-md transition-transform group-hover:scale-105"
-                                             />
-                                             <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-primary">
-                                                 <IoAdd size={14} className="rotate-45" />
-                                             </div>
-                                         </div>
-
-                                         <h3 className="text-base font-black text-slate-800 mb-1 group-hover:text-primary transition-colors">{user.firstName} {user.lastName}</h3>
-                                         <span className="bg-primary/5 text-primary border border-primary/10 px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest mb-4">
-                                             {(() => {
-                                                 let rName = user.userRole?.name || (typeof user.userRole === 'string' ? 'Role ID: ' + user.userRole.substring(0,5) : 'Member');
-                                                 return rName.toLowerCase() === 'employee' ? 'USER' : rName;
-                                             })()}
-                                         </span>
-
-                                         {!user.isActive && (
-                                             <div className="absolute top-4 left-4 bg-red-100 text-red-600 border border-red-200 px-2 py-0.5 rounded text-[10px] font-bold uppercase">
-                                                 Disabled
-                                             </div>
-                                         )}
-
-                                         <div className="w-full space-y-2.5 pt-5 border-t border-slate-50 mt-auto">
-                                             <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-slate-400 group-hover:text-slate-600 transition-colors">
-                                                 <IoMailOutline className="text-primary/40 group-hover:text-primary transition-colors" size={14} />
-                                                 <span className="truncate max-w-[150px]">{user.email}</span>
-                                             </div>
-                                             <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-slate-400 group-hover:text-slate-600 transition-colors">
-                                                 <IoCallOutline className="text-primary/40 group-hover:text-primary transition-colors" size={14} />
-                                                 <span>{user.mobile || user.phoneNumber || 'NO CONTACT'}</span>
-                                             </div>
-                                         </div>
-
-                                         <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                                             <button 
-                                                onClick={() => navigate('/user/create', { state: { user } })}
-                                                className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all shadow-sm bg-white"
-                                                title="Edit User"
-                                             >
-                                                <FaEdit size={14} />
-                                             </button>
-                                             
-                                             {!(user.userRole?.name === 'admin' || (user.userRoles && user.userRoles.some(r => r.name === 'admin'))) && (
-                                                 <button 
-                                                    onClick={async () => {
-                                                        if (actionLoading) return;
-                                                        setActionLoading(user._id);
-                                                        try {
-                                                            await UserApi.bulkUpdateStatus({ userIds: [user._id], isActive: !user.isActive });
-                                                            toast.success(user.isActive ? "User disabled successfully" : "User enabled successfully");
-                                                            await fetchUsers();
-                                                        } catch (e) {
-                                                            toast.error("Failed to update status");
-                                                        } finally {
-                                                            setActionLoading(null);
-                                                        }
-                                                    }}
-                                                    disabled={actionLoading === user._id}
-                                                    className={`p-2 rounded-xl transition-all shadow-sm bg-white font-bold flex items-center justify-center ${user.isActive ? 'text-red-500 hover:bg-red-50' : 'text-green-500 hover:bg-green-50'} ${actionLoading === user._id ? 'opacity-50 cursor-wait' : ''}`}
-                                                    title={user.isActive ? 'Disable User' : 'Enable User'}
-                                                 >
-                                                    {actionLoading === user._id ? (
-                                                        <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                                                    ) : (
-                                                        user.isActive ? <IoLockClosed size={14} /> : <IoLockOpen size={14} />
-                                                    )}
-                                                 </button>
-                                             )}
-                                         </div>
+                                    <div key={i} className="p-5 animate-pulse flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+                                            <div className="space-y-2">
+                                                <div className="w-32 h-3.5 bg-slate-200 dark:bg-slate-800 rounded"></div>
+                                                <div className="w-48 h-3 bg-slate-100 dark:bg-slate-800/60 rounded"></div>
+                                            </div>
+                                        </div>
+                                        <div className="w-16 h-6 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
                                     </div>
                                 ))
+                            ) : filteredUsers.length > 0 ? (
+                                filteredUsers.map((user) => {
+                                    const roleName = getRoleName(user);
+                                    const isAdmin = isUserAdmin(user);
+                                    const isActive = user.isActive !== false;
+                                    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Anonymous User';
+
+                                    return (
+                                        <div 
+                                            key={user._id} 
+                                            className="grid grid-cols-12 px-5 py-4 items-center hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors group"
+                                        >
+                                            {/* Name & Avatar */}
+                                            <div className="col-span-6 flex items-center gap-3 min-w-0 pr-2">
+                                                <div className="relative shrink-0">
+                                                    <img 
+                                                        src={user.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=E34234&color=fff`} 
+                                                        alt={fullName}
+                                                        className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700 shadow-2xs"
+                                                    />
+                                                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-slate-900 ${isActive ? 'bg-emerald-500' : 'bg-rose-400'}`} />
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-sm font-semibold text-slate-800 dark:text-white truncate">
+                                                            {fullName}
+                                                        </span>
+                                                        {!isActive && (
+                                                            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900">
+                                                                Disabled
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-xs text-slate-400 dark:text-slate-500 truncate">
+                                                        {user.email || 'No email provided'}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Role Badge */}
+                                            <div className="col-span-3 flex items-center">
+                                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                                                    isAdmin 
+                                                        ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60' 
+                                                        : 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60'
+                                                }`}>
+                                                    {isAdmin ? <IoShieldCheckmarkOutline size={13} /> : <IoPersonOutline size={12} />}
+                                                    <span>{roleName}</span>
+                                                </span>
+                                            </div>
+
+                                            {/* Action Controls */}
+                                            <div className="col-span-3 flex items-center justify-end gap-2">
+                                                {/* Active / Disabled State Toggle Button */}
+                                                {isCurrentAdmin && !isAdmin && (
+                                                    <button
+                                                        onClick={() => handleToggleStatus(user)}
+                                                        disabled={actionLoading === user._id}
+                                                        className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
+                                                            isActive 
+                                                                ? 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 dark:hover:bg-rose-950/30' 
+                                                                : 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100'
+                                                        }`}
+                                                        title={isActive ? "Disable Member" : "Enable Member"}
+                                                    >
+                                                        {actionLoading === user._id ? (
+                                                            <span className="animate-spin inline-block">⌛</span>
+                                                        ) : isActive ? (
+                                                            "Disable"
+                                                        ) : (
+                                                            "Enable"
+                                                        )}
+                                                    </button>
+                                                )}
+
+                                                {/* Edit Button */}
+                                                {isCurrentAdmin && (
+                                                    <button
+                                                        onClick={() => navigate('/user/create', { state: { user } })}
+                                                        className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary/40 dark:hover:text-primary hover:bg-primary/5 transition-colors cursor-pointer"
+                                                        title="Edit Member"
+                                                    >
+                                                        <FaEdit size={13} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })
                             ) : (
-                                <div className="col-span-full text-center py-20 text-textSub">
-                                    <p>No users found.</p>
+                                <div className="p-12 text-center text-slate-400 dark:text-slate-500">
+                                    <p className="text-sm">No members found matching "{search}"</p>
                                 </div>
                             )}
                         </div>
-                        {/* Pagination */}
-                        {!loading && totalPages > 1 && (
-                            <div className="mt-8 flex justify-center items-center gap-2">
-                                <button 
-                                    onClick={() => paginate(currentPage - 1)} 
-                                    disabled={currentPage === 1}
-                                    className="px-3 py-1 bg-white border border-borderLight rounded-lg text-sm text-textSub disabled:opacity-50 hover:bg-slate-50 disabled:hover:bg-white transition-colors"
-                                >
-                                    Previous
-                                </button>
-                                {[...Array(totalPages)].map((_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => paginate(i + 1)}
-                                        className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-                                            currentPage === i + 1 
-                                                ? 'bg-primary text-white shadow-sm' 
-                                                : 'bg-white border border-borderLight text-textSub hover:bg-slate-50'
-                                        }`}
-                                    >
-                                        {i + 1}
-                                    </button>
-                                ))}
-                                <button 
-                                    onClick={() => paginate(currentPage + 1)} 
-                                    disabled={currentPage === totalPages}
-                                    className="px-3 py-1 bg-white border border-borderLight rounded-lg text-sm text-textSub disabled:opacity-50 hover:bg-slate-50 disabled:hover:bg-white transition-colors"
-                                >
-                                    Next
-                                </button>
+                    </div>
+
+                    {/* Right Column: Access Control Explanatory Card (Image 4 Design) */}
+                    <div className="space-y-4">
+                        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4 transition-colors">
+                            <div className="flex items-center gap-2">
+                                <IoShieldCheckmarkOutline className="text-primary text-lg" />
+                                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Access control</h3>
                             </div>
-                        )}
-                    </>
-                )}
+                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                Sarthi maintains two straightforward authorization tiers to keep learning focused and administrative governance secure.
+                            </p>
+
+                            {/* Admin Tier Box */}
+                            <div className="p-3.5 rounded-xl bg-purple-50/70 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/50 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-purple-600 dark:bg-purple-400"></span>
+                                    <h4 className="text-xs font-bold text-purple-900 dark:text-purple-300">Admin</h4>
+                                </div>
+                                <p className="text-[11px] text-purple-800/80 dark:text-purple-300/80 leading-normal">
+                                    Full workspace authority. Can manage curricula, compile & publish problems in Studio, configure Arenas, toggle member accounts, and administer system settings.
+                                </p>
+                            </div>
+
+                            {/* Member Tier Box */}
+                            <div className="p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400"></span>
+                                    <h4 className="text-xs font-bold text-blue-900 dark:text-blue-300">Member</h4>
+                                </div>
+                                <p className="text-[11px] text-blue-800/80 dark:text-blue-300/80 leading-normal">
+                                    Learner workspace access. Can navigate active Arenas, practice company-tagged questions, run code against test suites, log focus sessions, and track consistency streaks.
+                                </p>
+                            </div>
+
+                            {/* Security Note */}
+                            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400 flex items-start gap-1.5">
+                                <IoLockClosedOutline className="shrink-0 mt-0.5 text-slate-400" />
+                                <span>Administrative mutation endpoints are server-enforced with JWT authorization.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     );

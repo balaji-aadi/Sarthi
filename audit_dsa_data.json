@@ -1,0 +1,3669 @@
+{
+  "Phase 1": {
+    "projectName": "DSA phase 1",
+    "projectKey": "DSA",
+    "totalPatterns": 12,
+    "totalProblems": 121,
+    "totalCompleted": 121,
+    "patterns": [
+      {
+        "sNo": 1,
+        "taskId": "DSA-1",
+        "pattern": "Sliding window / Two pointers",
+        "masterStatus": "done",
+        "parentStatus": "inprogress",
+        "totalProblems": 12,
+        "completedCount": 12,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-2",
+            "name": "Patterns Brief ",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-3",
+            "name": "Maximum Points you can obtain from cards ",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-4",
+            "name": "Longest substring without repeating characters",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-6",
+            "name": "Maximum consecutive ones |||",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-7",
+            "name": "Fruit into baskets ",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-11",
+            "name": "Longest substring with atmost k distinct character",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-12",
+            "name": "Number of substrings containing all 3 characters ",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-13",
+            "name": "Binary subarrays with some ",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-14",
+            "name": "Count number of nice subarrays ",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-15",
+            "name": "Subarrays with k different integers",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 11,
+            "taskId": "DSA-16",
+            "name": "Minimum window substring",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 12,
+            "taskId": "DSA-161",
+            "name": "Longest Repeating Character Replacement",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 2,
+        "taskId": "DSA-18",
+        "pattern": "Two Pointers",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 10,
+        "completedCount": 10,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-19",
+            "name": "Two Sum II (sorted)",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-20",
+            "name": "Remove duplicates from sorted array",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-21",
+            "name": "Container with most water",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-22",
+            "name": "3Sum",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-23",
+            "name": "4Sum",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-24",
+            "name": "Move zeroes",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-25",
+            "name": "Valid palindrome",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-26",
+            "name": "Squares of sorted array",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-27",
+            "name": "Partition array",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-28",
+            "name": "Trapping rain water",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 3,
+        "taskId": "DSA-29",
+        "pattern": "Hashing",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 10,
+        "completedCount": 10,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-30",
+            "name": "Two Sum",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-31",
+            "name": "Group Anagrams",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-32",
+            "name": "Top K frequent elements",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-33",
+            "name": "Longest consecutive sequence",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-34",
+            "name": "Subarray sum equals K",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-35",
+            "name": "Happy number",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-36",
+            "name": "Isomorphic strings",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-37",
+            "name": "Find the Duplicate Number",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-38",
+            "name": "Majority element",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-39",
+            "name": "Contains duplicate II",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 4,
+        "taskId": "DSA-40",
+        "pattern": "Prefix Sum",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 10,
+        "completedCount": 10,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-41",
+            "name": "Range sum query",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-42",
+            "name": "Subarray sum equals K",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-43",
+            "name": "Continuous subarray sum",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-44",
+            "name": "Subarrays divisible by K",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-45",
+            "name": "Contiguous Array",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-46",
+            "name": "Maximum size subarray sum = K",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-47",
+            "name": "Difference array basics",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-48",
+            "name": "Car pooling",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-49",
+            "name": "Range addition",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-50",
+            "name": "Product of array except self",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 5,
+        "taskId": "DSA-51",
+        "pattern": "Kadane’s Algorithm",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 10,
+        "completedCount": 10,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-52",
+            "name": "Maximum subarray",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-53",
+            "name": "Maximum sum circular subarray",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-54",
+            "name": "Maximum product subarray",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-55",
+            "name": "Best time to buy and sell stock",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-56",
+            "name": "Maximum sum rectangle (2D Kadane)",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-57",
+            "name": "Maximum subarray sum with one deletion",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-58",
+            "name": "K concatenation maximum sum",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-59",
+            "name": "Maximum alternating subarray sum",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-60",
+            "name": "Largest sum of averages",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-61",
+            "name": "Maximum difference problem",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 6,
+        "taskId": "DSA-73",
+        "pattern": "Intervals",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 11,
+        "completedCount": 11,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-74",
+            "name": "Merge intervals",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-75",
+            "name": "Insert interval",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-76",
+            "name": "Non-overlapping intervals",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-77",
+            "name": "Meeting rooms ",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-78",
+            "name": "Meeting rooms II",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-79",
+            "name": "My calendar ||",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-80",
+            "name": "Employee free time",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-81",
+            "name": "Interval List Intersections",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-82",
+            "name": "Car pooling",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-83",
+            "name": "My calendar I",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 11,
+            "taskId": "DSA-162",
+            "name": "Maximum Population Year",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 7,
+        "taskId": "DSA-84",
+        "pattern": "Monotonic Stack",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 10,
+        "completedCount": 10,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-85",
+            "name": "Next greater element i",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-86",
+            "name": "Daily temperatures",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-87",
+            "name": "Stock span",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-88",
+            "name": "Largest rectangle in histogram",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-89",
+            "name": "Maximal rectangle",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-90",
+            "name": "Next smaller element",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-91",
+            "name": "Sum of subarray minimums",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-92",
+            "name": "Trapping rain water",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-93",
+            "name": "Remove K digits",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-94",
+            "name": "Car fleet",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 8,
+        "taskId": "DSA-95",
+        "pattern": "Top K Elements",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 10,
+        "completedCount": 10,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-96",
+            "name": "Top K frequent elements",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-97",
+            "name": "Kth Largest Element in an Array",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-98",
+            "name": "K Closest Points to Origin",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-99",
+            "name": "Merge K sorted lists",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-100",
+            "name": "Kth Smallest Element in a Sorted Matrix",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-101",
+            "name": "Find median from data stream",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-102",
+            "name": "Reorganize string",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-103",
+            "name": "Task scheduler",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-104",
+            "name": "Sort characters by frequency",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-105",
+            "name": "Find K Closest Elements",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 9,
+        "taskId": "DSA-106",
+        "pattern": "Palindrome (STRINGS)",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 10,
+        "completedCount": 10,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-107",
+            "name": "Valid palindrome",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-108",
+            "name": "Longest palindromic substring",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-109",
+            "name": "Palindromic Substrings",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-110",
+            "name": "Longest palindrome subsequence",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-111",
+            "name": "Palindrome partitioning",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-112",
+            "name": "Shortest palindrome",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-113",
+            "name": "Break a palindrome",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-114",
+            "name": "Palindrome pairs",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-115",
+            "name": "Minimum insertions to palindrome",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-116",
+            "name": "Partition labels",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 10,
+        "taskId": "DSA-139",
+        "pattern": "Two Pointers (STRINGS)",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 10,
+        "completedCount": 10,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-140",
+            "name": "Valid palindrome",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-141",
+            "name": "Reverse string",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-142",
+            "name": "Reverse Words in a String",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-143",
+            "name": "Longest Palindromic Substring",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-144",
+            "name": "String compression",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-145",
+            "name": "Merge strings alternately",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-146",
+            "name": "Backspace string compare",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-147",
+            "name": "One edit distance",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-148",
+            "name": "Remove Duplicates from Sorted Array",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-149",
+            "name": " Minimum Swaps to Move Zeros to End",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 11,
+        "taskId": "DSA-150",
+        "pattern": "Hashing & Anagram (STRINGS)",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 8,
+        "completedCount": 8,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-151",
+            "name": "Valid anagram",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-152",
+            "name": "Group anagrams",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-153",
+            "name": "Find All Anagrams in a String",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-155",
+            "name": "Minimum Number of Steps to Make Two Strings Anagram",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-156",
+            "name": "Ransom note",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-157",
+            "name": "Isomorphic Strings",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-158",
+            "name": "Word pattern",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-160",
+            "name": "First Unique Character in a String",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 12,
+        "taskId": "DSA-163",
+        "pattern": "Binary search",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 10,
+        "completedCount": 10,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSA-164",
+            "name": "Find First and Last Position of Element in Sorted Array",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSA-165",
+            "name": "Search in Rotated Sorted Array",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSA-166",
+            "name": "Find Minimum in Rotated Sorted Array",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSA-167",
+            "name": "Koko Eating Bananas",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSA-168",
+            "name": "Capacity to Ship Packages Within D Days",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSA-169",
+            "name": "Minimum Number of Days to Make m Bouquets",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSA-170",
+            "name": "Aggressive Cows",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSA-171",
+            "name": "Split Array Largest Sum",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSA-172",
+            "name": "Magnetic Force Between Two Balls",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSA-173",
+            "name": "Median of Two Sorted Arrays",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      }
+    ]
+  },
+  "Phase 2": {
+    "projectName": "DSA Phase 2",
+    "projectKey": "DSAP2",
+    "totalPatterns": 29,
+    "totalProblems": 105,
+    "totalCompleted": 73,
+    "patterns": [
+      {
+        "sNo": 1,
+        "taskId": "DSAP2-1",
+        "pattern": "Basic Operations - Linked List",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 5,
+        "completedCount": 5,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-2",
+            "name": "Reverse Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-3",
+            "name": "Middle of the Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-4",
+            "name": "Delete Node in a Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-5",
+            "name": "Remove Linked List Elements",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP2-6",
+            "name": "Remove Duplicates from Sorted List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 2,
+        "taskId": "DSAP2-7",
+        "pattern": "Fast & Slow Pointer - Linked List",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 6,
+        "completedCount": 6,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-8",
+            "name": "Linked List Cycle",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-9",
+            "name": "Linked List Cycle II",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-10",
+            "name": "Remove Nth Node From End of List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-11",
+            "name": "Palindrome Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP2-12",
+            "name": "Reorder List",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP2-13",
+            "name": "Delete the Middle Node of a Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 3,
+        "taskId": "DSAP2-14",
+        "pattern": "Reverse Pattern - Linked List",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 8,
+        "completedCount": 8,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-15",
+            "name": "Reverse Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-16",
+            "name": "Reverse Linked List II",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-17",
+            "name": "Reverse Nodes in K Group",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-18",
+            "name": "Swap Nodes in Pairs",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP2-19",
+            "name": "Rotate List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP2-20",
+            "name": "Reverse Nodes in Even Length Groups",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSAP2-21",
+            "name": "Reverse Linked List Recursive",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSAP2-22",
+            "name": "Reverse first K elements of given linked list",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 4,
+        "taskId": "DSAP2-23",
+        "pattern": "Dummy Node Pattern - Linked List",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 5,
+        "completedCount": 5,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-24",
+            "name": "Add Two Numbers",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-25",
+            "name": "Partition List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-26",
+            "name": "Merge Two Sorted Lists",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-27",
+            "name": "Remove Nth Node From End of List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP2-28",
+            "name": "Swap Nodes in Pairs",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 5,
+        "taskId": "DSAP2-29",
+        "pattern": "Merge Pattern - Linked List",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 4,
+        "completedCount": 4,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-30",
+            "name": "Merge Two Sorted Lists",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-31",
+            "name": "Merge K Sorted Lists",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-32",
+            "name": "Sort List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-33",
+            "name": "Insertion Sort List",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 6,
+        "taskId": "DSAP2-34",
+        "pattern": "Two Pointer Pattern - Linked List",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 3,
+        "completedCount": 3,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-35",
+            "name": "Intersection of Two Linked Lists",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-36",
+            "name": "Odd Even Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-37",
+            "name": "Maximum Twin Sum of a Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 7,
+        "taskId": "DSAP2-38",
+        "pattern": "Arithmetic Pattern - Linked List",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 3,
+        "completedCount": 3,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-39",
+            "name": "Add Two Numbers II",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-40",
+            "name": "Double a Number Represented as a Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-41",
+            "name": "Plus One Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 8,
+        "taskId": "DSAP2-42",
+        "pattern": "Random Pointer - Linked List",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 2,
+        "completedCount": 2,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-43",
+            "name": "Copy List with Random Pointer",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-44",
+            "name": "Clone Linked List with Random Pointer (alternate approach)",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 9,
+        "taskId": "DSAP2-45",
+        "pattern": "Flatten Pattern - Linked List",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 1,
+        "completedCount": 1,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-46",
+            "name": "Flatten a Multilevel Doubly Linked List",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 10,
+        "taskId": "DSAP2-47",
+        "pattern": "Design (LRU) - Linked List",
+        "masterStatus": "hold",
+        "parentStatus": "hold",
+        "totalProblems": 3,
+        "completedCount": 1,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-48",
+            "name": "LRU Cache",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-49",
+            "name": "LFU Cache",
+            "masterStatus": "hold",
+            "utpStatus": null,
+            "resolvedStatus": "hold",
+            "displayStatus": "On Hold"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-50",
+            "name": "Design Browser History",
+            "masterStatus": "hold",
+            "utpStatus": null,
+            "resolvedStatus": "hold",
+            "displayStatus": "On Hold"
+          }
+        ]
+      },
+      {
+        "sNo": 11,
+        "taskId": "DSAP2-51",
+        "pattern": "Basic Stack - Stack",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 4,
+        "completedCount": 4,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-52",
+            "name": "Implement Stack",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-53",
+            "name": "Min Stack",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-54",
+            "name": "Baseball Game",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-55",
+            "name": "Backspace String Compare",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 12,
+        "taskId": "DSAP2-56",
+        "pattern": "Expression Evaluation - Stack",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 4,
+        "completedCount": 2,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-57",
+            "name": "Evaluate Reverse Polish Notation",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-58",
+            "name": "Basic Calculator",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-59",
+            "name": "Basic Calculator II",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-60",
+            "name": "Decode String",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 13,
+        "taskId": "DSAP2-61",
+        "pattern": "Parentheses Pattern - Stack",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 5,
+        "completedCount": 3,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-62",
+            "name": "Valid Parentheses",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-63",
+            "name": "Generate Parentheses",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-64",
+            "name": "Longest Valid Parentheses",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-65",
+            "name": "Minimum Remove to Make Valid Parentheses",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP2-66",
+            "name": "Remove Invalid Parentheses",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          }
+        ]
+      },
+      {
+        "sNo": 14,
+        "taskId": "DSAP2-67",
+        "pattern": "Simulation Pattern - Stack",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 4,
+        "completedCount": 4,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-68",
+            "name": "Asteroid Collision",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-69",
+            "name": "Daily Temperatures",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-70",
+            "name": "Remove K Digits",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-71",
+            "name": "Simplify Path",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 15,
+        "taskId": "DSAP2-72",
+        "pattern": "Design Stack - Stack",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 3,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-73",
+            "name": "Design Browser History",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-74",
+            "name": "Max Stack",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-75",
+            "name": "Maximum Frequency Stack",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          }
+        ]
+      },
+      {
+        "sNo": 16,
+        "taskId": "DSAP2-76",
+        "pattern": "Queue Basics - Queue",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 3,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-77",
+            "name": "Implement Queue",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-78",
+            "name": "Number of Recent Calls",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-79",
+            "name": "Moving Average from Data Stream",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          }
+        ]
+      },
+      {
+        "sNo": 17,
+        "taskId": "DSAP2-80",
+        "pattern": "Deque Pattern - Queue",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 3,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-81",
+            "name": "Sliding Window Maximum",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-82",
+            "name": "Shortest Subarray with Sum at Least K",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-83",
+            "name": "Design Circular Deque",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          }
+        ]
+      },
+      {
+        "sNo": 18,
+        "taskId": "DSAP2-84",
+        "pattern": "Circular Queue - Queue",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 2,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-85",
+            "name": "Design Circular Queue",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-86",
+            "name": "First Unique Number",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          }
+        ]
+      },
+      {
+        "sNo": 19,
+        "taskId": "DSAP2-87",
+        "pattern": "Design Queue - Queue",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 2,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-88",
+            "name": "Front Middle Back Queue",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-89",
+            "name": "Hit Counter",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          }
+        ]
+      },
+      {
+        "sNo": 20,
+        "taskId": "DSAP2-90",
+        "pattern": "Top K Pattern - Heap",
+        "masterStatus": "done",
+        "parentStatus": "done",
+        "totalProblems": 4,
+        "completedCount": 4,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-91",
+            "name": "Top K Frequent Elements",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-92",
+            "name": "K Closest Points to Origin",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-93",
+            "name": "Kth Largest Element in an Array",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-94",
+            "name": "Find K Pairs with Smallest Sums",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 21,
+        "taskId": "DSAP2-95",
+        "pattern": "Merge Pattern - Heap",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 3,
+        "completedCount": 3,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-96",
+            "name": "Merge K Sorted Lists",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-97",
+            "name": "Smallest Range Covering Elements from K Lists",
+            "masterStatus": "done",
+            "utpStatus": null,
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-98",
+            "name": "Ugly Number II",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 22,
+        "taskId": "DSAP2-99",
+        "pattern": "Two Heap Pattern - Heap",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 3,
+        "completedCount": 1,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-100",
+            "name": "Find Median from Data Stream",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-101",
+            "name": "Sliding Window Median",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-102",
+            "name": "IPO",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          }
+        ]
+      },
+      {
+        "sNo": 23,
+        "taskId": "DSAP2-103",
+        "pattern": "Scheduling Pattern - Heap",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 3,
+        "completedCount": 1,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-104",
+            "name": "Meeting Rooms II",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-105",
+            "name": "Task Scheduler",
+            "masterStatus": "backlog",
+            "utpStatus": "hold",
+            "resolvedStatus": "hold",
+            "displayStatus": "On Hold"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-106",
+            "name": "Maximum Number of Events That Can Be Attended",
+            "masterStatus": "backlog",
+            "utpStatus": "todo",
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 24,
+        "taskId": "DSAP2-107",
+        "pattern": "Design - Heap",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 2,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-108",
+            "name": "Design Twitter",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-109",
+            "name": "Seat Reservation Manager",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          }
+        ]
+      },
+      {
+        "sNo": 25,
+        "taskId": "DSAP2-110",
+        "pattern": "Fundamentals - Recursion",
+        "masterStatus": "backlog",
+        "parentStatus": "done",
+        "totalProblems": 5,
+        "completedCount": 5,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-111",
+            "name": "Factorial",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-112",
+            "name": "Fibonacci",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-113",
+            "name": "Power Function",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-114",
+            "name": "Sum of Array",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP2-115",
+            "name": "Reverse String",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 26,
+        "taskId": "DSAP2-116",
+        "pattern": "Tree-style Recursion - Recursion",
+        "masterStatus": "backlog",
+        "parentStatus": "done",
+        "totalProblems": 5,
+        "completedCount": 5,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-117",
+            "name": "Generate Parentheses",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-118",
+            "name": "Letter Combinations of a Phone Number",
+            "masterStatus": "done",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-119",
+            "name": "Permutations",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-120",
+            "name": "Subsets",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP2-121",
+            "name": "Combination Sum",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 27,
+        "taskId": "DSAP2-122",
+        "pattern": "Divide & Conquer - Recursion",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 4,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-123",
+            "name": "Merge Sort",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-124",
+            "name": "Quick Sort",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-125",
+            "name": "Pow(x, n)",
+            "masterStatus": "backlog",
+            "utpStatus": "todo",
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP2-126",
+            "name": "Search in Rotated Sorted Array (recursive variant)",
+            "masterStatus": "backlog",
+            "utpStatus": "todo",
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 28,
+        "taskId": "DSAP2-127",
+        "pattern": "Recursive Linked List - Recursion",
+        "masterStatus": "backlog",
+        "parentStatus": "done",
+        "totalProblems": 3,
+        "completedCount": 3,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-128",
+            "name": "Reverse Linked List ",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-129",
+            "name": "Swap Nodes in Pairs",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-130",
+            "name": "Merge Two Sorted Lists",
+            "masterStatus": "backlog",
+            "utpStatus": "done",
+            "resolvedStatus": "done",
+            "displayStatus": "Completed"
+          }
+        ]
+      },
+      {
+        "sNo": 29,
+        "taskId": "DSAP2-131",
+        "pattern": "Advanced Recursion - Recursion",
+        "masterStatus": "backlog",
+        "parentStatus": "backlog",
+        "totalProblems": 3,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP2-132",
+            "name": "Josephus Problem",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP2-133",
+            "name": "Tower of Hanoi",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP2-134",
+            "name": "Recursive Bubble Sort (conceptual exercise)",
+            "masterStatus": "backlog",
+            "utpStatus": null,
+            "resolvedStatus": "backlog",
+            "displayStatus": "Backlog"
+          }
+        ]
+      }
+    ]
+  },
+  "Phase 3": {
+    "projectName": "DSA Phase 3",
+    "projectKey": "DSAP3",
+    "totalPatterns": 15,
+    "totalProblems": 110,
+    "totalCompleted": 0,
+    "patterns": [
+      {
+        "sNo": 1,
+        "taskId": "DSAP3-1",
+        "pattern": "Tree BFS / Level Order Traversal",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 6,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-2",
+            "name": "Binary Tree Level Order Traversal",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-3",
+            "name": "Binary Tree Zigzag Level Order Traversal",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-4",
+            "name": "Binary Tree Right Side View",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-5",
+            "name": "Minimum Depth of Binary Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-6",
+            "name": "Populating Next Right Pointers in Each Node",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP3-7",
+            "name": "Average of Levels in Binary Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 2,
+        "taskId": "DSAP3-8",
+        "pattern": "Tree DFS, Construction, LCA & BST Operations",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 15,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-9",
+            "name": "Binary Tree Inorder Traversal",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-10",
+            "name": "Maximum Depth of Binary Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-11",
+            "name": "Balanced Binary Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-12",
+            "name": "Symmetric Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-13",
+            "name": "Diameter of Binary Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP3-14",
+            "name": "Path Sum",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSAP3-15",
+            "name": "Binary Tree Maximum Path Sum",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSAP3-16",
+            "name": "Lowest Common Ancestor of a Binary Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSAP3-17",
+            "name": "Lowest Common Ancestor of a Binary Search Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSAP3-18",
+            "name": "Validate Binary Search Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 11,
+            "taskId": "DSAP3-19",
+            "name": "Search in a Binary Search Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 12,
+            "taskId": "DSAP3-20",
+            "name": "Kth Smallest Element in a BST",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 13,
+            "taskId": "DSAP3-21",
+            "name": "Construct Binary Tree from Preorder and Inorder Traversal",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 14,
+            "taskId": "DSAP3-22",
+            "name": "Serialize and Deserialize Binary Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 15,
+            "taskId": "DSAP3-23",
+            "name": "House Robber III",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 3,
+        "taskId": "DSAP3-24",
+        "pattern": "Graph BFS/DFS & Connected Components",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 7,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-25",
+            "name": "Number of Islands",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-26",
+            "name": "Rotting Oranges",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-27",
+            "name": "Clone Graph",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-28",
+            "name": "Pacific Atlantic Water Flow",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-29",
+            "name": "Word Ladder",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP3-30",
+            "name": "Surrounded Regions",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSAP3-31",
+            "name": "Graph Valid Tree",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 4,
+        "taskId": "DSAP3-32",
+        "pattern": "Topological Sort (Kahn's Algorithm)",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 5,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-33",
+            "name": "Course Schedule",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-34",
+            "name": "Course Schedule II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-35",
+            "name": "Alien Dictionary",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-36",
+            "name": "Minimum Height Trees",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-37",
+            "name": "Sequence Reconstruction",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 5,
+        "taskId": "DSAP3-38",
+        "pattern": "Shortest Path & Minimum Spanning Tree",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 5,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-39",
+            "name": "Network Delay Time",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-40",
+            "name": "Path with Maximum Probability",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-41",
+            "name": "Min Cost to Connect All Points",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-42",
+            "name": "Cheapest Flights Within K Stops",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-43",
+            "name": "Swim in Rising Water",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 6,
+        "taskId": "DSAP3-44",
+        "pattern": "Union-Find (Disjoint Set Unit - DSU)",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 4,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-45",
+            "name": "Redundant Connection",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-46",
+            "name": "Number of Provinces",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-47",
+            "name": "Accounts Merge",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-48",
+            "name": "Most Stones Removed with Same Row or Column",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 7,
+        "taskId": "DSAP3-49",
+        "pattern": "0/1 & Unbounded Knapsack DP",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 6,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-50",
+            "name": "Coin Change",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-51",
+            "name": "Partition Equal Subset Sum",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-52",
+            "name": "Target Sum",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-53",
+            "name": "Combination Sum IV",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-54",
+            "name": "Ones and Zeroes",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP3-55",
+            "name": "Last Stone Weight II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 8,
+        "taskId": "DSAP3-56",
+        "pattern": "Grid Path & Matrix DP",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 5,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-57",
+            "name": "Unique Paths",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-58",
+            "name": "Minimum Path Sum",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-59",
+            "name": "Maximal Square",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-60",
+            "name": "Dungeon Game",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-61",
+            "name": "Cherry Pickup",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 9,
+        "taskId": "DSAP3-62",
+        "pattern": "Greedy Scheduling & Jump Game",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 5,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-63",
+            "name": "Jump Game",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-64",
+            "name": "Jump Game II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-65",
+            "name": "Gas Station",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-66",
+            "name": "Minimum Number of Arrows to Burst Balloons",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-67",
+            "name": "Task Scheduler",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 10,
+        "taskId": "DSAP3-68",
+        "pattern": "Backtracking (Subsets/Combinations)",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 10,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-69",
+            "name": "Subsets",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-70",
+            "name": "Subsets II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-71",
+            "name": "Permutations",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-72",
+            "name": "Permutations II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-73",
+            "name": "Combination Sum",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP3-74",
+            "name": "Combination Sum II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSAP3-75",
+            "name": "Combination Sum III",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSAP3-76",
+            "name": "N-Queens",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSAP3-77",
+            "name": "Sudoku Solver",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSAP3-78",
+            "name": "Word Search",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 11,
+        "taskId": "DSAP3-79",
+        "pattern": "Interval DP & State Machine DP",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 10,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-80",
+            "name": "Burst Balloons",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-81",
+            "name": "Guess Number Higher or Lower II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-82",
+            "name": "Palindrome Partitioning II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-83",
+            "name": "House Robber",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-84",
+            "name": "House Robber II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP3-85",
+            "name": "Best Time to Buy and Sell Stock with Cooldown",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSAP3-86",
+            "name": "Best Time to Buy and Sell Stock with Transaction Fee",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSAP3-87",
+            "name": "Best Time to Buy and Sell Stock III",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSAP3-88",
+            "name": "Best Time to Buy and Sell Stock IV",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSAP3-89",
+            "name": "Paint Fence",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 12,
+        "taskId": "DSAP3-90",
+        "pattern": "LCS & LIS Pattern (Strings/Sequences)",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 11,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-91",
+            "name": "Longest Common Subsequence",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-92",
+            "name": "Longest Palindromic Subsequence",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-93",
+            "name": "Edit Distance",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-94",
+            "name": "Longest Increasing Subsequence",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-95",
+            "name": "Russian Doll Envelopes",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP3-96",
+            "name": "Number of Longest Increasing Subsequences",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSAP3-97",
+            "name": "Distinct Subsequences",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSAP3-98",
+            "name": "Delete Operation for Two Strings",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 9,
+            "taskId": "DSAP3-99",
+            "name": "Shortest Common Supersequence",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 10,
+            "taskId": "DSAP3-100",
+            "name": "Interleaving String",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 11,
+            "taskId": "DSAP3-101",
+            "name": "Minimum ASCII Delete Sum for Two Strings",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 13,
+        "taskId": "DSAP3-102",
+        "pattern": "Trie (Prefix Tree) Design & Applications",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 6,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-103",
+            "name": "Implement Trie (Prefix Tree)",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-104",
+            "name": "Design Add and Search Words Data Structure",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-105",
+            "name": "Word Search II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-106",
+            "name": "Replace Words",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-107",
+            "name": "Map Sum Pairs",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP3-108",
+            "name": "Prefix and Suffix Search",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 14,
+        "taskId": "DSAP3-109",
+        "pattern": "Bit Manipulation & Bitmasking",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 8,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-110",
+            "name": "Single Number",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-111",
+            "name": "Single Number II",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-112",
+            "name": "Single Number III",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-113",
+            "name": "Counting Bits",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-114",
+            "name": "Reverse Bits",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP3-115",
+            "name": "Number of 1 Bits",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSAP3-116",
+            "name": "Bitwise AND of Numbers Range",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 8,
+            "taskId": "DSAP3-117",
+            "name": "Sum of Two Integers",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      },
+      {
+        "sNo": 15,
+        "taskId": "DSAP3-118",
+        "pattern": "Math & Number Theory (Optional Fundamentals)",
+        "masterStatus": "todo",
+        "parentStatus": "todo",
+        "totalProblems": 7,
+        "completedCount": 0,
+        "problems": [
+          {
+            "idx": 1,
+            "taskId": "DSAP3-119",
+            "name": "Count Primes",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 2,
+            "taskId": "DSAP3-120",
+            "name": "Greatest Common Divisor of Strings",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 3,
+            "taskId": "DSAP3-121",
+            "name": "Pow(x, n)",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 4,
+            "taskId": "DSAP3-122",
+            "name": "Happy Number",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 5,
+            "taskId": "DSAP3-123",
+            "name": "Factorial Trailing Zeroes",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 6,
+            "taskId": "DSAP3-124",
+            "name": "Palindrome Number",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          },
+          {
+            "idx": 7,
+            "taskId": "DSAP3-125",
+            "name": "Roman to Integer",
+            "masterStatus": "todo",
+            "utpStatus": null,
+            "resolvedStatus": "todo",
+            "displayStatus": "Pending"
+          }
+        ]
+      }
+    ]
+  }
+}

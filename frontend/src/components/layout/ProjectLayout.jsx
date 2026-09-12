@@ -5,6 +5,7 @@ import ProjectSidebar from './ProjectSidebar';
 import Header from './Header'; // Reusing existing Header for TopbarUser info
 import TaskDetailDrawer from '../tasks/TaskDetailDrawer';
 import { ProjectApi } from '../../services/api/Project.api';
+import SarathiLoader from '../common/SarathiLoader';
 
 const ProjectLayout = () => {
     const { projectId } = useParams();
@@ -39,11 +40,7 @@ const ProjectLayout = () => {
     }, [projectId]);
 
     if (loading) {
-        return (
-            <div className="flex h-screen items-center justify-center bg-bgLight">
-               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </div>
-        );
+        return <SarathiLoader fullPage message="Loading workspace arena..." size="lg" />;
     }
 
     if (!project) {

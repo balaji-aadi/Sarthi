@@ -8,7 +8,8 @@ import {
     IoChevronDownOutline,
     IoSearchOutline,
     IoCloseOutline,
-    IoChevronUpOutline
+    IoChevronUpOutline,
+    IoCompassOutline
 } from 'react-icons/io5';
 import { MdFilterAltOff } from 'react-icons/md';
 import Select, { components } from 'react-select';
@@ -40,7 +41,9 @@ const DashboardHeader = ({
     onOpenSchedule,
     hasProjectSelected,
     isArenaScheduled,
-    isDataLoaded
+    isDataLoaded,
+    isLld,
+    onOpenRoadmap
 }) => {
 
     const tabs = [
@@ -191,8 +194,19 @@ const DashboardHeader = ({
                     ))}
                 </div>
 
-                {/* Actions (Hide Controls,  Create Task) */}
+                {/* Actions (Roadmap, Hide Controls, Create Task) */}
                 <div className="flex items-center gap-2 self-end sm:self-auto">
+
+                    {isLld && onOpenRoadmap && (
+                        <button
+                            onClick={onOpenRoadmap}
+                            className="bg-white hover:bg-slate-50 text-slate-700 hover:text-primary border border-slate-200/80 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-2xs"
+                            title="LLD Curriculum Roadmap & Target Outcomes"
+                        >
+                            <IoCompassOutline size={14} className="text-primary" />
+                            <span>Roadmap</span>
+                        </button>
+                    )}
 
                     {onHideControls && (
                         <button

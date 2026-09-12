@@ -1,0 +1,2354 @@
+[
+  {
+    "taskId": "DSA-2",
+    "title": "Patterns Brief",
+    "leetcodeUrl": null,
+    "difficulty": null,
+    "isUrlVerified": false
+  },
+  {
+    "taskId": "DSA-3",
+    "title": "Maximum Points you can obtain from cards",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-points-you-can-obtain-from-cards/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-4",
+    "title": "Longest substring without repeating characters",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-6",
+    "title": "Maximum consecutive ones |||",
+    "leetcodeUrl": "https://leetcode.com/problems/max-consecutive-ones-iii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-7",
+    "title": "Fruit into baskets",
+    "leetcodeUrl": "https://leetcode.com/problems/fruit-into-baskets/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-11",
+    "title": "Longest substring with atmost k distinct character",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-12",
+    "title": "Number of substrings containing all 3 characters",
+    "leetcodeUrl": "https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-13",
+    "title": "Binary subarrays with some",
+    "leetcodeUrl": "https://leetcode.com/problems/binary-subarrays-with-sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-14",
+    "title": "Count number of nice subarrays",
+    "leetcodeUrl": "https://leetcode.com/problems/count-number-of-nice-subarrays/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-15",
+    "title": "Subarrays with k different integers",
+    "leetcodeUrl": "https://leetcode.com/problems/subarrays-with-k-different-integers/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-16",
+    "title": "Minimum window substring",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-window-substring/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-19",
+    "title": "Two Sum II (sorted)",
+    "leetcodeUrl": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-20",
+    "title": "Remove duplicates from sorted array",
+    "leetcodeUrl": "https://leetcode.com/problems/remove-duplicates-from-sorted-array/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-21",
+    "title": "Container with most water",
+    "leetcodeUrl": "https://leetcode.com/problems/container-with-most-water/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-22",
+    "title": "3Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/3sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-23",
+    "title": "4Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/4sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-24",
+    "title": "Move zeroes",
+    "leetcodeUrl": "https://leetcode.com/problems/move-zeroes/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-25",
+    "title": "Valid palindrome",
+    "leetcodeUrl": "https://leetcode.com/problems/valid-palindrome/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-26",
+    "title": "Squares of sorted array",
+    "leetcodeUrl": "https://leetcode.com/problems/squares-of-a-sorted-array/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-27",
+    "title": "Partition array",
+    "leetcodeUrl": "https://leetcode.com/problems/partition-array-according-to-given-pivot/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-28",
+    "title": "Trapping rain water",
+    "leetcodeUrl": "https://leetcode.com/problems/trapping-rain-water/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-30",
+    "title": "Two Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/two-sum/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-31",
+    "title": "Group Anagrams",
+    "leetcodeUrl": "https://leetcode.com/problems/group-anagrams/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-32",
+    "title": "Top K frequent elements",
+    "leetcodeUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-33",
+    "title": "Longest consecutive sequence",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-consecutive-sequence/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-34",
+    "title": "Subarray sum equals K",
+    "leetcodeUrl": "https://leetcode.com/problems/subarray-sum-equals-k/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-35",
+    "title": "Happy number",
+    "leetcodeUrl": "https://leetcode.com/problems/happy-number/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-36",
+    "title": "Isomorphic strings",
+    "leetcodeUrl": "https://leetcode.com/problems/isomorphic-strings/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-37",
+    "title": "Find the Duplicate Number",
+    "leetcodeUrl": "https://leetcode.com/problems/find-the-duplicate-number/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-38",
+    "title": "Majority element",
+    "leetcodeUrl": "https://leetcode.com/problems/majority-element/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-39",
+    "title": "Contains duplicate II",
+    "leetcodeUrl": "https://leetcode.com/problems/contains-duplicate-ii/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-41",
+    "title": "Range sum query",
+    "leetcodeUrl": "https://leetcode.com/problems/range-sum-query-immutable/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-42",
+    "title": "Subarray sum equals K",
+    "leetcodeUrl": "https://leetcode.com/problems/subarray-sum-equals-k/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-43",
+    "title": "Continuous subarray sum",
+    "leetcodeUrl": "https://leetcode.com/problems/continuous-subarray-sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-44",
+    "title": "Subarrays divisible by K",
+    "leetcodeUrl": "https://leetcode.com/problems/subarray-sums-divisible-by-k/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-45",
+    "title": "Contiguous Array",
+    "leetcodeUrl": "https://leetcode.com/problems/contiguous-array/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-46",
+    "title": "Maximum size subarray sum = K",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-47",
+    "title": "Difference array basics",
+    "leetcodeUrl": null,
+    "difficulty": null,
+    "isUrlVerified": false
+  },
+  {
+    "taskId": "DSA-48",
+    "title": "Car pooling",
+    "leetcodeUrl": "https://leetcode.com/problems/car-pooling/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-49",
+    "title": "Range addition",
+    "leetcodeUrl": "https://leetcode.com/problems/range-addition/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-50",
+    "title": "Product of array except self",
+    "leetcodeUrl": "https://leetcode.com/problems/product-of-array-except-self/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-52",
+    "title": "Maximum subarray",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-subarray/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-53",
+    "title": "Maximum sum circular subarray",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-sum-circular-subarray/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-54",
+    "title": "Maximum product subarray",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-product-subarray/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-55",
+    "title": "Best time to buy and sell stock",
+    "leetcodeUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-56",
+    "title": "Maximum sum rectangle (2D Kadane)",
+    "leetcodeUrl": null,
+    "difficulty": "Hard",
+    "isUrlVerified": false
+  },
+  {
+    "taskId": "DSA-57",
+    "title": "Maximum subarray sum with one deletion",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-subarray-sum-with-one-deletion/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-58",
+    "title": "K concatenation maximum sum",
+    "leetcodeUrl": "https://leetcode.com/problems/k-concatenation-maximum-sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-59",
+    "title": "Maximum alternating subarray sum",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-alternating-subarray-sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-60",
+    "title": "Largest sum of averages",
+    "leetcodeUrl": "https://leetcode.com/problems/largest-sum-of-averages/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-61",
+    "title": "Maximum difference problem",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-difference-between-increasing-elements/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-74",
+    "title": "Merge intervals",
+    "leetcodeUrl": "https://leetcode.com/problems/merge-intervals/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-75",
+    "title": "Insert interval",
+    "leetcodeUrl": "https://leetcode.com/problems/insert-interval/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-76",
+    "title": "Non-overlapping intervals",
+    "leetcodeUrl": "https://leetcode.com/problems/non-overlapping-intervals/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-77",
+    "title": "Meeting rooms",
+    "leetcodeUrl": "https://leetcode.com/problems/meeting-rooms/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-78",
+    "title": "Meeting rooms II",
+    "leetcodeUrl": "https://leetcode.com/problems/meeting-rooms-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-79",
+    "title": "My calendar ||",
+    "leetcodeUrl": "https://leetcode.com/problems/my-calendar-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-80",
+    "title": "Employee free time",
+    "leetcodeUrl": "https://leetcode.com/problems/employee-free-time/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-81",
+    "title": "Interval List Intersections",
+    "leetcodeUrl": "https://leetcode.com/problems/interval-list-intersections/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-82",
+    "title": "Car pooling",
+    "leetcodeUrl": "https://leetcode.com/problems/car-pooling/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-83",
+    "title": "My calendar I",
+    "leetcodeUrl": "https://leetcode.com/problems/my-calendar-i/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-85",
+    "title": "Next greater element i",
+    "leetcodeUrl": "https://leetcode.com/problems/next-greater-element-i/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-86",
+    "title": "Daily temperatures",
+    "leetcodeUrl": "https://leetcode.com/problems/daily-temperatures/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-87",
+    "title": "Stock span",
+    "leetcodeUrl": "https://leetcode.com/problems/online-stock-span/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-88",
+    "title": "Largest rectangle in histogram",
+    "leetcodeUrl": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-89",
+    "title": "Maximal rectangle",
+    "leetcodeUrl": "https://leetcode.com/problems/maximal-rectangle/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-90",
+    "title": "Next smaller element",
+    "leetcodeUrl": null,
+    "difficulty": "Medium",
+    "isUrlVerified": false
+  },
+  {
+    "taskId": "DSA-91",
+    "title": "Sum of subarray minimums",
+    "leetcodeUrl": "https://leetcode.com/problems/sum-of-subarray-minimums/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-92",
+    "title": "Trapping rain water",
+    "leetcodeUrl": "https://leetcode.com/problems/trapping-rain-water/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-93",
+    "title": "Remove K digits",
+    "leetcodeUrl": "https://leetcode.com/problems/remove-k-digits/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-94",
+    "title": "Car fleet",
+    "leetcodeUrl": "https://leetcode.com/problems/car-fleet/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-96",
+    "title": "Top K frequent elements",
+    "leetcodeUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-97",
+    "title": "Kth Largest Element in an Array",
+    "leetcodeUrl": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-98",
+    "title": "K Closest Points to Origin",
+    "leetcodeUrl": "https://leetcode.com/problems/k-closest-points-to-origin/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-99",
+    "title": "Merge K sorted lists",
+    "leetcodeUrl": "https://leetcode.com/problems/merge-k-sorted-lists/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-100",
+    "title": "Kth Smallest Element in a Sorted Matrix",
+    "leetcodeUrl": "https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-101",
+    "title": "Find median from data stream",
+    "leetcodeUrl": "https://leetcode.com/problems/find-median-from-data-stream/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-102",
+    "title": "Reorganize string",
+    "leetcodeUrl": "https://leetcode.com/problems/reorganize-string/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-103",
+    "title": "Task scheduler",
+    "leetcodeUrl": "https://leetcode.com/problems/task-scheduler/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-104",
+    "title": "Sort characters by frequency",
+    "leetcodeUrl": "https://leetcode.com/problems/sort-characters-by-frequency/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-105",
+    "title": "Find K Closest Elements",
+    "leetcodeUrl": "https://leetcode.com/problems/find-k-closest-elements/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-107",
+    "title": "Valid palindrome",
+    "leetcodeUrl": "https://leetcode.com/problems/valid-palindrome/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-108",
+    "title": "Longest palindromic substring",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-palindromic-substring/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-109",
+    "title": "Palindromic Substrings",
+    "leetcodeUrl": "https://leetcode.com/problems/palindromic-substrings/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-110",
+    "title": "Longest palindrome subsequence",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-palindromic-subsequence/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-111",
+    "title": "Palindrome partitioning",
+    "leetcodeUrl": "https://leetcode.com/problems/palindrome-partitioning/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-112",
+    "title": "Shortest palindrome",
+    "leetcodeUrl": "https://leetcode.com/problems/shortest-palindrome/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-113",
+    "title": "Break a palindrome",
+    "leetcodeUrl": "https://leetcode.com/problems/break-a-palindrome/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-114",
+    "title": "Palindrome pairs",
+    "leetcodeUrl": "https://leetcode.com/problems/palindrome-pairs/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-115",
+    "title": "Minimum insertions to palindrome",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-116",
+    "title": "Partition labels",
+    "leetcodeUrl": "https://leetcode.com/problems/partition-labels/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-140",
+    "title": "Valid palindrome",
+    "leetcodeUrl": "https://leetcode.com/problems/valid-palindrome/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-141",
+    "title": "Reverse string",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-string/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-142",
+    "title": "Reverse Words in a String",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-words-in-a-string/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-143",
+    "title": "Longest Palindromic Substring",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-palindromic-substring/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-144",
+    "title": "String compression",
+    "leetcodeUrl": "https://leetcode.com/problems/string-compression/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-145",
+    "title": "Merge strings alternately",
+    "leetcodeUrl": "https://leetcode.com/problems/merge-strings-alternately/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-146",
+    "title": "Backspace string compare",
+    "leetcodeUrl": "https://leetcode.com/problems/backspace-string-compare/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-147",
+    "title": "One edit distance",
+    "leetcodeUrl": "https://leetcode.com/problems/one-edit-distance/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-148",
+    "title": "Remove Duplicates from Sorted Array",
+    "leetcodeUrl": "https://leetcode.com/problems/remove-duplicates-from-sorted-array/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-149",
+    "title": "Minimum Swaps to Move Zeros to End",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-swaps-to-move-zeros-to-end/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-151",
+    "title": "Valid anagram",
+    "leetcodeUrl": "https://leetcode.com/problems/valid-anagram/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-152",
+    "title": "Group anagrams",
+    "leetcodeUrl": "https://leetcode.com/problems/group-anagrams/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-153",
+    "title": "Find All Anagrams in a String",
+    "leetcodeUrl": "https://leetcode.com/problems/find-all-anagrams-in-a-string/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-155",
+    "title": "Minimum Number of Steps to Make Two Strings Anagram",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-number-of-steps-to-make-two-strings-anagram/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-156",
+    "title": "Ransom note",
+    "leetcodeUrl": "https://leetcode.com/problems/ransom-note/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-157",
+    "title": "Isomorphic Strings",
+    "leetcodeUrl": "https://leetcode.com/problems/isomorphic-strings/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-158",
+    "title": "Word pattern",
+    "leetcodeUrl": "https://leetcode.com/problems/word-pattern/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-160",
+    "title": "First Unique Character in a String",
+    "leetcodeUrl": "https://leetcode.com/problems/first-unique-character-in-a-string/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-161",
+    "title": "Longest Repeating Character Replacement",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-repeating-character-replacement/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-162",
+    "title": "Maximum Population Year",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-population-year/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-164",
+    "title": "Find First and Last Position of Element in Sorted Array",
+    "leetcodeUrl": "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-165",
+    "title": "Search in Rotated Sorted Array",
+    "leetcodeUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-166",
+    "title": "Find Minimum in Rotated Sorted Array",
+    "leetcodeUrl": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-167",
+    "title": "Koko Eating Bananas",
+    "leetcodeUrl": "https://leetcode.com/problems/koko-eating-bananas/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-168",
+    "title": "Capacity to Ship Packages Within D Days",
+    "leetcodeUrl": "https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-169",
+    "title": "Minimum Number of Days to Make m Bouquets",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-170",
+    "title": "Aggressive Cows",
+    "leetcodeUrl": null,
+    "difficulty": "Medium",
+    "isUrlVerified": false
+  },
+  {
+    "taskId": "DSA-171",
+    "title": "Split Array Largest Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/split-array-largest-sum/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-172",
+    "title": "Magnetic Force Between Two Balls",
+    "leetcodeUrl": "https://leetcode.com/problems/magnetic-force-between-two-balls/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSA-173",
+    "title": "Median of Two Sorted Arrays",
+    "leetcodeUrl": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-2",
+    "title": "Reverse Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-linked-list/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-3",
+    "title": "Middle of the Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/middle-of-the-linked-list/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-4",
+    "title": "Delete Node in a Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/delete-node-in-a-linked-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-5",
+    "title": "Remove Linked List Elements",
+    "leetcodeUrl": "https://leetcode.com/problems/remove-linked-list-elements/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-6",
+    "title": "Remove Duplicates from Sorted List",
+    "leetcodeUrl": "https://leetcode.com/problems/remove-duplicates-from-sorted-list/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-8",
+    "title": "Linked List Cycle",
+    "leetcodeUrl": "https://leetcode.com/problems/linked-list-cycle/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-9",
+    "title": "Linked List Cycle II",
+    "leetcodeUrl": "https://leetcode.com/problems/linked-list-cycle-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-10",
+    "title": "Remove Nth Node From End of List",
+    "leetcodeUrl": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-11",
+    "title": "Palindrome Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/palindrome-linked-list/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-12",
+    "title": "Reorder List",
+    "leetcodeUrl": "https://leetcode.com/problems/reorder-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-13",
+    "title": "Delete the Middle Node of a Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-15",
+    "title": "Reverse Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-linked-list/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-16",
+    "title": "Reverse Linked List II",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-linked-list-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-17",
+    "title": "Reverse Nodes in K Group",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-nodes-in-k-group/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-18",
+    "title": "Swap Nodes in Pairs",
+    "leetcodeUrl": "https://leetcode.com/problems/swap-nodes-in-pairs/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-19",
+    "title": "Rotate List",
+    "leetcodeUrl": "https://leetcode.com/problems/rotate-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-20",
+    "title": "Reverse Nodes in Even Length Groups",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-nodes-in-even-length-groups/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-21",
+    "title": "Reverse Linked List Recursive",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-linked-list/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-22",
+    "title": "Reverse first K elements of given linked list",
+    "leetcodeUrl": null,
+    "difficulty": "Medium",
+    "isUrlVerified": false
+  },
+  {
+    "taskId": "DSAP2-24",
+    "title": "Add Two Numbers",
+    "leetcodeUrl": "https://leetcode.com/problems/add-two-numbers/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-25",
+    "title": "Partition List",
+    "leetcodeUrl": "https://leetcode.com/problems/partition-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-26",
+    "title": "Merge Two Sorted Lists",
+    "leetcodeUrl": "https://leetcode.com/problems/merge-two-sorted-lists/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-27",
+    "title": "Remove Nth Node From End of List",
+    "leetcodeUrl": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-28",
+    "title": "Swap Nodes in Pairs",
+    "leetcodeUrl": "https://leetcode.com/problems/swap-nodes-in-pairs/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-30",
+    "title": "Merge Two Sorted Lists",
+    "leetcodeUrl": "https://leetcode.com/problems/merge-two-sorted-lists/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-31",
+    "title": "Merge K Sorted Lists",
+    "leetcodeUrl": "https://leetcode.com/problems/merge-k-sorted-lists/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-32",
+    "title": "Sort List",
+    "leetcodeUrl": "https://leetcode.com/problems/sort-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-33",
+    "title": "Insertion Sort List",
+    "leetcodeUrl": "https://leetcode.com/problems/insertion-sort-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-35",
+    "title": "Intersection of Two Linked Lists",
+    "leetcodeUrl": "https://leetcode.com/problems/intersection-of-two-linked-lists/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-36",
+    "title": "Odd Even Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/odd-even-linked-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-37",
+    "title": "Maximum Twin Sum of a Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-twin-sum-of-a-linked-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-39",
+    "title": "Add Two Numbers II",
+    "leetcodeUrl": "https://leetcode.com/problems/add-two-numbers-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-40",
+    "title": "Double a Number Represented as a Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/double-a-number-represented-as-a-linked-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-41",
+    "title": "Plus One Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/plus-one-linked-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-43",
+    "title": "Copy List with Random Pointer",
+    "leetcodeUrl": "https://leetcode.com/problems/copy-list-with-random-pointer/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-44",
+    "title": "Clone Linked List with Random Pointer (alternate approach)",
+    "leetcodeUrl": "https://leetcode.com/problems/copy-list-with-random-pointer/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-46",
+    "title": "Flatten a Multilevel Doubly Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-48",
+    "title": "LRU Cache",
+    "leetcodeUrl": "https://leetcode.com/problems/lru-cache/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-49",
+    "title": "LFU Cache",
+    "leetcodeUrl": "https://leetcode.com/problems/lfu-cache/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-50",
+    "title": "Design Browser History",
+    "leetcodeUrl": "https://leetcode.com/problems/design-browser-history/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-52",
+    "title": "Implement Stack",
+    "leetcodeUrl": "https://leetcode.com/problems/implement-stack-using-queues/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-53",
+    "title": "Min Stack",
+    "leetcodeUrl": "https://leetcode.com/problems/min-stack/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-54",
+    "title": "Baseball Game",
+    "leetcodeUrl": "https://leetcode.com/problems/baseball-game/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-55",
+    "title": "Backspace String Compare",
+    "leetcodeUrl": "https://leetcode.com/problems/backspace-string-compare/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-57",
+    "title": "Evaluate Reverse Polish Notation",
+    "leetcodeUrl": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-58",
+    "title": "Basic Calculator",
+    "leetcodeUrl": "https://leetcode.com/problems/basic-calculator/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-59",
+    "title": "Basic Calculator II",
+    "leetcodeUrl": "https://leetcode.com/problems/basic-calculator-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-60",
+    "title": "Decode String",
+    "leetcodeUrl": "https://leetcode.com/problems/decode-string/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-62",
+    "title": "Valid Parentheses",
+    "leetcodeUrl": "https://leetcode.com/problems/valid-parentheses/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-63",
+    "title": "Generate Parentheses",
+    "leetcodeUrl": "https://leetcode.com/problems/generate-parentheses/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-64",
+    "title": "Longest Valid Parentheses",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-valid-parentheses/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-65",
+    "title": "Minimum Remove to Make Valid Parentheses",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-66",
+    "title": "Remove Invalid Parentheses",
+    "leetcodeUrl": "https://leetcode.com/problems/remove-invalid-parentheses/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-68",
+    "title": "Asteroid Collision",
+    "leetcodeUrl": "https://leetcode.com/problems/asteroid-collision/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-69",
+    "title": "Daily Temperatures",
+    "leetcodeUrl": "https://leetcode.com/problems/daily-temperatures/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-70",
+    "title": "Remove K Digits",
+    "leetcodeUrl": "https://leetcode.com/problems/remove-k-digits/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-71",
+    "title": "Simplify Path",
+    "leetcodeUrl": "https://leetcode.com/problems/simplify-path/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-73",
+    "title": "Design Browser History",
+    "leetcodeUrl": "https://leetcode.com/problems/design-browser-history/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-74",
+    "title": "Max Stack",
+    "leetcodeUrl": "https://leetcode.com/problems/max-stack/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-75",
+    "title": "Maximum Frequency Stack",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-frequency-stack/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-77",
+    "title": "Implement Queue",
+    "leetcodeUrl": "https://leetcode.com/problems/implement-queue-using-stacks/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-78",
+    "title": "Number of Recent Calls",
+    "leetcodeUrl": "https://leetcode.com/problems/number-of-recent-calls/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-79",
+    "title": "Moving Average from Data Stream",
+    "leetcodeUrl": "https://leetcode.com/problems/moving-average-from-data-stream/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-81",
+    "title": "Sliding Window Maximum",
+    "leetcodeUrl": "https://leetcode.com/problems/sliding-window-maximum/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-82",
+    "title": "Shortest Subarray with Sum at Least K",
+    "leetcodeUrl": "https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-83",
+    "title": "Design Circular Deque",
+    "leetcodeUrl": "https://leetcode.com/problems/design-circular-deque/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-85",
+    "title": "Design Circular Queue",
+    "leetcodeUrl": "https://leetcode.com/problems/design-circular-queue/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-86",
+    "title": "First Unique Number",
+    "leetcodeUrl": "https://leetcode.com/problems/first-unique-number/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-88",
+    "title": "Front Middle Back Queue",
+    "leetcodeUrl": "https://leetcode.com/problems/design-front-middle-back-queue/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-89",
+    "title": "Hit Counter",
+    "leetcodeUrl": "https://leetcode.com/problems/design-hit-counter/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-91",
+    "title": "Top K Frequent Elements",
+    "leetcodeUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-92",
+    "title": "K Closest Points to Origin",
+    "leetcodeUrl": "https://leetcode.com/problems/k-closest-points-to-origin/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-93",
+    "title": "Kth Largest Element in an Array",
+    "leetcodeUrl": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-94",
+    "title": "Find K Pairs with Smallest Sums",
+    "leetcodeUrl": "https://leetcode.com/problems/find-k-pairs-with-smallest-sums/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-96",
+    "title": "Merge K Sorted Lists",
+    "leetcodeUrl": "https://leetcode.com/problems/merge-k-sorted-lists/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-97",
+    "title": "Smallest Range Covering Elements from K Lists",
+    "leetcodeUrl": "https://leetcode.com/problems/smallest-range-covering-elements-from-k-lists/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-98",
+    "title": "Ugly Number II",
+    "leetcodeUrl": "https://leetcode.com/problems/ugly-number-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-100",
+    "title": "Find Median from Data Stream",
+    "leetcodeUrl": "https://leetcode.com/problems/find-median-from-data-stream/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-101",
+    "title": "Sliding Window Median",
+    "leetcodeUrl": "https://leetcode.com/problems/sliding-window-median/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-102",
+    "title": "IPO",
+    "leetcodeUrl": "https://leetcode.com/problems/ipo/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-104",
+    "title": "Meeting Rooms II",
+    "leetcodeUrl": "https://leetcode.com/problems/meeting-rooms-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-105",
+    "title": "Task Scheduler",
+    "leetcodeUrl": "https://leetcode.com/problems/task-scheduler/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-106",
+    "title": "Maximum Number of Events That Can Be Attended",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-number-of-events-that-can-be-attended/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-108",
+    "title": "Design Twitter",
+    "leetcodeUrl": "https://leetcode.com/problems/design-twitter/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-109",
+    "title": "Seat Reservation Manager",
+    "leetcodeUrl": "https://leetcode.com/problems/seat-reservation-manager/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-111",
+    "title": "Factorial",
+    "leetcodeUrl": null,
+    "difficulty": null,
+    "isUrlVerified": false
+  },
+  {
+    "taskId": "DSAP2-112",
+    "title": "Fibonacci",
+    "leetcodeUrl": "https://leetcode.com/problems/fibonacci-number/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-113",
+    "title": "Power Function",
+    "leetcodeUrl": "https://leetcode.com/problems/powx-n/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-114",
+    "title": "Sum of Array",
+    "leetcodeUrl": null,
+    "difficulty": null,
+    "isUrlVerified": false
+  },
+  {
+    "taskId": "DSAP2-115",
+    "title": "Reverse String",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-string/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-117",
+    "title": "Generate Parentheses",
+    "leetcodeUrl": "https://leetcode.com/problems/generate-parentheses/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-118",
+    "title": "Letter Combinations of a Phone Number",
+    "leetcodeUrl": "https://leetcode.com/problems/letter-combinations-of-a-phone-number/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-119",
+    "title": "Permutations",
+    "leetcodeUrl": "https://leetcode.com/problems/permutations/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-120",
+    "title": "Subsets",
+    "leetcodeUrl": "https://leetcode.com/problems/subsets/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-121",
+    "title": "Combination Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/combination-sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-123",
+    "title": "Merge Sort",
+    "leetcodeUrl": "https://leetcode.com/problems/sort-an-array/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-124",
+    "title": "Quick Sort",
+    "leetcodeUrl": "https://leetcode.com/problems/sort-an-array/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-125",
+    "title": "Pow(x, n)",
+    "leetcodeUrl": "https://leetcode.com/problems/powx-n/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-126",
+    "title": "Search in Rotated Sorted Array (recursive variant)",
+    "leetcodeUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-128",
+    "title": "Reverse Linked List",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-linked-list/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-129",
+    "title": "Swap Nodes in Pairs",
+    "leetcodeUrl": "https://leetcode.com/problems/swap-nodes-in-pairs/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-130",
+    "title": "Merge Two Sorted Lists",
+    "leetcodeUrl": "https://leetcode.com/problems/merge-two-sorted-lists/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-132",
+    "title": "Josephus Problem",
+    "leetcodeUrl": "https://leetcode.com/problems/find-the-winner-of-the-circular-game/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP2-133",
+    "title": "Tower of Hanoi",
+    "leetcodeUrl": null,
+    "difficulty": "Medium",
+    "isUrlVerified": false
+  },
+  {
+    "taskId": "DSAP2-134",
+    "title": "Recursive Bubble Sort (conceptual exercise)",
+    "leetcodeUrl": null,
+    "difficulty": null,
+    "isUrlVerified": false
+  },
+  {
+    "taskId": "DSAP3-2",
+    "title": "Binary Tree Level Order Traversal",
+    "leetcodeUrl": "https://leetcode.com/problems/binary-tree-level-order-traversal/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-3",
+    "title": "Binary Tree Zigzag Level Order Traversal",
+    "leetcodeUrl": "https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-4",
+    "title": "Binary Tree Right Side View",
+    "leetcodeUrl": "https://leetcode.com/problems/binary-tree-right-side-view/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-5",
+    "title": "Minimum Depth of Binary Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-depth-of-binary-tree/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-6",
+    "title": "Populating Next Right Pointers in Each Node",
+    "leetcodeUrl": "https://leetcode.com/problems/populating-next-right-pointers-in-each-node/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-7",
+    "title": "Average of Levels in Binary Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/average-of-levels-in-binary-tree/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-9",
+    "title": "Binary Tree Inorder Traversal",
+    "leetcodeUrl": "https://leetcode.com/problems/binary-tree-inorder-traversal/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-10",
+    "title": "Maximum Depth of Binary Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-11",
+    "title": "Balanced Binary Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/balanced-binary-tree/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-12",
+    "title": "Symmetric Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/symmetric-tree/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-13",
+    "title": "Diameter of Binary Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/diameter-of-binary-tree/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-14",
+    "title": "Path Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/path-sum/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-15",
+    "title": "Binary Tree Maximum Path Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-16",
+    "title": "Lowest Common Ancestor of a Binary Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-17",
+    "title": "Lowest Common Ancestor of a Binary Search Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-18",
+    "title": "Validate Binary Search Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/validate-binary-search-tree/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-19",
+    "title": "Search in a Binary Search Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/search-in-a-binary-search-tree/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-20",
+    "title": "Kth Smallest Element in a BST",
+    "leetcodeUrl": "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-21",
+    "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+    "leetcodeUrl": "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-22",
+    "title": "Serialize and Deserialize Binary Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-23",
+    "title": "House Robber III",
+    "leetcodeUrl": "https://leetcode.com/problems/house-robber-iii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-25",
+    "title": "Number of Islands",
+    "leetcodeUrl": "https://leetcode.com/problems/number-of-islands/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-26",
+    "title": "Rotting Oranges",
+    "leetcodeUrl": "https://leetcode.com/problems/rotting-oranges/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-27",
+    "title": "Clone Graph",
+    "leetcodeUrl": "https://leetcode.com/problems/clone-graph/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-28",
+    "title": "Pacific Atlantic Water Flow",
+    "leetcodeUrl": "https://leetcode.com/problems/pacific-atlantic-water-flow/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-29",
+    "title": "Word Ladder",
+    "leetcodeUrl": "https://leetcode.com/problems/word-ladder/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-30",
+    "title": "Surrounded Regions",
+    "leetcodeUrl": "https://leetcode.com/problems/surrounded-regions/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-31",
+    "title": "Graph Valid Tree",
+    "leetcodeUrl": "https://leetcode.com/problems/graph-valid-tree/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-33",
+    "title": "Course Schedule",
+    "leetcodeUrl": "https://leetcode.com/problems/course-schedule/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-34",
+    "title": "Course Schedule II",
+    "leetcodeUrl": "https://leetcode.com/problems/course-schedule-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-35",
+    "title": "Alien Dictionary",
+    "leetcodeUrl": "https://leetcode.com/problems/alien-dictionary/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-36",
+    "title": "Minimum Height Trees",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-height-trees/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-37",
+    "title": "Sequence Reconstruction",
+    "leetcodeUrl": "https://leetcode.com/problems/sequence-reconstruction/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-39",
+    "title": "Network Delay Time",
+    "leetcodeUrl": "https://leetcode.com/problems/network-delay-time/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-40",
+    "title": "Path with Maximum Probability",
+    "leetcodeUrl": "https://leetcode.com/problems/path-with-maximum-probability/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-41",
+    "title": "Min Cost to Connect All Points",
+    "leetcodeUrl": "https://leetcode.com/problems/min-cost-to-connect-all-points/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-42",
+    "title": "Cheapest Flights Within K Stops",
+    "leetcodeUrl": "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-43",
+    "title": "Swim in Rising Water",
+    "leetcodeUrl": "https://leetcode.com/problems/swim-in-rising-water/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-45",
+    "title": "Redundant Connection",
+    "leetcodeUrl": "https://leetcode.com/problems/redundant-connection/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-46",
+    "title": "Number of Provinces",
+    "leetcodeUrl": "https://leetcode.com/problems/number-of-provinces/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-47",
+    "title": "Accounts Merge",
+    "leetcodeUrl": "https://leetcode.com/problems/accounts-merge/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-48",
+    "title": "Most Stones Removed with Same Row or Column",
+    "leetcodeUrl": "https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-50",
+    "title": "Coin Change",
+    "leetcodeUrl": "https://leetcode.com/problems/coin-change/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-51",
+    "title": "Partition Equal Subset Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/partition-equal-subset-sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-52",
+    "title": "Target Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/target-sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-53",
+    "title": "Combination Sum IV",
+    "leetcodeUrl": "https://leetcode.com/problems/combination-sum-iv/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-54",
+    "title": "Ones and Zeroes",
+    "leetcodeUrl": "https://leetcode.com/problems/ones-and-zeroes/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-55",
+    "title": "Last Stone Weight II",
+    "leetcodeUrl": "https://leetcode.com/problems/last-stone-weight-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-57",
+    "title": "Unique Paths",
+    "leetcodeUrl": "https://leetcode.com/problems/unique-paths/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-58",
+    "title": "Minimum Path Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-path-sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-59",
+    "title": "Maximal Square",
+    "leetcodeUrl": "https://leetcode.com/problems/maximal-square/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-60",
+    "title": "Dungeon Game",
+    "leetcodeUrl": "https://leetcode.com/problems/dungeon-game/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-61",
+    "title": "Cherry Pickup",
+    "leetcodeUrl": "https://leetcode.com/problems/cherry-pickup/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-63",
+    "title": "Jump Game",
+    "leetcodeUrl": "https://leetcode.com/problems/jump-game/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-64",
+    "title": "Jump Game II",
+    "leetcodeUrl": "https://leetcode.com/problems/jump-game-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-65",
+    "title": "Gas Station",
+    "leetcodeUrl": "https://leetcode.com/problems/gas-station/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-66",
+    "title": "Minimum Number of Arrows to Burst Balloons",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-67",
+    "title": "Task Scheduler",
+    "leetcodeUrl": "https://leetcode.com/problems/task-scheduler/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-69",
+    "title": "Subsets",
+    "leetcodeUrl": "https://leetcode.com/problems/subsets/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-70",
+    "title": "Subsets II",
+    "leetcodeUrl": "https://leetcode.com/problems/subsets-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-71",
+    "title": "Permutations",
+    "leetcodeUrl": "https://leetcode.com/problems/permutations/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-72",
+    "title": "Permutations II",
+    "leetcodeUrl": "https://leetcode.com/problems/permutations-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-73",
+    "title": "Combination Sum",
+    "leetcodeUrl": "https://leetcode.com/problems/combination-sum/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-74",
+    "title": "Combination Sum II",
+    "leetcodeUrl": "https://leetcode.com/problems/combination-sum-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-75",
+    "title": "Combination Sum III",
+    "leetcodeUrl": "https://leetcode.com/problems/combination-sum-iii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-76",
+    "title": "N-Queens",
+    "leetcodeUrl": "https://leetcode.com/problems/n-queens/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-77",
+    "title": "Sudoku Solver",
+    "leetcodeUrl": "https://leetcode.com/problems/sudoku-solver/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-78",
+    "title": "Word Search",
+    "leetcodeUrl": "https://leetcode.com/problems/word-search/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-80",
+    "title": "Burst Balloons",
+    "leetcodeUrl": "https://leetcode.com/problems/burst-balloons/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-81",
+    "title": "Guess Number Higher or Lower II",
+    "leetcodeUrl": "https://leetcode.com/problems/guess-number-higher-or-lower-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-82",
+    "title": "Palindrome Partitioning II",
+    "leetcodeUrl": "https://leetcode.com/problems/palindrome-partitioning-ii/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-83",
+    "title": "House Robber",
+    "leetcodeUrl": "https://leetcode.com/problems/house-robber/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-84",
+    "title": "House Robber II",
+    "leetcodeUrl": "https://leetcode.com/problems/house-robber-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-85",
+    "title": "Best Time to Buy and Sell Stock with Cooldown",
+    "leetcodeUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-86",
+    "title": "Best Time to Buy and Sell Stock with Transaction Fee",
+    "leetcodeUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-87",
+    "title": "Best Time to Buy and Sell Stock III",
+    "leetcodeUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-88",
+    "title": "Best Time to Buy and Sell Stock IV",
+    "leetcodeUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-89",
+    "title": "Paint Fence",
+    "leetcodeUrl": "https://leetcode.com/problems/paint-fence/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-91",
+    "title": "Longest Common Subsequence",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-common-subsequence/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-92",
+    "title": "Longest Palindromic Subsequence",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-palindromic-subsequence/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-93",
+    "title": "Edit Distance",
+    "leetcodeUrl": "https://leetcode.com/problems/edit-distance/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-94",
+    "title": "Longest Increasing Subsequence",
+    "leetcodeUrl": "https://leetcode.com/problems/longest-increasing-subsequence/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-95",
+    "title": "Russian Doll Envelopes",
+    "leetcodeUrl": "https://leetcode.com/problems/russian-doll-envelopes/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-96",
+    "title": "Number of Longest Increasing Subsequences",
+    "leetcodeUrl": "https://leetcode.com/problems/number-of-longest-increasing-subsequence/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-97",
+    "title": "Distinct Subsequences",
+    "leetcodeUrl": "https://leetcode.com/problems/distinct-subsequences/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-98",
+    "title": "Delete Operation for Two Strings",
+    "leetcodeUrl": "https://leetcode.com/problems/delete-operation-for-two-strings/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-99",
+    "title": "Shortest Common Supersequence",
+    "leetcodeUrl": "https://leetcode.com/problems/shortest-common-supersequence/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-100",
+    "title": "Interleaving String",
+    "leetcodeUrl": "https://leetcode.com/problems/interleaving-string/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-101",
+    "title": "Minimum ASCII Delete Sum for Two Strings",
+    "leetcodeUrl": "https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-103",
+    "title": "Implement Trie (Prefix Tree)",
+    "leetcodeUrl": "https://leetcode.com/problems/implement-trie-prefix-tree/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-104",
+    "title": "Design Add and Search Words Data Structure",
+    "leetcodeUrl": "https://leetcode.com/problems/design-add-and-search-words-data-structure/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-105",
+    "title": "Word Search II",
+    "leetcodeUrl": "https://leetcode.com/problems/word-search-ii/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-106",
+    "title": "Replace Words",
+    "leetcodeUrl": "https://leetcode.com/problems/replace-words/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-107",
+    "title": "Map Sum Pairs",
+    "leetcodeUrl": "https://leetcode.com/problems/map-sum-pairs/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-108",
+    "title": "Prefix and Suffix Search",
+    "leetcodeUrl": "https://leetcode.com/problems/prefix-and-suffix-search/",
+    "difficulty": "Hard",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-110",
+    "title": "Single Number",
+    "leetcodeUrl": "https://leetcode.com/problems/single-number/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-111",
+    "title": "Single Number II",
+    "leetcodeUrl": "https://leetcode.com/problems/single-number-ii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-112",
+    "title": "Single Number III",
+    "leetcodeUrl": "https://leetcode.com/problems/single-number-iii/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-113",
+    "title": "Counting Bits",
+    "leetcodeUrl": "https://leetcode.com/problems/counting-bits/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-114",
+    "title": "Reverse Bits",
+    "leetcodeUrl": "https://leetcode.com/problems/reverse-bits/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-115",
+    "title": "Number of 1 Bits",
+    "leetcodeUrl": "https://leetcode.com/problems/number-of-1-bits/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-116",
+    "title": "Bitwise AND of Numbers Range",
+    "leetcodeUrl": "https://leetcode.com/problems/bitwise-and-of-numbers-range/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-117",
+    "title": "Sum of Two Integers",
+    "leetcodeUrl": "https://leetcode.com/problems/sum-of-two-integers/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-119",
+    "title": "Count Primes",
+    "leetcodeUrl": "https://leetcode.com/problems/count-primes/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-120",
+    "title": "Greatest Common Divisor of Strings",
+    "leetcodeUrl": "https://leetcode.com/problems/greatest-common-divisor-of-strings/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-121",
+    "title": "Pow(x, n)",
+    "leetcodeUrl": "https://leetcode.com/problems/powx-n/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-122",
+    "title": "Happy Number",
+    "leetcodeUrl": "https://leetcode.com/problems/happy-number/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-123",
+    "title": "Factorial Trailing Zeroes",
+    "leetcodeUrl": "https://leetcode.com/problems/factorial-trailing-zeroes/",
+    "difficulty": "Medium",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-124",
+    "title": "Palindrome Number",
+    "leetcodeUrl": "https://leetcode.com/problems/palindrome-number/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  },
+  {
+    "taskId": "DSAP3-125",
+    "title": "Roman to Integer",
+    "leetcodeUrl": "https://leetcode.com/problems/roman-to-integer/",
+    "difficulty": "Easy",
+    "isUrlVerified": true
+  }
+]

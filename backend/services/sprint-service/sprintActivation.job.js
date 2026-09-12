@@ -27,6 +27,10 @@ export const initSprintActivationJob = () => {
  */
 const activateSprints = async () => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            console.warn('[Cron] DB not connected yet. Skipping sprint activation.');
+            return;
+        }
         const today = new Date();
         today.setHours(23, 59, 59, 999); // Inclusion check for today
 
