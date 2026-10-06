@@ -35,8 +35,8 @@ export function normalizeExpectedOutput(expectedOutput, returnType = 'string') {
     return String(expectedOutput);
   }
 
-  // 2. Number Return Type
-  if (canonicalType === 'number') {
+  // 2. Number / Double / Long Return Type
+  if (canonicalType === 'number' || canonicalType === 'double' || canonicalType === 'long long') {
     if (typeof expectedOutput === 'number') {
       return isNaN(expectedOutput) ? null : expectedOutput;
     }

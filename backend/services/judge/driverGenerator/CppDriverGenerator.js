@@ -1,5 +1,6 @@
 import { ProblemConfigurationError } from '../outputSerializers/SerializerErrors.js';
 import { SemanticValidatorRegistry } from '../validators/SemanticValidatorRegistry.js';
+import { normalizeCanonicalType, TYPE_MAP } from '../../../../shared/templateGenerator.js';
 
 /**
  * C++ Driver Harness Generator (Phase 6)
@@ -33,31 +34,75 @@ export function generateCppDriverHarness(studentCode, functionDefinition, execut
 
   const validationHelpersCode = SemanticValidatorRegistry.getInjectedValidationCode('cpp', semanticValidator);
 
-// Helper to format C++ literal values from JSON input
-function formatCppLiteral(val, type) {
-  const normType = (type || 'number').toLowerCase();
-  if (val === null || val === undefined) {
-    if (normType.includes('node')) return 'nullptr';
-    return '0';
+// Helper to resolve canonical C++ type string
+function getCppType(type) {
+  const canonical = normalizeCanonicalType(type);
+  if (canonical && TYPE_MAP?.cpp?.[canonical]) {
+    return TYPE_MAP.cpp[canonical];
   }
-  if (normType === 'number' || normType === 'int') return String(val);
-  if (normType === 'float' || normType === 'double') return String(val);
-  if (normType === 'boolean' || normType === 'bool') return val ? 'true' : 'false';
-  if (normType === 'string' || normType === 'str') return escapeCppStringLiteral(val);
-  if (normType === 'number[]' || normType === 'int[]') return `{${(Array.isArray(val) ? val : []).join(',')}}`;
-  if (normType === 'string[]' || normType === 'str[]') return `{${(Array.isArray(val) ? val : []).map(s => escapeCppStringLiteral(s)).join(',')}}`;
-  if (normType === 'boolean[]' || normType === 'bool[]') return `{${(Array.isArray(val) ? val : []).map(b => b ? 'true' : 'false').join(',')}}`;
-  if (normType === 'number[][]' || normType === 'int[][]') return `{${(Array.isArray(val) ? val : []).map(r => `{${(Array.isArray(r) ? r : []).join(',')}}`).join(',')}}`;
-  if (normType === 'string[][]' || normType === 'str[][]') return `{${(Array.isArray(val) ? val : []).map(r => `{${(Array.isArray(r) ? r : []).map(s => escapeCppStringLiteral(s)).join(',')}}`).join(',')}}`;
-  if (normType.includes('listnode') && !normType.includes('random')) {
-    if (!Array.isArray(val) || val.length === 0) return 'nullptr';
-    return `build_list_node({${val.map(x => Number(x)).join(',')}})`;
+  const clean = (type || '').trim().toLowerCase();
+  if (clean === 'number' || clean === 'int' || clean === 'integer') return 'int';
+  if (clean === 'long' || clean === 'long long' || clean === 'int64') return 'long long';
+  if (clean === 'float' || clean === 'double') return 'double';
+  if (clean === 'boolean' || clean === 'bool') return 'bool';
+  if (clean === 'string' || clean === 'str') return 'string';
+  if (
+    clean === 'number[]' ||
+    clean === 'int[]' ||
+    clean === 'integer[]' ||
+    clean.startsWith('vector<int>') ||
+    clean.startsWith('list<int') ||
+    clean.startsWith('list<integer') ||
+    clean === 'int-array' ||
+    clean === 'integer-array'
+  ) {
+    return 'vector<int>';
   }
-  if (normType.includes('treenode') || normType.includes('binarytree')) {
-    if (!Array.isArray(val) || val.length === 0 || val[0] === null || val[0] === 'null') return 'nullptr';
-    return `build_tree_node({${val.map(x => (x === null || x === 'null' ? '"null"' : `"${x}"`)).join(',')}})`;
+  if (
+    clean === 'double[]' ||
+    clean === 'float[]' ||
+    clean.startsWith('vector<double>') ||
+    clean.startsWith('vector<float>') ||
+    clean.startsWith('list<double') ||
+    clean.startsWith('list<float')
+  ) {
+    return 'vector<double>';
   }
-  return String(val);
+  if (
+    clean === 'string[]' ||
+    clean === 'str[]' ||
+    clean.startsWith('vector<string>') ||
+    clean.startsWith('list<string') ||
+    clean.startsWith('list<str>')
+  ) {
+    return 'vector<string>';
+  }
+  if (
+    clean === 'boolean[]' ||
+    clean === 'bool[]' ||
+    clean.startsWith('vector<bool>') ||
+    clean.startsWith('list<bool') ||
+    clean.startsWith('list<boolean')
+  ) {
+    return 'vector<bool>';
+  }
+  if (
+    clean === 'number[][]' ||
+    clean === 'int[][]' ||
+    clean === 'integer[][]' ||
+    clean.startsWith('vector<vector<int>>') ||
+    clean.startsWith('list<list<int') ||
+    clean.startsWith('list<list<integer') ||
+    clean === 'matrix'
+  ) {
+    return 'vector<vector<int>>';
+  }
+  if (clean === 'string[][]' || clean === 'str[][]' || clean.startsWith('vector<vector<string>>')) return 'vector<vector<string>>';
+  if (clean === 'boolean[][]' || clean === 'bool[][]' || clean.startsWith('vector<vector<bool>>')) return 'vector<vector<bool>>';
+  if (clean.includes('listnode') && !clean.includes('random')) return 'ListNode*';
+  if (clean.includes('treenode') || clean.includes('binarytree')) return 'TreeNode*';
+  if (clean.includes('graph') || clean.includes('random')) return 'Node*';
+  return 'int';
 }
 
 function escapeCppStringLiteral(str) {
@@ -65,34 +110,192 @@ function escapeCppStringLiteral(str) {
   return '"' + str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t') + '"';
 }
 
-function getCppSerializerCall(varName, type) {
-  const normType = (type || 'number').toLowerCase();
-  if (normType === 'number' || normType === 'int') return `serialize_int(${varName})`;
-  if (normType === 'float' || normType === 'double') return `serialize_double(${varName})`;
-  if (normType === 'boolean' || normType === 'bool') return `serialize_bool(${varName})`;
-  if (normType === 'string' || normType === 'str') return `serialize_str(${varName})`;
-  if (normType.endsWith('[][]')) return `serialize_2d_array(${varName})`;
-  if (normType.endsWith('[]')) return `serialize_1d_array(${varName})`;
-  if (normType.includes('listnode') && !normType.includes('random')) return `serialize_list_node(${varName})`;
-  if (normType.includes('randomlistnode')) return `serialize_random_list_node(${varName})`;
-  if (normType.includes('treenode') || normType.includes('binarytree')) return `serialize_tree_node(${varName})`;
-  if (normType.includes('graph')) return `serialize_graph_node(${varName})`;
-  return `serialize_str(to_string(${varName}))`;
+// Helper to format C++ literal values from JSON input
+function formatCppLiteral(val, type) {
+  const canonical = normalizeCanonicalType(type);
+  const clean = (type || '').trim().toLowerCase();
+
+  if (val === null || val === undefined) {
+    if (canonical === 'ListNode' || canonical === 'TreeNode' || canonical === 'GraphNode' || canonical === 'RandomListNode' || clean.includes('node')) {
+      return 'nullptr';
+    }
+    return '0';
+  }
+
+  // Primitive int / integer / number
+  if (canonical === 'number' || clean === 'number' || clean === 'int' || clean === 'integer') {
+    return String(val);
+  }
+
+  // Primitive long / long long
+  if (canonical === 'long long' || canonical === 'long' || clean === 'long' || clean === 'long long' || clean === 'int64') {
+    const s = String(val);
+    return s.endsWith('LL') ? s : `${s}LL`;
+  }
+
+  // Double / float
+  if (canonical === 'double' || canonical === 'float' || clean === 'double' || clean === 'float') {
+    return String(val);
+  }
+
+  // Boolean
+  if (canonical === 'boolean' || clean === 'boolean' || clean === 'bool') {
+    return val ? 'true' : 'false';
+  }
+
+  // String
+  if (canonical === 'string' || clean === 'string' || clean === 'str') {
+    return escapeCppStringLiteral(val);
+  }
+
+  // 1D Arrays: Integer / Number
+  if (
+    canonical === 'number[]' ||
+    clean === 'number[]' ||
+    clean === 'int[]' ||
+    clean === 'integer[]' ||
+    clean.startsWith('vector<int>') ||
+    clean.startsWith('list<int') ||
+    clean.startsWith('list<integer') ||
+    clean === 'int-array' ||
+    clean === 'integer-array'
+  ) {
+    if (!Array.isArray(val) || val.length === 0) return '{}';
+    return `{${val.map(x => Number(x)).join(', ')}}`;
+  }
+
+  // 1D Arrays: Double / Float
+  if (
+    canonical === 'double[]' ||
+    clean === 'double[]' ||
+    clean === 'float[]' ||
+    clean.startsWith('vector<double>') ||
+    clean.startsWith('vector<float>') ||
+    clean.startsWith('list<double') ||
+    clean.startsWith('list<float')
+  ) {
+    if (!Array.isArray(val) || val.length === 0) return '{}';
+    return `{${val.map(x => Number(x)).join(', ')}}`;
+  }
+
+  // 1D Arrays: String
+  if (
+    canonical === 'string[]' ||
+    clean === 'string[]' ||
+    clean === 'str[]' ||
+    clean.startsWith('vector<string>') ||
+    clean.startsWith('list<string') ||
+    clean.startsWith('list<str>')
+  ) {
+    if (!Array.isArray(val) || val.length === 0) return '{}';
+    return `{${val.map(s => escapeCppStringLiteral(s)).join(', ')}}`;
+  }
+
+  // 1D Arrays: Boolean
+  if (
+    canonical === 'boolean[]' ||
+    clean === 'boolean[]' ||
+    clean === 'bool[]' ||
+    clean.startsWith('vector<bool>') ||
+    clean.startsWith('list<bool') ||
+    clean.startsWith('list<boolean')
+  ) {
+    if (!Array.isArray(val) || val.length === 0) return '{}';
+    return `{${val.map(b => b ? 'true' : 'false').join(', ')}}`;
+  }
+
+  // 2D Matrices: Integer / Number
+  if (
+    canonical === 'number[][]' ||
+    clean === 'number[][]' ||
+    clean === 'int[][]' ||
+    clean === 'integer[][]' ||
+    clean.startsWith('vector<vector<int>>') ||
+    clean.startsWith('list<list<int') ||
+    clean.startsWith('list<list<integer') ||
+    clean === 'matrix'
+  ) {
+    if (!Array.isArray(val) || val.length === 0) return '{}';
+    return `{${val.map(r => `{${(Array.isArray(r) ? r.map(x => Number(x)) : []).join(', ')}}`).join(', ')}}`;
+  }
+
+  // 2D Matrices: String
+  if (
+    canonical === 'string[][]' ||
+    clean === 'string[][]' ||
+    clean === 'str[][]' ||
+    clean.startsWith('vector<vector<string>>')
+  ) {
+    if (!Array.isArray(val) || val.length === 0) return '{}';
+    return `{${val.map(r => `{${(Array.isArray(r) ? r.map(s => escapeCppStringLiteral(s)) : []).join(', ')}}`).join(', ')}}`;
+  }
+
+  // 2D Matrices: Boolean
+  if (
+    canonical === 'boolean[][]' ||
+    clean === 'boolean[][]' ||
+    clean === 'bool[][]' ||
+    clean.startsWith('vector<vector<bool>>')
+  ) {
+    if (!Array.isArray(val) || val.length === 0) return '{}';
+    return `{${val.map(r => `{${(Array.isArray(r) ? r.map(b => b ? 'true' : 'false') : []).join(', ')}}`).join(', ')}}`;
+  }
+
+  // Linked List
+  if (canonical === 'ListNode' || (clean.includes('listnode') && !clean.includes('random'))) {
+    if (!Array.isArray(val) || val.length === 0) return 'nullptr';
+    return `build_list_node({${val.map(x => Number(x)).join(', ')}})`;
+  }
+
+  // Binary Tree
+  if (canonical === 'TreeNode' || clean.includes('treenode') || clean.includes('binarytree')) {
+    if (!Array.isArray(val) || val.length === 0 || val[0] === null || val[0] === 'null') return 'nullptr';
+    return `build_tree_node({${val.map(x => (x === null || x === 'null' ? '"null"' : `"${x}"`)).join(', ')}})`;
+  }
+
+  // Graph / Random List Node
+  if (canonical === 'GraphNode' || canonical === 'RandomListNode' || clean.includes('graph') || clean.includes('random')) {
+    return 'nullptr';
+  }
+
+  return String(val);
 }
 
-const TYPE_MAP_CPP = {
-  'number': 'int',
-  'float': 'double',
-  'string': 'string',
-  'boolean': 'bool',
-  'number[]': 'vector<int>',
-  'int[]': 'vector<int>',
-  'string[]': 'vector<string>',
-  'boolean[]': 'vector<bool>',
-  'number[][]': 'vector<vector<int>>',
-  'string[][]': 'vector<vector<string>>',
-  'boolean[][]': 'vector<vector<bool>>'
-};
+function getCppSerializerCall(varName, type) {
+  const canonical = normalizeCanonicalType(type);
+  const clean = (type || '').trim().toLowerCase();
+  if (canonical === 'number' || clean === 'number' || clean === 'int' || clean === 'integer') return `serialize_int(${varName})`;
+  if (canonical === 'long long' || canonical === 'long' || clean === 'long' || clean === 'long long' || clean === 'int64') return `to_string(${varName})`;
+  if (canonical === 'double' || clean === 'float' || clean === 'double') return `serialize_double(${varName})`;
+  if (canonical === 'boolean' || clean === 'boolean' || clean === 'bool') return `serialize_bool(${varName})`;
+  if (canonical === 'string' || clean === 'string' || clean === 'str') return `serialize_str(${varName})`;
+  if (
+    canonical === 'number[][]' ||
+    canonical === 'string[][]' ||
+    canonical === 'boolean[][]' ||
+    clean.endsWith('[][]') ||
+    clean === 'matrix' ||
+    clean.startsWith('vector<vector<')
+  ) {
+    return `serialize_2d_array(${varName})`;
+  }
+  if (
+    canonical === 'number[]' ||
+    canonical === 'double[]' ||
+    canonical === 'string[]' ||
+    canonical === 'boolean[]' ||
+    clean.endsWith('[]') ||
+    clean.startsWith('vector<') ||
+    clean.startsWith('list<')
+  ) {
+    return `serialize_1d_array(${varName})`;
+  }
+  if (canonical === 'ListNode' || (clean.includes('listnode') && !clean.includes('random'))) return `serialize_list_node(${varName})`;
+  if (canonical === 'RandomListNode' || clean.includes('randomlistnode')) return `serialize_random_list_node(${varName})`;
+  if (canonical === 'TreeNode' || clean.includes('treenode') || clean.includes('binarytree')) return `serialize_tree_node(${varName})`;
+  if (canonical === 'GraphNode' || clean.includes('graph')) return `serialize_graph_node(${varName})`;
+  return `serialize_str(to_string(${varName}))`;
+}
 
   const testCaseBlocks = testCases.map((tc, idx) => {
     const rawInput = tc.input !== undefined ? tc.input : tc;
@@ -100,21 +303,7 @@ const TYPE_MAP_CPP = {
     const paramInits = parameters.map((p, i) => {
       const pName = p.name || `param_${i}`;
       const val = (typeof rawInput === 'object' && rawInput !== null && rawInput[pName] !== undefined) ? rawInput[pName] : (Array.isArray(rawInput) ? rawInput[i] : rawInput);
-      const rawType = (p.type || 'number').toLowerCase();
-      let cppType = 'int';
-      if (rawType === 'number' || rawType === 'int') cppType = 'int';
-      else if (rawType === 'float' || rawType === 'double') cppType = 'double';
-      else if (rawType === 'boolean' || rawType === 'bool') cppType = 'bool';
-      else if (rawType === 'string' || rawType === 'str') cppType = 'string';
-      else if (rawType === 'number[]' || rawType === 'int[]') cppType = 'vector<int>';
-      else if (rawType === 'string[]' || rawType === 'str[]') cppType = 'vector<string>';
-      else if (rawType === 'boolean[]' || rawType === 'bool[]') cppType = 'vector<bool>';
-      else if (rawType === 'number[][]' || rawType === 'int[][]') cppType = 'vector<vector<int>>';
-      else if (rawType === 'string[][]' || rawType === 'str[][]') cppType = 'vector<vector<string>>';
-      else if (rawType.includes('listnode')) cppType = 'ListNode*';
-      else if (rawType.includes('treenode')) cppType = 'TreeNode*';
-      else if (rawType.includes('graph')) cppType = 'Node*';
-
+      const cppType = getCppType(p.type);
       return `${cppType} tc_${idx}_${pName} = ${formatCppLiteral(val, p.type)};`;
     }).join('\n        ');
 
@@ -162,6 +351,8 @@ const TYPE_MAP_CPP = {
 #include <sstream>
 #include <map>
 #include <set>
+#include <unordered_map>
+#include <unordered_set>
 #include <queue>
 #include <algorithm>
 #include <iomanip>

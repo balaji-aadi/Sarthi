@@ -43,6 +43,7 @@ import ZohoCallback from "./pages/auth/ZohoCallback";
 // DSA Management imports
 import ProblemList from "./pages/dsa-management/ProblemList";
 import CreateProblem from "./pages/dsa-management/CreateProblem";
+import QuestionFactory from "./pages/dsa-management/QuestionFactory";
 import CompanyManagement from "./pages/dsa-management/CompanyManagement";
 import TopicManagement from "./pages/dsa-management/TopicManagement";
 import PatternManagement from "./pages/dsa-management/PatternManagement";
@@ -435,6 +436,7 @@ function App() {
           <Route path="dsa-management">
             <Route path="problems" element={<ProtectedRoute element={<ProblemList />} />} />
             <Route path="create-problem" element={<ProtectedRoute element={<CreateProblem />} />} />
+            <Route path="question-factory" element={<ProtectedRoute element={<QuestionFactory />} />} />
             <Route path="companies" element={<ProtectedRoute element={<CompanyManagement />} />} />
             <Route path="topics" element={<ProtectedRoute element={<TopicManagement />} />} />
             <Route path="patterns" element={<ProtectedRoute element={<PatternManagement />} />} />

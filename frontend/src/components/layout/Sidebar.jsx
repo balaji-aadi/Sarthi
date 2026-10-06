@@ -232,6 +232,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     const dsaSubRoutes = [
         { label: 'Problems', path: '/dsa-management/problems', icon: <IoCodeSlashOutline /> },
         { label: 'Create Problem', path: '/dsa-management/create-problem', icon: <IoAddCircleOutline /> },
+        { label: 'Question Factory', path: '/dsa-management/question-factory', icon: <IoSparklesOutline /> },
         { label: 'Companies', path: '/dsa-management/companies', icon: <IoBusinessOutline /> },
         { label: 'Topics', path: '/dsa-management/topics', icon: <IoBookOutline /> },
         { label: 'Patterns', path: '/dsa-management/patterns', icon: <IoLayersOutline /> },

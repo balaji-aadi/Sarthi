@@ -83,10 +83,13 @@ class OutputSerializerRegistryManager {
     const canonical = normalizeCanonicalType(clean);
     switch (canonical) {
       case 'number':
+      case 'double':
+      case 'long long':
       case 'string':
       case 'boolean':
         return PrimitiveSerializer;
       case 'number[]':
+      case 'double[]':
       case 'string[]':
       case 'boolean[]':
       case 'number[][]':

@@ -124,9 +124,13 @@ userSchema.methods.generateAccessToken = function () {
     {
       _id: this._id,
       email: this.email,
-      first_name: this.first_name,
-      last_name: this.last_name,
-      phone_number: this.phone_number,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      phoneNumber: this.phoneNumber,
+      // Retain backward-compatible snake_case aliases
+      first_name: this.firstName,
+      last_name: this.lastName,
+      phone_number: this.phoneNumber,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {

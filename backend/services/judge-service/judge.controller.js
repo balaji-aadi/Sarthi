@@ -151,7 +151,7 @@ export const submitCode = async (req, res) => {
     if (problemId) {
       const isObjectId = typeof problemId === 'string' && problemId.match(/^[0-9a-fA-F]{24}$/);
       const query = isObjectId ? { _id: problemId } : { slug: String(problemId).toLowerCase() };
-      problem = await Problem.findOne(query);
+      problem = await Problem.findOne(query).select('+hiddenTestCases');
     }
 
     // Feature Flag Check: Async Orchestration vs Synchronous Fallback

@@ -62,10 +62,13 @@ class InputParserRegistryManager {
 
     switch (canonical) {
       case 'number':
+      case 'double':
+      case 'long long':
       case 'string':
       case 'boolean':
         return PrimitiveParser;
       case 'number[]':
+      case 'double[]':
       case 'string[]':
       case 'boolean[]':
         return ArrayParser;

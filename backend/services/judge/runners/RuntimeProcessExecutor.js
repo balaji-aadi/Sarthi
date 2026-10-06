@@ -8,6 +8,19 @@ import { createProcessExecutionResult } from './ProcessErrors.js';
 export const HARD_MAX_TIMEOUT_MS = 15000;
 export const DEFAULT_OUTPUT_LIMIT_BYTES = 2 * 1024 * 1024; // 2 MB
 
+// Discover standard OpenJDK / Homebrew installation paths if present
+const standardJdkPaths = [
+  '/opt/homebrew/opt/openjdk@17/bin',
+  '/opt/homebrew/opt/openjdk/bin',
+  '/usr/local/opt/openjdk@17/bin',
+  '/usr/local/opt/openjdk/bin'
+];
+for (const jdkPath of standardJdkPaths) {
+  if (fs.existsSync(jdkPath) && !process.env.PATH?.includes(jdkPath)) {
+    process.env.PATH = `${jdkPath}:${process.env.PATH || ''}`;
+  }
+}
+
 /**
  * Cross-platform process tree killer.
  */
@@ -485,7 +498,17 @@ export class RuntimeProcessExecutor {
   static _parseResultEnvelope(stdout) {
     if (!stdout || typeof stdout !== 'string') return null;
 
-    const lines = stdout.trim().split(/\r?\n/);
+    const trimmed = stdout.trim();
+    if ((trimmed.startsWith('{') && trimmed.endsWith('}')) && (trimmed.includes('"status"') || trimmed.includes("'status'"))) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (parsed && (parsed.status === 'SUCCESS' || parsed.status === 'RUNTIME_ERROR')) {
+          return parsed;
+        }
+      } catch (e) {}
+    }
+
+    const lines = trimmed.split(/\r?\n/);
     // Search in reverse for the last valid JSON envelope emitted by driver
     for (let i = lines.length - 1; i >= 0; i--) {
       const line = lines[i].trim();

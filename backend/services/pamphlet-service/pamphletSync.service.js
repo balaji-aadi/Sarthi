@@ -1,6 +1,7 @@
 import DsaPamphlet from '../../models/dsaPamphlet.model.js';
 import { Task } from '../../models/task.model.js';
 import { User } from '../../models/user.model.js';
+import { UserTaskProgress } from '../../models/userTaskProgress.model.js';
 import mongoose from 'mongoose';
 
 const DEFAULT_FAANG_CURRICULUM = [
@@ -400,15 +401,21 @@ export class PamphletSyncService {
                 return pKey.includes('dsa') || pName.includes('dsa') || pName.includes('data structure') || pName.includes('algorithm');
             });
 
-            // 2. Fetch all user tasks across all projects
+            // 2. Fetch canonical tasks across DSA projects
             const userIdObj = new mongoose.Types.ObjectId(userIdStr);
+            const dsaProjectIds = dsaProjects.map(p => p._id);
             const userTasks = await TaskCollection.find({
-                $or: [
-                    { assignee: userIdObj },
-                    { createdBy: userIdObj },
-                    { assignee: null } // Include unassigned template tasks
-                ]
+                projectName: { $in: dsaProjectIds }
             }).toArray();
+
+            // Fetch authenticated user's isolated progress from UserTaskProgress
+            const userProgressDocs = await UserTaskProgress.find({ userId: userIdObj }).lean();
+            const userProgressMap = new Map();
+            for (const doc of userProgressDocs) {
+                if (doc.taskId) {
+                    userProgressMap.set(doc.taskId.toString(), doc);
+                }
+            }
 
             // Helper function to match pattern keywords with word boundary precision for short terms like 'lis' or 'lcs'
             const matchesKeyword = (text, kw) => {
@@ -476,8 +483,9 @@ export class PamphletSyncService {
                     if (patternChildTasks.length > 0) {
                         const projTotal = patternChildTasks.length;
                         const projCompleted = patternChildTasks.filter(t => {
-                            const st = (t.status || '').toLowerCase();
-                            return st === 'done' || st === 'completed';
+                            const taskIdStr = (t._id || t.id).toString();
+                            const up = userProgressMap.get(taskIdStr);
+                            return up ? (up.status === 'done' || up.progress === 100 || Boolean(up.completedAt)) : false;
                         }).length;
 
                         totalAssigned += projTotal;
@@ -489,12 +497,17 @@ export class PamphletSyncService {
                             arenaKey: proj.key || '',
                             total: projTotal,
                             completed: projCompleted,
-                            problems: patternChildTasks.map(t => ({
-                                taskId: t.taskId || t._id.toString(),
-                                taskName: t.taskName,
-                                status: t.status,
-                                isCompleted: ['done', 'completed'].includes((t.status || '').toLowerCase())
-                            }))
+                            problems: patternChildTasks.map(t => {
+                                const taskIdStr = (t._id || t.id).toString();
+                                const up = userProgressMap.get(taskIdStr);
+                                const isDone = up ? (up.status === 'done' || up.progress === 100 || Boolean(up.completedAt)) : false;
+                                return {
+                                    taskId: t.taskId || taskIdStr,
+                                    taskName: t.taskName,
+                                    status: up?.status || 'todo',
+                                    isCompleted: isDone
+                                };
+                            })
                         };
                     }
                 }

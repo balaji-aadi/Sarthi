@@ -23,6 +23,7 @@ import noteRouter from "../services/note-service/note.router.js";
 import problemRouter from "../services/problem-service/problem.router.js";
 import judgeRouter from "../services/judge-service/judge.router.js";
 import pamphletRouter from "../services/pamphlet-service/pamphlet.router.js";
+import questionFactoryRouter from "../services/content-factory/questionFactory.router.js";
 
 const router = Router();
 
@@ -50,5 +51,6 @@ router.use("/note", noteRouter);
 router.use("/problem", problemRouter);
 router.use("/judge", judgeRouter);
 router.use("/pamphlet", pamphletRouter);
+router.use("/question-factory", questionFactoryRouter);
 
 export default router;

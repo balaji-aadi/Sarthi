@@ -5,13 +5,13 @@ export function DsaCodingArenaModal({ isOpen, onClose, task, problem, onSolveSuc
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center overflow-hidden animate-fade-in">
+    <div style={{ marginTop: "0rem" }} className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center overflow-hidden animate-fade-in">
       <div className="w-full h-full">
-        <DsaCodingArena 
-          task={task} 
-          problem={problem} 
-          onClose={onClose} 
-          onSolveSuccess={onSolveSuccess} 
+        <DsaCodingArena
+          task={task}
+          problem={problem}
+          onClose={onClose}
+          onSolveSuccess={onSolveSuccess}
         />
       </div>
     </div>

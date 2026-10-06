@@ -15,6 +15,7 @@ import {
   LuX
 } from 'react-icons/lu';
 import { ProblemApi } from '../../services/api/Problem.api';
+import DsaCodingArenaModal from '../../components/dsa/DsaCodingArenaModal';
 import toast from 'react-hot-toast';
 import moment from 'moment';
 
@@ -26,6 +27,13 @@ export default function ProblemList() {
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [topics, setTopics] = useState([]);
+  const [selectedProblem, setSelectedProblem] = useState(null);
+  const [showJudgeModal, setShowJudgeModal] = useState(false);
+
+  const handleOpenJudge = (prob) => {
+    setSelectedProblem(prob);
+    setShowJudgeModal(true);
+  };
   
   // Filter States
   const [search, setSearch] = useState(() => searchParams.get('search') || '');
@@ -333,7 +341,7 @@ export default function ProblemList() {
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2">
                         <span 
-                          onClick={() => navigate(`/arena/${prob.slug}`)}
+                          onClick={() => handleOpenJudge(prob)}
                           className="font-bold text-textMain dark:text-slate-100 hover:text-primary hover:underline cursor-pointer"
                         >
                           {prob.title}
@@ -386,8 +394,8 @@ export default function ProblemList() {
                     <td className="py-3.5 px-4 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <button
-                          onClick={() => navigate(`/arena/${prob.slug}`)}
-                          title="View Student Arena"
+                          onClick={() => handleOpenJudge(prob)}
+                          title="Preview in Code Judge"
                           className="p-1.5 text-textSub hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"
                         >
                           <LuEye size={15} />
@@ -459,6 +467,18 @@ export default function ProblemList() {
           </div>
         )}
       </div>
+
+      {/* Full In-House Code Judge Simulation / Preview Modal */}
+      {showJudgeModal && selectedProblem && (
+        <DsaCodingArenaModal
+          isOpen={showJudgeModal}
+          onClose={() => {
+            setShowJudgeModal(false);
+            setSelectedProblem(null);
+          }}
+          problem={selectedProblem}
+        />
+      )}
     </div>
   );
 }

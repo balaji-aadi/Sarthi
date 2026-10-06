@@ -1,5 +1,6 @@
 import { ProblemConfigurationError } from '../outputSerializers/SerializerErrors.js';
 import { SemanticValidatorRegistry } from '../validators/SemanticValidatorRegistry.js';
+import { normalizeCanonicalType, TYPE_MAP } from '../../../../shared/templateGenerator.js';
 
 /**
  * Java Driver Harness Generator (Phase 6)
@@ -33,33 +34,154 @@ export function generateJavaDriverHarness(studentCode, functionDefinition, execu
 
   const validationHelpersCode = SemanticValidatorRegistry.getInjectedValidationCode('java', semanticValidator);
 
+// Helper to resolve canonical Java type string
+function getJavaType(type) {
+  const canonical = normalizeCanonicalType(type);
+  if (canonical && TYPE_MAP?.java?.[canonical]) {
+    return TYPE_MAP.java[canonical];
+  }
+  const clean = (type || '').trim().toLowerCase();
+  if (clean === 'number' || clean === 'int' || clean === 'integer') return 'int';
+  if (clean === 'long' || clean === 'long long' || clean === 'int64') return 'long';
+  if (clean === 'float' || clean === 'double') return 'double';
+  if (clean === 'boolean' || clean === 'bool') return 'boolean';
+  if (clean === 'string' || clean === 'str') return 'String';
+  if (
+    clean === 'number[]' ||
+    clean === 'int[]' ||
+    clean === 'integer[]' ||
+    clean.startsWith('list<int') ||
+    clean.startsWith('list<integer') ||
+    clean === 'int-array'
+  ) {
+    return 'int[]';
+  }
+  if (clean === 'double[]' || clean === 'float[]' || clean.startsWith('list<double') || clean.startsWith('list<float')) {
+    return 'double[]';
+  }
+  if (clean === 'string[]' || clean === 'str[]' || clean.startsWith('list<string') || clean.startsWith('list<str>')) {
+    return 'String[]';
+  }
+  if (clean === 'boolean[]' || clean === 'bool[]' || clean.startsWith('list<bool') || clean.startsWith('list<boolean')) {
+    return 'boolean[]';
+  }
+  if (clean === 'number[][]' || clean === 'int[][]' || clean === 'integer[][]' || clean.startsWith('list<list<int') || clean === 'matrix') {
+    return 'int[][]';
+  }
+  if (clean === 'string[][]' || clean === 'str[][]') return 'String[][]';
+  if (clean === 'boolean[][]' || clean === 'bool[][]') return 'boolean[][]';
+  if (clean.includes('listnode')) return 'ListNode';
+  if (clean.includes('treenode')) return 'TreeNode';
+  if (clean.includes('graph')) return 'Node';
+  return 'int';
+}
+
 // Helper to format Java literal values from JSON input
 function formatJavaLiteral(val, type) {
-  const normType = (type || 'number').toLowerCase();
+  const canonical = normalizeCanonicalType(type);
+  const clean = (type || '').trim().toLowerCase();
+
   if (val === null || val === undefined) {
-    if (normType.includes('node')) return 'null';
+    if (canonical === 'ListNode' || canonical === 'TreeNode' || canonical === 'GraphNode' || canonical === 'RandomListNode' || clean.includes('node')) {
+      return 'null';
+    }
     return '0';
   }
-  if (normType === 'number' || normType === 'int') return String(val);
-  if (normType === 'float' || normType === 'double') return String(val);
-  if (normType === 'boolean' || normType === 'bool') return val ? 'true' : 'false';
-  if (normType === 'string' || normType === 'str') return escapeJavaStringLiteral(val);
-  if (normType === 'number[]' || normType === 'int[]') return `new int[]{${(Array.isArray(val) ? val : []).join(',')}}`;
-  if (normType === 'string[]' || normType === 'str[]') return `new String[]{${(Array.isArray(val) ? val : []).map(s => escapeJavaStringLiteral(s)).join(',')}}`;
-  if (normType === 'boolean[]' || normType === 'bool[]') return `new boolean[]{${(Array.isArray(val) ? val : []).map(b => b ? 'true' : 'false').join(',')}}`;
-  if (normType === 'number[][]' || normType === 'int[][]') return `new int[][]{${(Array.isArray(val) ? val : []).map(r => `new int[]{${(Array.isArray(r) ? r : []).join(',')}}`).join(',')}}`;
-  if (normType === 'string[][]' || normType === 'str[][]') return `new String[][]{${(Array.isArray(val) ? val : []).map(r => `new String[]{${(Array.isArray(r) ? r : []).map(s => escapeJavaStringLiteral(s)).join(',')}}`).join(',')}}`;
-  if (normType.includes('listnode') && !normType.includes('random')) {
+
+  if (canonical === 'number' || clean === 'number' || clean === 'int' || clean === 'integer') {
+    return String(val);
+  }
+
+  if (canonical === 'long long' || canonical === 'long' || clean === 'long' || clean === 'long long' || clean === 'int64') {
+    const s = String(val);
+    return s.endsWith('L') ? s : `${s}L`;
+  }
+
+  if (canonical === 'double' || canonical === 'float' || clean === 'double' || clean === 'float') {
+    return String(val);
+  }
+
+  if (canonical === 'boolean' || clean === 'boolean' || clean === 'bool') {
+    return val ? 'true' : 'false';
+  }
+
+  if (canonical === 'string' || clean === 'string' || clean === 'str') {
+    return escapeJavaStringLiteral(val);
+  }
+
+  if (
+    canonical === 'number[]' ||
+    clean === 'number[]' ||
+    clean === 'int[]' ||
+    clean === 'integer[]' ||
+    clean.startsWith('list<int') ||
+    clean.startsWith('list<integer')
+  ) {
+    return `new int[]{${(Array.isArray(val) ? val : []).join(',')}}`;
+  }
+
+  if (
+    canonical === 'double[]' ||
+    clean === 'double[]' ||
+    clean === 'float[]' ||
+    clean.startsWith('list<double') ||
+    clean.startsWith('list<float')
+  ) {
+    return `new double[]{${(Array.isArray(val) ? val : []).join(',')}}`;
+  }
+
+  if (
+    canonical === 'string[]' ||
+    clean === 'string[]' ||
+    clean === 'str[]' ||
+    clean.startsWith('list<string') ||
+    clean.startsWith('list<str>')
+  ) {
+    return `new String[]{${(Array.isArray(val) ? val : []).map(s => escapeJavaStringLiteral(s)).join(',')}}`;
+  }
+
+  if (
+    canonical === 'boolean[]' ||
+    clean === 'boolean[]' ||
+    clean === 'bool[]' ||
+    clean.startsWith('list<bool') ||
+    clean.startsWith('list<boolean')
+  ) {
+    return `new boolean[]{${(Array.isArray(val) ? val : []).map(b => b ? 'true' : 'false').join(',')}}`;
+  }
+
+  if (
+    canonical === 'number[][]' ||
+    clean === 'number[][]' ||
+    clean === 'int[][]' ||
+    clean === 'integer[][]' ||
+    clean.startsWith('list<list<int') ||
+    clean === 'matrix'
+  ) {
+    return `new int[][]{${(Array.isArray(val) ? val : []).map(r => `new int[]{${(Array.isArray(r) ? r : []).join(',')}}`).join(',')}}`;
+  }
+
+  if (canonical === 'string[][]' || clean === 'string[][]' || clean === 'str[][]') {
+    return `new String[][]{${(Array.isArray(val) ? val : []).map(r => `new String[]{${(Array.isArray(r) ? r : []).map(s => escapeJavaStringLiteral(s)).join(',')}}`).join(',')}}`;
+  }
+
+  if (canonical === 'boolean[][]' || clean === 'boolean[][]' || clean === 'bool[][]') {
+    return `new boolean[][]{${(Array.isArray(val) ? val : []).map(r => `new boolean[]{${(Array.isArray(r) ? r : []).map(b => b ? 'true' : 'false').join(',')}}`).join(',')}}`;
+  }
+
+  if (canonical === 'ListNode' || (clean.includes('listnode') && !clean.includes('random'))) {
     if (val === null || val === undefined) return 'null';
     const arr = Array.isArray(val) ? val : [];
     return `deserializeListNode(new int[]{${arr.join(',')}})`;
   }
-  if (normType.includes('treenode') || normType.includes('binarytree')) {
+
+  if (canonical === 'TreeNode' || clean.includes('treenode') || clean.includes('binarytree')) {
     if (val === null || val === undefined) return 'null';
     const arr = Array.isArray(val) ? val : [];
     const quoted = arr.map(x => (x === null || x === undefined || String(x).toLowerCase() === 'null') ? '"null"' : `"${x}"`);
     return `deserializeTreeNode(new String[]{${quoted.join(',')}})`;
   }
+
   return String(val);
 }
 
@@ -69,18 +191,19 @@ function escapeJavaStringLiteral(str) {
 }
 
 function getJavaSerializerCall(varName, type) {
-  const normType = (type || 'number').toLowerCase();
-  if (normType === 'number' || normType === 'int') return `String.valueOf(${varName})`;
-  if (normType === 'float' || normType === 'double') return `String.valueOf(${varName})`;
-  if (normType === 'boolean' || normType === 'bool') return `String.valueOf(${varName})`;
-  if (normType === 'string' || normType === 'str') return `escapeJson(${varName})`;
-  if (normType === 'number[][]' || normType === 'int[][]') return `serialize2DIntArray(${varName})`;
-  if (normType === 'string[][]' || normType === 'str[][]') return `serialize2DStringArray(${varName})`;
-  if (normType === 'number[]' || normType === 'int[]') return `serialize1DIntArray(${varName})`;
-  if (normType === 'string[]' || normType === 'str[]') return `serialize1DStringArray(${varName})`;
-  if (normType === 'boolean[]' || normType === 'bool[]') return `serialize1DBoolArray(${varName})`;
-  if (normType.includes('listnode') && !normType.includes('random')) return `serializeListNode(${varName})`;
-  if (normType.includes('treenode') || normType.includes('binarytree')) return `serializeTreeNode(${varName})`;
+  const canonical = normalizeCanonicalType(type);
+  const clean = (type || '').trim().toLowerCase();
+  if (canonical === 'number' || clean === 'number' || clean === 'int' || clean === 'integer' || canonical === 'long long' || canonical === 'long' || clean === 'long') return `String.valueOf(${varName})`;
+  if (canonical === 'double' || clean === 'float' || clean === 'double') return `String.valueOf(${varName})`;
+  if (canonical === 'boolean' || clean === 'boolean' || clean === 'bool') return `String.valueOf(${varName})`;
+  if (canonical === 'string' || clean === 'string' || clean === 'str') return `escapeJson(${varName})`;
+  if (canonical === 'number[][]' || clean === 'number[][]' || clean === 'int[][]') return `serialize2DIntArray(${varName})`;
+  if (canonical === 'string[][]' || clean === 'string[][]' || clean === 'str[][]') return `serialize2DStringArray(${varName})`;
+  if (canonical === 'number[]' || clean === 'number[]' || clean === 'int[]' || clean.startsWith('list<int') || clean.startsWith('list<integer')) return `serialize1DIntArray(${varName})`;
+  if (canonical === 'string[]' || clean === 'string[]' || clean === 'str[]' || clean.startsWith('list<string')) return `serialize1DStringArray(${varName})`;
+  if (canonical === 'boolean[]' || clean === 'boolean[]' || clean === 'bool[]' || clean.startsWith('list<bool')) return `serialize1DBoolArray(${varName})`;
+  if (canonical === 'ListNode' || (clean.includes('listnode') && !clean.includes('random'))) return `serializeListNode(${varName})`;
+  if (canonical === 'TreeNode' || clean.includes('treenode') || clean.includes('binarytree')) return `serializeTreeNode(${varName})`;
   return `String.valueOf(${varName})`;
 }
 
@@ -90,21 +213,7 @@ function getJavaSerializerCall(varName, type) {
     const paramInits = parameters.map((p, i) => {
       const pName = p.name || `param_${i}`;
       const val = (typeof rawInput === 'object' && rawInput !== null && rawInput[pName] !== undefined) ? rawInput[pName] : (Array.isArray(rawInput) ? rawInput[i] : rawInput);
-      const rawType = (p.type || 'number').toLowerCase();
-      let javaType = 'int';
-      if (rawType === 'number' || rawType === 'int') javaType = 'int';
-      else if (rawType === 'float' || rawType === 'double') javaType = 'double';
-      else if (rawType === 'boolean' || rawType === 'bool') javaType = 'boolean';
-      else if (rawType === 'string' || rawType === 'str') javaType = 'String';
-      else if (rawType === 'number[]' || rawType === 'int[]') javaType = 'int[]';
-      else if (rawType === 'string[]' || rawType === 'str[]') javaType = 'String[]';
-      else if (rawType === 'boolean[]' || rawType === 'bool[]') javaType = 'boolean[]';
-      else if (rawType === 'number[][]' || rawType === 'int[][]') javaType = 'int[][]';
-      else if (rawType === 'string[][]' || rawType === 'str[][]') javaType = 'String[][]';
-      else if (rawType.includes('listnode')) javaType = 'ListNode';
-      else if (rawType.includes('treenode')) javaType = 'TreeNode';
-      else if (rawType.includes('graph')) javaType = 'Node';
-
+      const javaType = getJavaType(p.type);
       return `${javaType} tc_${idx}_${pName} = ${formatJavaLiteral(val, p.type)};`;
     }).join('\n        ');
 
@@ -140,9 +249,17 @@ function getJavaSerializerCall(varName, type) {
         }`;
   }).join('\n\n        ');
 
+  const importRegex = /^\s*import\s+[a-zA-Z0-9_.*]+;\s*$/gm;
+  const studentImports = [];
+  const cleanStudentCode = (studentCode || '').replace(importRegex, (m) => {
+    studentImports.push(m.trim());
+    return '';
+  });
+  const hoistedImports = studentImports.length > 0 ? studentImports.join('\n') + '\n' : '';
+
   return `import java.util.*;
 import java.io.*;
-
+${hoistedImports}
 // ==========================================
 // 1. STANDARD DATA STRUCTURE DEFINITIONS
 // ==========================================
@@ -196,7 +313,7 @@ class Node {
 // ==========================================
 // 2. INJECTED STUDENT CODE
 // ==========================================
-${studentCode}
+${cleanStudentCode}
 
 // ==========================================
 // 3. MAIN DRIVER & JSON SERIALIZATION (PHASE 4 CONTRACT)

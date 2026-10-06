@@ -48,11 +48,11 @@ const requireAdmin = (req, res, next) => {
 router.post("/package/compile", verifyJWT, requireAdmin, compileProblemPackage);
 router.post("/package/publish", verifyJWT, requireAdmin, publishProblemPackage);
 
-// Problem Routes (Read: Public/Authenticated; Mutations: Admin Only)
+// Problem Routes (Read: Authenticated; Mutations: Admin Only)
 router.post("/", verifyJWT, requireAdmin, createProblem);
-router.get("/check-slug", checkSlugAvailability);
-router.get("/", getAllProblems);
-router.get("/:identifier", getProblemBySlugOrId);
+router.get("/check-slug", verifyJWT, checkSlugAvailability);
+router.get("/", verifyJWT, getAllProblems);
+router.get("/:identifier", verifyJWT, getProblemBySlugOrId);
 router.put("/:id", verifyJWT, requireAdmin, updateProblem);
 router.delete("/:id", verifyJWT, requireAdmin, archiveProblem);
 

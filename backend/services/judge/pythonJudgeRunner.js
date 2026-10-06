@@ -118,30 +118,55 @@ export async function executePythonJudge({
       const startIndex = stdout.indexOf(startMarker);
       const endIndex = stdout.indexOf(endMarker);
 
-      if (startIndex === -1 || endIndex === -1) {
-        return resolve({
-          verdict: 'Runtime Error',
-          status: 'Runtime Error',
-          error: stderr || 'Failed to extract execution output report.',
-          results: [],
-          totalTestCases: testCases.length,
-          passedTestCases: 0
-        });
-      }
-
-      const jsonStr = stdout.substring(startIndex + startMarker.length, endIndex).trim();
       let rawReport = [];
-      try {
-        rawReport = JSON.parse(jsonStr);
-      } catch (err) {
-        return resolve({
-          verdict: 'Runtime Error',
-          status: 'Runtime Error',
-          error: `JSON Output Parse Error: ${err.message}`,
-          results: [],
-          totalTestCases: testCases.length,
-          passedTestCases: 0
-        });
+
+      if (startIndex !== -1 && endIndex !== -1) {
+        const jsonStr = stdout.substring(startIndex + startMarker.length, endIndex).trim();
+        try {
+          rawReport = JSON.parse(jsonStr);
+        } catch (err) {
+          return resolve({
+            verdict: 'Runtime Error',
+            status: 'Runtime Error',
+            error: `JSON Output Parse Error: ${err.message}`,
+            results: [],
+            totalTestCases: testCases.length,
+            passedTestCases: 0
+          });
+        }
+      } else {
+        // Support direct JSON payload from PythonDriverGenerator
+        try {
+          const direct = JSON.parse(stdout.trim());
+          if (direct.status === 'RUNTIME_ERROR') {
+            return resolve({
+              verdict: 'Runtime Error',
+              status: 'Runtime Error',
+              error: `${direct.errorType}: ${direct.message}`,
+              results: [],
+              totalTestCases: testCases.length,
+              passedTestCases: 0
+            });
+          }
+          if (Array.isArray(direct.results)) {
+            rawReport = direct.results.map(r => ({
+              testCaseIndex: r.testCaseIndex,
+              success: true,
+              actualOutput: r.output,
+              output: r.output,
+              executionTimeMs: 0
+            }));
+          }
+        } catch (e) {
+          return resolve({
+            verdict: 'Runtime Error',
+            status: 'Runtime Error',
+            error: stderr ? `Python Runtime Error: ${stderr}` : (stdout ? `Python unexpected stdout: ${stdout}` : 'Failed to extract execution output report.'),
+            results: [],
+            totalTestCases: testCases.length,
+            passedTestCases: 0
+          });
+        }
       }
 
       // Evaluate each testcase output against expected output using ComparatorRegistry

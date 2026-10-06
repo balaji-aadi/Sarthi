@@ -2,7 +2,13 @@ import { PamphletSyncService } from './pamphletSync.service.js';
 
 export const getDsaPamphlet = async (req, res) => {
     try {
-        const userId = req.user?._id || req.user?.id || '6993047f16e85ff3e4efd9a3'; // Fallback to current user ID if token middleware passes ID differently
+        const userId = req.user?._id || req.user?.id;
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: 'Unauthorized: Authentication required to view DSA Pamphlet'
+            });
+        }
         const data = await PamphletSyncService.syncUserPamphlet(userId.toString());
         return res.status(200).json({
             success: true,
@@ -20,7 +26,13 @@ export const getDsaPamphlet = async (req, res) => {
 
 export const syncDsaPamphlet = async (req, res) => {
     try {
-        const userId = req.user?._id || req.user?.id || '6993047f16e85ff3e4efd9a3';
+        const userId = req.user?._id || req.user?.id;
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: 'Unauthorized: Authentication required to sync DSA Pamphlet'
+            });
+        }
         const data = await PamphletSyncService.syncUserPamphlet(userId.toString());
         return res.status(200).json({
             success: true,

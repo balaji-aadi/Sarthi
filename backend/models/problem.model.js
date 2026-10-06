@@ -94,13 +94,125 @@ const hiddenTestCaseSchema = new Schema({
   isPerformanceTest: { type: Boolean, default: false }
 }, { _id: false });
 
+// Question Factory Reference Solution (Hidden from student-facing APIs)
+const referenceSolutionSchema = new Schema({
+  language: { type: String, default: "python", trim: true },
+  code: { type: String, required: true },
+  timeComplexity: { type: String, default: "", trim: true },
+  spaceComplexity: { type: String, default: "", trim: true }
+}, { _id: false });
+
+// Question Factory Metadata Schemas
+const testCategorySchema = new Schema({
+  categoryId: { type: String, required: true },
+  description: { type: String, default: "" },
+  targetCount: { type: Number, default: 0 },
+  actualCount: { type: Number, default: 0 }
+}, { _id: false });
+
+const testStrategySchema = new Schema({
+  summary: { type: String, default: "" },
+  intendedAlgorithm: { type: String, default: "" },
+  targetedMistakes: [{ type: String }],
+  categories: [testCategorySchema],
+  testProvenance: [{ type: Schema.Types.Mixed }]
+}, { _id: false, strict: false });
+
+const qualityReportSchema = new Schema({
+  clarity: { type: String, enum: ['PASS', 'WARNING', 'FAIL', 'SKIPPED'], default: 'PASS' },
+  patternAlignment: { type: String, enum: ['PASS', 'WARNING', 'FAIL', 'SKIPPED'], default: 'PASS' },
+  difficultyCalibration: { type: String, enum: ['PASS', 'WARNING', 'FAIL', 'SKIPPED'], default: 'PASS' },
+  constraintComplexity: { type: String, enum: ['PASS', 'WARNING', 'FAIL', 'SKIPPED'], default: 'PASS' },
+  exampleQuality: { type: String, enum: ['PASS', 'WARNING', 'FAIL', 'SKIPPED'], default: 'PASS' },
+  testCoverage: { type: String, enum: ['PASS', 'WARNING', 'FAIL', 'SKIPPED'], default: 'PASS' },
+  similarity: { type: String, enum: ['PASS', 'WARNING', 'FAIL', 'SKIPPED'], default: 'PASS' },
+  similarityScore: { type: Number, default: 0 },
+  similarityDetails: { type: String, default: "" }
+}, { _id: false });
+
+const validationReportSchema = new Schema({
+  validationState: { 
+    type: String, 
+    enum: ['PENDING', 'VALIDATING', 'VALIDATED', 'FAILED'], 
+    default: 'PENDING' 
+  },
+  isValidated: { type: Boolean, default: false },
+  validatedAt: { type: Date, default: null },
+
+  structuralValidationPassed: { type: Boolean, default: false },
+  constraintAuditPassed: { type: Boolean, default: false },
+  exampleVerificationPassed: { type: Boolean, default: false },
+  adversarialTestingPassed: { type: Boolean, default: false },
+
+  judgeSelfTestPassed: { type: Boolean, default: false },
+  judgeVerdict: { type: String, default: "" },
+  judgeExecutionTimeMs: { type: Number, default: 0 },
+
+  performanceStatus: { 
+    type: String, 
+    enum: ['OPTIMAL', 'ACCEPTABLE', 'WARNING', 'UNTESTED'], 
+    default: 'UNTESTED' 
+  },
+  performanceWarningDetails: { type: String, default: "" },
+  performanceProfile: { type: Schema.Types.Mixed, default: () => ({}) },
+
+  exampleVerification: { type: Schema.Types.Mixed, default: () => ({}) },
+  adversarialReport: { type: Schema.Types.Mixed, default: () => ({}) },
+
+  qualityReport: { type: qualityReportSchema, default: () => ({}) },
+
+  validationErrors: [{ type: String }],
+  regenerationAttempts: { type: Number, default: 0 }
+}, { _id: false, strict: false });
+
+const reviewInfoSchema = new Schema({
+  reviewedBy: { type: Schema.Types.ObjectId, ref: 'User', default: null },
+  reviewedAt: { type: Date, default: null },
+  adminNotes: { type: String, default: "" }
+}, { _id: false });
+
+const learningObjectiveSchema = new Schema({
+  pattern: { type: String, default: "" },
+  coreSkill: { type: String, default: "" },
+  recognitionSignal: { type: String, default: "" },
+  requiredInvariant: { type: String, default: "" },
+  expectedComplexity: { type: String, default: "" },
+  commonWrongApproaches: [{ type: String }],
+  difficultyReason: { type: String, default: "" },
+  testObjectives: [{ type: String }]
+}, { _id: false });
+
+const factoryMetadataSchema = new Schema({
+  source: { 
+    type: String, 
+    enum: ['QUESTION_FACTORY', 'MANUAL', 'EXTERNAL'], 
+    default: 'QUESTION_FACTORY' 
+  },
+  generationType: { 
+    type: String, 
+    enum: ['AI_PIPELINE', 'CONTROLLED_EXPERIMENT', 'MANUAL_AUTHORING'], 
+    default: 'AI_PIPELINE' 
+  },
+  generatedByAI: { type: Boolean, default: false },
+  aiProvider: { type: String, default: "" },
+  aiModel: { type: String, default: "" },
+  promptVersion: { type: String, default: "v2.0.0" },
+  generationDirectives: { type: String, default: "" },
+  testStrategy: { type: testStrategySchema, default: () => ({}) },
+  validationReport: { type: validationReportSchema, default: () => ({}) },
+  reviewInfo: { type: reviewInfoSchema, default: () => ({}) },
+  learningObjective: { type: learningObjectiveSchema, default: () => ({}) },
+  difficultyReasoning: { type: String, default: "" },
+  isMockExclusive: { type: Boolean, default: false }
+}, { _id: false });
+
 const problemSchema = new Schema(
   {
     problemCode: { 
       type: String, 
       required: true, 
       unique: true, 
-      index: true,
+      index: true, 
       trim: true 
     },
     problemType: { 
@@ -128,7 +240,7 @@ const problemSchema = new Schema(
     },
     status: { 
       type: String, 
-      enum: ['Draft', 'Review', 'Published', 'Archived'], 
+      enum: ['Draft', 'Review', 'Approved', 'Mock_Ready', 'Published', 'Archived'], 
       default: 'Draft',
       index: true 
     },
@@ -169,7 +281,10 @@ const problemSchema = new Schema(
 
     starterCode: [starterCodeSchema],
     visibleTestCases: [visibleTestCaseSchema],
-    hiddenTestCases: [hiddenTestCaseSchema],
+    hiddenTestCases: {
+      type: [hiddenTestCaseSchema],
+      select: false
+    },
     executionLimits: {
       timeLimitMs: { type: Number, default: 2000 },
       memoryLimitMb: { type: Number, default: 256 }
@@ -205,6 +320,15 @@ const problemSchema = new Schema(
     packageHash: {
       type: String,
       default: ''
+    },
+    // Question Factory Extensions
+    referenceSolution: {
+      type: referenceSolutionSchema,
+      select: false // Never exposed in student queries by default
+    },
+    factoryMetadata: {
+      type: factoryMetadataSchema,
+      default: () => ({})
     }
   },
   { timestamps: true }

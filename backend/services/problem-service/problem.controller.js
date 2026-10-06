@@ -145,6 +145,15 @@ export const createProblem = async (req, res) => {
   }
 };
 
+const checkIsAdmin = (user) => {
+  return Boolean(
+    user?.email === "balajiaadi2000@gmail.com" ||
+    user?.role === "admin" ||
+    user?.userRole?.name?.toLowerCase() === "admin" ||
+    (Array.isArray(user?.userRoles) && user.userRoles.some(r => r?.name?.toLowerCase() === "admin"))
+  );
+};
+
 // ==================== GET ALL PROBLEMS ====================
 export const getAllProblems = async (req, res) => {
   try {
@@ -159,17 +168,26 @@ export const getAllProblems = async (req, res) => {
       topic 
     } = req.query;
 
+    const isAdmin = checkIsAdmin(req.user);
     const query = {};
 
-    // Filter by Status (Default: all non-archived problems for CMS management)
-    if (status) {
-      query.status = status;
+    if (!isAdmin) {
+      // Normal authenticated users:
+      // STRICTLY Published problems only, NEVER drafts, review, or Mock-exclusive questions
+      query.status = 'Published';
+      query.problemType = { $ne: 'Mock_Interview' };
+      query['factoryMetadata.isMockExclusive'] = { $ne: true };
     } else {
-      query.status = { $ne: 'Archived' };
+      // Admin: allow querying Draft, Review, Mock_Ready, etc. for Studio/CMS management
+      if (status) {
+        query.status = status;
+      } else {
+        query.status = { $ne: 'Archived' };
+      }
+      if (problemType) query.problemType = problemType;
     }
 
     if (difficulty) query.difficulty = difficulty;
-    if (problemType) query.problemType = problemType;
     if (company) query.companies = company;
     if (topic) query.topics = topic;
 
@@ -194,9 +212,16 @@ export const getAllProblems = async (req, res) => {
       Problem.countDocuments(query)
     ]);
 
+    // Strip hiddenTestCases defense-in-depth
+    const sanitizedProblems = problems.map(p => {
+      const pObj = p.toObject ? p.toObject() : { ...p };
+      delete pObj.hiddenTestCases;
+      return pObj;
+    });
+
     return res.status(200).json({
       success: true,
-      data: problems,
+      data: sanitizedProblems,
       pagination: {
         page: Number(page),
         limit: Number(limit),
@@ -233,16 +258,41 @@ export const getProblemByIdOrSlug = async (req, res) => {
           ]
         };
 
-    const problem = await Problem.findOne(query)
+    const isAdmin = checkIsAdmin(req.user);
+    const allowHidden = isAdmin && (req.query.includeHidden === 'true' || req.query.adminView === 'true');
+
+    let mongoQuery = Problem.findOne(query)
       .populate("companies", "name logoUrl slug")
       .populate("topics", "name category slug")
       .populate("pattern", "name slug");
+
+    if (allowHidden) {
+      mongoQuery = mongoQuery.select('+hiddenTestCases');
+    }
+
+    const problem = await mongoQuery;
 
     if (!problem) {
       return res.status(404).json({ success: false, message: "Problem not found" });
     }
 
-    return res.status(200).json({ success: true, data: problem });
+    // Security Gate: Non-admin users can ONLY see Published, non-Mock-exclusive problems
+    if (!isAdmin) {
+      if (
+        problem.status !== 'Published' ||
+        problem.problemType === 'Mock_Interview' ||
+        problem.factoryMetadata?.isMockExclusive === true
+      ) {
+        return res.status(404).json({ success: false, message: "Problem not found" });
+      }
+    }
+
+    const responseData = problem.toObject ? problem.toObject() : { ...problem };
+    if (!allowHidden) {
+      delete responseData.hiddenTestCases;
+    }
+
+    return res.status(200).json({ success: true, data: responseData });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -262,7 +312,7 @@ export const updateProblem = async (req, res) => {
     // Pre-flight Validation if functionDefinition, executionProfile, starterCode, or testcases are being updated
     if (updates.functionDefinition || updates.executionProfile || updates.starterCode || updates.visibleTestCases || updates.hiddenTestCases) {
       try {
-        const existing = await Problem.findById(id);
+        const existing = await Problem.findById(id).select('+hiddenTestCases');
         const fnDef = updates.functionDefinition || existing?.functionDefinition;
         const execProfile = updates.executionProfile || existing?.executionProfile;
         const visTC = updates.visibleTestCases || existing?.visibleTestCases || [];
@@ -349,7 +399,7 @@ export const publishProblemPackage = async (req, res) => {
       return res.status(400).json({ success: false, message: "Valid problem package JSON is required." });
     }
 
-    const problem = await Problem.findById(problemId);
+    const problem = await Problem.findById(problemId).select('+hiddenTestCases');
     if (!problem) {
       return res.status(404).json({ success: false, message: "Problem not found." });
     }

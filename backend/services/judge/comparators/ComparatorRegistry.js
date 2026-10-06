@@ -100,6 +100,15 @@ class ComparatorRegistryManager {
   }
 
   /**
+   * Normalizes a value using type-aware expected output normalization.
+   */
+  normalizeValue(val, returnType = '') {
+    if (val === null || val === undefined) return val;
+    if (returnType) return normalizeExpectedOutput(val, returnType);
+    return val;
+  }
+
+  /**
    * Legacy method support for backward compatibility.
    */
   compareOutput(comparatorName, actualOutput, expectedOutput, options = {}) {

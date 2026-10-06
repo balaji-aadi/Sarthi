@@ -15,22 +15,161 @@ export function normalizeCanonicalType(type) {
   if (!type || typeof type !== 'string') return '';
   const clean = type.trim();
   const lower = clean.toLowerCase();
+
+  // Linked / Tree / Graph Nodes
   if (lower === 'listnode' || lower === 'linkedlist') return 'ListNode';
   if (lower === 'randomlistnode') return 'RandomListNode';
   if (lower === 'treenode' || lower === 'binarytree') return 'TreeNode';
   if (lower === 'graphnode' || lower === 'graph' || lower === 'graph_node') return 'GraphNode';
-  if (lower === 'int') return 'number';
-  if (lower === 'float') return 'number';
-  if (lower === 'str') return 'string';
-  if (lower === 'bool') return 'boolean';
-  if (lower === 'int[]' || lower === 'list[int]') return 'number[]';
-  if (lower === 'float[]' || lower === 'list[float]') return 'number[]';
-  if (lower === 'str[]' || lower === 'list[str]' || lower === 'list[string]') return 'string[]';
-  if (lower === 'bool[]' || lower === 'list[bool]') return 'boolean[]';
-  if (lower === 'int[][]' || lower === 'matrix' || lower === 'list[list[int]]') return 'number[][]';
-  if (lower === 'string[][]' || lower === 'str[][]') return 'string[][]';
-  if (lower === 'boolean[][]' || lower === 'bool[][]') return 'boolean[][]';
+
+  // Integer / Number primitives
+  if (lower === 'int' || lower === 'integer' || lower === 'number') return 'number';
+  if (lower === 'long' || lower === 'long long' || lower === 'int64' || lower === 'long-integer') return 'long long';
+  if (lower === 'float' || lower === 'double') return 'double';
+
+  // String primitives
+  if (lower === 'str' || lower === 'string') return 'string';
+
+  // Boolean primitives
+  if (lower === 'bool' || lower === 'boolean') return 'boolean';
+
+  // Void / None
+  if (lower === 'void' || lower === 'none') return 'void';
+
+  // 1D Arrays / Lists: Integer & Number
+  if (
+    lower === 'int[]' ||
+    lower === 'integer[]' ||
+    lower === 'number[]' ||
+    lower === 'list[int]' ||
+    lower === 'list[integer]' ||
+    lower === 'list[number]' ||
+    lower === 'list<int>' ||
+    lower === 'list<integer>' ||
+    lower === 'list<number>' ||
+    lower === 'array<int>' ||
+    lower === 'array<integer>' ||
+    lower === 'array<number>' ||
+    lower === 'vector<int>' ||
+    lower === 'int-array' ||
+    lower === 'integer-array'
+  ) {
+    return 'number[]';
+  }
+
+  // 1D Arrays: Float & Double
+  if (
+    lower === 'float[]' ||
+    lower === 'double[]' ||
+    lower === 'list[float]' ||
+    lower === 'list[double]' ||
+    lower === 'list<float>' ||
+    lower === 'list<double>' ||
+    lower === 'array<float>' ||
+    lower === 'array<double>' ||
+    lower === 'vector<double>' ||
+    lower === 'vector<float>'
+  ) {
+    return 'double[]';
+  }
+
+  // 1D Arrays: String
+  if (
+    lower === 'str[]' ||
+    lower === 'string[]' ||
+    lower === 'list[str]' ||
+    lower === 'list[string]' ||
+    lower === 'list<str>' ||
+    lower === 'list<string>' ||
+    lower === 'array<string>' ||
+    lower === 'vector<string>'
+  ) {
+    return 'string[]';
+  }
+
+  // 1D Arrays: Boolean
+  if (
+    lower === 'bool[]' ||
+    lower === 'boolean[]' ||
+    lower === 'list[bool]' ||
+    lower === 'list[boolean]' ||
+    lower === 'list<bool>' ||
+    lower === 'list<boolean>' ||
+    lower === 'array<boolean>' ||
+    lower === 'vector<bool>'
+  ) {
+    return 'boolean[]';
+  }
+
+  // 2D Matrices: Integer & Number
+  if (
+    lower === 'int[][]' ||
+    lower === 'integer[][]' ||
+    lower === 'number[][]' ||
+    lower === 'matrix' ||
+    lower === 'list[list[int]]' ||
+    lower === 'list[list[integer]]' ||
+    lower === 'list<list<int>>' ||
+    lower === 'list<list<integer>>' ||
+    lower === 'vector<vector<int>>'
+  ) {
+    return 'number[][]';
+  }
+
+  // 2D Matrices: String
+  if (
+    lower === 'string[][]' ||
+    lower === 'str[][]' ||
+    lower === 'list[list[str]]' ||
+    lower === 'list[list[string]]' ||
+    lower === 'list<list<str>>' ||
+    lower === 'list<list<string>>'
+  ) {
+    return 'string[][]';
+  }
+
+  // 2D Matrices: Boolean
+  if (
+    lower === 'boolean[][]' ||
+    lower === 'bool[][]' ||
+    lower === 'list[list[bool]]' ||
+    lower === 'list[list[boolean]]' ||
+    lower === 'list<list<bool>>' ||
+    lower === 'list<list<boolean>>'
+  ) {
+    return 'boolean[][]';
+  }
+
   return clean;
+}
+
+/**
+ * Normalizes and strictly validates a canonical functionDefinition object.
+ * Throws InvalidFunctionDefinitionError if fnDef is a string, non-object, or invalid.
+ */
+export function normalizeFunctionDefinition(fnDef) {
+  if (typeof fnDef === 'string') {
+    throw new Error(
+      `InvalidFunctionDefinitionError: generateAllStarterTemplates expects a canonical functionDefinition object ({ functionName, parameters, returnType }), but received a string: "${fnDef}". Positional arguments are not supported.`
+    );
+  }
+
+  if (!fnDef || typeof fnDef !== 'object' || Array.isArray(fnDef)) {
+    throw new Error(
+      `InvalidFunctionDefinitionError: Expected functionDefinition to be a canonical object, received ${Array.isArray(fnDef) ? 'array' : typeof fnDef}.`
+    );
+  }
+
+  const functionName = fnDef.functionName || fnDef.name || 'solution';
+  const parameters = Array.isArray(fnDef.parameters) ? fnDef.parameters : [];
+  const returnType = fnDef.returnType || 'void';
+
+  return {
+    ...fnDef,
+    functionName,
+    parameters,
+    returnType
+  };
 }
 
 // 2. Data Type Mapping Matrix across supported languages
@@ -38,9 +177,13 @@ export const TYPE_MAP = {
   python: {
     'number': 'int',
     'float': 'float',
+    'double': 'float',
+    'long': 'int',
+    'long long': 'int',
     'string': 'str',
     'boolean': 'bool',
     'number[]': 'List[int]',
+    'double[]': 'List[float]',
     'string[]': 'List[str]',
     'boolean[]': 'List[bool]',
     'number[][]': 'List[List[int]]',
@@ -55,9 +198,13 @@ export const TYPE_MAP = {
   javascript: {
     'number': 'number',
     'float': 'number',
+    'double': 'number',
+    'long': 'number',
+    'long long': 'number',
     'string': 'string',
     'boolean': 'boolean',
     'number[]': 'number[]',
+    'double[]': 'number[]',
     'string[]': 'string[]',
     'boolean[]': 'boolean[]',
     'number[][]': 'number[][]',
@@ -72,9 +219,13 @@ export const TYPE_MAP = {
   cpp: {
     'number': 'int',
     'float': 'double',
+    'double': 'double',
+    'long': 'long long',
+    'long long': 'long long',
     'string': 'string',
     'boolean': 'bool',
     'number[]': 'vector<int>',
+    'double[]': 'vector<double>',
     'string[]': 'vector<string>',
     'boolean[]': 'vector<bool>',
     'number[][]': 'vector<vector<int>>',
@@ -89,9 +240,13 @@ export const TYPE_MAP = {
   java: {
     'number': 'int',
     'float': 'double',
+    'double': 'double',
+    'long': 'long',
+    'long long': 'long',
     'string': 'String',
     'boolean': 'boolean',
     'number[]': 'int[]',
+    'double[]': 'double[]',
     'string[]': 'String[]',
     'boolean[]': 'boolean[]',
     'number[][]': 'int[][]',
@@ -164,7 +319,8 @@ export function sanitizeIdentifier(name, defaultFallback = 'solution') {
  * Generate Python Starter Code Boilerplate
  */
 export function generatePythonTemplate(fnDef, executionProfile = {}) {
-  const { functionName = 'solution', parameters = [], returnType = 'void' } = fnDef || {};
+  const normalized = normalizeFunctionDefinition(fnDef);
+  const { functionName, parameters, returnType } = normalized;
   const cleanFnName = sanitizeIdentifier(functionName);
   const canonicalReturnType = normalizeCanonicalType(returnType);
   const pyReturnType = TYPE_MAP.python[canonicalReturnType] || 'None';
@@ -202,7 +358,8 @@ export function generatePythonTemplate(fnDef, executionProfile = {}) {
  * Generate JavaScript Starter Code Boilerplate
  */
 export function generateJavaScriptTemplate(fnDef, executionProfile = {}) {
-  const { functionName = 'solution', parameters = [], returnType = 'void' } = fnDef || {};
+  const normalized = normalizeFunctionDefinition(fnDef);
+  const { functionName, parameters, returnType } = normalized;
   const cleanFnName = sanitizeIdentifier(functionName);
   const canonicalReturnType = normalizeCanonicalType(returnType);
   const jsRetType = TYPE_MAP.javascript[canonicalReturnType] || 'void';
@@ -239,7 +396,8 @@ export function generateJavaScriptTemplate(fnDef, executionProfile = {}) {
  * Generate C++ Starter Code Boilerplate
  */
 export function generateCppTemplate(fnDef, executionProfile = {}) {
-  const { functionName = 'solution', parameters = [], returnType = 'void' } = fnDef || {};
+  const normalized = normalizeFunctionDefinition(fnDef);
+  const { functionName, parameters, returnType } = normalized;
   const cleanFnName = sanitizeIdentifier(functionName);
   const canonicalReturnType = normalizeCanonicalType(returnType);
   const cppReturnType = TYPE_MAP.cpp[canonicalReturnType] || canonicalReturnType;
@@ -278,7 +436,8 @@ export function generateCppTemplate(fnDef, executionProfile = {}) {
  * Generate Java Starter Code Boilerplate
  */
 export function generateJavaTemplate(fnDef, executionProfile = {}) {
-  const { functionName = 'solution', parameters = [], returnType = 'void' } = fnDef || {};
+  const normalized = normalizeFunctionDefinition(fnDef);
+  const { functionName, parameters, returnType } = normalized;
   const cleanFnName = sanitizeIdentifier(functionName);
   const canonicalReturnType = normalizeCanonicalType(returnType);
   const javaReturnType = TYPE_MAP.java[canonicalReturnType] || canonicalReturnType;
@@ -311,11 +470,12 @@ export function generateJavaTemplate(fnDef, executionProfile = {}) {
  * Generates starter templates for all 4 supported languages in a single call.
  */
 export function generateAllStarterTemplates(fnDef, executionProfile = {}) {
+  const normalized = normalizeFunctionDefinition(fnDef);
   return {
-    python: generatePythonTemplate(fnDef, executionProfile),
-    javascript: generateJavaScriptTemplate(fnDef, executionProfile),
-    cpp: generateCppTemplate(fnDef, executionProfile),
-    java: generateJavaTemplate(fnDef, executionProfile)
+    python: generatePythonTemplate(normalized, executionProfile),
+    javascript: generateJavaScriptTemplate(normalized, executionProfile),
+    cpp: generateCppTemplate(normalized, executionProfile),
+    java: generateJavaTemplate(normalized, executionProfile)
   };
 }
 

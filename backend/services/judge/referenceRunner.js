@@ -43,8 +43,17 @@ export class ReferenceRunner {
     const cleanLang = (language || '').toLowerCase().trim();
 
     if (cleanLang.includes('python')) {
+      const funcName = functionDefinition?.name || functionDefinition?.functionName || 'solution';
+      let codeToRun = (referenceCode || '').trim();
+      if (codeToRun.includes('\\n')) {
+        codeToRun = codeToRun.replace(/\\r/g, '').replace(/\\n/g, '\n').replace(/\\t/g, '    ');
+      }
+      if (!codeToRun.includes('class Solution')) {
+        codeToRun = `${codeToRun}\n\nclass Solution:\n    @staticmethod\n    def ${funcName}(*args, **kwargs):\n        return ${funcName}(*args, **kwargs)\n`;
+      }
+
       const judgeRes = await executePythonJudge({
-        studentCode: referenceCode,
+        studentCode: codeToRun,
         functionDefinition,
         executionProfile,
         testCases: formattedCases,
@@ -68,8 +77,9 @@ export class ReferenceRunner {
           input: origCase.input || origCase,
           expectedOutput: normalizedOutput,
           executionTimeMs: item.executionTimeMs || 0,
+          isPerformanceTest: Boolean(origCase.isPerformanceTest),
           isStress: origCase.isStress || false,
-          category: origCase.category || 'Standard'
+          category: origCase.category || origCase.categoryId || 'Standard'
         };
       });
 

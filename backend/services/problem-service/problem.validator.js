@@ -8,11 +8,14 @@
  * 4. Structured Parameter-based Test Case Input & Output Validation
  */
 
+import { normalizeCanonicalType } from '../../../shared/templateGenerator.js';
+
 // 1. Parameter Type to Parser Contract Mapping
 export const DATA_TYPE_PARSER_MAP = {
   // Primitives
   'number': 'PrimitiveParser',
   'int': 'PrimitiveParser',
+  'integer': 'PrimitiveParser',
   'float': 'PrimitiveParser',
   'string': 'PrimitiveParser',
   'str': 'PrimitiveParser',
@@ -22,22 +25,35 @@ export const DATA_TYPE_PARSER_MAP = {
   // 1D Arrays
   'number[]': 'ArrayParser',
   'int[]': 'ArrayParser',
+  'integer[]': 'ArrayParser',
   'float[]': 'ArrayParser',
   'list[int]': 'ArrayParser',
+  'list[integer]': 'ArrayParser',
+  'list<int>': 'ArrayParser',
+  'list<integer>': 'ArrayParser',
+  'list<number>': 'ArrayParser',
   'list[float]': 'ArrayParser',
   'string[]': 'ArrayParser',
   'list[str]': 'ArrayParser',
   'list[string]': 'ArrayParser',
+  'list<str>': 'ArrayParser',
+  'list<string>': 'ArrayParser',
   'boolean[]': 'ArrayParser',
   'bool[]': 'ArrayParser',
   'list[bool]': 'ArrayParser',
+  'list<bool>': 'ArrayParser',
+  'list<boolean>': 'ArrayParser',
 
   // 2D Matrices
   'number[][]': 'MatrixParser',
   'int[][]': 'MatrixParser',
+  'integer[][]': 'MatrixParser',
   'float[][]': 'MatrixParser',
   'matrix': 'MatrixParser',
   'list[list[int]]': 'MatrixParser',
+  'list[list[integer]]': 'MatrixParser',
+  'list<list<int>>': 'MatrixParser',
+  'list<list<integer>>': 'MatrixParser',
   'string[][]': 'MatrixParser',
   'boolean[][]': 'MatrixParser',
 
@@ -56,6 +72,7 @@ export const DATA_TYPE_PARSER_MAP = {
 export const RETURN_TYPE_SERIALIZER_MAP = {
   'number': ['PrimitiveSerializer'],
   'int': ['PrimitiveSerializer'],
+  'integer': ['PrimitiveSerializer'],
   'float': ['PrimitiveSerializer'],
   'string': ['PrimitiveSerializer'],
   'str': ['PrimitiveSerializer'],
@@ -178,20 +195,21 @@ export function validateSingleInput(val, type, paramName) {
   }
 
   const cleanType = (type || '').toLowerCase().trim();
+  const canonicalType = normalizeCanonicalType(type);
 
-  if (cleanType === 'number' || cleanType === 'int' || cleanType === 'float') {
+  if (canonicalType === 'number') {
     if (typeof val !== 'number' || isNaN(val)) {
       throw new Error(`Parameter '${paramName}' must be a valid number, received ${typeof val} (${JSON.stringify(val)})`);
     }
-  } else if (cleanType === 'string' || cleanType === 'str') {
+  } else if (canonicalType === 'string') {
     if (typeof val !== 'string') {
       throw new Error(`Parameter '${paramName}' must be a string, received ${typeof val} (${JSON.stringify(val)})`);
     }
-  } else if (cleanType === 'boolean' || cleanType === 'bool') {
+  } else if (canonicalType === 'boolean') {
     if (typeof val !== 'boolean') {
       throw new Error(`Parameter '${paramName}' must be a boolean, received ${typeof val} (${JSON.stringify(val)})`);
     }
-  } else if (cleanType === 'number[]' || cleanType === 'int[]' || cleanType === 'float[]' || cleanType === 'list[int]' || cleanType === 'list[float]') {
+  } else if (canonicalType === 'number[]') {
     if (!Array.isArray(val)) {
       throw new Error(`Parameter '${paramName}' must be an array of numbers, received ${typeof val}`);
     }
@@ -200,7 +218,7 @@ export function validateSingleInput(val, type, paramName) {
         throw new Error(`Element at index ${idx} of parameter '${paramName}' must be a number`);
       }
     });
-  } else if (cleanType === 'string[]' || cleanType === 'list[str]' || cleanType === 'list[string]') {
+  } else if (canonicalType === 'string[]') {
     if (!Array.isArray(val)) {
       throw new Error(`Parameter '${paramName}' must be an array of strings, received ${typeof val}`);
     }
@@ -209,7 +227,7 @@ export function validateSingleInput(val, type, paramName) {
         throw new Error(`Element at index ${idx} of parameter '${paramName}' must be a string`);
       }
     });
-  } else if (cleanType === 'boolean[]' || cleanType === 'bool[]' || cleanType === 'list[bool]') {
+  } else if (canonicalType === 'boolean[]') {
     if (!Array.isArray(val)) {
       throw new Error(`Parameter '${paramName}' must be an array of booleans, received ${typeof val}`);
     }
@@ -218,7 +236,7 @@ export function validateSingleInput(val, type, paramName) {
         throw new Error(`Element at index ${idx} of parameter '${paramName}' must be a boolean`);
       }
     });
-  } else if (cleanType === 'number[][]' || cleanType === 'int[][]' || cleanType === 'float[][]' || cleanType === 'matrix' || cleanType === 'list[list[int]]') {
+  } else if (canonicalType === 'number[][]') {
     if (!Array.isArray(val)) {
       throw new Error(`Parameter '${paramName}' must be a 2D matrix array, received ${typeof val}`);
     }
@@ -232,7 +250,7 @@ export function validateSingleInput(val, type, paramName) {
         }
       });
     });
-  } else if (cleanType === 'string[][]') {
+  } else if (canonicalType === 'string[][]') {
     if (!Array.isArray(val)) {
       throw new Error(`Parameter '${paramName}' must be a 2D matrix of strings, received ${typeof val}`);
     }
@@ -246,7 +264,7 @@ export function validateSingleInput(val, type, paramName) {
         }
       });
     });
-  } else if (cleanType === 'listnode' || cleanType === 'linkedlist') {
+  } else if (canonicalType === 'ListNode' || cleanType === 'linkedlist') {
     if (!Array.isArray(val) && typeof val !== 'object' && val !== null) {
       throw new Error(`Parameter '${paramName}' (ListNode) must be an array of node values e.g. [1,2,3] or null, received ${typeof val}`);
     }

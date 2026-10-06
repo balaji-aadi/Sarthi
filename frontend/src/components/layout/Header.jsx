@@ -390,7 +390,7 @@ const Header = ({ toggleSidebar }) => {
   const notificationIconClass = isNotification ? "shake" : "";
 
   return (
-    <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 px-4 lg:px-8 flex items-center justify-between sticky top-0 z-[100] transition-colors duration-200">
+    <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 px-4 lg:px-8 flex items-center justify-between sticky top-0 z-[50] transition-colors duration-200">
       {/* Breadcrumbs / Page Title */}
       <div className="flex items-center gap-1 sm:gap-4 overflow-hidden">
         {/* Hamburger Menu Toggler */}
