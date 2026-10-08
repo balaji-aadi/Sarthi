@@ -11,14 +11,14 @@ nt.updateNotification = asyncHandler(async (req, res) => {
     return res.status(400).json(new ApiError(400, "ID not provided"));
   }
 
-  const updatedNotification = await Notification.findByIdAndUpdate(
-    req.params.id,
+  const updatedNotification = await Notification.findOneAndUpdate(
+    { _id: req.params.id, receiverId: req.user._id },
     { $set: { notificationStatus: true } },
     { new: true }
   );
 
   if (!updatedNotification) {
-    return res.status(404).json(new ApiError(404, "Notification not found"));
+    return res.status(404).json(new ApiError(404, "Notification not found or access denied"));
   }
 
   return res

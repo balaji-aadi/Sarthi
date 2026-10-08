@@ -1,15 +1,14 @@
 import { Branch } from "../../models/branch.model.js";
+import { User } from "../../models/user.model.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { ApiError } from "../../utils/ApiError.js";
 
+import { isSuperAdmin } from "../../middlewares/rbac.middleware.js";
+
 const isUserAdmin = (user) => {
     if (!user) return false;
-    if (user.email === "balajiaadi2000@gmail.com") return true;
-    if (user.role === "admin") return true;
-    if (user.userRole?.name?.toLowerCase() === "admin") return true;
-    if (Array.isArray(user.userRoles) && user.userRoles.some(r => r.name?.toLowerCase() === "admin" || (r.active && r.permissions?.some(p => ["CREATE_BRANCH", "UPDATE_BRANCH", "DELETE_BRANCH"].includes(p.name))))) return true;
-    return false;
+    return isSuperAdmin(user);
 };
 
 const createBranch = asyncHandler(async (req, res) => {
@@ -50,14 +49,16 @@ const createBranch = asyncHandler(async (req, res) => {
 });
 
 const getBranches = asyncHandler(async (req, res) => {
-    const isSuperAdmin = req.user?.email === "balajiaadi2000@gmail.com" ||
-                         req.user?.role === "admin" ||
-                         req.user?.userRole?.name?.toLowerCase() === "admin";
+    const isSuperAdminUser = isSuperAdmin(req.user);
     
     let query = {};
-    if (!isSuperAdmin) {
-        const { User } = await import("../../models/user.model.js");
-        const adminUser = await User.findOne({ email: "balajiaadi2000@gmail.com" }).select("_id");
+    if (!isSuperAdminUser) {
+        const adminUser = process.env.SUPER_ADMIN_GOOGLE_SUB
+            ? await User.findOne({
+                role: "SUPER_ADMIN",
+                googleSub: process.env.SUPER_ADMIN_GOOGLE_SUB,
+              }).select("_id")
+            : null;
         const adminId = adminUser ? adminUser._id : null;
 
         const userBranchIds = (req.user?.branchAccess || []).map(b => b.branchId).filter(Boolean);

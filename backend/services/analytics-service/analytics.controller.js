@@ -6,6 +6,9 @@ import mongoose from "mongoose";
 import moment from "moment";
 import AnalyticsService from "./analytics.service.js";
 
+import { ApiError } from "../../utils/ApiError.js";
+import { isSuperAdmin } from "../../middlewares/rbac.middleware.js";
+
 const analyticsController = {};
 
 /**
@@ -80,6 +83,10 @@ analyticsController.getProjectHealth = asyncHandler(async (req, res) => {
 analyticsController.getMemberStats = asyncHandler(async (req, res) => {
     const { userId } = req.params;
     const { period, startDate, endDate } = req.query;
+
+    if (req.user._id.toString() !== userId && !isSuperAdmin(req.user)) {
+        throw new ApiError(403, "Forbidden: You cannot view another member's analytics");
+    }
 
     const query = {
         entityType: "user",

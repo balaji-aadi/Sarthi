@@ -1,10 +1,12 @@
+const envOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim()).filter((s) => s && s !== "*")
+  : [];
+
 export const whiteListCors = [
   "http://localhost:3000",
   "http://localhost:5173",
   "https://sarthi-dev.vercel.app",
-  "http://10.69.46.154:3000",
-  "http://10.69.46.154:5173",
-  "http://10.52.79.154:3000"
+  ...envOrigins
 ];
 
 // Dynamically check origin so any local network/LAN IP (10.x.x.x, 192.168.x.x, 172.16-31.x.x) on any port is allowed for mobile/dev testing

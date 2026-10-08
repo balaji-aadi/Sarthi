@@ -39,6 +39,8 @@ import MyTasks from "./pages/testing-childrens/MyTasks";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ZohoCallback from "./pages/auth/ZohoCallback";
+import BootstrapAdmin from "./pages/auth/BootstrapAdmin";
+import SuperAdminRecovery from "./pages/auth/SuperAdminRecovery";
 
 // DSA Management imports
 import ProblemList from "./pages/dsa-management/ProblemList";
@@ -105,6 +107,7 @@ function App() {
   const [backlogHoursInput, setBacklogHoursInput] = useState("");
 
   useEffect(() => {
+    if (!currentUser) return;
     const fetchSettings = async () => {
       try {
         const res = await BranchApi.getGlobalSettings();
@@ -114,7 +117,7 @@ function App() {
       }
     };
     fetchSettings();
-  }, [dispatch]);
+  }, [dispatch, currentUser]);
 
   // Global Background Focus Timer Watcher
   useEffect(() => {
@@ -260,8 +263,10 @@ function App() {
           element={<PublicRoute element={<Verification />} />}
         />
         <Route path="/login" element={<PublicRoute element={<Login />} />} />
-        <Route path="/register" element={<PublicRoute element={<Register />} />} />
-        <Route path="/auth/zoho/callback" element={<PublicRoute element={<ZohoCallback />} />} />
+        <Route path="/bootstrap-admin" element={<PublicRoute element={<BootstrapAdmin />} />} />
+        <Route path="/admin/recovery" element={<PublicRoute element={<SuperAdminRecovery />} />} />
+        <Route path="/register" element={<Navigate to="/login" replace />} />
+        <Route path="/auth/zoho/callback" element={<Navigate to="/login" replace />} />
         {/* Athentication routes end here */}
 
         <Route path="/" element={<RootGateway />}>
@@ -445,7 +450,7 @@ function App() {
 
           <Route
             path="pricing"
-            element={currentUser?.email === "balajiaadi2000@gmail.com" ? <Dashboard /> : <ProtectedRoute element={<PricingPage />} />}
+            element={currentUser?.role === "SUPER_ADMIN" ? <Dashboard /> : <ProtectedRoute element={<PricingPage />} />}
           />
         </Route>
 

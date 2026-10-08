@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AuthApi } from "../../services/api/Auth.api";
 import toast from "react-hot-toast";
+import { clearUserStorageOnLogout } from "../../utils/userStorage";
 
 export const login = createAsyncThunk(
   "login",
@@ -53,10 +54,38 @@ export const googleLogin = createAsyncThunk(
   }
 );
 
+export const bootstrapSuperAdmin = createAsyncThunk(
+  "auth/bootstrapSuperAdmin",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await AuthApi.bootstrapSuperAdmin(payload);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Super Admin bootstrap failed"
+      );
+    }
+  }
+);
+
+export const recoverSuperAdmin = createAsyncThunk(
+  "auth/recoverSuperAdmin",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await AuthApi.recoverSuperAdmin(payload);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Super Admin recovery failed"
+      );
+    }
+  }
+);
+
 const storeSlice = createSlice({
   name: "store",
   initialState: {
-    token: !!localStorage.getItem("accessToken"),
+    token: !!localStorage.getItem("currentUser"),
     currentUser: (() => {
       try {
         return JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -67,7 +96,7 @@ const storeSlice = createSlice({
     loading: false,
     error: false,
     success: false,
-    isAuthenticated: !!localStorage.getItem("accessToken"),
+    isAuthenticated: !!localStorage.getItem("currentUser"),
     showConsistencyModal: false,
     activeBranch: (() => {
       try {
@@ -123,7 +152,6 @@ const storeSlice = createSlice({
         state.success = false;
       })
       .addCase(login.fulfilled, (state, action) => {
-        console.log("Login fulfilled action payload:", action.payload);
         state.loading = false;
         state.error = false;
         state.success = true;
@@ -131,9 +159,7 @@ const storeSlice = createSlice({
         state.isAuthenticated = true;
         state.currentUser = action.payload.data.user || null;
         localStorage.setItem("currentUser", JSON.stringify(action.payload.data.user));
-        localStorage.setItem("accessToken", action.payload.data.accessToken);
-        localStorage.setItem("refreshToken", action.payload.data.refreshToken);
-        toast.success(`Welcome Back, ${action.payload.data?.user?.firstName}`);
+        toast.success(`Welcome Back, ${action.payload.data?.user?.firstName || 'User'}`);
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -153,9 +179,7 @@ const storeSlice = createSlice({
         state.isAuthenticated = true;
         state.currentUser = action.payload.data.user || null;
         localStorage.setItem("currentUser", JSON.stringify(action.payload.data.user));
-        localStorage.setItem("accessToken", action.payload.data.accessToken);
-        localStorage.setItem("refreshToken", action.payload.data.refreshToken);
-        toast.success(`Welcome ${action.payload.data?.user?.firstName}`);
+        toast.success(`Welcome ${action.payload.data?.user?.firstName || 'User'}`);
       })
       .addCase(zohoLogin.rejected, (state, action) => {
         state.loading = false;
@@ -177,15 +201,57 @@ const storeSlice = createSlice({
         state.isAuthenticated = true;
         state.currentUser = action.payload.data.user || null;
         localStorage.setItem("currentUser", JSON.stringify(action.payload.data.user));
-        localStorage.setItem("accessToken", action.payload.data.accessToken);
-        localStorage.setItem("refreshToken", action.payload.data.refreshToken);
-        toast.success(`Welcome ${action.payload.data?.user?.firstName}`);
+        toast.success(`Welcome ${action.payload.data?.user?.firstName || 'User'}`);
       })
       .addCase(googleLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
         state.success = false;
         toast.error(action.payload || "Google Login Failed");
+      })
+
+      .addCase(bootstrapSuperAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+        state.success = false;
+      })
+      .addCase(bootstrapSuperAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.success = true;
+        state.token = true;
+        state.isAuthenticated = true;
+        state.currentUser = action.payload.data.user || null;
+        localStorage.setItem("currentUser", JSON.stringify(action.payload.data.user));
+        toast.success(`Super Admin Provisioned: Welcome ${action.payload.data?.user?.firstName || 'Admin'}`);
+      })
+      .addCase(bootstrapSuperAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.success = false;
+        toast.error(action.payload || "Super Admin bootstrap failed");
+      })
+
+      .addCase(recoverSuperAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+        state.success = false;
+      })
+      .addCase(recoverSuperAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.success = true;
+        state.token = true;
+        state.isAuthenticated = true;
+        state.currentUser = action.payload.data.user || null;
+        localStorage.setItem("currentUser", JSON.stringify(action.payload.data.user));
+        toast.success(`Super Admin Recovered: Welcome ${action.payload.data?.user?.firstName || 'Admin'}`);
+      })
+      .addCase(recoverSuperAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.success = false;
+        toast.error(action.payload || "Super Admin recovery failed");
       })
 
       .addCase(logout.pending, (state) => {
@@ -202,11 +268,8 @@ const storeSlice = createSlice({
         state.isAuthenticated = false;
         state.activeBranch = null;
 
-        // Clear session auth tokens and active branch while leaving user-scoped execution data intact
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("activeBranch");
+        // Securely scrub all user-specific and sensitive items from browser storage
+        clearUserStorageOnLogout();
 
         toast.success("Logout successfully");
       })

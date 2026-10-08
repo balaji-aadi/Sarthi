@@ -409,8 +409,9 @@ const PublicLandingPage = () => {
         };
     }, []);
 
-    // Fetch branches if not loaded in store
+    // Fetch branches if authenticated and not loaded in store
     useEffect(() => {
+        if (!isAuthenticated) return;
         if (!branches || branches.length === 0) {
             BranchApi.getAllBranches().then((res) => {
                 if (res.data?.data) {
@@ -420,7 +421,7 @@ const PublicLandingPage = () => {
                 console.error("Failed to load branches on landing page:", err);
             });
         }
-    }, [branches, dispatch]);
+    }, [isAuthenticated, branches, dispatch]);
 
     const handleScrollTo = (id) => {
         const el = document.getElementById(id);

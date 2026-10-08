@@ -17,7 +17,7 @@ export const runCode = async (req, res) => {
     const clientKey = req.headers['idempotency-key'] || req.headers['x-idempotency-key'] || null;
     const correlationId = req.headers['x-correlation-id'] || null;
     const traceId = req.headers['x-trace-id'] || null;
-    const userId = req.user?._id || req.user?.id || req.body.userId || null;
+    const userId = req.user?._id || null;
     const ipAddress = req.ip || req.headers['x-forwarded-for'] || '127.0.0.1';
 
     if (!code || typeof code !== 'string' || !code.trim()) {
@@ -111,7 +111,7 @@ export const runCode = async (req, res) => {
 export const submitCode = async (req, res) => {
   try {
     const { problemId, language = 'javascript', code } = req.body;
-    const userId = req.user?._id || req.user?.id || req.body.userId || null;
+    const userId = req.user?._id;
     const ipAddress = req.ip || req.headers['x-forwarded-for'] || '127.0.0.1';
     const clientKey = req.headers['idempotency-key'] || req.headers['x-idempotency-key'] || null;
     const correlationId = req.headers['x-correlation-id'] || null;

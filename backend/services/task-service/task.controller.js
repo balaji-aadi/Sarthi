@@ -19,14 +19,10 @@ import Company from "../../models/company.model.js";
 import axios from "axios";
 import { calculateRevisionQueue, getLearnerLocalDateStr } from "../revision-service/revisionScheduler.js";
 import { analyzePatternWeaknesses } from "../revision-service/patternAnalyzer.js";
+import { isSuperAdmin } from "../../middlewares/rbac.middleware.js";
 
 const checkIsAdmin = (user) => {
-  return (
-    user?.email === "balajiaadi2000@gmail.com" ||
-    user?.userRole?.name?.toLowerCase() === "admin" ||
-    user?.role === "admin" ||
-    (user?.userRoles && user.userRoles.some(r => r.name?.toLowerCase() === "admin"))
-  );
+  return isSuperAdmin(user);
 };
 
 /**
@@ -408,9 +404,7 @@ tc.updateTask = asyncHandler(async (req, res) => {
     }
 
     const userId = req.user._id;
-    const isAdmin = req.user?.email === "balajiaadi2000@gmail.com" ||
-      req.user?.userRole?.name?.toLowerCase() === "admin" ||
-      req.user?.role === "admin";
+    const isAdmin = isSuperAdmin(req.user);
 
     const existingTask = await Task.findById(taskId);
     if (!existingTask) {
@@ -593,7 +587,7 @@ tc.getTaskById = asyncHandler(async (req, res) => {
 
     // Verify branch authorization if branch header is present
     if (req.branchId) {
-      const isSuperAdmin = req.user?.email === "balajiaadi2000@gmail.com";
+      const isSuperAdminUser = isSuperAdmin(req.user);
       const taskBranchId = task.branchId ? task.branchId.toString() : null;
       const projectBranchId = task.projectName?.branchId ? task.projectName.branchId.toString() : null;
 
@@ -742,9 +736,9 @@ tc.getallTasks = asyncHandler(async (req, res) => {
     if (targetProjectId) {
       if (req.branchId) {
         // Verify project belongs to active branch
-        const isSuperAdmin = req.user?.email === "balajiaadi2000@gmail.com";
+        const isSuperAdminUser = isSuperAdmin(req.user);
         const project = await Project.findOne({ _id: targetProjectId, branchId: req.branchId }).select("_id").lean();
-        if (!project && !isSuperAdmin) {
+        if (!project && !isSuperAdminUser) {
           return res.status(403).json(new ApiError(403, "Access denied: Project does not belong to the active branch"));
         }
       }
@@ -1188,9 +1182,9 @@ tc.getallTasksfree = asyncHandler(async (req, res) => {
     if (targetProjectId) {
       if (req.branchId) {
         // Verify project belongs to active branch
-        const isSuperAdmin = req.user?.email === "balajiaadi2000@gmail.com";
+        const isSuperAdminUser = isSuperAdmin(req.user);
         const project = await Project.findOne({ _id: targetProjectId, branchId: req.branchId }).select("_id").lean();
-        if (!project && !isSuperAdmin) {
+        if (!project && !isSuperAdminUser) {
           return res.status(403).json(new ApiError(403, "Access denied: Project does not belong to the active branch"));
         }
       }
@@ -1588,7 +1582,7 @@ tc.getRevisionStats = asyncHandler(async (req, res) => {
     if (req.branchId) {
       filter.branchId = new mongoose.Types.ObjectId(req.branchId);
     }
-    if (req.user?.email !== "balajiaadi2000@gmail.com") {
+    if (!isSuperAdmin(req.user)) {
       filter.createdBy = userId;
     }
 
@@ -1824,7 +1818,7 @@ tc.getCompletedParents = asyncHandler(async (req, res) => {
     if (req.branchId) {
       filter.branchId = new mongoose.Types.ObjectId(req.branchId);
     }
-    if (req.user?.email !== "balajiaadi2000@gmail.com") {
+    if (!isSuperAdmin(req.user)) {
       filter.createdBy = req.user._id;
     }
 
@@ -1863,7 +1857,7 @@ tc.suggestRevisionChallenge = asyncHandler(async (req, res) => {
     if (req.branchId) {
       filter.branchId = new mongoose.Types.ObjectId(req.branchId);
     }
-    if (req.user?.email !== "balajiaadi2000@gmail.com") {
+    if (!isSuperAdmin(req.user)) {
       filter.createdBy = req.user._id;
     }
 

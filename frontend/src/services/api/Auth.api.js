@@ -1,13 +1,11 @@
 import Api from "../axiosConfig";
 
 export const AuthApi = {
-  register: (payload) => Api.post("user/register", payload),
-  roleType: () => Api.get("role/get-all-role"),
-  login: (payload) => Api.post("user/login", payload),
-  logout: () => Api.post("user/logout"),
-  generateOTP: (payload) => Api.post("user/generate-otp", payload),
-  otpVerification: (payload) => Api.post("user/verify-otp", payload),
-  ResetPassword: (payload) => Api.post("user/reset-password", payload),
-  zohoLogin: (payload) => Api.post("user/zoho-login", payload),
   googleLogin: (payload) => Api.post("user/google-login", payload),
+  bootstrapSuperAdmin: (payload) => Api.post("user/bootstrap-super-admin", payload),
+  recoveryChallenge: (payload) => Api.post("user/super-admin/recovery-challenge", payload),
+  recoverSuperAdmin: (payload) => Api.post("user/super-admin/recover", payload),
+  refreshToken: () => Api.post("user/refresh-token"),
+  getCurrentUser: () => Api.get("user/current-user"),
+  logout: () => Api.post("user/logout"),
 };

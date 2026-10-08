@@ -29,16 +29,11 @@ import {
 
 const router = Router();
 
+import { isSuperAdmin } from "../../middlewares/rbac.middleware.js";
+
 // Middleware to enforce Admin authorization for CMS / Studio mutations
 const requireAdmin = (req, res, next) => {
-  const user = req.user;
-  const isAdmin =
-    user?.email === "balajiaadi2000@gmail.com" ||
-    user?.role === "admin" ||
-    user?.userRole?.name?.toLowerCase() === "admin" ||
-    (Array.isArray(user?.userRoles) && user.userRoles.some(r => r.name?.toLowerCase() === "admin"));
-
-  if (!isAdmin) {
+  if (!isSuperAdmin(req.user)) {
     return res.status(403).json({ success: false, message: "Forbidden: Admin access required for Studio CMS mutations." });
   }
   next();

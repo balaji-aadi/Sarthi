@@ -3,6 +3,7 @@ import { MockExecutionService } from '../../services/mockExecutionService';
 import { NoteApi } from '../../services/api/Note.api';
 import { JudgeApi } from '../../services/api/Judge.api';
 import toast from 'react-hot-toast';
+import { getScopedItem, setScopedItem, removeScopedItem } from '../../utils/userStorage';
 
 export const CodingArenaContext = createContext(null);
 
@@ -124,11 +125,11 @@ export function CodingArenaProvider({ problem, task, onClose, onSolveSuccess, ch
 
   // State: Language & Code Editor
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem(`dsa_lang_${problemId}`) || 'python';
+    return getScopedItem(`dsa_lang_${problemId}`) || 'python';
   });
 
   const [code, setCode] = useState(() => {
-    const saved = localStorage.getItem(`dsa_code_${problemId}_${language}`);
+    const saved = getScopedItem(`dsa_code_${problemId}_${language}`);
     if (saved) return saved;
     return resolveStarterCode(problem, language);
   });
@@ -174,19 +175,19 @@ export function CodingArenaProvider({ problem, task, onClose, onSolveSuccess, ch
 
   // State: Notes, Submissions, Solved status, and XP Points
   const [notes, setNotes] = useState(() => {
-    return localStorage.getItem(`dsa_notes_${problemId}`) || (task?.taskDescription || '');
+    return getScopedItem(`dsa_notes_${problemId}`) || (task?.taskDescription || '');
   });
 
   const [submissions, setSubmissions] = useState(() => {
-    const saved = localStorage.getItem(`dsa_submissions_${problemId}`);
+    const saved = getScopedItem(`dsa_submissions_${problemId}`);
     return saved ? JSON.parse(saved) : [];
   });
 
   const [isSolved, setIsSolved] = useState(() => {
-    const savedSolved = localStorage.getItem(`dsa_solved_${problemId}`);
+    const savedSolved = getScopedItem(`dsa_solved_${problemId}`);
     if (savedSolved === 'true') return true;
     if (problem?.isSolved) return true;
-    const savedSubs = localStorage.getItem(`dsa_submissions_${problemId}`);
+    const savedSubs = getScopedItem(`dsa_submissions_${problemId}`);
     if (savedSubs) {
       try {
         const parsed = JSON.parse(savedSubs);
@@ -197,14 +198,14 @@ export function CodingArenaProvider({ problem, task, onClose, onSolveSuccess, ch
   });
 
   const [userXp, setUserXp] = useState(() => {
-    const savedXp = localStorage.getItem('sarthi_user_xp');
+    const savedXp = getScopedItem('sarthi_user_xp');
     return savedXp !== null ? Number(savedXp) : 0;
   });
 
   // Listen for storage events to keep userXp synced across tabs
   useEffect(() => {
     const handleStorageChange = () => {
-      const saved = localStorage.getItem('sarthi_user_xp');
+      const saved = getScopedItem('sarthi_user_xp');
       setUserXp(saved !== null ? Number(saved) : 0);
     };
     window.addEventListener('storage', handleStorageChange);
@@ -235,8 +236,8 @@ export function CodingArenaProvider({ problem, task, onClose, onSolveSuccess, ch
   }, [problem]);
 
   useEffect(() => {
-    localStorage.setItem(`dsa_lang_${problemId}`, language);
-    const saved = localStorage.getItem(`dsa_code_${problemId}_${language}`);
+    setScopedItem(`dsa_lang_${problemId}`, language);
+    const saved = getScopedItem(`dsa_code_${problemId}_${language}`);
     if (saved && saved.trim()) {
       setCode(saved);
     } else {
@@ -248,20 +249,20 @@ export function CodingArenaProvider({ problem, task, onClose, onSolveSuccess, ch
   // Cache Code changes per problem & language
   const handleCodeChange = (newCode) => {
     setCode(newCode);
-    localStorage.setItem(`dsa_code_${problemId}_${language}`, newCode);
+    setScopedItem(`dsa_code_${problemId}_${language}`, newCode);
   };
 
   // Notes persistence
   const handleNotesChange = (newNotes) => {
     setNotes(newNotes);
-    localStorage.setItem(`dsa_notes_${problemId}`, newNotes);
+    setScopedItem(`dsa_notes_${problemId}`, newNotes);
   };
 
   // Reset Code to default starter template
   const handleResetCode = () => {
     const starter = resolveStarterCode(problem, language);
     setCode(starter);
-    localStorage.removeItem(`dsa_code_${problemId}_${language}`);
+    removeScopedItem(`dsa_code_${problemId}_${language}`);
     return starter;
   };
 
@@ -328,17 +329,17 @@ export function CodingArenaProvider({ problem, task, onClose, onSolveSuccess, ch
 
         const updatedSubs = [newSub, ...submissions];
         setSubmissions(updatedSubs);
-        localStorage.setItem(`dsa_submissions_${problemId}`, JSON.stringify(updatedSubs));
+        setScopedItem(`dsa_submissions_${problemId}`, JSON.stringify(updatedSubs));
 
         if (isAcc) {
           setIsSolved(true);
-          localStorage.setItem(`dsa_solved_${problemId}`, 'true');
+          setScopedItem(`dsa_solved_${problemId}`, 'true');
 
           if (!isSolved) {
             const problemXp = problem?.metadata?.xpReward ?? problem?.xpReward ?? 50;
             const newXp = (userXp || 0) + problemXp;
             setUserXp(newXp);
-            localStorage.setItem('sarthi_user_xp', String(newXp));
+            setScopedItem('sarthi_user_xp', String(newXp));
             window.dispatchEvent(new Event('storage'));
             toast.success(`🎉 Problem Solved! +${problemXp} XP Earned!`);
           } else {

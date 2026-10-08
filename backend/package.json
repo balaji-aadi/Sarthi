@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "backend": "nodemon server.js",
+    "bootstrap:admin": "node scripts/bootstrapAdmin.js",
     "db:backup": "node scripts/backup_db.js",
     "db:restore": "node scripts/restore_db.js"
   },
@@ -25,6 +26,7 @@
     "express": "^4.21.2",
     "express-fileupload": "^1.5.1",
     "firebase-admin": "^13.1.0",
+    "google-auth-library": "^11.1.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",

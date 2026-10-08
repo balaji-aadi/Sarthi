@@ -8,14 +8,11 @@ import mongoose from "mongoose";
 import moment from "moment";
 import { Milestone } from "../../models/milestone.model.js";
 import { Task } from "../../models/task.model.js";
+import { isSuperAdmin } from "../../middlewares/rbac.middleware.js";
 
 const isUserAdmin = (user) => {
   if (!user) return false;
-  if (user.email === "balajiaadi2000@gmail.com") return true;
-  if (user.role === "admin") return true;
-  if (user.userRole?.name?.toLowerCase() === "admin") return true;
-  if (Array.isArray(user.userRoles) && user.userRoles.some(r => r.name?.toLowerCase() === "admin" || (r.active && r.permissions?.some(p => ["CREATE_PROJECT", "UPDATE_PROJECT", "DELETE_PROJECT"].includes(p.name))))) return true;
-  return false;
+  return isSuperAdmin(user);
 };
 
 const pc = {}

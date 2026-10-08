@@ -2,6 +2,7 @@ import { GlobalSettings } from "../../models/globalSettings.model.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { isSuperAdmin } from "../../middlewares/rbac.middleware.js";
 
 const getSettings = asyncHandler(async (req, res) => {
     let settings = await GlobalSettings.findOne({});
@@ -15,8 +16,8 @@ const getSettings = asyncHandler(async (req, res) => {
 
 const updateSettings = asyncHandler(async (req, res) => {
     // Only super admin can update global settings
-    if (req.user?.email !== "balajiaadi2000@gmail.com") {
-        throw new ApiError(403, "Only super admin can update global settings");
+    if (!isSuperAdmin(req.user)) {
+        throw new ApiError(403, "Only Super Admin can update global settings");
     }
 
     const { subscriptionType } = req.body;

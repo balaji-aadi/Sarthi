@@ -4,16 +4,12 @@ import { ApiError } from "../../utils/ApiError.js";
 import { Note } from "../../models/note.model.js";
 import axios from "axios";
 import mongoose from "mongoose";
+import { isSuperAdmin } from "../../middlewares/rbac.middleware.js";
 
 const noteController = {};
 
 const checkIsAdmin = (user) => {
-  return (
-    user?.email === "balajiaadi2000@gmail.com" ||
-    user?.userRole?.name?.toLowerCase() === "admin" ||
-    user?.role === "admin" ||
-    (user?.userRoles && user.userRoles.some(r => r.name?.toLowerCase() === "admin"))
-  );
+  return isSuperAdmin(user);
 };
 
 /**

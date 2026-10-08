@@ -145,13 +145,10 @@ export const createProblem = async (req, res) => {
   }
 };
 
+import { isSuperAdmin } from "../../middlewares/rbac.middleware.js";
+
 const checkIsAdmin = (user) => {
-  return Boolean(
-    user?.email === "balajiaadi2000@gmail.com" ||
-    user?.role === "admin" ||
-    user?.userRole?.name?.toLowerCase() === "admin" ||
-    (Array.isArray(user?.userRoles) && user.userRoles.some(r => r?.name?.toLowerCase() === "admin"))
-  );
+  return isSuperAdmin(user);
 };
 
 // ==================== GET ALL PROBLEMS ====================

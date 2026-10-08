@@ -1,8 +1,9 @@
 const asyncHandler = (requestHandler) => {
     return (req, res, next) => {
-        Promise.resolve(requestHandler(req, res, next))
+        return Promise.resolve(requestHandler(req, res, next))
             .catch((err) => {
-                res.status(err.statusCode || err.status || 400).json({
+                const statusCode = err.statusCode || err.status || 500;
+                return res.status(statusCode).json({
                     message: err.message,
                     error: err
                 });
@@ -10,4 +11,4 @@ const asyncHandler = (requestHandler) => {
     };
 };
 
-export { asyncHandler }
+export { asyncHandler };

@@ -1,21 +1,35 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 
 // User Schema Started
 const userSchema = new Schema(
   {
+    googleSub: {
+      type: String,
+      unique: true,
+      sparse: true,
+      index: true,
+    },
     email: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
+    },
+    role: {
+      type: String,
+      enum: ["USER", "SUPER_ADMIN"],
+      default: "USER",
+    },
+    sessionVersion: {
+      type: Number,
+      default: 1,
     },
     userRole: {
       type: Schema.Types.ObjectId,
       ref: "UserRole",
-      // required: true, // Making optional as we move to userRoles
     },
     userRoles: [
       {
@@ -27,6 +41,7 @@ const userSchema = new Schema(
       type: String,
       maxlength: 250,
       required: true,
+      default: "User",
     },
     lastName: {
       type: String,
@@ -48,26 +63,10 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
-    otp: {
-      type: String,
-      maxlength: 250,
-      default: null,
-    },
-    otpTime: {
-      type: Date,
-      default: null,
-    },
     isActive: {
       type: Boolean,
       default: true,
-    },
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-    },
-    refreshToken: {
-      type: String,
-      default: null,
+      index: true,
     },
     branchAccess: [
       {
@@ -88,7 +87,7 @@ const userSchema = new Schema(
     },
     subscriptionPlan: {
       type: String,
-      enum: ["monthly", "half-yearly", "yearly", "invitation"],
+      enum: ["free", "monthly", "half-yearly", "yearly", "invitation"],
       default: "free"
     },
     subscriptionExpiresAt: {
@@ -106,49 +105,57 @@ const userSchema = new Schema(
   }
 );
 
+// Database-level invariant: AT MOST ONE Super Admin across the entire database
+userSchema.index(
+  { role: 1 },
+  {
+    name: "unique_super_admin_single_instance",
+    unique: true,
+    partialFilterExpression: { role: "SUPER_ADMIN" },
+  }
+);
+
 // User Schema End
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+userSchema.methods.generateAccessToken = function (sessionData = {}) {
+  const payload = {
+    _id: this._id,
+    googleSub: this.googleSub,
+    email: this.email,
+    role: this.role || "USER",
+    sessionVersion: this.sessionVersion || 1,
+    firstName: this.firstName,
+    lastName: this.lastName,
+    phoneNumber: this.phoneNumber,
+    // Retain backward-compatible snake_case aliases
+    first_name: this.firstName,
+    last_name: this.lastName,
+    phone_number: this.phoneNumber,
+    ...sessionData,
+  };
 
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
-
-userSchema.methods.isPasswordCorrect = async function (password) {
-  return await bcrypt.compare(password, this.password);
-};
-
-userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
-    {
-      _id: this._id,
-      email: this.email,
-      firstName: this.firstName,
-      lastName: this.lastName,
-      phoneNumber: this.phoneNumber,
-      // Retain backward-compatible snake_case aliases
-      first_name: this.firstName,
-      last_name: this.lastName,
-      phone_number: this.phoneNumber,
-    },
+    payload,
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "15m",
     }
   );
 };
-userSchema.methods.generateRefreshToken = function () {
+
+userSchema.methods.generateRefreshToken = function (sessionData = {}) {
   return jwt.sign(
     {
       _id: this._id,
+      ...sessionData,
     },
     process.env.REFRESH_TOKEN_SECRET,
     {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "14d",
     }
   );
 };
 
 
 export const User = mongoose.model("User", userSchema);
+

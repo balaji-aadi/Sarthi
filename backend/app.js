@@ -14,6 +14,8 @@ import { socketService } from "./socket-instance.js";
 import "./models/permission.model.js";
 
 
+import { csrfProtection } from "./middlewares/csrf.middleware.js";
+
 const app = express();
 // export const socketService = new SocketService(); // Moved to socket-instance.js
 export { socketService };
@@ -29,6 +31,7 @@ app.use(compression());
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(csrfProtection);
 app.use(fileUpload());
 
 // Routes declaration

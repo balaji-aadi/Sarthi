@@ -11,23 +11,28 @@ import { persistor, store } from "./store/store";
 import { Loader, LoaderProvider } from "./components/loader/index";
 import { ThemeProvider } from "./ThemeContext";
 import SocketProvider from "./SocketProvider";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <ThemeProvider>
-        <SharedContextProvider>
-          <SocketProvider>
-            <LoaderProvider>
-              <Loader />
-              <ToggleContextProvider>
-                <App />
-              </ToggleContextProvider>
-            </LoaderProvider>
-          </SocketProvider>
-        </SharedContextProvider>
-      </ThemeProvider>
+      <GoogleOAuthProvider clientId={googleClientId}>
+        <ThemeProvider>
+          <SharedContextProvider>
+            <SocketProvider>
+              <LoaderProvider>
+                <Loader />
+                <ToggleContextProvider>
+                  <App />
+                </ToggleContextProvider>
+              </LoaderProvider>
+            </SocketProvider>
+          </SharedContextProvider>
+        </ThemeProvider>
+      </GoogleOAuthProvider>
     </PersistGate>
   </Provider>
 );
